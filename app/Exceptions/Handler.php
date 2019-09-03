@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-
+use Illuminate\Auth\AuthenticationException as AuthenticationException;
 class Handler extends ExceptionHandler
 {
     /**
@@ -47,5 +47,24 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         return parent::render($request, $exception);
+    }
+
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        if ($request->expectsJson()) {
+            return response()->json(['error' => 'Unauthenticated.'], 401);
+        }
+        if ($request->is('hris') || $request->is('hris/*')) {
+            return redirect()->guest('/hris');
+        }
+        
+        if ($request->is('api') || $request->is('api/hris/*')) {
+            return response()->json(['error' => 'Unauthenticated.'], 401);
+        }
+
+        if ($request->is('ics') || $request->is('ics/*')) {
+            return redirect()->guest('/ics');
+        }
+        return redirect()->guest(route('login'));
     }
 }

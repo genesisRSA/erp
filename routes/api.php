@@ -16,3 +16,23 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+//HRIS
+Route::get('/hris/attendances/all', 'AttendancesController@all');
+Route::get('/hris/attendances/access_details/{id}', 'AttendancesController@access_details');
+Route::get('/hris/attendances/my_today/{emp_id}/{today}', 'AttendancesController@my_today');
+Route::get('/hris/attendances/my_attendance/{emp_id}', 'AttendancesController@my_attendance');
+
+Route::get('/hris/employees/all', 'EmployeesController@all');
+Route::get('/hris/sites/{id}/domain', 'SitesController@domain');
+Route::get('/hris/sites/{id}/departments/', 'DepartmentsController@all');
+Route::get('/hris/departments/{id}/sections/', 'SectionsController@all');
+Route::get('/hris/sections/{id}/positions/', 'PositionsController@all');
+
+Route::get('/hris/leaves/all', 'LeavesController@all');
+
+
+
+
+//ICS
+Route::get('/areas/all', 'AreasController@all');

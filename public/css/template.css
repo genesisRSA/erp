@@ -1,0 +1,85 @@
+body{
+    background-color: #ecf3ff;
+}
+
+.bg-blue{
+    background-color: #216ef4;
+}
+
+.bg-teal{
+    background-color: #2b8ba3;
+}
+
+nav.csidebar{
+    position: -webkit-sticky;
+    position: sticky;
+    top:0;
+    max-width: 80px;
+    height: 100vh;
+}
+
+ul.csidebar-nav{
+    list-style: none;
+    padding: 10px 0px;
+    margin: 0px;
+}
+
+ul.csidebar-nav li{
+    margin: 10px 0px;
+}
+
+ul.csidebar-nav li > a{
+    color:#fff;
+    padding: 10px 10px;
+    display: block;
+}
+
+ul.csidebar-nav li > a:hover{
+    background-color: #0b43a4;
+}
+
+ul.csidebar-nav li > a.active{
+    background-color: #0b43a4;
+}
+
+ul.csidebar-nav.ics li > a:hover{
+    background-color: #1c697c;
+}
+
+ul.csidebar-nav.ics li > a.active{
+    background-color: #1c697c;
+}
+
+ul.csidebar-nav.dark{
+    list-style: none;
+    margin: 0px;
+    background-color: #0b43a4;
+}
+
+ul.csidebar-nav.ics.dark{
+    list-style: none;
+    margin: 0px;
+    background-color: #1c697c;
+}
+
+ul.csidebar-nav.dark li{
+    margin: 20px 0px;
+}
+
+ul.csidebar-nav.dark li > a:hover{
+    background-color: #052968;
+}
+
+ul.csidebar-nav.ics.dark li > a:hover{
+    background-color: #1c697c;
+}
+
+.csidebar .user-logo{
+    margin: 10px 5px 20px 5px;
+    max-width: 64px;
+    max-height: 64px;
+}
+
+.main-content{      
+    width: 100%;
+}
