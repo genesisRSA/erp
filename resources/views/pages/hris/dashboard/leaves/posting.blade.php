@@ -19,7 +19,6 @@
             @endif
             <form method="POST" action="{{ route('leave.post', $leave->id) }}" enctype="multipart/form-data">
                 @csrf
-                @method('PUT')
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" id="leave-tab" data-toggle="tab" href="#leave" role="tab" aria-controls="leave" aria-selected="true">Leave Information</a>

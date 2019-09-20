@@ -445,7 +445,8 @@ class LeavesController extends Controller
         
         $status = 'Posted';
         $leave->next_approver = 'N/A';
-
+        $days = 0;
+        
         if($leave->type <> "Unpaid Leave"){
 
             if($leave->leave_from == $leave->leave_to)
