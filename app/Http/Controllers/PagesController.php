@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Auth;
+use App\Employee;
 
 class PagesController extends Controller
 {
@@ -29,6 +31,17 @@ class PagesController extends Controller
     public function myattendance(){
         return view("pages.hris.dashboard.myattendance")
                     ->with(array('site'=> 'hris', 'page'=>'my attendance'));  
+    }
+
+    public function team_attendance($id)
+    {
+        $employee = Employee::find(Crypt::decrypt($id));
+        return view("pages.hris.dashboard.teamattendance")
+                    ->with(array('site'=> 'hris', 
+                                 'page'=>'team attendance',
+                                 'name'=> $employee->full_name,
+                                 'emp_photo'=> $employee->emp_photo,
+                                 'access_id'=> $employee->access_id));  
     }
 
     public function timekeeping(){

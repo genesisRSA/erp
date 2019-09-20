@@ -68,6 +68,44 @@
             });
         @endif
 
+        @if($page=="team attendance")
+            $.get("/api/hris/attendances/my_today/{{$access_id}}/{{date('Y-m-d')}}/", function(res){
+                var response = res.data;
+                $('#time-in').html(response.time_in);
+                $('#time-in-mini').html(response.time_in);
+
+                if(response.time_in != response.time_out)
+                {
+                    $('#time-out').html(response.time_out);
+                    $('#time-out-mini').html(response.time_out);
+                }
+            });
+                
+            var my_attendance_dt = $('#my-attendance-td').DataTable({
+                "responsive": true,
+                "pagingType": "full",
+                "aaSorting": [],
+                "ajax": "/api/hris/attendances/my_attendance/{{$access_id}}",
+                "columns": [
+                    { "data": "att_date" },
+                    { "data": "time_in" },
+                    { "data": "time_out" },
+                    { "data": "hours_work" },
+                    {
+                        "targets": 0,
+                        "data": "late",
+                        "render": function ( data, type, row, meta ) {
+                            if((data+"").indexOf('-') != '-1'){
+                                return "N/A";
+                            }else{
+                                return data;
+                            }
+                        }
+                    } 
+                ]
+            });
+        @endif
+
 
         @if($page == "employees")
         var employee_dt = $('#employee-dt').DataTable({

@@ -25,6 +25,11 @@ class Employee extends Model
         return $this->hasOne('App\Section','sect_code','sect_code');
     }
 
+    public function team()
+    {
+        return $this->hasMany('App\Employee','reports_to','emp_no');
+    }
+
     public function getIdNoAttribute($value)
     {
         return Crypt::encrypt($this->id);

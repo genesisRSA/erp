@@ -20,6 +20,7 @@ Route::get('/hris', 'PagesController@hris_index')->name('hris.index');
 Route::group(['middleware' => ['auth']], function() {
     Route::get('/hris/home', 'PagesController@hris_home');
     Route::get('/hris/attendance', 'PagesController@attendance');
+    Route::get('/hris/{id}/teamattendance', 'PagesController@team_attendance');
     Route::get('/hris/myattendance', 'PagesController@myattendance');
     Route::get('/hris/timekeeping', 'PagesController@timekeeping')->name('timekeeping');
     Route::resource('/hris/employees', 'EmployeesController');
