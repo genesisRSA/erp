@@ -5,7 +5,7 @@
 @section('content')
     <div class="card mb-3">
         <div class="card-body">
-            <h3 class="card-title"><a href="{{ url()->previous() }}" class="mr-3"><i class="fas fa-arrow-left"></i></a> Team Attendance : {{$name}}</h3>
+            <h3 class="card-title"><a href="{{ url()->previous() }}" class="mr-3"><i class="fas fa-arrow-left"></i></a> Team Attendance : <img src="/{{ $emp_photo }}" class="img-fluid rounded-circle bg-white border" style="height:48px;"/> {{$name}}</h3>
             <hr>
             <p class="card-text">This module provides data of your attendance.</p>
         </div>
