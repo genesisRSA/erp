@@ -34,7 +34,7 @@ class LeavesController extends Controller
                             ->with('filer_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->with('approved_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->with('approver_employee:emp_no,emp_photo,emp_fname,emp_lname')
-                            ->orderBy('id','desc')
+                            ->orderBy('id','DESC')
                             ->get()
         ]);
     }
@@ -47,7 +47,7 @@ class LeavesController extends Controller
                             ->with('filer_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->with('approved_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->with('approver_employee:emp_no,emp_photo,emp_fname,emp_lname')
-                            ->orderBy('id','desc')
+                            ->orderBy('id','DESC')
                             ->get()
         ]);
     }
@@ -60,7 +60,7 @@ class LeavesController extends Controller
                             ->where('status', '<>', 'Posted')
                             ->with('approved_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->with('approver_employee:emp_no,emp_photo,emp_fname,emp_lname')
-                            ->orderBy('id','desc')
+                            ->orderBy('id','DESC')
                             ->get()
         ]);
     }
@@ -73,7 +73,7 @@ class LeavesController extends Controller
                             ->where('status', '=', 'Posted')
                             ->with('approved_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->with('approver_employee:emp_no,emp_photo,emp_fname,emp_lname')
-                            ->orderBy('id','desc')
+                            ->orderBy('id','DESC')
                             ->get()
         ]);
     }
@@ -84,7 +84,7 @@ class LeavesController extends Controller
             ->json([
                 "data" => Leave::where('next_approver', '=', Auth::user()->emp_no)
                             ->with('filer_employee:emp_no,emp_photo,emp_fname,emp_lname')
-                            ->orderBy('id','desc')
+                            ->orderBy('id','DESC')
                             ->get()
         ]);
     }
