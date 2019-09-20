@@ -300,6 +300,7 @@
 
         var leave_dt = $('#leave-dt').DataTable({
             "responsive": true,
+            "aaSorting": [],
             "pagingType": "full",
             "ajax": "/api/hris/leaves/all",
             "columns": [
@@ -365,6 +366,7 @@
 
         var leaveposted_dt = $('#leaveposted-dt').DataTable({
             "responsive": true,
+            "aaSorting": [],
             "pagingType": "full",
             "ajax": "/api/hris/leaves/all_posted",
             "columns": [
@@ -434,6 +436,7 @@
         
         var myleave_dt = $('#myleave-dt').DataTable({
             "responsive": true,
+            "aaSorting": [],
             "pagingType": "full",
             "ajax": "/hris/leaves/my",
             "columns": [
@@ -491,6 +494,7 @@
 
         var myleaveposted_dt = $('#myleaveposted-dt').DataTable({
             "responsive": true,
+            "aaSorting": [],
             "pagingType": "full",
             "ajax": "/hris/leaves/my_posted",
             "columns": [
@@ -548,6 +552,7 @@
 
         var leaveapproval_dt = $('#leaveapproval-dt').DataTable({
             "responsive": true,
+            "aaSorting": [],
             "pagingType": "full",
             "ajax": "/hris/leaves/approval",
             "columns": [
