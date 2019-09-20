@@ -22,11 +22,9 @@
                 <thead class="thead-dark">
                     <tr>
                         <th>Site</th>
-                        <th>Department</th>
                         <th>Section</th>
-                        <th>Employee ID No.</th>
-                        <th>Photo</th>
-                        <th>Employee Name</th>
+                        <th>ID No.</th>
+                        <th>Employee</th>
                         <th></th>
                     </tr>
                 </thead>

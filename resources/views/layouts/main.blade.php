@@ -10,8 +10,12 @@
         <link href="{{ asset('datatables/datatables.css') }}" rel="stylesheet">
     </head>
     <body>
+        @include('includes.'.$site.'.navbar', ['page' => $page])
         <div class="d-flex flex-row">
-            @include('includes.'.$site.'.sidebar', ['page' => $page])
+            
+            <div class="d-none d-sm-block">
+                @include('includes.'.$site.'.sidebar', ['page' => $page])
+            </div>
             <div class="m-3 main-content">
                 @yield('content')
             </div>

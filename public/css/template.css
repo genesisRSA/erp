@@ -6,6 +6,10 @@ body{
     background-color: #216ef4;
 }
 
+.bg-blue-dark{
+    background-color: #0b43a4;
+}
+
 .bg-teal{
     background-color: #2b8ba3;
 }
@@ -80,6 +84,17 @@ ul.csidebar-nav.ics.dark li > a:hover{
     max-height: 64px;
 }
 
+.user-logo-mini{
+    max-width: 32px;
+    max-height: 32px;
+}
+
 .main-content{      
     width: 100%;
+}
+
+.pop-menu{
+    background-color: #216ef4;
+    position: fixed;
+    z-index: 9999;
 }

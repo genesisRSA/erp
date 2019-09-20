@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
 use App\Employee;
 use App\Site;
 use App\User;
+use Auth;
 use Validator;
 use Session;
 
@@ -23,21 +25,30 @@ class EmployeesController extends Controller
     public function index()
     {
         //
-        return view("pages.hris.dashboard.employees.index")
+        if(Auth::user()->is_admin || Auth::user()->is_hr)
+        {
+            return view("pages.hris.dashboard.employees.index")
                 ->with(array('site'=> 'hris', 'page'=>'employees'));  
+        }else
+        {
+            return redirect('hris/home');
+        }
+        
     }
 
-    public function all()
+    public function all($is_admin = false)
     {
-       return response()
+        $data = Employee::where('emp_no', '<>', 'admin')
+                        ->with('site:site_code,site_desc')
+                        ->with('department:dept_code,dept_desc')
+                        ->with('section:sect_code,sect_desc')
+                        ->get()
+                        ->each
+                        ->append(['full_name','id_no']);
+        
+        return response()
             ->json([
-                "data" => Employee::orderBy('emp_lname','asc')
-                            ->with('site:site_code,site_desc')
-                            ->with('department:dept_code,dept_desc')
-                            ->with('section:sect_code,sect_desc')
-                            ->get()
-                            ->each
-                            ->append(['full_name','id_no'])
+                "data" => $data
         ]);
     }
 
@@ -153,6 +164,18 @@ class EmployeesController extends Controller
 
             }
 
+            $leave_credits = array(
+                'sick_leave' => $request->input('sick_leave'),
+                'vacation_leave' => $request->input('vacation_leave'),
+                'emergency_leave' => $request->input('emergency_leave'),
+                'admin_leave' => $request->input('admin_leave'),
+                'bereavement_leave' => $request->input('bereavement_leave'),
+                'bday_leave' => $request->input('bday_leave'),
+                'maternity_leave' => $request->input('maternity_leave'),
+                'paternity_leave' => $request->input('paternity_leave')
+            );
+
+            $employee->leave_credits = json_encode($leave_credits);
             $employee->current_address = $request->input('current_address','N/A');
             $employee->home_address = $request->input('home_address','N/A');
             $employee->tel_no = $request->input('tel_no','N/A') ? $request->input('tel_no','') : '';
@@ -181,11 +204,25 @@ class EmployeesController extends Controller
         $employee = Employee::find(Crypt::decrypt($id));
         $reports_to = Employee::where('emp_no','=',$employee->reports_to)->first();
         
+        if(!$leave_credits = json_decode($employee->leave_credits)){
+            $leave_credits = json_decode( json_encode( array(
+                'sick_leave' => 0,
+                'vacation_leave' => 0,
+                'emergency_leave' => 0,
+                'admin_leave' => 0,
+                'bereavement_leave' => 0,
+                'bday_leave' => 0,
+                'maternity_leave' => 0,
+                'paternity_leave' => 0
+            ) ) );
+        }
+
         return view('pages.hris.dashboard.employees.show')
                     ->with(array('site'=> 'hris', 'page'=>'employees'))
                     ->with('dep',json_decode($employee->dependencies))
                     ->with('employee',$employee)
-                    ->with('reports_to',$reports_to);
+                    ->with('reports_to',$reports_to)
+                    ->with('leave_credits',$leave_credits);
     }
 
     /**
@@ -203,6 +240,20 @@ class EmployeesController extends Controller
         $sections =  \App\Section::where('dept_code','=',$employee->dept_code)->get();
         $positions =  \App\Position::where('sect_code','=',$employee->sect_code)->get();
         $dependencies = json_decode($employee->dependencies);
+        
+        if(!$leave_credits = json_decode($employee->leave_credits)){
+            $leave_credits = json_decode( json_encode( array(
+                'sick_leave' => 0,
+                'vacation_leave' => 0,
+                'emergency_leave' => 0,
+                'admin_leave' => 0,
+                'bereavement_leave' => 0,
+                'bday_leave' => 0,
+                'maternity_leave' => 0,
+                'paternity_leave' => 0
+            ) ) );
+        }
+
         return view('pages.hris.dashboard.employees.edit')
                 ->with(array('site' => 'hris', 
                             'page' => 'employees', 
@@ -212,6 +263,7 @@ class EmployeesController extends Controller
                             'positions' => $positions,
                             'dependencies' => $dependencies,
                             'employee' => $employee,
+                            'leave_credits' => $leave_credits,
                             'employees' => Employee::where('id','<>',Crypt::decrypt($id))->orderBy('emp_lname','asc')->get()
                         )); 
     }
@@ -302,6 +354,18 @@ class EmployeesController extends Controller
 
             }
 
+            $leave_credits = array(
+                'sick_leave' => $request->input('sick_leave'),
+                'vacation_leave' => $request->input('vacation_leave'),
+                'emergency_leave' => $request->input('emergency_leave'),
+                'admin_leave' => $request->input('admin_leave'),
+                'bereavement_leave' => $request->input('bereavement_leave'),
+                'bday_leave' => $request->input('bday_leave'),
+                'maternity_leave' => $request->input('maternity_leave'),
+                'paternity_leave' => $request->input('paternity_leave')
+            );
+
+            $employee->leave_credits = json_encode($leave_credits);
             $employee->current_address = $request->input('current_address','N/A');
             $employee->home_address = $request->input('home_address','N/A');
             $employee->tel_no = $request->input('tel_no','') ? $request->input('tel_no','') : '';
@@ -364,6 +428,7 @@ class EmployeesController extends Controller
             $user->is_admin = $request->input('is_admin') ? true : false;
             $user->is_hr = $request->input('is_hr') ? true : false;
             $user->is_nurse = $request->input('is_nurse') ? true : false;
+            $user->api_token = Str::random(60);
 
             if($request->input('is_nurse')){
                 DB::table('users')->update(array('is_nurse' => 0));

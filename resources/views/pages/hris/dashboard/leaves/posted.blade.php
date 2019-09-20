@@ -5,7 +5,7 @@
 @section('content')
     <div class="card mb-3">
         <div class="card-body">
-            <h3><a href="{{ route('mytimekeeping') }}" class="mr-3"><i class="fas fa-arrow-left"></i></a> Leave Approval : {{$leave->ref_no}}</h3>
+            <h3><a href="{{ url()->previous() }}" class="mr-3"><i class="fas fa-arrow-left"></i></a> Posted Leave : {{$leave->ref_no}}</h3>
             <hr>
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -52,7 +52,6 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        @if(!$leave->is_one_day)
                                         <label>Date To</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
@@ -60,7 +59,6 @@
                                             </div>
                                             <input type="date" class="form-control" name="leave_to" id="leave_to" value="{{$leave->leave_to}}" readonly/>
                                         </div>
-                                        @endif
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -87,7 +85,7 @@
                                         <a href="/{{$leave->filer_employee->emp_photo}}" target="_blank"><img src="/{{$leave->filer_employee->emp_photo}}" class="img-fluid rounded-circle bg-white" style="height:48px;"/></a> <span class="badge badge-secondary">{{$leave->filer_employee->full_name}}</span>
                                     </div>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Date Filed</label>
                                         <div class="input-group">
@@ -101,16 +99,25 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Status</label><br>
-                                        <button type="button" class="btn btn-warning" style="width:100%;"><i class="fas fa-hourglass-half"></i> {{$leave->status}}</button>
+                                        @if($leave->status == 'Approved')
+                                            <button type="button" class="btn btn-success" style="width:100%;"><i class="fas fa-check-circle"></i>  {{$leave->status}}</button>
+                                        @elseif($leave->status == 'Declined')
+                                            <button type="button" class="btn btn-danger" style="width:100%;"><i class="fas fa-times-circle"></i> {{$leave->status}}</button>
+                                        @elseif($leave->status == 'Posted')
+                                            <button type="button" class="btn btn-secondary" style="width:100%;"><i class="fas fa-vote-yea"></i> {{$leave->status}}</button>
+                                        @else
+                                            <button type="button" class="btn btn-warning" style="width:100%;"><i class="fas fa-hourglass-half"></i>  {{$leave->status}}</button>
+                                        @endif
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
-                                        <label>Remarks <sup class="text-danger">*</sup></label>
-                                        <textarea class="form-control @if($errors->has('remarks')) is-invalid @endif" name="remarks" id="remarks" rows="3" placeholder="Enter Remarks">{{old('remarks')}}</textarea>
-                                        <div class="invalid-feedback">
-                                            {{ $errors->first('remarks') }}
-                                        </div>
+                                        <label>Current Approver</label><br>
+                                        @if($leave->approver_employee)
+                                            <a href="/{{$leave->approver_employee->emp_photo}}" target="_blank"><img src="/{{$leave->approver_employee->emp_photo}}" class="img-fluid rounded-circle bg-white" style="height:48px;"/></a> <span class="badge badge-secondary">{{$leave->approver_employee->full_name}}</span>
+                                        @else
+                                            N/A
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -139,6 +146,8 @@
                                                     <button type="button" class="btn btn-success" style="width:100%;"><i class="fas fa-check-circle"></i>  {{$log->status}}</button>
                                                 @elseif($log->status == 'Declined')
                                                     <button type="button" class="btn btn-danger" style="width:100%;"><i class="fas fa-times-circle"></i> {{$log->status}}</button>
+                                                    @elseif($log->status == 'Posted')
+                                                    <button type="button" class="btn btn-secondary" style="width:100%;"><i class="fas fa-vote-yea"></i> {{$log->status}}</button>
                                                 @else
                                                     <button type="button" class="btn btn-warning" style="width:100%;"><i class="fas fa-hourglass-half"></i>  {{$log->status}}</button>
                                                 @endif
@@ -146,7 +155,7 @@
                                             <td>{{$log->remarks}}</td>
                                             <td>
                                                 @if($log->approved_by != 'N/A')
-                                                <a href="/{{App\Employee::where('emp_no','=',$log->approved_by)->first()->emp_photo}}" target="_blank"><img class="img-fluid rounded-circle bg-white" src="/{{App\Employee::where('emp_no','=',$log->approved_by)->first()->emp_photo}}" style="height:48px;"/></a> <span class="badge badge-secondary">{{App\Employee::where('emp_no','=',$log->approved_by)->first()->full_name}}</span>
+                                                  <a href="/{{App\Employee::where('emp_no','=',$log->approved_by)->first()->emp_photo}}" target="_blank"><img class="img-fluid rounded-circle bg-white" src="/{{App\Employee::where('emp_no','=',$log->approved_by)->first()->emp_photo}}" style="height:48px;"/></a> <span class="badge badge-secondary">{{App\Employee::where('emp_no','=',$log->approved_by)->first()->full_name}}</span>
                                                 @else
 
                                                 @endif
@@ -158,51 +167,6 @@
                         </div>
                     </div>
                     <!--End of Leave History-->
-                </div>
-                <div class="container-fluid">
-                    <div class="row mt-3 float-right">
-                        <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#approveModal"><i class="fas fa-check-circle"></i> Approve</button>
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#declineModal"><i class="fas fa-times-circle"></i> Decline</button>
-                    </div>
-                </div>
-                <!--MODALS-->
-                <div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Approve Leave</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                Are you sure you want to approve this leave?
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-success" name="submit" value="approve">Yes</button>
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal fade" id="declineModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Decline Leave</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                Are you sure you want to decline this leave?
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-success" name="submit" value="decline">Yes</button>
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </form>
         </div>

@@ -5,7 +5,7 @@
 @section('content')
     <div class="card mb-3">
         <div class="card-body">
-            <h3><a href="{{ route('mytimekeeping') }}" class="mr-3"><i class="fas fa-arrow-left"></i></a> Leave : {{$leave->ref_no}}</h3>
+            <h3><a href="{{ url()->previous() }}" class="mr-3"><i class="fas fa-arrow-left"></i></a> Leave : {{$leave->ref_no}}</h3>
             <hr>
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -103,6 +103,8 @@
                                             <button type="button" class="btn btn-success" style="width:100%;"><i class="fas fa-check-circle"></i>  {{$leave->status}}</button>
                                         @elseif($leave->status == 'Declined')
                                             <button type="button" class="btn btn-danger" style="width:100%;"><i class="fas fa-times-circle"></i> {{$leave->status}}</button>
+                                        @elseif($leave->status == 'Posted')
+                                            <button type="button" class="btn btn-secondary" style="width:100%;"><i class="fas fa-vote-yea"></i> {{$leave->status}}</button>
                                         @else
                                             <button type="button" class="btn btn-warning" style="width:100%;"><i class="fas fa-hourglass-half"></i>  {{$leave->status}}</button>
                                         @endif
@@ -144,6 +146,8 @@
                                                     <button type="button" class="btn btn-success" style="width:100%;"><i class="fas fa-check-circle"></i>  {{$log->status}}</button>
                                                 @elseif($log->status == 'Declined')
                                                     <button type="button" class="btn btn-danger" style="width:100%;"><i class="fas fa-times-circle"></i> {{$log->status}}</button>
+                                                    @elseif($log->status == 'Posted')
+                                                    <button type="button" class="btn btn-secondary" style="width:100%;"><i class="fas fa-vote-yea"></i> {{$log->status}}</button>
                                                 @else
                                                     <button type="button" class="btn btn-warning" style="width:100%;"><i class="fas fa-hourglass-half"></i>  {{$log->status}}</button>
                                                 @endif

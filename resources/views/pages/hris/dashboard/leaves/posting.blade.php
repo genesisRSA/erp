@@ -5,7 +5,7 @@
 @section('content')
     <div class="card mb-3">
         <div class="card-body">
-            <h3><a href="{{ route('mytimekeeping') }}" class="mr-3"><i class="fas fa-arrow-left"></i></a> Leave Approval : {{$leave->ref_no}}</h3>
+            <h3><a href="{{ route('timekeeping') }}" class="mr-3"><i class="fas fa-arrow-left"></i></a> Leave Posting : {{$leave->ref_no}}</h3>
             <hr>
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -17,7 +17,7 @@
                     </ul>
                 </div>
             @endif
-            <form method="POST" action="{{ route('leave.update', $leave->id) }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('leave.post', $leave->id) }}" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -101,17 +101,10 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Status</label><br>
-                                        <button type="button" class="btn btn-warning" style="width:100%;"><i class="fas fa-hourglass-half"></i> {{$leave->status}}</button>
+                                        <button type="button" class="btn btn-success" style="width:100%;"><i class="fas fa-check-circle"></i> {{$leave->status}}</button>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Remarks <sup class="text-danger">*</sup></label>
-                                        <textarea class="form-control @if($errors->has('remarks')) is-invalid @endif" name="remarks" id="remarks" rows="3" placeholder="Enter Remarks">{{old('remarks')}}</textarea>
-                                        <div class="invalid-feedback">
-                                            {{ $errors->first('remarks') }}
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -161,44 +154,24 @@
                 </div>
                 <div class="container-fluid">
                     <div class="row mt-3 float-right">
-                        <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#approveModal"><i class="fas fa-check-circle"></i> Approve</button>
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#declineModal"><i class="fas fa-times-circle"></i> Decline</button>
+                        <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#postModal"><i class="fas fa-vote-yea"></i> Post</button>
                     </div>
                 </div>
                 <!--MODALS-->
-                <div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+                <div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Approve Leave</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">Post Leave</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                Are you sure you want to approve this leave?
+                                Are you sure you want to post this leave?
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-success" name="submit" value="approve">Yes</button>
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal fade" id="declineModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Decline Leave</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                Are you sure you want to decline this leave?
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-success" name="submit" value="decline">Yes</button>
+                                <button type="submit" class="btn btn-success" name="submit" value="posted">Yes</button>
                                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
                             </div>
                         </div>

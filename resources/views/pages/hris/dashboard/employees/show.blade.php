@@ -19,6 +19,9 @@
                     <li class="nav-item">
                         <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact Information</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="leave-tab" data-toggle="tab" href="#leave" role="tab" aria-controls="leave" aria-selected="false">Leave Credits</a>
+                    </li>
                 </ul>
                 <div class="tab-content border border-top-0" id="myTabContent">
                     <!--General Information-->
@@ -290,6 +293,55 @@
                         </div>
                     </div>
                     <!--End of Contact Information-->
+                    
+                    <!--Leave Credits-->
+                    <div class="tab-pane fade" id="leave" role="tabpanel" aria-labelledby="leave-tab">
+                        <div class="container-fluid">
+                            <div class="row pt-3 mb-3">
+                                <div class="col-md-3 border-right">
+                                    <div class="form-group">
+                                        <label>Sick Leave <sup class="text-danger">*</sup></label>
+                                        <input type="number" class="form-control" min="0" name="sick_leave" value="{{ $leave_credits->sick_leave }}" readonly/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Admin Leave <sup class="text-danger">*</sup></label>
+                                        <input type="number" class="form-control" min="0" name="admin_leave" value="{{ $leave_credits->admin_leave }}" readonly/>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 border-right">
+                                    <div class="form-group">
+                                        <label>Vacation Leave <sup class="text-danger">*</sup></label>
+                                        <input type="number" class="form-control" min="0" name="vacation_leave" value="{{ $leave_credits->vacation_leave }}" readonly/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Bereavement Leave <sup class="text-danger">*</sup></label>
+                                        <input type="number" class="form-control" min="0" name="bereavement_leave" value="{{ $leave_credits->bereavement_leave }}" readonly/>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 border-right">
+                                    <div class="form-group">
+                                        <label>Emergency Leave <sup class="text-danger">*</sup></label>
+                                        <input type="number" class="form-control" min="0" name="emergency_leave" value="{{ $leave_credits->emergency_leave }}" readonly/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Birthday Leave <sup class="text-danger">*</sup></label>
+                                        <input type="number" class="form-control" min="0" name="bday_leave" value="{{ $leave_credits->bday_leave }}" readonly/>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Maternity Leave <sup class="text-danger">*</sup></label>
+                                        <input type="number" class="form-control" min="0" name="maternity_leave" value="{{ $leave_credits->maternity_leave }}" readonly/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Paternity Leave <sup class="text-danger">*</sup></label>
+                                        <input type="number" class="form-control" min="0" name="paternity_leave" value="{{ $leave_credits->paternity_leave }}" readonly/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End of Leave Credits-->
                 </div>
             </form>
         </div>

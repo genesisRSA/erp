@@ -66,6 +66,6 @@ class Handler extends ExceptionHandler
         if ($request->is('ics') || $request->is('ics/*')) {
             return redirect()->guest('/ics');
         }
-        return redirect()->guest(route('login'));
+        return redirect()->guest('/hris');
     }
 }

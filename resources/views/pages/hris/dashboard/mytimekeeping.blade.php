@@ -21,6 +21,9 @@
                 <li class="nav-item">
                     <a class="nav-link active" id="leave-tab" data-toggle="tab" href="#leave" role="tab" aria-controls="leave" aria-selected="true">Leave</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="leaveposted-tab" data-toggle="tab" href="#leaveposted" role="tab" aria-controls="leaveposted" aria-selected="true">Leave Posted</a>
+                </li>
             @if(Auth::user()->is_lv_approver)
                 <li class="nav-item">
                     <a class="nav-link" id="leaveapproval-tab" data-toggle="tab" href="#leaveapproval" role="tab" aria-controls="leaveapproval" aria-selected="true">Leave Approval</a>
@@ -55,6 +58,26 @@
                     </div>
                 </div>
                 <!--End of Leave-->
+                <!--Leave Posted-->
+                <div class="tab-pane fade" id="leaveposted" role="tabpanel" aria-labelledby="leaveposted-tab">
+                    <div class="container-fluid pt-3 mb-3">
+                        <table id="myleaveposted-dt" class="table table-striped table-bordered" style="width:100%;">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Ref No.</th>
+                                    <th>Type</th>
+                                    <th>Date Filed</th>
+                                    <th>Status</th>
+                                    <th>Last Approved By</th>
+                                    <th>Last Approved</th>
+                                    <th>Current Approver</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <!--End of Leave Posted-->
                 <!--Leave Approval-->
                 <div class="tab-pane fade" id="leaveapproval" role="tabpanel" aria-labelledby="leaveapproval-tab">
                     <div class="container-fluid pt-3 mb-3">

@@ -18,6 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 //HRIS
+
 Route::get('/hris/attendances/all', 'AttendancesController@all');
 Route::get('/hris/attendances/access_details/{id}', 'AttendancesController@access_details');
 Route::get('/hris/attendances/my_today/{emp_id}/{today}', 'AttendancesController@my_today');
@@ -30,6 +31,7 @@ Route::get('/hris/departments/{id}/sections/', 'SectionsController@all');
 Route::get('/hris/sections/{id}/positions/', 'PositionsController@all');
 
 Route::get('/hris/leaves/all', 'LeavesController@all');
+Route::get('/hris/leaves/all_posted', 'LeavesController@all_posted');
 
 
 

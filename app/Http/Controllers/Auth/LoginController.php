@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Auth;
@@ -80,6 +81,11 @@ class LoginController extends Controller
             $this->username() => "required|exists:users,{$field}",
             'password' => 'required',
         ], $messages);
+    }
+
+    protected function authenticated(Request $request, $user){
+        $user->api_token = Str::random(60);
+        $user->save();
     }
 
     public function logout(Request $request) {

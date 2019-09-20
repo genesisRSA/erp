@@ -33,12 +33,18 @@
                                     <div class="form-group">
                                         <label>Leave Type <sup class="text-danger">*</sup></label>
                                         <select class="form-control" name="type" id="type">
-                                            <option {{old('type') == 'Sick Leave' ? 'selected' : ''}}>Sick Leave</option>
-                                            <option {{old('type') == 'Vacation Leave' ? 'selected' : ''}}>Vacation Leave</option>
-                                            <option {{old('type') == 'Emergency Leave' ? 'selected' : ''}}>Emergency Leave</option>
-                                            <option {{old('type') == 'Maternal Leave' ? 'selected' : ''}}>Maternal Leave</option>
-                                            <option {{old('type') == 'Paternal Leave' ? 'selected' : ''}}>Paternal Leave</option>
-                                            <option {{old('type') == 'Unpaid Leave' ? 'selected' : ''}}>Unpaid Leave</option>
+                                            <option {{old('type') == 'Sick Leave' ? 'selected' : ''}} {{ $leave_credits->sick_leave <= 0 ? 'disabled' : '' }} value="Sick Leave">Sick Leave : {{$leave_credits->sick_leave}}</option>
+                                            <option {{old('type') == 'Vacation Leave' ? 'selected' : ''}} {{ $leave_credits->vacation_leave <= 0 ? 'disabled' : '' }} value="Vacation Leave">Vacation Leave : {{$leave_credits->vacation_leave}}</option>
+                                            <option {{old('type') == 'Emergency Leave' ? 'selected' : ''}} {{ $leave_credits->emergency_leave <= 0 ? 'disabled' : '' }} value="Emergency Leave">Emergency Leave : {{$leave_credits->emergency_leave}}</option>
+                                            <option {{old('type') == 'Admin Leave' ? 'selected' : ''}} {{ $leave_credits->admin_leave <= 0 ? 'disabled' : '' }} value="Admin Leave">Admin Leave : {{$leave_credits->admin_leave}}</option>
+                                            <option {{old('type') == 'Bereavement Leave' ? 'selected' : ''}} {{ $leave_credits->bereavement_leave <= 0 ? 'disabled' : '' }} value="Bereavement Leave">Bereavement Leave : {{$leave_credits->bereavement_leave}}</option>
+                                            <option {{old('type') == 'Birthday Leave' ? 'selected' : ''}} {{ $leave_credits->bday_leave <= 0 ? 'disabled' : '' }} value="Birthday Leave">Birthday Leave : {{$leave_credits->bday_leave}}</option>
+                                            @if(Auth::user()->employee->gender == "Female")
+                                            <option {{old('type') == 'Maternity Leave' ? 'selected' : ''}} {{ $leave_credits->maternity_leave <= 0 ? 'disabled' : '' }} value="Maternity Leave">Maternity Leave : {{$leave_credits->maternity_leave}}</option>
+                                            @else
+                                            <option {{old('type') == 'Paternity Leave' ? 'selected' : ''}} {{ $leave_credits->paternity_leave <= 0 ? 'disabled' : '' }} value="Paternity Leave">Paternity Leave : {{$leave_credits->paternity_leave}}</option>
+                                            @endif
+                                            <option {{old('type') == 'Unpaid Leave' ? 'selected' : ''}} value="Unpaid Leave">Unpaid Leave</option>
                                         </select>
                                     </div>
                                 </div>
