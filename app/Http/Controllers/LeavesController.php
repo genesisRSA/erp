@@ -30,7 +30,7 @@ class LeavesController extends Controller
     {
         return response()
             ->json([
-                "data" => Leave::orderBy('ref_no','desc')
+                "data" => Leave::orderBy('id','desc')
                             ->where('status', '=', 'Approved')
                             ->with('filer_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->with('approved_employee:emp_no,emp_photo,emp_fname,emp_lname')
@@ -43,7 +43,7 @@ class LeavesController extends Controller
     {
         return response()
             ->json([
-                "data" => Leave::orderBy('ref_no','desc')
+                "data" => Leave::orderBy('id','desc')
                             ->where('status', '=', 'Posted')
                             ->with('filer_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->with('approved_employee:emp_no,emp_photo,emp_fname,emp_lname')
@@ -58,7 +58,7 @@ class LeavesController extends Controller
             ->json([
                 "data" => Leave::where('filer', '=', Auth::user()->emp_no)
                             ->where('status', '<>', 'Posted')
-                            ->orderBy('ref_no','desc')
+                            ->orderBy('id','desc')
                             ->with('approved_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->with('approver_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->get()
@@ -71,7 +71,7 @@ class LeavesController extends Controller
             ->json([
                 "data" => Leave::where('filer', '=', Auth::user()->emp_no)
                             ->where('status', '=', 'Posted')
-                            ->orderBy('ref_no','desc')
+                            ->orderBy('id','desc')
                             ->with('approved_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->with('approver_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->get()
@@ -83,7 +83,7 @@ class LeavesController extends Controller
         return response()
             ->json([
                 "data" => Leave::where('next_approver', '=', Auth::user()->emp_no)
-                            ->orderBy('ref_no','desc')
+                            ->orderBy('id','desc')
                             ->with('filer_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->get()
         ]);
