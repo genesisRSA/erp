@@ -125,7 +125,7 @@
                     "targets": 3,
                     "data": "emp_photo",
                     "render": function ( data, type, row, meta ) {
-                        return  '<a href="/'+data+'" target="_blank"><img src="/'+data+'" class="img-fluid rounded-circle bg-white" style="height:32px;"/> <span class="badge badge-secondary">'+row.full_name+'</span></a>';
+                        return  '<a href="/'+data+'" target="_blank"><img src="/'+data+'" class="img-fluid rounded-circle bg-white border" style="height:32px;"/> <span class="badge badge-secondary">'+row.full_name+'</span></a>';
                     }
                 },
                 {
@@ -349,7 +349,7 @@
                     "data": "filer",
                     'className': 'dt-center',
                     "render": function ( data, type, row, meta ) {
-                        return  '<a href="/'+row.filer_employee.emp_photo+'" target="_blank"><img src="/'+row.filer_employee.emp_photo+'" class="img-fluid rounded-circle bg-white" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.filer_employee.full_name+'</span>';
+                        return  '<a href="/'+row.filer_employee.emp_photo+'" target="_blank"><img src="/'+row.filer_employee.emp_photo+'" class="img-fluid rounded-circle bg-white border" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.filer_employee.full_name+'</span>';
                     }
                 },
                 { "data": "date_filed" },
@@ -374,7 +374,7 @@
                     "data": "last_approved_by",
                     "render": function ( data, type, row, meta ) {
                         if(row.approved_employee){
-                            return  '<a href="/'+row.approved_employee.emp_photo+'" target="_blank"><img src="/'+row.approved_employee.emp_photo+'" class="img-fluid rounded-circle bg-white" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.approved_employee.full_name+'</span>';
+                            return  '<a href="/'+row.approved_employee.emp_photo+'" target="_blank"><img src="/'+row.approved_employee.emp_photo+'" class="img-fluid rounded-circle bg-white border" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.approved_employee.full_name+'</span>';
                         }else{
                             return 'N/A';
                         }
@@ -386,7 +386,7 @@
                     "data": "next_approver",
                     "render": function ( data, type, row, meta ) {
                         if(row.approver_employee){
-                            return  '<a href="/'+row.approver_employee.emp_photo+'" target="_blank"><img src="/'+row.approver_employee.emp_photo+'" class="img-fluid rounded-circle bg-white" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.approver_employee.full_name+'</span>';
+                            return  '<a href="/'+row.approver_employee.emp_photo+'" target="_blank"><img src="/'+row.approver_employee.emp_photo+'" class="img-fluid rounded-circle bg-white border" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.approver_employee.full_name+'</span>';
                         }else{
                             return 'N/A';
                         }
@@ -415,7 +415,7 @@
                     "data": "filer",
                     'className': 'dt-center',
                     "render": function ( data, type, row, meta ) {
-                        return  '<a href="/'+row.filer_employee.emp_photo+'" target="_blank"><img src="/'+row.filer_employee.emp_photo+'" class="img-fluid rounded-circle bg-white" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.filer_employee.full_name+'</span>';
+                        return  '<a href="/'+row.filer_employee.emp_photo+'" target="_blank"><img src="/'+row.filer_employee.emp_photo+'" class="img-fluid rounded-circle bg-white border" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.filer_employee.full_name+'</span>';
                     }
                 },
                 { "data": "date_filed" },
@@ -440,7 +440,7 @@
                     "data": "last_approved_by",
                     "render": function ( data, type, row, meta ) {
                         if(row.approved_employee){
-                            return  '<a href="/'+row.approved_employee.emp_photo+'" target="_blank"><img src="/'+row.approved_employee.emp_photo+'" class="img-fluid rounded-circle bg-white" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.approved_employee.full_name+'</span>';
+                            return  '<a href="/'+row.approved_employee.emp_photo+'" target="_blank"><img src="/'+row.approved_employee.emp_photo+'" class="img-fluid rounded-circle bg-white border" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.approved_employee.full_name+'</span>';
                         }else{
                             return 'N/A';
                         }
@@ -452,7 +452,7 @@
                     "data": "next_approver",
                     "render": function ( data, type, row, meta ) {
                         if(row.approver_employee){
-                            return  '<a href="/'+row.approver_employee.emp_photo+'" target="_blank"><img src="/'+row.approver_employee.emp_photo+'" class="img-fluid rounded-circle bg-white" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.approver_employee.full_name+'</span>';
+                            return  '<a href="/'+row.approver_employee.emp_photo+'" target="_blank"><img src="/'+row.approver_employee.emp_photo+'" class="img-fluid rounded-circle bg-white border" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.approver_employee.full_name+'</span>';
                         }else{
                             return 'N/A';
                         }
@@ -502,7 +502,7 @@
                     "data": "last_approved_by",
                     "render": function ( data, type, row, meta ) {
                         if(row.approved_employee){
-                            return  '<a href="/'+row.approved_employee.emp_photo+'" target="_blank"><img src="/'+row.approved_employee.emp_photo+'" class="img-fluid rounded-circle bg-white" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.approved_employee.full_name+'</span>';
+                            return  '<a href="/'+row.approved_employee.emp_photo+'" target="_blank"><img src="/'+row.approved_employee.emp_photo+'" class="img-fluid rounded-circle bg-white border" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.approved_employee.full_name+'</span>';
                         }else{
                             return 'N/A';
                         }
@@ -514,7 +514,7 @@
                     "data": "next_approver",
                     "render": function ( data, type, row, meta ) {
                         if(row.approver_employee){
-                            return  '<a href="/'+row.approver_employee.emp_photo+'" target="_blank"><img src="/'+row.approver_employee.emp_photo+'" class="img-fluid rounded-circle bg-white" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.approver_employee.full_name+'</span>';
+                            return  '<a href="/'+row.approver_employee.emp_photo+'" target="_blank"><img src="/'+row.approver_employee.emp_photo+'" class="img-fluid rounded-circle bg-white border" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.approver_employee.full_name+'</span>';
                         }else{
                             return 'N/A';
                         }
@@ -560,7 +560,7 @@
                     "data": "last_approved_by",
                     "render": function ( data, type, row, meta ) {
                         if(row.approved_employee){
-                            return  '<a href="/'+row.approved_employee.emp_photo+'" target="_blank"><img src="/'+row.approved_employee.emp_photo+'" class="img-fluid rounded-circle bg-white" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.approved_employee.full_name+'</span>';
+                            return  '<a href="/'+row.approved_employee.emp_photo+'" target="_blank"><img src="/'+row.approved_employee.emp_photo+'" class="img-fluid rounded-circle bg-white border" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.approved_employee.full_name+'</span>';
                         }else{
                             return 'N/A';
                         }
@@ -572,7 +572,7 @@
                     "data": "next_approver",
                     "render": function ( data, type, row, meta ) {
                         if(row.approver_employee){
-                            return  '<a href="/'+row.approver_employee.emp_photo+'" target="_blank"><img src="/'+row.approver_employee.emp_photo+'" class="img-fluid rounded-circle bg-white" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.approver_employee.full_name+'</span>';
+                            return  '<a href="/'+row.approver_employee.emp_photo+'" target="_blank"><img src="/'+row.approver_employee.emp_photo+'" class="img-fluid rounded-circle bg-white border" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.approver_employee.full_name+'</span>';
                         }else{
                             return 'N/A';
                         }
@@ -601,7 +601,7 @@
                     "data": "filer",
                     'className': 'dt-center',
                     "render": function ( data, type, row, meta ) {
-                        return  '<a href="/'+row.filer_employee.emp_photo+'" target="_blank"><img src="/'+row.filer_employee.emp_photo+'" class="img-fluid rounded-circle bg-white" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.filer_employee.full_name+'</span>';
+                        return  '<a href="/'+row.filer_employee.emp_photo+'" target="_blank"><img src="/'+row.filer_employee.emp_photo+'" class="img-fluid rounded-circle bg-white border" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.filer_employee.full_name+'</span>';
                     }
                 },
                 { "data": "date_filed" },

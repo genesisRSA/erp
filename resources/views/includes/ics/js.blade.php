@@ -17,5 +17,10 @@
                 } 
             ]
         });
-    })
+        
+
+        $("body").on("click", "#signout", function (){
+            $('#logoutModal').modal('show');
+        });
+    });
 </script>

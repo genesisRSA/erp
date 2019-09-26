@@ -42,6 +42,7 @@ class EmployeesController extends Controller
                         ->with('site:site_code,site_desc')
                         ->with('department:dept_code,dept_desc')
                         ->with('section:sect_code,sect_desc')
+                        ->orderBy('emp_lname','ASC')
                         ->get()
                         ->each
                         ->append(['full_name','id_no']);

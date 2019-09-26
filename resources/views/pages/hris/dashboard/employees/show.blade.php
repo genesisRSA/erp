@@ -5,7 +5,7 @@
 @section('content')
     <div class="card mb-3">
         <div class="card-body">
-            <h3><a href="{{ route('employees.index') }}" class="mr-3"><i class="fas fa-arrow-left"></i></a><img src="/{{$employee->emp_photo}}" class="img-fluid rounded-circle bg-white mr-2" style="height: 64px;"/> {{$employee->full_name}}</h3>
+            <h3><a href="{{ route('employees.index') }}" class="mr-3"><i class="fas fa-arrow-left"></i></a><img src="/{{$employee->emp_photo}}" class="img-fluid rounded-circle bg-white border mr-2" style="height: 64px;"/> {{$employee->full_name}}</h3>
             <hr>
             <form method="POST" action="{{ route('employees.store') }}" enctype="multipart/form-data">
                 @csrf
@@ -81,7 +81,7 @@
                                     <div class="form-group">
                                         <label>Immediate Head</label>
                                         <br>
-                                        <a href="/{{$reports_to ? $reports_to->emp_photo : 'storage/profile/1566540517.png'}}" target="_blank"><img src="/{{ $reports_to ? $reports_to->emp_photo : 'storage/profile/1566540517.png'}}" class="img-fluid rounded-circle bg-white" style="height:48px;"/></a> <span class="badge badge-secondary">{{$reports_to ? $reports_to->full_name : 'N/A'}}</span>
+                                        <a href="/{{$reports_to ? $reports_to->emp_photo : 'storage/profile/1566540517.png'}}" target="_blank"><img src="/{{ $reports_to ? $reports_to->emp_photo : 'storage/profile/1566540517.png'}}" class="img-fluid rounded-circle bg-white border" style="height:48px;"/></a> <span class="badge badge-secondary">{{$reports_to ? $reports_to->full_name : 'N/A'}}</span>
                                     </div>
                                 </div>
                             </div>

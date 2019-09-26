@@ -22,7 +22,12 @@ class RedirectIfAuthenticated
             $user = User::find(Auth::user()->id);
             $user->api_token = Str::random(60);
             $user->save();
-            return redirect('/hris/home');
+            
+            if ($guard == 'ics') {
+                return redirect('/ics/home');
+            }else if ($guard == 'web') {
+                return redirect('/hris/home');
+            }
         }
 
         return $next($request);

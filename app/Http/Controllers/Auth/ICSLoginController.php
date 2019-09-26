@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Auth;
 use Illuminate\Http\Request;
 
-class LoginController extends Controller
+class ICSLoginController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
@@ -28,8 +28,8 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/hris/home';
-    protected $redirectAfterLogout = '/hris';
+    protected $redirectTo = '/ics/home';
+    protected $redirectAfterLogout = '/ics';
     protected $username;
 
     /**
@@ -86,11 +86,16 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $user){
         $user->api_token = Str::random(60);
         $user->save();
-        return redirect('/hris/home');
+        if ($user->is_admin == 1) {
+            return redirect('/ics/home');
+        }else{
+            Auth::logout();
+            return redirect('/ics')->withErrors(["You dont have permission to access this site."]);
+        }
     }
 
     public function logout(Request $request) {
         Auth::logout();
-        return redirect('/hris');
+        return redirect('/ics');
     }
 }

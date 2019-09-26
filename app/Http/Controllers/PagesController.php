@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Auth;
@@ -19,8 +20,44 @@ class PagesController extends Controller
     }
 
     public function hris_home(){
+        $bday = Employee::where('emp_no', '<>', 'admin')
+                        ->whereMonth('dob', date('m'))
+                        ->with('site:site_code,site_desc')
+                        ->with('department:dept_code,dept_desc')
+                        ->with('section:sect_code,sect_desc')
+                        ->orderBy('emp_lname','ASC')
+                        ->get()
+                        ->each
+                        ->append(['full_name','id_no']);
+
+        $anniv = Employee::where('emp_no', '<>', 'admin')
+                        ->where(DB::raw('YEAR(now())-YEAR(date_hired)'), '>=', '1')
+                        ->whereMonth('date_hired', date('m'))
+                        ->whereDay('date_hired', date('d'))
+                        ->with('site:site_code,site_desc')
+                        ->with('department:dept_code,dept_desc')
+                        ->with('section:sect_code,sect_desc')
+                        ->orderBy('emp_lname','ASC')
+                        ->get()
+                        ->each
+                        ->append(['full_name','id_no']);
+
+        $monday = strtotime("last monday");
+        $monday = date('w', $monday)==date('w') ? $monday+7*86400 : $monday;
+            
+        $sunday = strtotime(date("Y-m-d",$monday)." +6 days");
+            
+        $this_week_sd = date("Y-m-d",$monday);
+        $this_week_ed = date("Y-m-d",$sunday);
+        $week_late = DB::connection('mysql_live')->select("CALL week_late('".$this_week_sd."','".$this_week_ed."')");
+        $week_early = DB::connection('mysql_live')->select("CALL week_early('".$this_week_sd."','".$this_week_ed."')");
+        
         return view("pages.hris.dashboard.home")
-                    ->with(array('site'=> 'hris', 'page'=>'home'));
+                    ->with(array('site'=> 'hris', 'page'=>'home'))
+                    ->with('bday_celebrants',$bday)
+                    ->with('anniv_celebrants',$anniv)
+                    ->with('week_late',$week_late)
+                    ->with('week_early',$week_early);
     }
 
     public function attendance(){
@@ -61,6 +98,9 @@ class PagesController extends Controller
     
     //AIS
     public function ics_index(){
+        if (Auth::check()) {
+            return redirect('/ics/home');
+        }
         return view("pages.ics.index");
     }
 

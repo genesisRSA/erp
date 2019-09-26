@@ -59,13 +59,12 @@ class Handler extends ExceptionHandler
             return redirect()->guest('/hris');
         }
         
-        if ($request->is('api') || $request->is('api/hris/*')) {
+        if ($request->is('api') || $request->is('api/hris/*') || $request->is('api/ics/*')) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
         if ($request->is('ics') || $request->is('ics/*')) {
             return redirect()->guest('/ics');
         }
-        return redirect()->guest('/hris');
     }
 }

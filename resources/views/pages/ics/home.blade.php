@@ -13,7 +13,7 @@
                     Good Afternoon
                 @endif
                 
-                User!
+                {{Auth::user()->name}}!
             </span>
             <hr>
             <p class="card-text">Welcome to our Asset Inventory System! Asset Inventory Management System enables a company to maintain a centralized record of every asset and item in the control of the organization, providing a single source of truth for the location of every item, vendor and supplier information, specifications, and the total number of a particular item currently in stock.</p>

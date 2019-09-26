@@ -18,7 +18,7 @@ Auth::routes();
 Route::get('/hris', 'PagesController@hris_index')->name('hris.index');
 
 Route::group(['middleware' => ['auth']], function() {
-    Route::get('/hris/home', 'PagesController@hris_home');
+    Route::get('/hris/home', 'PagesController@hris_home')->name('hris.home');
     Route::get('/hris/attendance', 'PagesController@attendance');
     Route::get('/hris/{id}/teamattendance', 'PagesController@team_attendance');
     Route::get('/hris/myattendance', 'PagesController@myattendance');
@@ -42,9 +42,14 @@ Route::group(['middleware' => ['auth']], function() {
 
 
 //ICS
-Route::get('/ics', 'PagesController@ics_index');
-Route::get('/ics/home', 'PagesController@ics_home')->middleware('auth');
-Route::get('/ics/inventory', 'PagesController@inventory');
-Route::resource('/ics/area', 'AreasController');
-Route::get('/ics/barcode', 'PagesController@barcode');
+Route::get('/ics', 'PagesController@ics_index')->name('ics.index');
+Route::post('/ics/login', 'Auth\ICSLoginController@login')->name('ics.login');
+
+Route::group(['middleware' => ['auth.ics']], function() {
+    Route::post('/ics/logout', 'Auth\ICSLoginController@logout')->name('ics.logout');
+    Route::get('/ics/home', 'PagesController@ics_home')->name('ics.home');
+    Route::get('/ics/inventory', 'PagesController@inventory');
+    Route::resource('/ics/area', 'AreasController');
+    Route::get('/ics/barcode', 'PagesController@barcode');
+});
 

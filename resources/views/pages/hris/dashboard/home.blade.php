@@ -23,51 +23,75 @@
         <div class="row">
             <div class="col-lg-3">
                 <div class="card mb-3">
-                    <h5 class="card-header bg-primary text-white"><i class="fas fa-calendar-day"></i> Today is {{date('D m/d/Y')}}</h5>
+                    <h5 class="card-header bg-primary text-white"><i class="fas fa-calendar-day"></i> Today is {{date('D M d, Y')}}</h5>
                     <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
+                        <p><i class="fas fa-birthday-cake"></i> Birthday Celebrant(s) of {{date('F')}}</p>
                         <div class="list-group">
-                            <a href="#" class="list-group-item list-group-item-action">Dapibus ac facilisis in</a>
+                            @if(count($bday_celebrants)>0)
+                                @foreach($bday_celebrants as $member)
+                                    <a class="list-group-item list-group-item-action">
+                                        <img src="/{{ $member->emp_photo }}" class="img-fluid border bg-dark rounded-circle bg-white mr-2" style="height:32px;"/> <span class="badge badge-secondary">{{ $member->full_name }}</span>
+                                        <span class="float-right" style="font-size:9px;">{{ date('M d',strtotime($member->dob)) }}</span>
+                                    </a>
+                                @endforeach
+                            @else
+                                <a class="list-group-item list-group-item-action">No data available</a>  
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-3">
+                    <h5 class="card-header bg-success text-white"><i class="far fa-thumbs-up"></i> Top 5 Early Birds of the Week</h5>
+                    <div class="card-body">
+                        <p>Punctual at all-time.</p>
+                        <div class="list-group">
+                            @foreach($week_early as $member)
+                                <a class="list-group-item list-group-item-action">
+                                    @php $emp = App\Employee::where('access_id','=',$member->emp_id)->first() @endphp
+                                    <img src="/{{ $emp ? $emp->emp_photo : 'storage/profile/1566540517.png' }}" class="img-fluid border bg-dark rounded-circle bg-white mr-2" style="height:32px;"/> <span class="badge badge-secondary">{{ $emp ? $emp->full_name : $member->employee_name }}</span>
+                                    <span class="float-right" style="font-size:9px;">{{ $member->num_early }} day(s)</span>
+                                </a>
+                            @endforeach
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-lg-3">
                 <div class="card mb-3">
-                    <h5 class="card-header bg-success text-white"><i class="far fa-thumbs-up"></i> Top 5 Early Birds of the Week</h5>
+                    <h5 class="card-header bg-warning"><i class="fas fa-award"></i> Anniversary</h5>
                     <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                        <p>Congratule these passionate employees!</p>
+                        <div class="list-group">
+                            @if(count($anniv_celebrants)>0)
+                                @foreach($anniv_celebrants as $member)
+                                    <a class="list-group-item list-group-item-action">
+                                        <img src="/{{ $member->emp_photo }}" class="img-fluid border bg-dark rounded-circle bg-white mr-2" style="height:32px;"/> <span class="badge badge-secondary">{{ $member->full_name }}</span>
+                                        <span class="float-right" style="font-size:9px;">{{ date('Y')-date('Y',strtotime($member->date_hired)) }} year(s)</span>
+                                    </a>
+                                @endforeach
+                            @else
+                                <a class="list-group-item list-group-item-action">No data available</a>  
+                            @endif
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-3">
                 <div class="card mb-3">
-                        <h5 class="card-header bg-warning"><i class="far fa-thumbs-down"></i> Top 5 Late Comers of the Week</h5>
+                    <h5 class="card-header bg-danger text-white"><i class="fas fa-exclamation-circle"></i> Top 5 Late of the Week</h5>
                     <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                        <p>Need some improvement with their punctuality.</p>
+                        <div class="list-group">
+                            @foreach($week_late as $member)
+                                <a class="list-group-item list-group-item-action">
+                                    @php $emp = App\Employee::where('access_id','=',$member->emp_id)->first() @endphp
+                                    <img src="/{{ $emp ? $emp->emp_photo : 'storage/profile/1566540517.png' }}" class="img-fluid border bg-dark rounded-circle bg-white mr-2" style="height:32px;"/> <span class="badge badge-secondary">{{ $emp ? $emp->full_name : $member->employee_name }}</span>
+                                    <span class="float-right" style="font-size:9px;">{{ $member->num_late }} day(s)</span>
+                                </a>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3">
-                <div class="card mb-3">
-                    <h5 class="card-header bg-danger text-white"><i class="fas fa-exclamation-circle"></i> Top 5 Absenteeism of the Week</h5>
-                    <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
-
-    <div class="row">
-        @if (count(Auth::user()->employee->team) > 0)
-            <div class="col-lg-8">
+            <div class="col-lg-6">
                 <div class="card mb-3">
                     <h5 class="card-header bg-dark text-white"><i class="fas fa-info-circle"></i> Notification Area</h5>
                     <div class="card-body">
@@ -76,11 +100,10 @@
                         <a href="#" class="btn btn-primary">Go somewhere</a>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-4">
                 <div class="card mb-3">
                     <h5 class="card-header"><i class="fas fa-sitemap"></i> My Team : Attendance</h5>
                     <div class="card-body">
+                        <p>See your team's attendance.</p>
                         <div class="list-group">
                             @foreach(Auth::user()->employee->team as $member)
                                 <a href="{{ $member->id_no }}/teamattendance" class="list-group-item list-group-item-action">
@@ -92,19 +115,52 @@
                     </div>
                 </div>
             </div>
-        @else
-            <div class="col-lg-12">
-                <div class="card mb-3">
-                    <h5 class="card-header bg-dark text-white"><i class="fas fa-info-circle"></i> Notification Area</h5>
-                    <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+    @else
+        
+        <div class="row">
+            @if (count(Auth::user()->employee->team) > 0)
+                <div class="col-lg-8">
+                    <div class="card mb-3">
+                        <h5 class="card-header bg-dark text-white"><i class="fas fa-info-circle"></i> Notification Area</h5>
+                        <div class="card-body">
+                            <h5 class="card-title">Special title treatment</h5>
+                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        @endif
-    </div>
+                <div class="col-lg-4">
+                    <div class="card mb-3">
+                        <h5 class="card-header"><i class="fas fa-sitemap"></i> My Team : Attendance</h5>
+                        <div class="card-body">
+                            <p>See your team's attendance.</p>
+                            <div class="list-group">
+                                @foreach(Auth::user()->employee->team as $member)
+                                    <a href="{{ $member->id_no }}/teamattendance" class="list-group-item list-group-item-action">
+                                        <img src="/{{ $member->emp_photo }}" class="img-fluid border bg-dark rounded-circle bg-white mr-2" style="height:48px;"/> <span class="badge badge-primary">{{ $member->full_name }}</span>
+                                        <i class="fas fa-chevron-right float-right mt-3"></i>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <div class="col-lg-12">
+                    <div class="card mb-3">
+                        <h5 class="card-header bg-dark text-white"><i class="fas fa-info-circle"></i> Notification Area</h5>
+                        <div class="card-body">
+                            <h5 class="card-title">Special title treatment</h5>
+                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                </div>
+            @endif
+        </div>
+        
+    @endif
 
 @stop
 
