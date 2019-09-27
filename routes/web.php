@@ -33,6 +33,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/hris/leave/{leave}', 'LeavesController@post')->name('leave.post');
     Route::get('/hris/leave/{ref_no}/posted', 'LeavesController@show_posted');
 
+    
+    Route::resource('/hris/employeeshift', 'EmployeeShiftsController');
+
     Route::get('/hris/mytimekeeping', 'PagesController@mytimekeeping')->name('mytimekeeping');
     Route::get('/hris/leaves/my', 'LeavesController@my');
     Route::get('/hris/leaves/my_posted', 'LeavesController@my_posted');

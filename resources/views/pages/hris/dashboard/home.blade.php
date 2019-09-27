@@ -41,7 +41,7 @@
                     </div>
                 </div>
                 <div class="card mb-3">
-                    <h5 class="card-header bg-success text-white"><i class="far fa-thumbs-up"></i> Top 5 Early Birds of the Week</h5>
+                    <h5 class="card-header bg-success text-white"><i class="far fa-thumbs-up"></i> Top 5 Early Comer of the Week</h5>
                     <div class="card-body">
                         <p>Punctual at all-time.</p>
                         <div class="list-group">
@@ -76,7 +76,7 @@
                     </div>
                 </div>
                 <div class="card mb-3">
-                    <h5 class="card-header bg-danger text-white"><i class="fas fa-exclamation-circle"></i> Top 5 Late of the Week</h5>
+                    <h5 class="card-header bg-danger text-white"><i class="fas fa-exclamation-circle"></i> Top 5 Late Comer of the Week</h5>
                     <div class="card-body">
                         <p>Need some improvement with their punctuality.</p>
                         <div class="list-group">

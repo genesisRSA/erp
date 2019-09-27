@@ -24,6 +24,9 @@
                 <li class="nav-item">
                     <a class="nav-link" id="leaveposted-tab" data-toggle="tab" href="#leaveposted" role="tab" aria-controls="leaveposted" aria-selected="true">Leave Posted</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="shift-tab" data-toggle="tab" href="#shift" role="tab" aria-controls="shift" aria-selected="true">Shift</a>
+                </li>
             </ul>
             <div class="tab-content border border-top-0" id="myTabContent">
                 <!--Leave-->
@@ -68,6 +71,23 @@
                     </div>
                 </div>
                 <!--End of Leave Posted-->
+                <!--Shift-->
+                <div class="tab-pane fade show" id="shift" role="tabpanel" aria-labelledby="shift-tab">
+                    <div class="container-fluid pt-3 mb-3">
+                        <table id="shift-dt" class="table table-striped table-bordered" style="width:100%;">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Employee</th>
+                                    <th>Shift</th>
+                                    <th>Date From</th>
+                                    <th>Date To</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <!--End of Shift-->
             </div>
         </div>
     </div>
