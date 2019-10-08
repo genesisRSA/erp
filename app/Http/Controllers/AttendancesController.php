@@ -18,7 +18,7 @@ class AttendancesController extends Controller
     }
 
     public function all(){
-        $att_punches = DB::connection('mysql_live')->table('att_view')->get();
+        $att_punches = DB::connection('mysql_live')->table('att_view')->where('att_date','>=',date('Y').'-01-01')->get();
 
         return response()
             ->json([
@@ -58,6 +58,15 @@ class AttendancesController extends Controller
         return response()
         ->json([
             "data" => $my_attendance
+        ]);
+    }
+
+    public function costing(){
+        $costing = DB::connection('sqlsrv')->table("dbo.costing")->get();
+        
+        return response()
+        ->json([
+            "data" => $costing
         ]);
     }
 }

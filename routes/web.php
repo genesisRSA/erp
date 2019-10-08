@@ -44,6 +44,9 @@ Route::group(['middleware' => ['auth']], function() {
 });
 
 
+Route::get('/costing', 'PagesController@costing')->name('report.costing');
+
+
 //ICS
 Route::get('/ics', 'PagesController@ics_index')->name('ics.index');
 Route::post('/ics/login', 'Auth\ICSLoginController@login')->name('ics.login');

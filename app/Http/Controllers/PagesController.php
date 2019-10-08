@@ -86,6 +86,10 @@ class PagesController extends Controller
                     ->with(array('site'=> 'hris', 'page'=>'timekeeping'));  
     }
 
+    public function costing(){
+        return view("report");  
+    }
+
     public function reports(){
         return view("pages.hris.dashboard.reports")
                     ->with(array('site'=> 'hris', 'page'=>'reports'));  

@@ -33,6 +33,7 @@ Route::get('/hris/sections/{id}/positions/', 'PositionsController@all');
 Route::get('/hris/leaves/all', 'LeavesController@all');
 Route::get('/hris/leaves/all_posted', 'LeavesController@all_posted');
 
+Route::get('/report/costing', 'AttendancesController@costing');
 
 
 
