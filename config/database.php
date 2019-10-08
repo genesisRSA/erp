@@ -100,7 +100,7 @@ return [
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
-            'host' => '192.168.1.13',
+            'host' => '124.105.224.123',
             'port' => '1433',
             'database' => 'RSA-ERPONE-LIVE',
             'username' => 'IT',
