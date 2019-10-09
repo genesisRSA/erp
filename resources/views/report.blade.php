@@ -16,17 +16,17 @@
                     <thead class="thead-dark">
                         <tr>
                             <th>PO No.</th>
+                            <th>PO Date</th>
                             <th>PR No.</th>
+                            <th>Vendor</th>
                             <th>Item Code</th>
+                            <th>Item Sub Category</th>
                             <th>Item Description</th>
                             <th>UOM</th>
                             <th>Request Qty</th>
-                            <th>Unit Price</th>
-                            <th>VAT</th>
-                            <th>Net Price</th>
+                            <th>Unit Cost</th>
+                            <th>Total Amount</th>
                             <th>Currency</th>
-                            <th>RR No.</th>
-                            <th>Received Qty.</th>
                         </tr>
                     </thead>
                 </table>
@@ -37,28 +37,32 @@
 <script type="text/javascript" src="{{ asset('datatables/datatables.js') }}"></script>
 <script type="text/javascript">
     $(function () {
-        $('[data-toggle="tooltip"]').tooltip();
+        $('[data-toggle="tooltip"]').tooltip()
 
         var report_dt = $('#report-dt').DataTable({
             "responsive": true,
+            dom: 'Bfrtip',
+            buttons: [
+                'excel', 'pdf', 'print'
+            ],
             "pagingType": "full",
             "ajax": "/api/report/costing",
             "columns": [
                 { "data": "PONumber" },
+                { "data": "PODate" },
                 { "data": "PurchaseRequestNumber" },
+                { "data": "Vendor" },
                 { "data": "ItemCode" },
+                { "data": "SubCategory" },
                 { "data": "Description" },
                 { "data": "UnitOfMeasureCode" },
                 { "data": "RequestedQuantity" },
-                { "data": "UnitPrice" },
-                { "data": "VatAmount" },
-                { "data": "NetPrice" },
+                { "data": "UnitCost" },
+                { "data": "TotalAmount" },
                 { "data": "Currency" },
-                { "data": "RRNumber" },
-                { "data": "ReceivedQuantity" },
             ]
-        });
-    });
+        })
+    })
 </script>
 
 

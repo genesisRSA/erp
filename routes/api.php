@@ -32,6 +32,8 @@ Route::get('/hris/sections/{id}/positions/', 'PositionsController@all');
 
 Route::get('/hris/leaves/all', 'LeavesController@all');
 Route::get('/hris/leaves/all_posted', 'LeavesController@all_posted');
+Route::get('/hris/shifts/{shift_code}/days', 'ShiftsController@shift_days');
+Route::get('/hris/employeeshifts/all', 'EmployeeShiftsController@all');
 
 Route::get('/report/costing', 'AttendancesController@costing');
 

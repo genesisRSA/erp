@@ -5,7 +5,7 @@
 @section('content')
     <div class="card mb-3">
         <div class="card-body">
-            <h3><a href="{{ route('mytimekeeping') }}" class="mr-3"><i class="fas fa-arrow-left"></i></a> Leave Approval : {{$leave->ref_no}}</h3>
+            <h3><a href="{{ route('mytimekeeping', ['#leaveapproval']) }}" class="mr-3"><i class="fas fa-arrow-left"></i></a> Leave Approval : {{$leave->ref_no}}</h3>
             <hr>
             @if ($errors->any())
                 <div class="alert alert-danger">

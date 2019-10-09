@@ -8,6 +8,7 @@
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <link href="{{ asset('css/template.css') }}" rel="stylesheet">
         <link href="{{ asset('datatables/datatables.css') }}" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
     </head>
     <body>
         @include('includes.'.$site.'.navbar', ['page' => $page])
@@ -28,6 +29,8 @@
         $('[data-toggle="tooltip"]').tooltip()
     })
 </script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
 
 @include('includes.'.$site.'.js', ['page' => $page])
 @include('includes.'.$site.'.modal', ['page' => $page])

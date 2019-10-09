@@ -428,8 +428,7 @@ class LeavesController extends Controller
 
     public function post(Request $request, $id)
     {
-        //
-        
+       
         $leave = Leave::find($id);
         $logs = json_decode($leave->logs);
         $filer = Employee::where('emp_no','=',$leave->filer)->first();

@@ -5,7 +5,7 @@
 @section('content')
     <div class="card mb-3">
         <div class="card-body">
-            <h3><a href="{{ url()->previous() }}" class="mr-3"><i class="fas fa-arrow-left"></i></a> Posted Leave : {{$leave->ref_no}}</h3>
+            <h3><a href="{{ url()->previous()."#leaveposted" }}" class="mr-3"><i class="fas fa-arrow-left"></i></a> Posted Leave : {{$leave->ref_no}}</h3>
             <hr>
             @if ($errors->any())
                 <div class="alert alert-danger">

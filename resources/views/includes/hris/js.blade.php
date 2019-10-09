@@ -7,6 +7,9 @@
                                         .columns.adjust()
                                         .responsive.recalc();
         });  
+        
+        var hash = window.location.hash;
+        $('#myTab a[href="'+hash+'"]').tab('show');
 
         @if($page == "attendance")
         var attendance_dt = $('#attendance-dt').DataTable({
@@ -251,7 +254,7 @@
                         }));
                     });
                     $('#position').val("");
-                });
+            });
         });
 
         $('#is_hmo').change(function (){
@@ -468,7 +471,40 @@
             ]
         });
 
-        
+        var shift_dt = $('#shift-dt').DataTable({
+            "responsive": true,
+            "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+            "pagingType": "full",
+            "ajax": "/api/hris/employeeshifts/all",
+            "columns": [
+                {  
+                    "targets": 0,
+                    "data": "employee",
+                    'className': 'dt-center',
+                    "render": function ( data, type, row, meta ) {
+                        return  '<a href="/'+row.employee.emp_photo+'" target="_blank"><img src="/'+row.employee.emp_photo+'" class="img-fluid rounded-circle bg-white border" style="height:32px;"/></a> <span class="badge badge-secondary">'+row.employee.full_name+'</span>';
+                    }
+                },
+                {  
+                    "targets": 0,
+                    "data": "shift",
+                    'className': 'dt-center',
+                    "render": function ( data, type, row, meta ) {
+                        return  row.shift.shift_desc;
+                    }
+                },
+                { "data": "date_from" },
+                { "data": "date_to" },
+                {
+                    "targets": 0,
+                    "data": "id",
+                    "render": function ( data, type, row, meta ) {
+                        return  '<a href="employeeshift/'+data+'" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>';
+                    }
+                }
+            ] 
+        });
+
 
         @endif
 
@@ -646,6 +682,39 @@
             $('#logoutModal').modal('show');
         });
 
+        @if($page=="shift")
+            $('.datepicker').datepicker({
+                autoClose: true,
+                format: "yyyy-mm-dd"
+            });
+
+            $('.datepicker').on('change', function(e){
+                value = $(".datepicker").val();
+                $('#date_to').val(moment(value).day(6).format("YYYY-MM-DD"));
+                $("#date_from").val(moment(value).day(1).format("YYYY-MM-DD"));
+            });
+
+            $('.datepicker').on('blur', function(e){
+                value = $(".datepicker").val();
+                $('#date_to').val(moment(value).day(6).format("YYYY-MM-DD"));
+                $("#date_from").val(moment(value).day(1).format("YYYY-MM-DD"));
+            });
+
+            $('body').on('change', '#shift' ,function(){
+                $.get("/api/hris/shifts/"+$(this).val()+"/days/", function(res){
+                    var response = res.data;
+                    $.each(response, function (i, item) {
+                       if(item.shift_start == "00:00:00"){
+                        $('#'+item.shift_day.toLowerCase()).text("Rest Day");
+                           $('#'+item.shift_day.toLowerCase()).removeClass('badge-success').addClass('badge-danger');
+                       }else{
+                        $('#'+item.shift_day.toLowerCase()).text(moment("01-01-1990 "+item.shift_start).format('LT') +" - "+ moment("01-01-1990 "+item.shift_end).format('LT'));
+                        $('#'+item.shift_day.toLowerCase()).removeClass('badge-danger').addClass('badge-success');
+                       }
+                    });
+                });
+            });
+        @endif
         
     });
 </script>

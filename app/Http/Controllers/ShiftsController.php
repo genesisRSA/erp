@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Shift;
+use Illuminate\Support\Facades\DB;
 
 class ShiftsController extends Controller
 {
@@ -14,6 +16,16 @@ class ShiftsController extends Controller
     public function index()
     {
         //
+    }
+
+    public function shift_days($shift_code)
+    {
+        return response()
+            ->json([
+                "data" => Shift::where('shift_code', '=', $shift_code)
+                            ->orderBy('id','ASC')
+                            ->get()
+        ]);
     }
 
     /**
