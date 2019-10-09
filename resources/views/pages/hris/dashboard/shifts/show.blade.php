@@ -63,11 +63,11 @@
                             <div class="row mb-3">
                                 <div class="col-md-2 border">
                                     <strong>Monday</strong>
-                                    <span class="badge badge-{{$shifts->Monday=='Rest Day' ? 'danger' : 'success'}} float-right mt-1" id="monday">{{$shifts->Sunday}}</span>
+                                    <span class="badge badge-{{$shifts->Monday=='Rest Day' ? 'danger' : 'success'}} float-right mt-1" id="monday">{{$shifts->Monday}}</span>
                                 </div>
                                 <div class="col-md-2 border">
                                     <strong>Tuesday</strong>
-                                    <span class="badge badge-{{$shifts->Tuesday=='Rest Day' ? 'danger' : 'success'}} float-right mt-1" id="tuesday">{{$shifts->Monday}}</span>
+                                    <span class="badge badge-{{$shifts->Tuesday=='Rest Day' ? 'danger' : 'success'}} float-right mt-1" id="tuesday">{{$shifts->Tuesday}}</span>
                                 </div>
                                 <div class="col-md-2 border">
                                     <strong>Wednesday</strong>
