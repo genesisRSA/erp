@@ -32,7 +32,6 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/hris/leave/{ref_no}/posting', 'LeavesController@for_posting');
     Route::post('/hris/leave/{leave}', 'LeavesController@post')->name('leave.post');
     Route::get('/hris/leave/{ref_no}/posted', 'LeavesController@show_posted');
-
     
     Route::resource('/hris/employeeshift', 'EmployeeShiftsController');
 
@@ -41,6 +40,27 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/hris/leaves/my_posted', 'LeavesController@my_posted');
     Route::get('/hris/leaves/approval', 'LeavesController@approval');
     Route::get('/hris/leaves/{ref_no}/approval', 'LeavesController@for_approval');
+
+    Route::resource('/hris/ob', 'OBController');
+    Route::get('/hris/obs/my', 'OBController@my');
+    Route::get('/hris/obs/approval', 'OBController@approval');
+    Route::get('/hris/obs/{ref_no}/approval', 'OBController@for_approval');
+    Route::get('/hris/obs/{ref_no}/posting', 'OBController@posting');
+    Route::post('/hris/obs/{ob}', 'OBController@posted')->name('ob.posted');
+
+    Route::resource('/hris/cs', 'CSController');
+    Route::get('/hris/css/my', 'CSController@my');
+    Route::get('/hris/css/approval', 'CSController@approval');
+    Route::get('/hris/css/{ref_no}/approval', 'CSController@for_approval');
+    Route::get('/hris/css/{ref_no}/posting', 'CSController@posting');
+    Route::post('/hris/css/{cs}', 'CSController@posted')->name('cs.posted');
+
+    Route::resource('/hris/ot', 'OTController');
+    Route::get('/hris/ots/my', 'OTController@my');
+    Route::get('/hris/ots/approval', 'OTController@approval');
+    Route::get('/hris/ots/{ref_no}/approval', 'OTController@for_approval');
+    Route::get('/hris/ots/{ref_no}/posting', 'OTController@posting');
+    Route::post('/hris/ots/{ot}', 'OTController@posted')->name('ot.posted');
 });
 
 

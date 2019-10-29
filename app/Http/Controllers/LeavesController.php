@@ -420,7 +420,7 @@ class LeavesController extends Controller
 
             if($leave->save()){
                 Mail::to($filer->work_email, $filer->full_name)->send($mailable);
-                return redirect()->route('mytimekeeping')->withSuccess('Leave Successfully Updated!');
+                return redirect()->route('mytimekeeping',['#leaveapproval'])->withSuccess('Leave Successfully Updated!');
             }
 
         }
@@ -519,7 +519,7 @@ class LeavesController extends Controller
 
         if($leave->save()){
             Mail::to($filer->work_email, $filer->full_name)->send($mailable);
-            return redirect()->route('timekeeping')->withSuccess('Leave Successfully Posted!');
+            return redirect()->route('timekeeping',['#leaveposted'])->withSuccess('Leave Successfully Posted!');
         }
     }
 

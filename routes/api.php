@@ -32,12 +32,20 @@ Route::get('/hris/sections/{id}/positions/', 'PositionsController@all');
 
 Route::get('/hris/leaves/all', 'LeavesController@all');
 Route::get('/hris/leaves/all_posted', 'LeavesController@all_posted');
+
 Route::get('/hris/shifts/{shift_code}/days', 'ShiftsController@shift_days');
 Route::get('/hris/employeeshifts/all', 'EmployeeShiftsController@all');
 
+Route::get('/hris/obs/all', 'OBController@all');
+Route::get('/hris/obs/all_posted', 'OBController@all_posted');
+
+Route::get('/hris/css/all', 'CSController@all');
+Route::get('/hris/css/all_posted', 'CSController@all_posted');
+
+Route::get('/hris/ots/all', 'OTController@all');
+Route::get('/hris/ots/all_posted', 'OTController@all_posted');
+
 Route::get('/report/costing', 'AttendancesController@costing');
-
-
 
 //ICS
 Route::get('/areas/all', 'AreasController@all');

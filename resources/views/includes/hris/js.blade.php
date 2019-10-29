@@ -505,6 +505,356 @@
             ] 
         });
 
+        var ob_dt = $('#ob-dt').DataTable({
+            "responsive": true,
+            "ajax": "/api/hris/obs/all",
+            "columns": [
+                { "data": "ref_no" },
+                {  
+                    "targets": 0,
+                    "data": "filer",
+                    'className': 'dt-center',
+                    "render": function ( data, type, row, meta ) {
+                        return  '<a href="/'+row.filer_employee.emp_photo+'" target="_blank"><img src="/'+row.filer_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.filer_employee.full_name+'</span>';
+                    }
+                },
+                { "data": "purpose" },
+                { "data": "destination" },
+                { "data": "date_filed" },
+                { 
+                    "targets": 0,
+                    "data": "status" ,
+                    "render": function ( data, type, row, meta){
+                        if(data == "Approved" || data == "Posted"){
+                            return '<span class="badge badge-success">'+data+'</span>';
+                        }else if(data == "Declined"){
+                            return '<span class="badge badge-danger">'+data+'</span>';
+                        }else{
+                            return '<span class="badge badge-warning">'+data+'</span>';
+                        }
+                        
+                    }
+                },
+                {  
+                    "targets": 0,
+                    "data": "last_approved_by",
+                    "render": function ( data, type, row, meta ) {
+                        if(row.approved_employee){
+                            return  '<a href="/'+row.approved_employee.emp_photo+'" target="_blank"><img src="/'+row.approved_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.approved_employee.full_name+'</span>';
+                        }else{
+                            return 'N/A';
+                        }
+                    }
+                },
+                { "data": "last_approved" },
+                {  
+                    "targets": 0,
+                    "data": "next_approver",
+                    "render": function ( data, type, row, meta ) {
+                        if(row.approver_employee){
+                            return  '<a href="/'+row.approver_employee.emp_photo+'" target="_blank"><img src="/'+row.approver_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.approver_employee.full_name+'</span>';
+                        }else{
+                            return 'N/A';
+                        }
+                    }
+                },
+                {
+                    "targets": 0,
+                    "data": "ref_no",
+                    "render": function ( data, type, row, meta ) {
+                        if(row.status == "Approved"){
+                            return  '<a href="ob/'+data+'" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>'+
+                                    '<a href="obs/'+data+'/posting" class="btn btn-success btn-sm"><i class="fas fa-check-circle"></i> Post</a>';
+                        }else
+                        return  '<a href="ob/'+data+'" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>';
+                    }
+                },
+            ]
+        });
+
+        var obposted_dt = $('#obposted-dt').DataTable({
+            "responsive": true,
+            "ajax": "/api/hris/obs/all_posted",
+            "columns": [
+                { "data": "ref_no" },
+                {  
+                    "targets": 0,
+                    "data": "filer",
+                    'className': 'dt-center',
+                    "render": function ( data, type, row, meta ) {
+                        return  '<a href="/'+row.filer_employee.emp_photo+'" target="_blank"><img src="/'+row.filer_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.filer_employee.full_name+'</span>';
+                    }
+                },
+                { "data": "purpose" },
+                { "data": "destination" },
+                { "data": "date_filed" },
+                { 
+                    "targets": 0,
+                    "data": "status" ,
+                    "render": function ( data, type, row, meta){
+                        if(data == "Approved" || data == "Posted"){
+                            return '<span class="badge badge-success">'+data+'</span>';
+                        }else if(data == "Declined"){
+                            return '<span class="badge badge-danger">'+data+'</span>';
+                        }else{
+                            return '<span class="badge badge-warning">'+data+'</span>';
+                        }
+                        
+                    }
+                },
+                {  
+                    "targets": 0,
+                    "data": "last_approved_by",
+                    "render": function ( data, type, row, meta ) {
+                        if(row.approved_employee){
+                            return  '<a href="/'+row.approved_employee.emp_photo+'" target="_blank"><img src="/'+row.approved_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.approved_employee.full_name+'</span>';
+                        }else{
+                            return 'N/A';
+                        }
+                    }
+                },
+                { "data": "last_approved" },
+                {
+                    "targets": 0,
+                    "data": "ref_no",
+                    "render": function ( data, type, row, meta ) {
+                        return  '<a href="ob/'+data+'" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>';
+                    }
+                },
+            ]
+        });
+
+        var cs_dt = $('#cs-dt').DataTable({
+            "responsive": true,
+            "ajax": "/api/hris/css/all",
+            "columns": [
+                { "data": "ref_no" },
+                { "data": "type" },
+                {  
+                    "targets": 0,
+                    "data": "filer",
+                    'className': 'dt-center',
+                    "render": function ( data, type, row, meta ) {
+                        return  '<a href="/'+row.filer_employee.emp_photo+'" target="_blank"><img src="/'+row.filer_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.filer_employee.full_name+'</span>';
+                    }
+                },
+                { "data": "date_filed" },
+                { 
+                    "targets": 0,
+                    "data": "status" ,
+                    "render": function ( data, type, row, meta){
+                        if(data == "Approved" || data == "Posted"){
+                            return '<span class="badge badge-success">'+data+'</span>';
+                        }else if(data == "Disapproved"){
+                            return '<span class="badge badge-danger">'+data+'</span>';
+                        }else{
+                            return '<span class="badge badge-warning">'+data+'</span>';
+                        }
+                        
+                    }
+                },
+                {  
+                    "targets": 0,
+                    "data": "last_approved_by",
+                    "render": function ( data, type, row, meta ) {
+                        if(row.approved_employee){
+                            return  '<a href="/'+row.approved_employee.emp_photo+'" target="_blank"><img src="/'+row.approved_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.approved_employee.full_name+'</span>';
+                        }else{
+                            return 'N/A';
+                        }
+                    }
+                },
+                { "data": "last_approved" },
+                {  
+                    "targets": 0,
+                    "data": "next_approver",
+                    "render": function ( data, type, row, meta ) {
+                        if(row.approver_employee){
+                            return  '<a href="/'+row.approver_employee.emp_photo+'" target="_blank"><img src="/'+row.approver_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.approver_employee.full_name+'</span>';
+                        }else{
+                            return 'N/A';
+                        }
+                    }
+                },
+                {
+                    "targets": 0,
+                    "data": "ref_no",
+                    "render": function ( data, type, row, meta ) {
+                        if(row.status == "Approved"){
+                            return  '<a href="cs/'+data+'" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>'+
+                                    '<a href="css/'+data+'/posting" class="btn btn-success btn-sm"><i class="fas fa-check-circle"></i> Post</a>';
+                        }else
+                        return  '<a href="cs/'+data+'" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>';
+                    }
+                } 
+            ]
+        });
+
+        var csposted_dt = $('#csposted-dt').DataTable({
+            "responsive": true,
+            "ajax": "/api/hris/css/all_posted",
+            "columns": [
+                { "data": "ref_no" },
+                { "data": "type" },
+                {  
+                    "targets": 0,
+                    "data": "filer",
+                    'className': 'dt-center',
+                    "render": function ( data, type, row, meta ) {
+                        return  '<a href="/'+row.filer_employee.emp_photo+'" target="_blank"><img src="/'+row.filer_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.filer_employee.full_name+'</span>';
+                    }
+                },
+                { "data": "date_filed" },
+                { 
+                    "targets": 0,
+                    "data": "status" ,
+                    "render": function ( data, type, row, meta){
+                        if(data == "Approved" || data == "Posted"){
+                            return '<span class="badge badge-success">'+data+'</span>';
+                        }else if(data == "Disapproved"){
+                            return '<span class="badge badge-danger">'+data+'</span>';
+                        }else{
+                            return '<span class="badge badge-warning">'+data+'</span>';
+                        }
+                        
+                    }
+                },
+                {  
+                    "targets": 0,
+                    "data": "last_approved_by",
+                    "render": function ( data, type, row, meta ) {
+                        if(row.approved_employee){
+                            return  '<a href="/'+row.approved_employee.emp_photo+'" target="_blank"><img src="/'+row.approved_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.approved_employee.full_name+'</span>';
+                        }else{
+                            return 'N/A';
+                        }
+                    }
+                },
+                { "data": "last_approved" },
+                {
+                    "targets": 0,
+                    "data": "ref_no",
+                    "render": function ( data, type, row, meta ) {
+                        return  '<a href="cs/'+data+'" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>';
+                    }
+                } 
+            ]
+        });
+
+        var ot_dt = $('#ot-dt').DataTable({
+            "responsive": true,
+            "ajax": "/api/hris/ots/all",
+            "columns": [
+                { "data": "ref_no" },
+                {  
+                    "targets": 0,
+                    "data": "filer",
+                    'className': 'dt-center',
+                    "render": function ( data, type, row, meta ) {
+                        return  '<a href="/'+row.filer_employee.emp_photo+'" target="_blank"><img src="/'+row.filer_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.filer_employee.full_name+'</span>';
+                    }
+                },
+                { "data": "date_filed" },
+                { 
+                    "targets": 0,
+                    "data": "status" ,
+                    "render": function ( data, type, row, meta){
+                        if(data == "Approved" || data == "Posted"){
+                            return '<span class="badge badge-success">'+data+'</span>';
+                        }else if(data == "Disapproved"){
+                            return '<span class="badge badge-danger">'+data+'</span>';
+                        }else{
+                            return '<span class="badge badge-warning">'+data+'</span>';
+                        }
+                        
+                    }
+                },
+                {  
+                    "targets": 0,
+                    "data": "last_approved_by",
+                    "render": function ( data, type, row, meta ) {
+                        if(row.approved_employee){
+                            return  '<a href="/'+row.approved_employee.emp_photo+'" target="_blank"><img src="/'+row.approved_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.approved_employee.full_name+'</span>';
+                        }else{
+                            return 'N/A';
+                        }
+                    }
+                },
+                { "data": "last_approved" },
+                {  
+                    "targets": 0,
+                    "data": "next_approver",
+                    "render": function ( data, type, row, meta ) {
+                        if(row.approver_employee){
+                            return  '<a href="/'+row.approver_employee.emp_photo+'" target="_blank"><img src="/'+row.approver_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.approver_employee.full_name+'</span>';
+                        }else{
+                            return 'N/A';
+                        }
+                    }
+                },
+                {
+                    "targets": 0,
+                    "data": "ref_no",
+                    "render": function ( data, type, row, meta ) {
+                        if(row.status == "Approved"){
+                            return  '<a href="ot/'+data+'" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>'+
+                                    '<a href="ots/'+data+'/posting" class="btn btn-success btn-sm"><i class="fas fa-check-circle"></i> Post</a>';
+                        }else
+                        return  '<a href="ot/'+data+'" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>';
+                    }
+                } 
+            ]
+        });
+
+        var otposted_dt = $('#otposted-dt').DataTable({
+            "responsive": true,
+            "ajax": "/api/hris/ots/all_posted",
+            "columns": [
+                { "data": "ref_no" },
+                {  
+                    "targets": 0,
+                    "data": "filer",
+                    'className': 'dt-center',
+                    "render": function ( data, type, row, meta ) {
+                        return  '<a href="/'+row.filer_employee.emp_photo+'" target="_blank"><img src="/'+row.filer_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.filer_employee.full_name+'</span>';
+                    }
+                },
+                { "data": "date_filed" },
+                { 
+                    "targets": 0,
+                    "data": "status" ,
+                    "render": function ( data, type, row, meta){
+                        if(data == "Approved" || data == "Posted"){
+                            return '<span class="badge badge-success">'+data+'</span>';
+                        }else if(data == "Disapproved"){
+                            return '<span class="badge badge-danger">'+data+'</span>';
+                        }else{
+                            return '<span class="badge badge-warning">'+data+'</span>';
+                        }
+                        
+                    }
+                },
+                {  
+                    "targets": 0,
+                    "data": "last_approved_by",
+                    "render": function ( data, type, row, meta ) {
+                        if(row.approved_employee){
+                            return  '<a href="/'+row.approved_employee.emp_photo+'" target="_blank"><img src="/'+row.approved_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.approved_employee.full_name+'</span>';
+                        }else{
+                            return 'N/A';
+                        }
+                    }
+                },
+                { "data": "last_approved" },
+                {
+                    "targets": 0,
+                    "data": "ref_no",
+                    "render": function ( data, type, row, meta ) {
+                        return  '<a href="ot/'+data+'" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>';
+                    }
+                } 
+            ]
+        });
 
         @endif
 
@@ -668,6 +1018,287 @@
                 } 
             ]
         });
+
+        var myob_dt = $('#myob-dt').DataTable({
+            "responsive": true,
+            "ajax": "/hris/obs/my",
+            "columns": [
+                { "data": "ref_no" },
+                { "data": "purpose" },
+                { "data": "destination" },
+                { "data": "date_filed" },
+                { 
+                    "targets": 0,
+                    "data": "status" ,
+                    "render": function ( data, type, row, meta){
+                        if(data == "Approved" || data == "Posted"){
+                            return '<span class="badge badge-success">'+data+'</span>';
+                        }else if(data == "Declined"){
+                            return '<span class="badge badge-danger">'+data+'</span>';
+                        }else{
+                            return '<span class="badge badge-warning">'+data+'</span>';
+                        }
+                        
+                    }
+                },
+                {  
+                    "targets": 0,
+                    "data": "last_approved_by",
+                    "render": function ( data, type, row, meta ) {
+                        if(row.approved_employee){
+                            return  '<a href="/'+row.approved_employee.emp_photo+'" target="_blank"><img src="/'+row.approved_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.approved_employee.full_name+'</span>';
+                        }else{
+                            return 'N/A';
+                        }
+                    }
+                },
+                { "data": "last_approved" },
+                {  
+                    "targets": 0,
+                    "data": "next_approver",
+                    "render": function ( data, type, row, meta ) {
+                        if(row.approver_employee){
+                            return  '<a href="/'+row.approver_employee.emp_photo+'" target="_blank"><img src="/'+row.approver_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.approver_employee.full_name+'</span>';
+                        }else{
+                            return 'N/A';
+                        }
+                    }
+                },
+                {
+                    "targets": 0,
+                    "data": "ref_no",
+                    "render": function ( data, type, row, meta ) {
+                        return  '<a href="ob/'+data+'" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>';
+                    }
+                } 
+            ]
+        });
+
+        var obapproval_dt = $('#obapproval-dt').DataTable({
+            "responsive": true,
+            "ajax": "/hris/obs/approval",
+            "columns": [
+                { "data": "ref_no" },
+                {  
+                    "targets": 0,
+                    "data": "filer",
+                    'className': 'dt-center',
+                    "render": function ( data, type, row, meta ) {
+                        return  '<a href="/'+row.filer_employee.emp_photo+'" target="_blank"><img src="/'+row.filer_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.filer_employee.full_name+'</span>';
+                    }
+                },
+                { "data": "purpose" },
+                { "data": "destination" },
+                { "data": "date_filed" },
+                { 
+                    "targets": 0,
+                    "data": "status" ,
+                    "render": function ( data, type, row, meta){
+                        if(data == "Approved" || data == "Posted"){
+                            return '<span class="badge badge-success">'+data+'</span>';
+                        }else if(data == "Declined"){
+                            return '<span class="badge badge-danger">'+data+'</span>';
+                        }else{
+                            return '<span class="badge badge-warning">'+data+'</span>';
+                        }
+                        
+                    }
+                },
+                {
+                    "targets": 0,
+                    "data": "ref_no",
+                    "render": function ( data, type, row, meta ) {
+                        return  '<a href="obs/'+data+'/approval" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>';
+                    }
+                } 
+            ]
+        });
+
+        var mycs_dt = $('#mycs-dt').DataTable({
+            "responsive": true,
+            "ajax": "/hris/css/my",
+            "columns": [
+                { "data": "ref_no" },
+                { "data": "type" },
+                { "data": "date_filed" },
+                { 
+                    "targets": 0,
+                    "data": "status" ,
+                    "render": function ( data, type, row, meta){
+                        if(data == "Approved" || data == "Posted"){
+                            return '<span class="badge badge-success">'+data+'</span>';
+                        }else if(data == "Declined"){
+                            return '<span class="badge badge-danger">'+data+'</span>';
+                        }else{
+                            return '<span class="badge badge-warning">'+data+'</span>';
+                        }
+                        
+                    }
+                },
+                {  
+                    "targets": 0,
+                    "data": "last_approved_by",
+                    "render": function ( data, type, row, meta ) {
+                        if(row.approved_employee){
+                            return  '<a href="/'+row.approved_employee.emp_photo+'" target="_blank"><img src="/'+row.approved_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.approved_employee.full_name+'</span>';
+                        }else{
+                            return 'N/A';
+                        }
+                    }
+                },
+                { "data": "last_approved" },
+                {  
+                    "targets": 0,
+                    "data": "next_approver",
+                    "render": function ( data, type, row, meta ) {
+                        if(row.approver_employee){
+                            return  '<a href="/'+row.approver_employee.emp_photo+'" target="_blank"><img src="/'+row.approver_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.approver_employee.full_name+'</span>';
+                        }else{
+                            return 'N/A';
+                        }
+                    }
+                },
+                {
+                    "targets": 0,
+                    "data": "ref_no",
+                    "render": function ( data, type, row, meta ) {
+                        return  '<a href="cs/'+data+'" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>';
+                    }
+                } 
+            ]
+        });
+
+        var csapproval_dt = $('#csapproval-dt').DataTable({
+            "responsive": true,
+            "ajax": "/hris/css/approval",
+            "columns": [
+                { "data": "ref_no" },
+                { "data": "type" },
+                {  
+                    "targets": 0,
+                    "data": "filer",
+                    'className': 'dt-center',
+                    "render": function ( data, type, row, meta ) {
+                        return  '<a href="/'+row.filer_employee.emp_photo+'" target="_blank"><img src="/'+row.filer_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.filer_employee.full_name+'</span>';
+                    }
+                },
+                { "data": "date_filed" },
+                { 
+                    "targets": 0,
+                    "data": "status" ,
+                    "render": function ( data, type, row, meta){
+                        if(data == "Approved" || data == "Posted"){
+                            return '<span class="badge badge-success">'+data+'</span>';
+                        }else if(data == "Disapproved"){
+                            return '<span class="badge badge-danger">'+data+'</span>';
+                        }else{
+                            return '<span class="badge badge-warning">'+data+'</span>';
+                        }
+                        
+                    }
+                },
+                {
+                    "targets": 0,
+                    "data": "ref_no",
+                    "render": function ( data, type, row, meta ) {
+                        return  '<a href="css/'+data+'/approval" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>';
+                    }
+                } 
+            ]
+        });
+
+        var myot_dt = $('#myot-dt').DataTable({
+            "responsive": true,
+            "ajax": "/hris/ots/my",
+            "columns": [
+                { "data": "ref_no" },
+                { "data": "date_filed" },
+                { 
+                    "targets": 0,
+                    "data": "status" ,
+                    "render": function ( data, type, row, meta){
+                        if(data == "Approved" || data == "Posted"){
+                            return '<span class="badge badge-success">'+data+'</span>';
+                        }else if(data == "Declined"){
+                            return '<span class="badge badge-danger">'+data+'</span>';
+                        }else{
+                            return '<span class="badge badge-warning">'+data+'</span>';
+                        }
+                        
+                    }
+                },
+                {  
+                    "targets": 0,
+                    "data": "last_approved_by",
+                    "render": function ( data, type, row, meta ) {
+                        if(row.approved_employee){
+                            return  '<a href="/'+row.approved_employee.emp_photo+'" target="_blank"><img src="/'+row.approved_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.approved_employee.full_name+'</span>';
+                        }else{
+                            return 'N/A';
+                        }
+                    }
+                },
+                { "data": "last_approved" },
+                {  
+                    "targets": 0,
+                    "data": "next_approver",
+                    "render": function ( data, type, row, meta ) {
+                        if(row.approver_employee){
+                            return  '<a href="/'+row.approver_employee.emp_photo+'" target="_blank"><img src="/'+row.approver_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.approver_employee.full_name+'</span>';
+                        }else{
+                            return 'N/A';
+                        }
+                    }
+                },
+                {
+                    "targets": 0,
+                    "data": "ref_no",
+                    "render": function ( data, type, row, meta ) {
+                        return  '<a href="ot/'+data+'" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>';
+                    }
+                } 
+            ]
+        });
+
+        var otapproval_dt = $('#otapproval-dt').DataTable({
+            "responsive": true,
+            "ajax": "/hris/ots/approval",
+            "columns": [
+                { "data": "ref_no" },
+                {  
+                    "targets": 0,
+                    "data": "filer",
+                    'className': 'dt-center',
+                    "render": function ( data, type, row, meta ) {
+                        return  '<a href="/'+row.filer_employee.emp_photo+'" target="_blank"><img src="/'+row.filer_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.filer_employee.full_name+'</span>';
+                    }
+                },
+                { "data": "date_filed" },
+                { 
+                    "targets": 0,
+                    "data": "status" ,
+                    "render": function ( data, type, row, meta){
+                        if(data == "Approved" || data == "Posted"){
+                            return '<span class="badge badge-success">'+data+'</span>';
+                        }else if(data == "Disapproved"){
+                            return '<span class="badge badge-danger">'+data+'</span>';
+                        }else{
+                            return '<span class="badge badge-warning">'+data+'</span>';
+                        }
+                        
+                    }
+                },
+                {
+                    "targets": 0,
+                    "data": "ref_no",
+                    "render": function ( data, type, row, meta ) {
+                        return  '<a href="ots/'+data+'/approval" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>';
+                    }
+                } 
+            ]
+        });
+
+
         @endif
 
         $("#is_one_day").change(function (){
@@ -716,5 +1347,101 @@
             });
         @endif
         
+        @if($page == "official business")
+
+        $("#purpose").change(function (){
+            if($(this).val()=="Others"){
+                $('#others').prop('readonly', false);
+            }else{
+                $('#others').prop('readonly', true);
+            }
+        });
+
+        @endif
+
+        @if($page == "change shift")
+
+        $("#date_from").blur(function (){
+            if($('#type').val() != "Change of Date"){
+                $('#date_to').val($(this).val());
+            }
+        });
+
+        $("#type").change(function (){
+            if($('#type').val() == "Change of Shift"){
+                $('#date_to').val($('#date_from').val());
+                $('#new_sched').attr('readonly', false);
+                $('#date_to').attr('readonly', true);
+            }else if($('#type').val() == "Change of Date"){
+                $('#new_sched').attr('readonly', true);
+                $('#date_to').attr('readonly', false);
+                $('#new_sched').val("");
+            }else{
+                $('#new_sched').attr('readonly', false);
+                $('#date_to').attr('readonly', false);
+                $('#new_sched').val("");
+            }
+        });
+
+        @endif
+
+        @if($page == "overtime")
+
+        $('#add_ot').click(function (){
+            var ot_date = $('#ot_date').val();
+            var ot_from = $('#ot_from').val();
+            var ot_to = $('#ot_to').val();
+            var reason = $('#reason').val();
+            $('#ot_date').removeClass('is-invalid');
+            $('#ot_from').removeClass('is-invalid');
+            $('#ot_to').removeClass('is-invalid');
+            $('#reason').removeClass('is-invalid');
+            var found = false;
+            if($.inArray(ot_date,existing_ot_date) > -1){
+                found = true;
+            }
+
+            if(ot_from && ot_to && reason && !found){
+                var button = '<button type="button" class="btn btn-sm btn-danger" id="del_ot"><i class="fas fa-trash-alt"></i> Delete</button>';
+                var markup = "<tr><td>"+ot_date+"</td>"+
+                         "<td>"+ot_from+"</td>"+
+                         "<td>"+ot_to+"</td>"+
+                         "<td>"+reason+"</td>"+
+                         '<td class="text-center">'+button+"</td>"+
+                         '<input type="hidden" name="ot_date[]" value="'+ot_date+'" />'+
+                         '<input type="hidden" name="ot_from[]" value="'+ot_from+'" />'+
+                         '<input type="hidden" name="ot_to[]" value="'+ot_to+'" />'+
+                         '<input type="hidden" name="reason[]" value="'+reason+'" />'+
+                         "</tr>";
+
+                $('#ot_table tbody').append(markup);
+                existing_ot_date.push(ot_date);
+                $('#ot_from').val("");
+                $('#ot_to').val("");
+                $('#reason').val("");
+            }else if(found){
+                alert("OT Date : "+ot_date+" already exist!");
+                $('#ot_date').addClass('is-invalid');
+            }else{
+                if(!ot_from){
+                    $('#ot_from').addClass('is-invalid');
+                }
+                if(!ot_to){
+                    $('#ot_to').addClass('is-invalid');
+                }
+                if(!reason){
+                    $('#reason').addClass('is-invalid');
+                }
+            }
+        });
+
+        $("body").on("click", "#del_ot", function (){
+            if(confirm("Are you sure you want to delete this record?")){
+                $(this).parents("tr").remove();
+                existing_ot_date.splice($(this).parents("tr").index(),1);
+            }
+        });
+
+        @endif
     });
 </script>
