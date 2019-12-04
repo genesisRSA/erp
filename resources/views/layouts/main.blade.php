@@ -14,6 +14,8 @@
         @include('includes.'.$site.'.navbar', ['page' => $page])
         <div class="d-flex flex-row">
             
+            <?php
+            date_default_timezone_set('Asia/Manila'); ?>
             <div class="d-none d-sm-block">
                 @include('includes.'.$site.'.sidebar', ['page' => $page])
             </div>

@@ -88,7 +88,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Requestor</label><br>
-                                        <a href="/{{$cs->filer_employee->emp_photo}}" target="_blank"><img src="/{{$cs->filer_employee->emp_photo}}" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">{{$cs->filer_employee->full_name}}</span>
+                                        <a href="/{{$cs->filer_employee->emp_photo}}" target="_blank"><img src="/{{$cs->filer_employee->emp_photo}}" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">{{$cs->filer_employee->full_name}}<br>{{$cs->filer_employee->emp_no}}</span>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -118,7 +118,7 @@
                                     <div class="form-group">
                                         <label>Current Approver</label><br>
                                         @if($cs->approver_employee)
-                                            <a href="/{{$cs->approver_employee->emp_photo}}" target="_blank"><img src="/{{$cs->approver_employee->emp_photo}}" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">{{$cs->approver_employee->full_name}}</span>
+                                            <a href="/{{$cs->approver_employee->emp_photo}}" target="_blank"><img src="/{{$cs->approver_employee->emp_photo}}" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">{{$cs->approver_employee->full_name}}<br>{{$cs->approver_employee->emp_no}}</span>
                                         @else
                                             N/A
                                         @endif
@@ -157,7 +157,7 @@
                                             <td>{{$log->remarks}}</td>
                                             <td>
                                                 @if($log->approved_by != 'N/A')
-                                                  <a href="/{{App\Employee::where('emp_no','=',$log->approved_by)->first()->emp_photo}}" target="_blank"><img class="img-fluid rounded-circle bg-dark" src="/{{App\Employee::where('emp_no','=',$log->approved_by)->first()->emp_photo}}" style="height:48px;"/></a> <span class="badge badge-secondary">{{App\Employee::where('emp_no','=',$log->approved_by)->first()->full_name}}</span>
+                                                  <a href="/{{App\Employee::where('emp_no','=',$log->approved_by)->first()->emp_photo}}" target="_blank"><img class="img-fluid rounded-circle bg-dark" src="/{{App\Employee::where('emp_no','=',$log->approved_by)->first()->emp_photo}}" style="height:48px;"/></a> <span class="badge badge-secondary">{{App\Employee::where('emp_no','=',$log->approved_by)->first()->full_name}}<br>{{App\Employee::where('emp_no','=',$log->approved_by)->first()->emp_no}}</span>
                                                 @else
 
                                                 @endif

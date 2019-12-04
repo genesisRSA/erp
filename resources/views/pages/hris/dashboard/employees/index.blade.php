@@ -23,7 +23,7 @@
                     <tr>
                         <th>Site</th>
                         <th>Section</th>
-                        <th>ID No.</th>
+                        <th>Position</th>
                         <th>Employee</th>
                         <th></th>
                     </tr>

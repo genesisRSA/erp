@@ -61,8 +61,12 @@ class PagesController extends Controller
     }
 
     public function attendance(){
-        return view("pages.hris.dashboard.attendance")
-                    ->with(array('site'=> 'hris', 'page'=>'attendance'));  
+        if(Auth::user()->is_hr || Auth::user()->is_admin){
+            return view("pages.hris.dashboard.attendance")
+                    ->with(array('site'=> 'hris', 'page'=>'attendance'));
+        }else{
+            return redirect(route('hris.index'));
+        }
     }
 
     public function myattendance(){
@@ -82,8 +86,12 @@ class PagesController extends Controller
     }
 
     public function timekeeping(){
-        return view("pages.hris.dashboard.timekeeping")
+        if(Auth::user()->is_hr || Auth::user()->is_admin){
+            return view("pages.hris.dashboard.timekeeping")
                     ->with(array('site'=> 'hris', 'page'=>'timekeeping'));  
+        }else{
+            return redirect(route('hris.index'));
+        }
     }
 
     public function costing(){

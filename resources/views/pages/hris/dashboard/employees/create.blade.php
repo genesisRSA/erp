@@ -30,6 +30,9 @@
                         <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact Information</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" id="medical-tab" data-toggle="tab" href="#medical" role="tab" aria-controls="medical" aria-selected="false">Medical Information</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" id="leave-tab" data-toggle="tab" href="#leave" role="tab" aria-controls="leave" aria-selected="false">Leave Credits</a>
                     </li>
                 </ul>
@@ -449,6 +452,70 @@
                         </div>
                     </div>
                     <!--End of Contact Information-->
+                    <!--Medical Information-->
+                    <div class="tab-pane fade" id="medical" role="tabpanel" aria-labelledby="medical-tab">
+                        <div class="container-fluid">
+                            <div class="row pt-3 mb-3">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="blood_type">Blood Type <sup class="text-danger">*</sup></label>
+                                        <select class="form-control" name="blood_type" id="blood_type" >
+                                            <option {{ old('blood_type') == 'O-' ? 'selected' : ''}}>O-</option>
+                                            <option {{ old('blood_type') == 'O+' ? 'selected' : ''}}>O+</option>
+                                            <option {{ old('blood_type') == 'A-' ? 'selected' : ''}}>A-</option>
+                                            <option {{ old('blood_type') == 'A+' ? 'selected' : ''}}>A+</option>
+                                            <option {{ old('blood_type') == 'B-' ? 'selected' : ''}}>B-</option>
+                                            <option {{ old('blood_type') == 'B+' ? 'selected' : ''}}>B+</option>
+                                            <option {{ old('blood_type') == 'AB-' ? 'selected' : ''}}>AB-</option>
+                                            <option {{ old('blood_type') == 'AB+' ? 'selected' : ''}}>AB+</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            {{ $errors->first('blood_type') }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="emp_height">Height (cm)<sup class="text-danger">*</sup></label>
+                                        <input type="text" class="form-control {{ $errors->has('emp_height') ? 'is-invalid' : '' }}" name="emp_height" id="emp_height" placeholder="Enter Height e.g 162.56 cm" value="{{ old('emp_height') }}" />
+                                        <div class="invalid-feedback">
+                                            {{ $errors->first('emp_height') }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="emp_weight">Weight (lbs)<sup class="text-danger">*</sup></label>
+                                        <input type="text" class="form-control {{ $errors->has('emp_weight') ? 'is-invalid' : '' }}" name="emp_weight" id="emp_weight" placeholder="Enter Weight e.g 121.254 lbs" value="{{ old('emp_weight') }}" />
+                                        <div class="invalid-feedback">
+                                            {{ $errors->first('emp_weight') }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="medical_issues">Medical Issues<sup class="text-danger">*</sup></label>
+                                        <textarea class="form-control {{ $errors->has('medical_issues') ? 'is-invalid' : '' }}" name="medical_issues" id="medical_issues" rows="3" placeholder="Enter Medical Issues">{{ old('medical_issues') }}</textarea>
+                                        <div class="invalid-feedback">
+                                            {{ $errors->first('medical_issues') }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="birth_mark">Birth Mark</label>
+                                        <input type="text" class="form-control {{ $errors->has('birth_mark') ? 'is-invalid' : '' }}" name="birth_mark" id="birth_mark" placeholder="Enter Place of Birth Mark" value="{{ old('birth_mark') }}" />
+                                        <div class="invalid-feedback">
+                                            {{ $errors->first('birth_mark') }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End of Medical Information-->
                     <!--Leave Credits-->
                     <div class="tab-pane fade" id="leave" role="tabpanel" aria-labelledby="leave-tab">
                         <div class="container-fluid">
@@ -462,6 +529,10 @@
                                         <label>Admin Leave <sup class="text-danger">*</sup></label>
                                         <input type="number" class="form-control" min="0" name="admin_leave" value="{{ old('admin_leave') ? old('admin_leave') : 0}}"/>
                                     </div>
+                                    <div class="form-group">
+                                        <label>Special Leave for Women<sup class="text-danger">*</sup></label>
+                                        <input type="number" class="form-control" min="0" name="special_leave" value="{{ old('special_leave') ? old('special_leave') : 0}}"/>
+                                    </div>
                                 </div>
                                 <div class="col-md-3 border-right">
                                     <div class="form-group">
@@ -472,15 +543,23 @@
                                         <label>Bereavement Leave <sup class="text-danger">*</sup></label>
                                         <input type="number" class="form-control" min="0" name="bereavement_leave" value="{{ old('bereavement_leave') ? old('bereavement_leave') : 0}}"/>
                                     </div>
+                                    <div class="form-group">
+                                        <label>Leave for Abused Women <sup class="text-danger">*</sup></label>
+                                        <input type="number" class="form-control" min="0" name="abused_leave" value="{{ old('abused_leave') ? old('abused_leave') : 0}}"/>
+                                    </div>
                                 </div>
                                 <div class="col-md-3 border-right">
                                     <div class="form-group">
-                                        <label>Emergency Leave <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="emergency_leave" value="{{ old('emergency_leave') ? old('emergency_leave') : 0}}"/>
+                                        <label>Solo Parent Leave <sup class="text-danger">*</sup></label>
+                                        <input type="number" class="form-control" min="0" name="solo_parent_leave" value="{{ old('solo_parent_leave') ? old('solo_parent_leave') : 0}}"/>
                                     </div>
                                     <div class="form-group">
                                         <label>Birthday Leave <sup class="text-danger">*</sup></label>
                                         <input type="number" class="form-control" min="0" name="bday_leave" value="{{ old('bday_leave') ? old('bday_leave') : 0}}"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Expanded Maternity Leave <sup class="text-danger">*</sup></label>
+                                        <input type="number" class="form-control" min="0" name="expanded_leave" value="{{ old('expanded_leave') ? old('expanded_leave') : 0}}"/>
                                     </div>
                                 </div>
                                 <div class="col-md-3">

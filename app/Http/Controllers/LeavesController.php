@@ -101,12 +101,15 @@ class LeavesController extends Controller
             $leave_credits = json_decode( json_encode( array(
                 'sick_leave' => 0,
                 'vacation_leave' => 0,
-                'emergency_leave' => 0,
+                'solo_parent_leave' => 0,
                 'admin_leave' => 0,
                 'bereavement_leave' => 0,
                 'bday_leave' => 0,
                 'maternity_leave' => 0,
-                'paternity_leave' => 0
+                'paternity_leave' => 0,
+                'special_leave' => 0,
+                'abused_leave' => 0,
+                'expanded_leave' => 0
             ) ) );
         }
         $reports_to = Employee::where('emp_no','=',Auth::user()->employee->reports_to)->first();
@@ -166,11 +169,12 @@ class LeavesController extends Controller
                 if( ($request->input('type') == "Sick Leave" && $days > $leave_credits->sick_leave) ||
                 ($request->input('type') == "Vacation Leave" && $days > $leave_credits->vacation_leave) ||
                 ($request->input('type') == "Admin Leave" && $days > $leave_credits->admin_leave) ||
-                ($request->input('type') == "Emergency Leave" && $days > $leave_credits->emergency_leave) ||
+                ($request->input('type') == "Solo Parent Leave" && $days > $leave_credits->solo_parent_leave) ||
                 ($request->input('type') == "Bereavement Leave" && $days > $leave_credits->bereavement_leave) ||
                 ($request->input('type') == "Birthday Leave" && $days > $leave_credits->bday_leave) ||
                 ($request->input('type') == "Paternity Leave" && $days > $leave_credits->paternity_leave) ||
-                ($request->input('type') == "Maternity Leave" && $days > $leave_credits->maternity_leave) )
+                ($request->input('type') == "Maternity Leave" && $days > $leave_credits->maternity_leave) ||
+                ($request->input('type') == "Special Leave for Women" && $days > $leave_credits->special_leave) )
                 { return back()->withInput()
                     ->withErrors(['leave_to' => ['Leave credit is insufficient with the leave date range!']]); }   
             }
@@ -477,9 +481,9 @@ class LeavesController extends Controller
             {
                 $leave_credits->admin_leave -= $days;
             }
-            else if($leave->type == "Emergency Leave")
+            else if($leave->type == "Solo Parent Leave")
             {
-                $leave_credits->emergency_leave -= $days;
+                $leave_credits->solo_parent_leave -= $days;
             }
             else if($leave->type == "Bereavement Leave")
             {
@@ -496,6 +500,18 @@ class LeavesController extends Controller
             else if($leave->type == "Maternity Leave")
             {
                 $leave_credits->maternity_leave -= $days;
+            }
+            else if($leave->type == "Special Leave for Women")
+            {
+                $leave_credits->special_leave -= $days;
+            }
+            else if($leave->type == "Leave for Abused Women")
+            {
+                $leave_credits->abused_leave -= $days;
+            }
+            else if($leave->type == "Expanded Maternity Leave")
+            {
+                $leave_credits->expanded_leave -= $days;
             }
 
             $filer->leave_credits = json_encode($leave_credits);

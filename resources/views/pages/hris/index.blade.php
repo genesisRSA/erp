@@ -22,7 +22,9 @@
                             <div class="container">
                                 <form method="POST" action="{{ route('login') }}">
                                     @csrf
-                                    <h2 class="text-center text-white">Welcome to HRIS</h2>
+                                    <h2 class="text-center text-white">
+                                        <img src="{{url('/images/rgclogo.png')}}" alt="Logo" style="max-height:70px;"><br>Welcome to HRIS
+                                    </h2>
                                     <hr style="width:40%;background-color:#fff;">
                                     <div class="form-group row">
                                         <div class="input-group mt-3">

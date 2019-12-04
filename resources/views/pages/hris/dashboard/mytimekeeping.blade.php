@@ -58,7 +58,9 @@
                 <!--Leave-->
                 <div class="tab-pane fade show active" id="leave" role="tabpanel" aria-labelledby="leave-tab">
                     <div class="container-fluid pt-3 mb-3">
+                        @if(strtotime(date('H:i:s')) <= strtotime('15:00:00'))
                         <a href="{{ route('leave.create') }}" class="btn btn-success mb-3"><i class="fas fa-plus-circle"></i> File Leave</a>
+                        @endif
                         <table id="myleave-dt" class="table table-striped table-bordered" style="width:100%;">
                             <thead class="thead-dark">
                                 <tr>
@@ -117,7 +119,9 @@
                 <!--OB-->
                 <div class="tab-pane fade" id="ob" role="tabpanel" aria-labelledby="ob-tab">
                     <div class="container-fluid pt-3 mb-3">
+                        @if(strtotime(date('H:i:00'))<=strtotime(date('15:00:00')))
                         <a href="{{ route('ob.create') }}" class="btn btn-success mb-3"><i class="fas fa-plus-circle"></i> File Official Business</a>
+                        @endif
                         <table id="myob-dt" class="table table-striped table-bordered" style="width:100%;">
                             <thead class="thead-dark">
                                 <tr>
@@ -158,7 +162,9 @@
                 <!--CS-->
                 <div class="tab-pane fade" id="cs" role="tabpanel" aria-labelledby="cs-tab">
                     <div class="container-fluid pt-3 mb-3">
+                        @if(strtotime(date('H:i:00'))<=strtotime(date('15:00:00')))
                         <a href="{{ route('cs.create') }}" class="btn btn-success mb-3"><i class="fas fa-plus-circle"></i> File Change Shift</a>
+                        @endif
                         <table id="mycs-dt" class="table table-striped table-bordered" style="width:100%;">
                             <thead class="thead-dark">
                                 <tr>
@@ -197,7 +203,9 @@
                 <!--OT-->
                 <div class="tab-pane fade" id="ot" role="tabpanel" aria-labelledby="ot-tab">
                     <div class="container-fluid pt-3 mb-3">
+                        @if(strtotime(date('H:i:00'))<=strtotime(date('15:00:00')))
                         <a href="{{ route('ot.create') }}" class="btn btn-success mb-3"><i class="fas fa-plus-circle"></i> File Overtime</a>
+                        @endif
                         <table id="myot-dt" class="table table-striped table-bordered" style="width:100%;">
                             <thead class="thead-dark">
                                 <tr>

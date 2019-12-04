@@ -35,12 +35,15 @@
                                         <select class="form-control" name="type" id="type">
                                             <option {{old('type') == 'Sick Leave' ? 'selected' : ''}} {{ $leave_credits->sick_leave <= 0 ? 'disabled' : '' }} value="Sick Leave">Sick Leave : {{$leave_credits->sick_leave}}</option>
                                             <option {{old('type') == 'Vacation Leave' ? 'selected' : ''}} {{ $leave_credits->vacation_leave <= 0 ? 'disabled' : '' }} value="Vacation Leave">Vacation Leave : {{$leave_credits->vacation_leave}}</option>
-                                            <option {{old('type') == 'Emergency Leave' ? 'selected' : ''}} {{ $leave_credits->emergency_leave <= 0 ? 'disabled' : '' }} value="Emergency Leave">Emergency Leave : {{$leave_credits->emergency_leave}}</option>
+                                            <option {{old('type') == 'Solo Parent Leave' ? 'selected' : ''}} {{ $leave_credits->solo_parent_leave <= 0 ? 'disabled' : '' }} value="Solo Parent Leave">Solo Parent Leave : {{$leave_credits->solo_parent_leave}}</option>
                                             <option {{old('type') == 'Admin Leave' ? 'selected' : ''}} {{ $leave_credits->admin_leave <= 0 ? 'disabled' : '' }} value="Admin Leave">Admin Leave : {{$leave_credits->admin_leave}}</option>
                                             <option {{old('type') == 'Bereavement Leave' ? 'selected' : ''}} {{ $leave_credits->bereavement_leave <= 0 ? 'disabled' : '' }} value="Bereavement Leave">Bereavement Leave : {{$leave_credits->bereavement_leave}}</option>
                                             <option {{old('type') == 'Birthday Leave' ? 'selected' : ''}} {{ $leave_credits->bday_leave <= 0 ? 'disabled' : '' }} value="Birthday Leave">Birthday Leave : {{$leave_credits->bday_leave}}</option>
                                             @if(Auth::user()->employee->gender == "Female")
                                             <option {{old('type') == 'Maternity Leave' ? 'selected' : ''}} {{ $leave_credits->maternity_leave <= 0 ? 'disabled' : '' }} value="Maternity Leave">Maternity Leave : {{$leave_credits->maternity_leave}}</option>
+                                            <option {{old('type') == 'Expanded Maternity Leave' ? 'selected' : ''}} {{ $leave_credits->expanded_leave <= 0 ? 'disabled' : '' }} value="Expanded Maternity Leave">Expanded Maternity Leave : {{$leave_credits->expanded_leave}}</option>
+                                            <option {{old('type') == 'Special Leave for Women' ? 'selected' : ''}} {{ $leave_credits->special_leave <= 0 ? 'disabled' : '' }} value="Special Leave for Women">Special Leave for Women : {{$leave_credits->special_leave}}</option>
+                                            <option {{old('type') == 'Leave for Abused Women' ? 'selected' : ''}} {{ $leave_credits->abused_leave <= 0 ? 'disabled' : '' }} value="Leave for Abused Women">Leave for Abused Women : {{$leave_credits->abused_leave}}</option>
                                             @else
                                             <option {{old('type') == 'Paternity Leave' ? 'selected' : ''}} {{ $leave_credits->paternity_leave <= 0 ? 'disabled' : '' }} value="Paternity Leave">Paternity Leave : {{$leave_credits->paternity_leave}}</option>
                                             @endif
@@ -55,7 +58,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                             </div>
-                                            <input type="date" class="form-control" name="leave_from" id="leave_from" value="{{old('leave_from') ? old('leave_from') : date('Y-m-d')}}" />
+                                            <input type="date" class="form-control" min="{{ date('Y-m-d',strtotime('next '.date('l'))) }}" name="leave_from" id="leave_from" value="{{old('leave_from') ? old('leave_from') : date('Y-m-d',strtotime('next '.date('l')))}}" />
                                         </div>
                                     </div>
                                 </div>
@@ -66,7 +69,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                             </div>
-                                            <input type="date" class="form-control {{ $errors->has('leave_to') ? 'is-invalid' : '' }}" name="leave_to" id="leave_to" value="{{old('leave_to') ? old('leave_to') : date('Y-m-d')}}" {{old('is_one_day') ? 'readonly' : ''}}/>
+                                            <input type="date" class="form-control {{ $errors->has('leave_to') ? 'is-invalid' : '' }}" name="leave_to" id="leave_to" value="{{old('leave_to') ? old('leave_to') : date('Y-m-d',strtotime('next '.date('l')))}}" {{old('is_one_day') ? 'readonly' : ''}}/>
                                             <div class="invalid-feedback">
                                                 {{ $errors->first('leave_to') }}
                                             </div>
@@ -97,7 +100,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Approver</label><br>
-                                        <a href="/{{$reports_to->emp_photo}}" target="_blank"><img src="/{{$reports_to->emp_photo}}" class="img-fluid rounded-circle bg-white" style="height:48px;"/></a> <span class="badge badge-secondary">{{$reports_to->full_name}}</span>
+                                        <a href="/{{$reports_to->emp_photo}}" target="_blank"><img src="/{{$reports_to->emp_photo}}" class="img-fluid rounded-circle bg-white" style="height:48px;"/></a> <span class="badge badge-secondary">{{$reports_to->full_name}}<br>{{$reports_to->emp_no}}</span>
                                     </div>
                                 </div>
                             </div>

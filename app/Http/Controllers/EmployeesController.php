@@ -168,15 +168,27 @@ class EmployeesController extends Controller
             $leave_credits = array(
                 'sick_leave' => $request->input('sick_leave'),
                 'vacation_leave' => $request->input('vacation_leave'),
-                'emergency_leave' => $request->input('emergency_leave'),
+                'solo_parent_leave' => $request->input('solo_parent_leave'),
                 'admin_leave' => $request->input('admin_leave'),
                 'bereavement_leave' => $request->input('bereavement_leave'),
                 'bday_leave' => $request->input('bday_leave'),
                 'maternity_leave' => $request->input('maternity_leave'),
-                'paternity_leave' => $request->input('paternity_leave')
+                'paternity_leave' => $request->input('paternity_leave'),
+                'special_leave' => $request->input('special_leave'),
+                'abused_leave' => $request->input('abused_leave'),
+                'expanded_leave' => $request->input('expanded_leave')
+            );
+           
+            $medical_info = array(
+                'blood_type' => $request->input('blood_type'),
+                'emp_height' => $request->input('emp_height') ? $request->input('emp_height') : 0,
+                'emp_weight' => $request->input('emp_weight') ? $request->input('emp_weight') : 0,
+                'medical_issues' => $request->input('medical_issues') ? $request->input('medical_issues') : 'N/A',
+                'birth_mark' => $request->input('birth_mark') ? $request->input('birth_mark') : 'N/A'
             );
 
             $employee->leave_credits = json_encode($leave_credits);
+            $employee->medical_info = json_encode($medical_info);
             $employee->current_address = $request->input('current_address','N/A');
             $employee->home_address = $request->input('home_address','N/A');
             $employee->tel_no = $request->input('tel_no','N/A') ? $request->input('tel_no','') : '';
@@ -209,12 +221,25 @@ class EmployeesController extends Controller
             $leave_credits = json_decode( json_encode( array(
                 'sick_leave' => 0,
                 'vacation_leave' => 0,
-                'emergency_leave' => 0,
+                'solo_parent_leave' => 0,
                 'admin_leave' => 0,
                 'bereavement_leave' => 0,
                 'bday_leave' => 0,
                 'maternity_leave' => 0,
-                'paternity_leave' => 0
+                'paternity_leave' => 0,
+                'special_leave' => 0,
+                'abused_leave' => 0,
+                'expanded_leave' => 0
+            ) ) );
+        }
+
+        if(!$medical_info = json_decode($employee->medical_info)){
+            $medical_info = json_decode( json_encode( array(
+                'blood_type' => 'O-',
+                'emp_height' => 0,
+                'emp_weight' => 0,
+                'medical_issues' => 'N/A',
+                'birth_mark' => 'N/A'
             ) ) );
         }
 
@@ -223,7 +248,8 @@ class EmployeesController extends Controller
                     ->with('dep',json_decode($employee->dependencies))
                     ->with('employee',$employee)
                     ->with('reports_to',$reports_to)
-                    ->with('leave_credits',$leave_credits);
+                    ->with('leave_credits',$leave_credits)
+                    ->with('medical_info',$medical_info);
     }
 
     /**
@@ -246,12 +272,25 @@ class EmployeesController extends Controller
             $leave_credits = json_decode( json_encode( array(
                 'sick_leave' => 0,
                 'vacation_leave' => 0,
-                'emergency_leave' => 0,
+                'solo_parent_leave' => 0,
                 'admin_leave' => 0,
                 'bereavement_leave' => 0,
                 'bday_leave' => 0,
                 'maternity_leave' => 0,
-                'paternity_leave' => 0
+                'paternity_leave' => 0,
+                'special_leave' => 0,
+                'abused_leave' => 0,
+                'expanded_leave' => 0
+            ) ) );
+        }
+
+        if(!$medical_info = json_decode($employee->medical_info)){
+            $medical_info = json_decode( json_encode( array(
+                'blood_type' => 'O-',
+                'emp_height' => 0,
+                'emp_weight' => 0,
+                'medical_issues' => 'N/A',
+                'birth_mark' => 'N/A'
             ) ) );
         }
 
@@ -266,7 +305,8 @@ class EmployeesController extends Controller
                             'employee' => $employee,
                             'leave_credits' => $leave_credits,
                             'employees' => Employee::where('id','<>',Crypt::decrypt($id))->orderBy('emp_lname','asc')->get()
-                        )); 
+                        ))
+                ->with('medical_info',$medical_info); 
     }
 
     /**
@@ -358,15 +398,26 @@ class EmployeesController extends Controller
             $leave_credits = array(
                 'sick_leave' => $request->input('sick_leave'),
                 'vacation_leave' => $request->input('vacation_leave'),
-                'emergency_leave' => $request->input('emergency_leave'),
+                'solo_parent_leave' => $request->input('solo_parent_leave'),
                 'admin_leave' => $request->input('admin_leave'),
                 'bereavement_leave' => $request->input('bereavement_leave'),
                 'bday_leave' => $request->input('bday_leave'),
                 'maternity_leave' => $request->input('maternity_leave'),
-                'paternity_leave' => $request->input('paternity_leave')
+                'paternity_leave' => $request->input('paternity_leave'),
+                'special_leave' => $request->input('special_leave'),
+                'abused_leave' => $request->input('abused_leave'),
+                'expanded_leave' => $request->input('expanded_leave')
+            );
+            $medical_info = array(
+                'blood_type' => $request->input('blood_type'),
+                'emp_height' => $request->input('emp_height') ? $request->input('emp_height') : 0,
+                'emp_weight' => $request->input('emp_weight') ? $request->input('emp_weight') : 0,
+                'medical_issues' => $request->input('medical_issues') ? $request->input('medical_issues') : 'N/A',
+                'birth_mark' => $request->input('birth_mark') ? $request->input('birth_mark') : 'N/A'
             );
 
             $employee->leave_credits = json_encode($leave_credits);
+            $employee->medical_info = json_encode($medical_info);
             $employee->current_address = $request->input('current_address','N/A');
             $employee->home_address = $request->input('home_address','N/A');
             $employee->tel_no = $request->input('tel_no','') ? $request->input('tel_no','') : '';

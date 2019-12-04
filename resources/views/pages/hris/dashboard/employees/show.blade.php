@@ -20,6 +20,9 @@
                         <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact Information</a>
                     </li>
                     <li class="nav-item">
+                            <a class="nav-link" id="medical-tab" data-toggle="tab" href="#medical" role="tab" aria-controls="medical" aria-selected="false">Medical Information</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" id="leave-tab" data-toggle="tab" href="#leave" role="tab" aria-controls="leave" aria-selected="false">Leave Credits</a>
                     </li>
                 </ul>
@@ -81,7 +84,7 @@
                                     <div class="form-group">
                                         <label>Immediate Head</label>
                                         <br>
-                                        <a href="/{{$reports_to ? $reports_to->emp_photo : 'storage/profile/1566540517.png'}}" target="_blank"><img src="/{{ $reports_to ? $reports_to->emp_photo : 'storage/profile/1566540517.png'}}" class="img-fluid rounded-circle bg-white border" style="height:48px;"/></a> <span class="badge badge-secondary">{{$reports_to ? $reports_to->full_name : 'N/A'}}</span>
+                                        <a href="/{{$reports_to ? $reports_to->emp_photo : 'storage/profile/1566540517.png'}}" target="_blank"><img src="/{{ $reports_to ? $reports_to->emp_photo : 'storage/profile/1566540517.png'}}" class="img-fluid rounded-circle bg-white border" style="height:48px;"/></a> <span class="badge badge-secondary">{{$reports_to ? $reports_to->full_name : 'N/A'}}<br>{{$reports_to ? $reports_to->emp_no : 'N/A'}}</span>
                                     </div>
                                 </div>
                             </div>
@@ -293,7 +296,46 @@
                         </div>
                     </div>
                     <!--End of Contact Information-->
-                    
+                    <!--Medical Information-->
+                    <div class="tab-pane fade" id="medical" role="tabpanel" aria-labelledby="medical-tab">
+                        <div class="container-fluid">
+                            <div class="row pt-3 mb-3">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="blood_type">Blood Type</label>
+                                        <input type="text" class="form-control {{ $errors->has('blood_type') ? 'is-invalid' : '' }}" value="{{ $medical_info->blood_type }}" readonly/>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="emp_height">Height (cm)</label>
+                                        <input type="text" class="form-control {{ $errors->has('emp_height') ? 'is-invalid' : '' }}" value="{{ $medical_info->emp_height }}" readonly/>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="emp_weight">Weight (lbs)</label>
+                                        <input type="text" class="form-control {{ $errors->has('emp_weight') ? 'is-invalid' : '' }}" value="{{ $medical_info->emp_weight }}" readonly/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="medical_issues">Medical Issues</label>
+                                        <textarea class="form-control {{ $errors->has('medical_issues') ? 'is-invalid' : '' }}" name="medical_issues" id="medical_issues" rows="3" readonly>{{ $medical_info->medical_issues }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="birth_mark">Birth Mark</label>
+                                        <input type="text" class="form-control {{ $errors->has('birth_mark') ? 'is-invalid' : '' }}" value="{{ $medical_info->birth_mark }}" readonly/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End of Medical Information-->
                     <!--Leave Credits-->
                     <div class="tab-pane fade" id="leave" role="tabpanel" aria-labelledby="leave-tab">
                         <div class="container-fluid">
@@ -307,6 +349,10 @@
                                         <label>Admin Leave <sup class="text-danger">*</sup></label>
                                         <input type="number" class="form-control" min="0" name="admin_leave" value="{{ $leave_credits->admin_leave }}" readonly/>
                                     </div>
+                                    <div class="form-group">
+                                        <label>Special Leave for Women<sup class="text-danger">*</sup></label>
+                                        <input type="number" class="form-control" min="0" name="special_leave" value="{{ $leave_credits->special_leave }}" readonly/>
+                                    </div>
                                 </div>
                                 <div class="col-md-3 border-right">
                                     <div class="form-group">
@@ -317,15 +363,23 @@
                                         <label>Bereavement Leave <sup class="text-danger">*</sup></label>
                                         <input type="number" class="form-control" min="0" name="bereavement_leave" value="{{ $leave_credits->bereavement_leave }}" readonly/>
                                     </div>
+                                    <div class="form-group">
+                                        <label>Leave for Abused Women <sup class="text-danger">*</sup></label>
+                                        <input type="number" class="form-control" min="0" name="abused_leave" value="{{ $leave_credits->abused_leave }}" readonly/>
+                                    </div>
                                 </div>
                                 <div class="col-md-3 border-right">
                                     <div class="form-group">
-                                        <label>Emergency Leave <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="emergency_leave" value="{{ $leave_credits->emergency_leave }}" readonly/>
+                                        <label>Solo Parent Leave <sup class="text-danger">*</sup></label>
+                                        <input type="number" class="form-control" min="0" name="solo_parent_leave" value="{{ $leave_credits->solo_parent_leave }}" readonly/>
                                     </div>
                                     <div class="form-group">
                                         <label>Birthday Leave <sup class="text-danger">*</sup></label>
                                         <input type="number" class="form-control" min="0" name="bday_leave" value="{{ $leave_credits->bday_leave }}" readonly/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Leave for Abused Women <sup class="text-danger">*</sup></label>
+                                        <input type="number" class="form-control" min="0" name="abused_leave" value="{{ $leave_credits->abused_leave }}" readonly/>
                                     </div>
                                 </div>
                                 <div class="col-md-3">

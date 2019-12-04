@@ -147,9 +147,9 @@ class OTController extends Controller
             $ot->last_approved = "1990-01-01";
 
             $ot->next_approver = Auth::user()->employee->reports_to;
-            $ot->status = "For Approval";
+            $ot->status = "For Pre-Approval";
 
-            $logs = array(array('status' => 'For Approval',
+            $logs = array(array('status' => 'For Pre-Approval',
                                 'transaction_date' => date('Y-m-d'),
                                 'approved_by' => Auth::user()->emp_no,
                                 'remarks' => 'Filed'));
@@ -328,7 +328,21 @@ class OTController extends Controller
                                         $request->input('remarks'));
 
             if($request->submit == 'approve'){
-                if($ot->status == "For Approval"){
+                if($ot->status == "For Pre-Approval"){
+                        $status = 'For Approval';
+                        $filer = Employee::where('emp_no','=',$ot->filer)->first();
+                        $mailable = new LeaveMailable('HRIS - Overtime Request Pre-approved',
+                                        'ot',
+                                        'pre-approved',
+                                        'filer',
+                                        Auth::user()->employee->emp_fname,
+                                        $ot->ref_no,
+                                        '',
+                                        $filer->full_name,
+                                        $request->input('remarks'));
+                    
+                 
+                }else if($ot->status == "For Approval"){
                     if(Employee::where('emp_no','=', Auth::user()->emp_no)->first()->reports_to){
                         $status = 'For Manager Approval';
                         $ot->next_approver = Employee::where('emp_no','=',Auth::user()->emp_no)->first()->reports_to;

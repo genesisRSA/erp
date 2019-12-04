@@ -5,7 +5,7 @@
 @section('content')
     <div class="card mb-3">
         <div class="card-body">
-            <h3><a href="{{ route('mytimekeeping') }}" class="mr-3"><i class="fas fa-arrow-left"></i></a> File Overtime</h3>
+            <h3><a href="{{ route('mytimekeeping').'#ot' }}" class="mr-3"><i class="fas fa-arrow-left"></i></a> File Overtime</h3>
             <hr>
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -104,7 +104,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Approver</label><br>
-                                        <a href="/{{$reports_to->emp_photo}}" target="_blank"><img src="/{{$reports_to->emp_photo}}" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">{{$reports_to->full_name}}</span>
+                                        <a href="/{{$reports_to->emp_photo}}" target="_blank"><img src="/{{$reports_to->emp_photo}}" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">{{$reports_to->full_name}}<br>{{$reports_to->emp_no}}</span>
                                     </div>
                                 </div>
                             </div>
@@ -116,7 +116,7 @@
                 <div class="container-fluid">
                     <div class="row mt-3 float-right">
                         <button type="submit" class="btn btn-success mr-2">Submit</button>
-                        <a href="{{ route('mytimekeeping') }}" class="btn btn-danger">Cancel</a>
+                        <a href="{{ route('mytimekeeping').'#ot' }}" class="btn btn-danger">Cancel</a>
                     </div>
                 </div>
             </form>
