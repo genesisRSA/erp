@@ -523,53 +523,53 @@
                                 <div class="col-md-3 border-right">
                                     <div class="form-group">
                                         <label>Sick Leave <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="sick_leave" value="{{ old('sick_leave') ? old('sick_leave') : 0}}"/>
+                                        <input type="number" step=".01" class="form-control" min="0" name="sick_leave" value="{{ old('sick_leave') ? old('sick_leave') : 0}}"/>
                                     </div>
                                     <div class="form-group">
                                         <label>Admin Leave <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="admin_leave" value="{{ old('admin_leave') ? old('admin_leave') : 0}}"/>
+                                        <input type="number" step=".01" class="form-control" min="0" name="admin_leave" value="{{ old('admin_leave') ? old('admin_leave') : 0}}"/>
                                     </div>
                                     <div class="form-group">
                                         <label>Special Leave for Women<sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="special_leave" value="{{ old('special_leave') ? old('special_leave') : 0}}"/>
+                                        <input type="number" step=".01" class="form-control" min="0" name="special_leave" value="{{ old('special_leave') ? old('special_leave') : 0}}"/>
                                     </div>
                                 </div>
                                 <div class="col-md-3 border-right">
                                     <div class="form-group">
                                         <label>Vacation Leave <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="vacation_leave" value="{{ old('vacation_leave') ? old('vacation_leave') : 0}}"/>
+                                        <input type="number" step=".01" class="form-control" min="0" name="vacation_leave" value="{{ old('vacation_leave') ? old('vacation_leave') : 0}}"/>
                                     </div>
                                     <div class="form-group">
                                         <label>Bereavement Leave <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="bereavement_leave" value="{{ old('bereavement_leave') ? old('bereavement_leave') : 0}}"/>
+                                        <input type="number" step=".01" class="form-control" min="0" name="bereavement_leave" value="{{ old('bereavement_leave') ? old('bereavement_leave') : 0}}"/>
                                     </div>
                                     <div class="form-group">
                                         <label>Leave for Abused Women <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="abused_leave" value="{{ old('abused_leave') ? old('abused_leave') : 0}}"/>
+                                        <input type="number" step=".01" class="form-control" min="0" name="abused_leave" value="{{ old('abused_leave') ? old('abused_leave') : 0}}"/>
                                     </div>
                                 </div>
                                 <div class="col-md-3 border-right">
                                     <div class="form-group">
                                         <label>Solo Parent Leave <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="solo_parent_leave" value="{{ old('solo_parent_leave') ? old('solo_parent_leave') : 0}}"/>
+                                        <input type="number" step=".01" class="form-control" min="0" name="solo_parent_leave" value="{{ old('solo_parent_leave') ? old('solo_parent_leave') : 0}}"/>
                                     </div>
                                     <div class="form-group">
                                         <label>Birthday Leave <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="bday_leave" value="{{ old('bday_leave') ? old('bday_leave') : 0}}"/>
+                                        <input type="number" step=".01" class="form-control" min="0" name="bday_leave" value="{{ old('bday_leave') ? old('bday_leave') : 0}}"/>
                                     </div>
                                     <div class="form-group">
                                         <label>Expanded Maternity Leave <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="expanded_leave" value="{{ old('expanded_leave') ? old('expanded_leave') : 0}}"/>
+                                        <input type="number" step=".01" class="form-control" min="0" name="expanded_leave" value="{{ old('expanded_leave') ? old('expanded_leave') : 0}}"/>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Maternity Leave <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="maternity_leave" id="maternity_leave" value="{{ old('maternity_leave') ? old('maternity_leave') : 0}}"/>
+                                        <input type="number" step=".01" class="form-control" min="0" name="maternity_leave" id="maternity_leave" value="{{ old('maternity_leave') ? old('maternity_leave') : 0}}"/>
                                     </div>
                                     <div class="form-group">
                                         <label>Paternity Leave <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="paternity_leave" id="paternity_leave" value="{{ old('paternity_leave') ? old('paternity_leave') : 0}}"/>
+                                        <input type="number" step=".01" class="form-control" min="0" name="paternity_leave" id="paternity_leave" value="{{ old('paternity_leave') ? old('paternity_leave') : 0}}"/>
                                     </div>
                                 </div>
                             </div>

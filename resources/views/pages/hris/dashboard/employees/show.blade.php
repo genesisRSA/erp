@@ -343,53 +343,53 @@
                                 <div class="col-md-3 border-right">
                                     <div class="form-group">
                                         <label>Sick Leave <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="sick_leave" value="{{ $leave_credits->sick_leave }}" readonly/>
+                                        <input type="number" step=".01" class="form-control" min="0" name="sick_leave" value="{{ $leave_credits->sick_leave }}" readonly/>
                                     </div>
                                     <div class="form-group">
                                         <label>Admin Leave <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="admin_leave" value="{{ $leave_credits->admin_leave }}" readonly/>
+                                        <input type="number" step=".01" class="form-control" min="0" name="admin_leave" value="{{ $leave_credits->admin_leave }}" readonly/>
                                     </div>
                                     <div class="form-group">
                                         <label>Special Leave for Women<sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="special_leave" value="{{ $leave_credits->special_leave }}" readonly/>
+                                        <input type="number" step=".01" class="form-control" min="0" name="special_leave" value="{{ $leave_credits->special_leave }}" readonly/>
                                     </div>
                                 </div>
                                 <div class="col-md-3 border-right">
                                     <div class="form-group">
                                         <label>Vacation Leave <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="vacation_leave" value="{{ $leave_credits->vacation_leave }}" readonly/>
+                                        <input type="number" step=".01" class="form-control" min="0" name="vacation_leave" value="{{ $leave_credits->vacation_leave }}" readonly/>
                                     </div>
                                     <div class="form-group">
                                         <label>Bereavement Leave <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="bereavement_leave" value="{{ $leave_credits->bereavement_leave }}" readonly/>
+                                        <input type="number" step=".01" class="form-control" min="0" name="bereavement_leave" value="{{ $leave_credits->bereavement_leave }}" readonly/>
                                     </div>
                                     <div class="form-group">
                                         <label>Leave for Abused Women <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="abused_leave" value="{{ $leave_credits->abused_leave }}" readonly/>
+                                        <input type="number" step=".01" class="form-control" min="0" name="abused_leave" value="{{ $leave_credits->abused_leave }}" readonly/>
                                     </div>
                                 </div>
                                 <div class="col-md-3 border-right">
                                     <div class="form-group">
                                         <label>Solo Parent Leave <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="solo_parent_leave" value="{{ $leave_credits->solo_parent_leave }}" readonly/>
+                                        <input type="number" step=".01" class="form-control" min="0" name="solo_parent_leave" value="{{ $leave_credits->solo_parent_leave }}" readonly/>
                                     </div>
                                     <div class="form-group">
                                         <label>Birthday Leave <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="bday_leave" value="{{ $leave_credits->bday_leave }}" readonly/>
+                                        <input type="number" step=".01" class="form-control" min="0" name="bday_leave" value="{{ $leave_credits->bday_leave }}" readonly/>
                                     </div>
                                     <div class="form-group">
                                         <label>Leave for Abused Women <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="abused_leave" value="{{ $leave_credits->abused_leave }}" readonly/>
+                                        <input type="number" step=".01" class="form-control" min="0" name="abused_leave" value="{{ $leave_credits->abused_leave }}" readonly/>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Maternity Leave <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="maternity_leave" value="{{ $leave_credits->maternity_leave }}" readonly/>
+                                        <input type="number" step=".01" class="form-control" min="0" name="maternity_leave" value="{{ $leave_credits->maternity_leave }}" readonly/>
                                     </div>
                                     <div class="form-group">
                                         <label>Paternity Leave <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" min="0" name="paternity_leave" value="{{ $leave_credits->paternity_leave }}" readonly/>
+                                        <input type="number" step=".01" class="form-control" min="0" name="paternity_leave" value="{{ $leave_credits->paternity_leave }}" readonly/>
                                     </div>
                                 </div>
                             </div>
