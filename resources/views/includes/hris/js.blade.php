@@ -281,7 +281,7 @@
             var dob = $('#dep_dob').val();
             var rel = $('#dep_rel').val();
             var found = false;
-            if(rel != "Brother" && rel != "Sister" && rel != "Son" && rel != "Daugther"){
+            if(rel != "Brother" && rel != "Sister"){
                 if($.inArray(rel,existing_rel) > -1){
                     found = true;
                 }

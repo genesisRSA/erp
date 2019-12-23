@@ -76,7 +76,7 @@
                                             <option value="" disabled selected>Choose Bio Access ID...</option>
 
                                             @foreach ($access_id as $access)
-                                                <option value="{{$access->access_id}}" {{ old('access_id')==$access->access_id ? 'selected' : '' }}> {{$access->emp_name}} (ID : {{$access->access_id}}) </option>
+                                                <option value="{{$access->access_id}}"> {{$access->emp_name}} (ID : {{$access->access_id}}) </option>
                                             @endforeach
 
                                         </select>
