@@ -52,4 +52,6 @@ Route::get('/areas/all', 'AreasController@all');
 Route::get('/ics/users/', 'ICSController@users');
 Route::post('/ics/users/authbycode', 'ICSController@authbycode');
 Route::post('/ics/users/auth', 'ICSController@auth');
+Route::post('/ics/items/search', 'ICSController@search');
+Route::post('/ics/items/createstock', 'ICSController@create_stock');
 

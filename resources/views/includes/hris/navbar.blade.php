@@ -39,7 +39,7 @@
                 </ul>
                 <ul class="navbar-nav bg-blue-dark mt-3 mb-3 rounded">
                     <li class="nav-item pl-2 pt-3">
-                        <a class="nav-link text-white" href="/hris/mytimekeeping"><i class="fas fa-cog"></i> Account Settings</a>
+                        <a class="nav-link text-white" id="settings"><i class="fas fa-cog"></i> Account Settings</a>
                     </li>
                     <li class="nav-item pl-2 pb-3">
                         <a class="nav-link text-danger" id="signout"><i class="fas fa-power-off"></i> Sign Out</a>

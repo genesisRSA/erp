@@ -521,4 +521,17 @@ class EmployeesController extends Controller
        }
 
     }
+
+    public function change_password(Request $request){
+        $user = User::find($request->input('user_id'));
+        if(password_verify($request->input('current_password'), $user->password)){
+            $user->password = bcrypt($request->input('new_password'));
+            
+            if($user->save()){
+                return redirect()->route('hris.home')->withSuccess('Password successfully changed!');
+            }
+        }else{
+            return redirect()->route('hris.home')->withErrors(['Current password is incorrect!']);
+        }
+    }
 }

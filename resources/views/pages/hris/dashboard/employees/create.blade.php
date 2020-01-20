@@ -74,7 +74,7 @@
                                         <label>Bio Access ID  <sup class="text-danger">*</sup></label>
                                         <select class="form-control {{ $errors->has('access_id') ? 'is-invalid' : '' }}" name="access_id" id="access_id" >
                                             <option value="" disabled selected>Choose Bio Access ID...</option>
-
+                                            <option value="000">None (ID : 000) </option>
                                             @foreach ($access_id as $access)
                                                 <option value="{{$access->access_id}}"> {{$access->emp_name}} (ID : {{$access->access_id}}) </option>
                                             @endforeach

@@ -1314,6 +1314,28 @@
             $('#logoutModal').modal('show');
         });
 
+        $("body").on("click", "#settings", function (){
+            $('#settingsModal').modal('show');
+        });
+
+        $("body").on("keyup", "#new_password", function(){
+            if($('#cnew_password').val()!=$(this).val()){
+                $('#new_password').addClass("is-invalid");
+            }else{
+                $('#new_password').removeClass("is-invalid");
+                $('#cnew_password').removeClass("is-invalid");
+            }
+        });
+
+        $("body").on("keyup", "#cnew_password", function(){
+            if($('#new_password').val()!=$(this).val()){
+                $('#cnew_password').addClass("is-invalid");
+            }else{
+                $('#new_password').removeClass("is-invalid");
+                $('#cnew_password').removeClass("is-invalid");
+            }
+        });
+
         @if($page=="shift")
             $('.datepicker').datepicker({
                 autoClose: true,

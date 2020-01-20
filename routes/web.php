@@ -28,6 +28,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/hris/employees/{id}/account', 'EmployeesController@account')->name('account.create');
     Route::post('/hris/employees/account/store', 'EmployeesController@account_store')->name('account.store');
     Route::post('/hris/employees/account/update', 'EmployeesController@account_update')->name('account.update');
+    Route::post('/hris/employees/account/change_password', 'EmployeesController@change_password')->name('account.changepassword');
     Route::resource('/hris/leave', 'LeavesController');
     Route::get('/hris/leave/{ref_no}/posting', 'LeavesController@for_posting');
     Route::post('/hris/leave/{leave}', 'LeavesController@post')->name('leave.post');

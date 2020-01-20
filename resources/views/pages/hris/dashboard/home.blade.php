@@ -19,6 +19,18 @@
             <p class="card-text">Welcome to our HRIS! The Human Resource Information System (HRIS) is a software or online solution for the data entry, data tracking, and data information needs of the Human Resources, payroll, management, and accounting functions within a business.</p>
           </div>
     </div>
+    @if ($message = Session::get('success'))
+        <div class="alert alert-success">
+            <strong>Success,</strong> {{$message}}
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="alert alert-danger">
+            <strong>Error,</strong> {{$errors->first()}}
+        </div>
+    @endif
+
     @if(Auth::user()->is_admin || Auth::user()->is_hr)
         <div class="row">
             <div class="col-lg-3">
