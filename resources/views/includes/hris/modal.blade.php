@@ -44,14 +44,14 @@
                         <label>New Password <sup class="text-danger">*</sup></label>
                         <input type="password" id="new_password" name="new_password" class="form-control" placeholder="Enter New Password" required/>
                         <div class="invalid-feedback">
-                            Password mismatch!
+                            Password mismatch!!
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Confirm New Password <sup class="text-danger">*</sup></label>
                         <input type="password" id="cnew_password" name="cnew_password" class="form-control" placeholder="Confirm New Password" required/>
                         <div class="invalid-feedback">
-                            Password mismatch!
+                            Password mismatch!!
                         </div>
                     </div>
                 </div>
