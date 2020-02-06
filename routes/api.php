@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 //HRIS
 
 Route::get('/hris/attendances/all', 'AttendancesController@all');
+Route::get('/hris/attendances/calc_all', 'AttendancesController@calc_all');
 Route::get('/hris/attendances/access_details/{id}', 'AttendancesController@access_details');
 Route::get('/hris/attendances/my_today/{emp_id}/{today}', 'AttendancesController@my_today');
 Route::get('/hris/attendances/my_attendance/{emp_id}', 'AttendancesController@my_attendance');

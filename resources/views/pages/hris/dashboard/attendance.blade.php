@@ -24,7 +24,7 @@
                 <!--RAW ATTENDANCE-->
                 <div class="tab-pane fade show active" id="raw" role="tabpanel" aria-labelledby="raw-tab">
                     <div class="container-fluid pt-3 mb-3">
-                        <table id="attendance-dt" class="table table-striped table-bordered">
+                        <table id="attendance-dt" class="table table-striped table-bordered w-100">
                             <thead class="thead-dark">
                                 <tr>
                                     <th>Employee Name</th>
@@ -33,6 +33,14 @@
                                     <th>Status</th>
                                 </tr>
                             </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>Employee Name</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -40,6 +48,28 @@
                 <!--CALCULATED ATTENDANCE-->
                 <div class="tab-pane fade" id="calculated" role="tabpanel" aria-labelledby="calculated-tab">
                     <div class="container-fluid pt-3 mb-3">
+                        <table id="calcattendance-dt" class="table table-striped table-bordered w-100">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Employee Name</th>
+                                    <th>Date</th>
+                                    <th>Time In</th>
+                                    <th>Time Out</th>
+                                    <th>Hours Work</th>
+                                    <th>Late</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>Employee Name</th>
+                                    <th>Date</th>
+                                    <th>Time In</th>
+                                    <th>Time Out</th>
+                                    <th>Hours Work</th>
+                                    <th>Late</th>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
                 <!--END OF CALCULATED ATTENDANCE-->

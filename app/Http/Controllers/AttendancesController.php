@@ -26,6 +26,15 @@ class AttendancesController extends Controller
             ]);
     }
 
+    public function calc_all(){
+        $att_punches = DB::connection('mysql_live')->table('calc_att')->where('att_date','>=',date('Y').'-01-01')->get();
+
+        return response()
+            ->json([
+                "data" => $att_punches
+            ]);
+    }
+
     public function access_details($id){
         $access_details = DB::connection('mysql_live')->select("SELECT id as access_id,CONCAT(emp_lastname,', ',emp_firstname) as emp_name from hr_employee WHERE emp_active = 1 and id = ? ORDER BY emp_lastname",[$id]);
 

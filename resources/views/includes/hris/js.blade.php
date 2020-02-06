@@ -3,6 +3,33 @@
     var existing_ot_date = [];
     
     $(function () {
+        function buildSelect( table ) {
+            table.columns().every( function () {
+                var column = table.column( this, {search: 'applied'} );
+                var select = $('<select class="form-control"><option value=""></option></select>')
+                .appendTo( $(column.footer()).empty() )
+                .on( 'change', function () {
+                var val = $.fn.dataTable.util.escapeRegex(
+                    $(this).val()
+                );
+
+                column
+                .search( val ? '^'+val+'$' : '', true, false )
+                .draw();
+                } );
+
+                column.data().unique().sort().each( function ( d, j ) {
+                select.append( '<option value="'+d+'">'+d+'</option>' );
+                } );
+                
+                // The rebuild will clear the exisiting select, so it needs to be repopulated
+                var currSearch = column.search();
+                if ( currSearch ) {
+                select.val( currSearch.substring(1, currSearch.length-1) );
+                }
+            } );
+            }
+
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             $($.fn.dataTable.tables(true)).DataTable()
                                         .columns.adjust()
@@ -14,6 +41,16 @@
 
         @if($page == "attendance")
         var attendance_dt = $('#attendance-dt').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'pageLength',
+                { extend: 'excel',
+                  title: 'HRIS - Raw Attendance'
+                },
+                { extend: 'print',
+                  title: 'HRIS - Raw Attendance'
+                }
+            ],
             "responsive": true,
             "pagingType": "full",
             "ajax": "/api/hris/attendances/all",
@@ -32,6 +69,41 @@
                   } }
             ]
         });
+
+        buildSelect( attendance_dt );
+        attendance_dt.on( 'draw', function () {
+            buildSelect( attendance_dt );
+        } );
+
+        var calcattendance_dt = $('#calcattendance-dt').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'pageLength', 
+                { extend: 'excel',
+                  title: 'HRIS - Calculated Attendance'
+                },
+                { extend: 'print',
+                  title: 'HRIS - Calculated Attendance'
+                }
+            ],
+            "responsive": true,
+            "pagingType": "full",
+            "ajax": "/api/hris/attendances/calc_all",
+            "columns": [
+                { "data": "employee_name" },
+                { "data": "att_date" },
+                { "data": "time_in" },
+                { "data": "time_out" },
+                { "data": "hours_work" },
+                { "data": "late" }
+            ]
+        });
+
+        buildSelect( calcattendance_dt );
+        calcattendance_dt.on( 'draw', function () {
+            buildSelect( calcattendance_dt );
+        } );
+        
         @endif
 
         @if($page=="my attendance")
@@ -48,6 +120,13 @@
             });
                 
             var my_attendance_dt = $('#my-attendance-td').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'pageLength',
+                    { extend: 'print',
+                    title: 'HRIS - My Attendance'
+                    }
+                ],
                 "responsive": true,
                 "pagingType": "full",
                 "aaSorting": [],
@@ -86,6 +165,13 @@
             });
                 
             var my_attendance_dt = $('#my-attendance-td').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'pageLength',
+                    { extend: 'print',
+                    title: 'HRIS - My Attendance'
+                    }
+                ],
                 "responsive": true,
                 "pagingType": "full",
                 "aaSorting": [],

@@ -55,7 +55,7 @@
                 <div class="card mb-3">
                     <h5 class="card-header bg-success text-white"><i class="far fa-thumbs-up"></i> Top 5 Early Comer of the Week</h5>
                     <div class="card-body">
-                        <p>Punctual at all-time.</p>
+                        <p>Punctuality at its Finest!</p>
                         <div class="list-group">
                             @foreach($week_early as $member)
                                 <a class="list-group-item list-group-item-action">
