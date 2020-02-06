@@ -63,7 +63,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Bio Access ID</label>
-                                    <input type="text" class="form-control" name="access_id" value="{{/*$access_id->emp_name*/'TEST'}} (ID : {{/*$access_id->access_id*/'TEST'}}) " readonly/>
+                                    <input type="text" class="form-control" name="access_id" value="{{$access_id->emp_name}} (ID : {{$access_id->access_id}}) " readonly/>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
