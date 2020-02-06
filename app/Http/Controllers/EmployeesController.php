@@ -263,7 +263,7 @@ class EmployeesController extends Controller
         //
         $employee = Employee::find(Crypt::decrypt($id));
         $access_id = DB::connection('mysql_live')->select("SELECT id as access_id,CONCAT(emp_lastname,', ',emp_firstname) as emp_name from hr_employee WHERE emp_active = 1 and id = '".$employee->access_id."' ORDER BY emp_lastname");
-        if(count($access_id)>0){$access_id = $access_id[0];}else{$access_id = json_encode(array("emp_name" => "NOT SET", "access_id" => '0'));}
+        if(count($access_id)>0){$access_id = $access_id[0];}else{$access_id = json_decode(json_encode(array("emp_name" => "NOT SET", "access_id" => '0')));}
         $departments =  \App\Department::where('site_code','=',$employee->site_code)->get();
         $sections =  \App\Section::where('dept_code','=',$employee->dept_code)->get();
         $positions =  \App\Position::where('sect_code','=',$employee->sect_code)->get();
