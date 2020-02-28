@@ -27,7 +27,7 @@ class AttendancesController extends Controller
     }
 
     public function calc_all(){
-        $att_punches = DB::connection('mysql_live')->table('calc_att')->where('att_date','>=',date('Y').'-01-01')->get();
+        $att_punches = DB::connection('mysql_live')->select("CALL calc_att('".date('Y')."-01-01')");
 
         return response()
             ->json([

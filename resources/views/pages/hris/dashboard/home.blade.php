@@ -104,14 +104,14 @@
                 </div>
             </div>
             <div class="col-lg-6">
-                <div class="card mb-3">
+                <!--<div class="card mb-3">
                     <h5 class="card-header bg-dark text-white"><i class="fas fa-info-circle"></i> Notification Area</h5>
                     <div class="card-body">
                         <h5 class="card-title">Special title treatment</h5>
                         <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
                         <a href="#" class="btn btn-primary">Go somewhere</a>
                     </div>
-                </div>
+                </div>-->
                 <div class="card mb-3">
                     <h5 class="card-header"><i class="fas fa-sitemap"></i> My Team : Attendance</h5>
                     <div class="card-body">

@@ -228,7 +228,7 @@
                                 +'<a href="employees/'+data+'" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Delete</a> '
                                 +'<a href="employees/'+data+'/account" class="btn btn-success"><i class="fas fa-user"></i> Account</a>'
                                 @endif
-                                +'<a href="employees/'+data+'/201file" class="btn btn-secondary"><i class="fas fa-file-invoice"></i> 201</a>' 
+                               // +'<a href="employees/'+data+'/201file" class="btn btn-secondary"><i class="fas fa-file-invoice"></i> 201</a>' 
                                 +'</div>';
                     }
                 } 

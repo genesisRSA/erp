@@ -42,7 +42,6 @@ return [
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
-
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
@@ -86,7 +85,8 @@ return [
         'mysql_live' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST_LIVE', '124.105.224.123'),
+            //'host' => env('DB_HOST_LIVE', '124.105.224.123'),
+            'host' => env('DB_HOST_LIVE', '127.0.0.1'),
             'port' => env('DB_PORT_LIVE', '3306'),
             'database' => env('DB_DATABASE_LIVE', 'biometricsdb'),
             'username' => env('DB_USERNAME_LIVE', 'root'),
@@ -120,7 +120,7 @@ return [
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
-            'host' => '124.105.224.123',
+            'host' => '192.168.1.13',
             'port' => '1433',
             'database' => 'RSA-ERPONE-LIVE',
             'username' => 'IT',
