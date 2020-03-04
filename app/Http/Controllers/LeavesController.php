@@ -392,7 +392,7 @@ class LeavesController extends Controller
                         $status = 'Approved';
                         $leave->next_approver = 'N/A';
                     }
-                }else{`
+                }else{
                     $status = 'Approved';
                     $leave->next_approver = 'N/A';
                 }
