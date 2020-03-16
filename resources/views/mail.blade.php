@@ -49,7 +49,6 @@
             <h1>Good day, {{$approver}}</h1>
             <p>Please see below official business request for your approval:<br><br>
                 <strong>Ref. No: </strong>{{$ref_no}}<br>
-                <strong>Purpose: </strong>{{$leave_type}}<br>
                 <strong>Requested By: </strong>{{$requestor}}<br><br><br>
             </p>
     <i>For more details you can click <a href="{{url('/')}}/hris/obs/{{$ref_no}}/approval">here.</a></i>
@@ -57,7 +56,6 @@
         <h1>Good day, {{$approver}}</h1>
         <p>Please see below official business request for your approval:<br><br>
             <strong>Ref. No: </strong>{{$ref_no}}<br>
-            <strong>Purpose: </strong>{{$leave_type}}<br>
             <strong>Requested By: </strong>{{$requestor}}<br><br><br>
         </p>
         <i>For more details you can click <a href="{{url('/')}}/hris/obs/{{$ref_no}}/approval">here.</a></i>
@@ -65,7 +63,6 @@
         <h1>Good day, {{$requestor}}</h1>
         <p>Your official business request has been approved:<br><br>
             <strong>Ref. No: </strong>{{$ref_no}}<br>
-            <strong>Purpose: </strong>{{$leave_type}}<br>
             <strong>Approved By: </strong>{{$approver}}<br>
             <strong>Remarks: </strong>{{$remarks}}<br>
         </p>
@@ -74,7 +71,6 @@
         <h1>Good day, {{$requestor}}</h1>
         <p>Your official business request has been declined:<br><br>
             <strong>Ref. No: </strong>{{$ref_no}}<br>
-            <strong>Purpose: </strong>{{$leave_type}}<br>
             <strong>Approved By: </strong>{{$approver}}<br>
             <strong>Remarks: </strong>{{$remarks}}<br>
         </p>
@@ -83,7 +79,6 @@
         <h1>Good day, {{$requestor}}</h1>
         <p>Your official business request has been posted:<br><br>
             <strong>Ref. No: </strong>{{$ref_no}}<br>
-            <strong>Purpose: </strong>{{$leave_type}}<br>
             <strong>Approved By: </strong>{{$approver}}<br>
             <strong>Remarks: </strong>{{$remarks}}<br>
         </p>

@@ -87,7 +87,7 @@
                                                         <td>{{old('ot_from.'.$i)}}</td>
                                                         <td>{{old('ot_to.'.$i)}}</td>
                                                         <td>{{old('reason.'.$i)}}</td>
-                                                        <td><button type="button" class="btn btn-sm btn-danger" id="del_dep"><i class="fas fa-trash-alt"></i> Delete</button></td>
+                                                        <td><button type="button" class="btn btn-sm btn-danger" id="del_ot"><i class="fas fa-trash-alt"></i> Delete</button></td>
                                                         <input type="hidden" name="ot_date[]" value="{{old('ot_date.'.$i)}}" />
                                                         <input type="hidden" name="ot_from[]" value="{{old('ot_from.'.$i)}}" />
                                                         <input type="hidden" name="ot_to[]" value="{{old('ot_to.'.$i)}}" />

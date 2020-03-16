@@ -84,11 +84,15 @@ class OTController extends Controller
     public function create()
     {
         //
-        $reports_to = Employee::where('emp_no','=',Auth::user()->employee->reports_to)->first();
+        if(strtotime(date('H:i:s')) <= strtotime('15:00:00')){
+            $reports_to = Employee::where('emp_no','=',Auth::user()->employee->reports_to)->first();
 
-        return view('pages.hris.dashboard.ot.create')
-                ->with(array('site'=> 'hris', 'page'=>'overtime'))
-                ->with('reports_to',$reports_to);
+            return view('pages.hris.dashboard.ot.create')
+                    ->with(array('site'=> 'hris', 'page'=>'overtime'))
+                    ->with('reports_to',$reports_to);
+        }else{
+            return back();
+        }
     }
 
     /**
@@ -122,7 +126,7 @@ class OTController extends Controller
                 $lastid = 0;
             }
             
-            $lastid = "RSAOT".date('Y').'-'.str_pad(($lastid+1), 5, '0', STR_PAD_LEFT);
+            $lastid = "RGCOT".date('Y').'-'.str_pad(($lastid+1), 5, '0', STR_PAD_LEFT);
 
             $ot = new OT();
             $ot->ref_no = $lastid;
@@ -355,7 +359,7 @@ class OTController extends Controller
                                                     '',
                                                     $filer->full_name,
                                                     '');
-                        $filer = $ot->next_approver;
+                        $filer = Employee::where('emp_no','=',$ot->next_approver)->first();
                     
                     }else{
                         $status = 'Approved';

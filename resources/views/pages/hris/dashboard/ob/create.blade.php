@@ -31,8 +31,39 @@
                             <div class="row pt-3 mb-3">
                                 <div class="col-md-3">
                                     <div class="form-group">
+                                        <label>Date <sup class="text-danger">*</sup></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                            </div>
+                                            <input type="date" class="form-control" id="ob_date" value="{{old('ob_date') ? old('ob_date') : date('Y-m-d')}}" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>OB Duration From (Time) <sup class="text-danger">*</sup></label>
+                                        <input type="time" class="form-control" id="ob_from" value="{{old('ob_from')}}"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>OB Duration To (Time) <sup class="text-danger">*</sup></label>
+                                        <input type="time" class="form-control" id="ob_to" value="{{old('ob_to')}}"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Destination <sup class="text-danger">*</sup></label>
+                                        <input type="text" class="form-control" id="destination" value="{{old('destination')}}" placeholder="Enter Destination" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <div class="form-group">
                                         <label>Purpose <sup class="text-danger">*</sup></label>
-                                        <select class="form-control" name="purpose" id="purpose">
+                                        <select class="form-control" id="purpose">
                                             <option {{old('purpose') == 'Work' ? 'selected' : ''}}>Work</option>
                                             <option {{old('purpose') == 'Training' ? 'selected' : ''}}>Training</option>
                                             <option {{old('purpose') == 'Seminar' ? 'selected' : ''}}>Seminar</option>
@@ -43,41 +74,49 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>If "Others" please specify</label>
-                                        <input type="text" class="form-control" name="others" id="others" value="{{old('others')}}" placeholder="Others" readonly/>
+                                        <input type="text" class="form-control" id="others" value="{{old('others')}}" placeholder="Others" readonly/>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Description <sup class="text-danger">*</sup></label>
-                                        <input type="text" class="form-control" name="description" id="description" value="{{old('description')}}" placeholder="Enter Description" />
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Destination <sup class="text-danger">*</sup></label>
-                                        <input type="text" class="form-control" name="destination" id="destination" value="{{old('destination')}}" placeholder="Enter Destination" />
-                                    </div>
+                                    <button type="button" class="btn btn-success mt-4" id="add_ob"><i class="fas fa-plus-circle"></i> Add OB</button>
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Date <sup class="text-danger">*</sup></label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                            </div>
-                                            <input type="date" class="form-control" name="ob_date" id="ob_date" value="{{old('ob_date') ? old('ob_date') : date('Y-m-d')}}" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>From (Hrs.) <sup class="text-danger">*</sup></label>
-                                        <input type="number" class="form-control" name="ob_from" id="ob_from" value="{{old('ob_from')}}" placeholder="Enter From" />
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
+                                <div class="col-md-12">
+                                    <table class="table table-striped table-bordered" id="ob_table">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th class="bg-primary" colspan="6">Official Business Details</th>
+                                            </tr>
+                                            <tr>
+                                                <th>OB Date</th>
+                                                <th>OB Duration From</th>
+                                                <th>OB Duration To</th>
+                                                <th>Destination</th>
+                                                <th>Purpose</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(old('ob_date'))
+                                                @for ($i = 0; $i < count(old('ob_date')); $i++)
+                                                    <tr>
+                                                        <td>{{old('ob_date.'.$i)}}</td>
+                                                        <td>{{old('ob_from.'.$i)}}</td>
+                                                        <td>{{old('ob_to.'.$i)}}</td>
+                                                        <td>{{old('destination.'.$i)}}</td>
+                                                        <td>{{old('purpose'.$i)}}</td>
+                                                        <td><button type="button" class="btn btn-sm btn-danger" id="del_ob"><i class="fas fa-trash-alt"></i> Delete</button></td>
+                                                        <input type="hidden" name="ob_date[]" value="{{old('ob_date.'.$i)}}" />
+                                                        <input type="hidden" name="ob_from[]" value="{{old('ob_from.'.$i)}}" />
+                                                        <input type="hidden" name="ob_to[]" value="{{old('ob_to.'.$i)}}" />
+                                                        <input type="hidden" name="destination[]" value="{{old('destination.'.$i)}}" />
+                                                        <input type="hidden" name="purpose[]" value="{{old('purpose.'.$i)}}" />
+                                                    </td>
+                                                @endfor
+                                            @endif
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                             @if($reports_to)

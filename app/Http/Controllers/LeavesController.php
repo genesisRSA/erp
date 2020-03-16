@@ -96,28 +96,33 @@ class LeavesController extends Controller
      */
     public function create()
     {
+        if(strtotime(date('H:i:s')) <= strtotime('15:00:00')){
         //
-        if(!$leave_credits = json_decode(Auth::user()->employee->leave_credits)){
-            $leave_credits = json_decode( json_encode( array(
-                'sick_leave' => 0,
-                'vacation_leave' => 0,
-                'solo_parent_leave' => 0,
-                'admin_leave' => 0,
-                'bereavement_leave' => 0,
-                'bday_leave' => 0,
-                'maternity_leave' => 0,
-                'paternity_leave' => 0,
-                'special_leave' => 0,
-                'abused_leave' => 0,
-                'expanded_leave' => 0
-            ) ) );
-        }
-        $reports_to = Employee::where('emp_no','=',Auth::user()->employee->reports_to)->first();
+            if(!$leave_credits = json_decode(Auth::user()->employee->leave_credits)){
+                $leave_credits = json_decode( json_encode( array(
+                    'sick_leave' => 0,
+                    'vacation_leave' => 0,
+                    'solo_parent_leave' => 0,
+                    'admin_leave' => 0,
+                    'bereavement_leave' => 0,
+                    'bday_leave' => 0,
+                    'maternity_leave' => 0,
+                    'paternity_leave' => 0,
+                    'special_leave' => 0,
+                    'abused_leave' => 0,
+                    'expanded_leave' => 0
+                ) ) );
+            }
+            $reports_to = Employee::where('emp_no','=',Auth::user()->employee->reports_to)->first();
 
-        return view('pages.hris.dashboard.leaves.create')
-                ->with(array('site'=> 'hris', 'page'=>'leave'))
-                ->with('reports_to',$reports_to)
-                ->with('leave_credits',$leave_credits);
+            return view('pages.hris.dashboard.leaves.create')
+                    ->with(array('site'=> 'hris', 'page'=>'leave'))
+                    ->with('reports_to',$reports_to)
+                    ->with('leave_credits',$leave_credits);
+
+        }else{
+            return back();
+        }
     }
 
     /**
@@ -189,7 +194,7 @@ class LeavesController extends Controller
                 $lastid = 0;
             }
 
-            $lastid = "RSALV".date('Y').'-'.str_pad(($lastid+1), 5, '0', STR_PAD_LEFT);
+            $lastid = "RGCLV".date('Y').'-'.str_pad(($lastid+1), 5, '0', STR_PAD_LEFT);
 
             $leave = new Leave();
             $leave->ref_no = $lastid;

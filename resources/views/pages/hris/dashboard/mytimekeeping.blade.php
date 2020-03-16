@@ -21,9 +21,9 @@
                 <li class="nav-item">
                     <a class="nav-link active" id="leave-tab" data-toggle="tab" href="#leave" role="tab" aria-controls="leave" aria-selected="true">Leave</a>
                 </li>
-                <li class="nav-item">
+                <!--<li class="nav-item">
                     <a class="nav-link" id="leaveposted-tab" data-toggle="tab" href="#leaveposted" role="tab" aria-controls="leaveposted" aria-selected="true">Leave Posted</a>
-                </li>
+                </li>-->
             @if(Auth::user()->is_lv_approver)
                 <li class="nav-item">
                     <a class="nav-link" id="leaveapproval-tab" data-toggle="tab" href="#leaveapproval" role="tab" aria-controls="leaveapproval" aria-selected="true">Leave Approval</a>
@@ -126,8 +126,6 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th>Ref No.</th>
-                                    <th>Purpose</th>
-                                    <th>Destination</th>
                                     <th>Date Filed</th>
                                     <th>Status</th>
                                     <th>Last Approved By</th>
@@ -148,8 +146,6 @@
                                 <tr>
                                     <th>Ref No.</th>
                                     <th>Requestor</th>
-                                    <th>Purpose</th>
-                                    <th>Destination</th>
                                     <th>Date Filed</th>
                                     <th>Status</th>
                                     <th></th>

@@ -84,11 +84,15 @@ class OBController extends Controller
     public function create()
     {
         //
-        $reports_to = Employee::where('emp_no','=',Auth::user()->employee->reports_to)->first();
+        if(strtotime(date('H:i:s')) <= strtotime('15:00:00')){
+            $reports_to = Employee::where('emp_no','=',Auth::user()->employee->reports_to)->first();
 
-        return view('pages.hris.dashboard.ob.create')
-                ->with(array('site'=> 'hris', 'page'=>'official business'))
-                ->with('reports_to',$reports_to);
+            return view('pages.hris.dashboard.ob.create')
+                    ->with(array('site'=> 'hris', 'page'=>'official business'))
+                    ->with('reports_to',$reports_to);
+        }else{
+            return back();
+        }
     }
 
     /**
@@ -103,15 +107,17 @@ class OBController extends Controller
         if($request->input('purpose') == "Others"){
             $field = [
                 'others' => 'required',
-                'description' => 'required',
                 'destination' => 'required',
+                'ob_date' => 'required',
                 'ob_from' => 'required',
+                'ob_to' => 'required',
             ];
         }else{
             $field = [
-                'description' => 'required',
                 'destination' => 'required',
+                'ob_date' => 'required',
                 'ob_from' => 'required',
+                'ob_to' => 'required',
             ];
         }
 
@@ -130,18 +136,27 @@ class OBController extends Controller
                 $lastid = 0;
             }
             
-            $lastid = "RSAOB".date('Y').'-'.str_pad(($lastid+1), 5, '0', STR_PAD_LEFT);
+            $lastid = "RGCOB".date('Y').'-'.str_pad(($lastid+1), 5, '0', STR_PAD_LEFT);
 
             $ob = new OB();
             $ob->ref_no = $lastid;
-            $ob->purpose = $request->input('purpose');
-            $ob->others = $request->input('purpose') == "Others" ? $request->input('others') : "N/A";
             $ob->filer = Auth::user()->emp_no;
-            $ob->ob_desc = $request->input('description');
-            $ob->destination = $request->input('destination');
-            $ob->ob_date = $request->input('ob_date');
-            $ob->ob_from = $request->input('ob_from');
             $ob->date_filed = date('Y-m-d');
+
+            if($request->input('ob_date')){
+                $ob_details = array();
+
+                for( $i = 0 ; $i < count($request->input('ob_date')) ; $i++ ){
+                    array_push($ob_details, [ 'ob_date' => $request->input('ob_date.'.$i),
+                                                'ob_from' => $request->input('ob_from.'.$i),
+                                                'ob_to' => $request->input('ob_to.'.$i),
+                                                'destination' => $request->input('destination.'.$i),
+                                                'purpose' => $request->input('purpose.'.$i)
+                                              ]);
+                }
+                $ob_details = json_encode($ob_details);
+                $ob->ob_details = $ob_details;
+            }
 
             $ob->last_approved_by = "N/A";
             $ob->last_approved = "1990-01-01";
@@ -166,7 +181,7 @@ class OBController extends Controller
                                             'approver',
                                             $approver->emp_fname,
                                             $lastid,
-                                            $request->input('purpose'),
+                                            '',
                                             Auth::user()->employee->full_name,''));
 
                 return redirect()->route('mytimekeeping',['#ob'])->withSuccess('OB Successfully Filed!');
@@ -191,6 +206,7 @@ class OBController extends Controller
                 return view('pages.hris.dashboard.ob.show')
                         ->with(array('site'=> 'hris', 'page'=>'official business'))
                         ->with('history',$history)
+                        ->with('ob_details',json_decode($ob->ob_details))
                         ->with('ob',$ob);
             }else{
                 return back()->withErrors(['ob' => ['You have no permission to access the document!']]);
@@ -212,6 +228,7 @@ class OBController extends Controller
 
                 return view('pages.hris.dashboard.ob.posting')
                         ->with(array('site'=> 'hris', 'page'=>'official business'))
+                        ->with('ob_details',json_decode($ob->ob_details))
                         ->with('history',$history)
                         ->with('ob',$ob);
             }else{
@@ -233,6 +250,7 @@ class OBController extends Controller
 
                 return view('pages.hris.dashboard.ob.approval')
                         ->with(array('site'=> 'hris', 'page'=>'official business'))
+                        ->with('ob_details',json_decode($ob->ob_details))
                         ->with('history',$history)
                         ->with('ob',$ob);
             }else{
@@ -339,7 +357,7 @@ class OBController extends Controller
                                                     $ob->purpose,
                                                     $filer->full_name,
                                                     '');
-                        $filer = $ob->next_approver;
+                        $filer = Employee::where('emp_no','=',$ob->next_approver)->first();
                     }else{
                         $status = 'Approved';
                         $ob->next_approver = 'N/A';

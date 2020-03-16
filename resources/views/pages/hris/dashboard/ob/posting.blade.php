@@ -32,50 +32,34 @@
                     <div class="tab-pane fade show active" id="ob" role="tabpanel" aria-labelledby="ob-tab">
                         <div class="container-fluid">
                             <div class="row pt-3 mb-3">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Purpose</label>
-                                        <input type="text" class="form-control" value="{{$ob->purpose}}" readonly/>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>If "Others" please specify</label>
-                                        <input type="text" class="form-control" name="others" id="others" value="{{$ob->others}}" placeholder="Others" readonly/>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Description</label>
-                                        <input type="text" class="form-control" name="description" id="description" value="{{$ob->ob_desc}}" readonly/>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Destination</label>
-                                        <input type="text" class="form-control" name="destination" id="destination" value="{{$ob->destination}}" readonly/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Date</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                            </div>
-                                            <input type="date" class="form-control" name="ob_date" id="ob_date" value="{{$ob->ob_date}}" readonly/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>From (Hrs.)</label>
-                                        <input type="number" class="form-control" name="ob_from" id="ob_from" value="{{$ob->ob_from}}" readonly/>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
+                                <div class="col-md-12">
+                                    <table class="table table-striped table-bordered" id="ob_table">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th class="bg-primary" colspan="6">Official Business Details</th>
+                                            </tr>
+                                            <tr>
+                                                <th>OB Date</th>
+                                                <th>OB Duration From</th>
+                                                <th>OB Duration To</th>
+                                                <th>Destination</th>
+                                                <th>Purpose</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if($ob_details)
+                                                @foreach ($ob_details as $item)
+                                                    <tr>
+                                                        <td>{{$item->ob_date}}</td>
+                                                        <td>{{$item->ob_from}}</td>
+                                                        <td>{{$item->ob_to}}</td>
+                                                        <td>{{$item->destination}}</td>
+                                                        <td>{{$item->purpose}}</td>
+                                                    </td>
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                             <hr>

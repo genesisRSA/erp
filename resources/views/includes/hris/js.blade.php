@@ -1,6 +1,9 @@
 <script type="text/javascript">
     var existing_rel = [];
     var existing_ot_date = [];
+    var existing_ob_date = [];
+    var existing_ob_from = [];
+    var existing_ob_to = [];
     
     $(function () {
         function buildSelect( table ) {
@@ -605,8 +608,6 @@
                         return  '<a href="/'+row.filer_employee.emp_photo+'" target="_blank"><img src="/'+row.filer_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.filer_employee.full_name+'<br>'+row.filer_employee.emp_no+'</span>';
                     }
                 },
-                { "data": "purpose" },
-                { "data": "destination" },
                 { "data": "date_filed" },
                 { 
                     "targets": 0,
@@ -672,8 +673,6 @@
                         return  '<a href="/'+row.filer_employee.emp_photo+'" target="_blank"><img src="/'+row.filer_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.filer_employee.full_name+'<br>'+row.filer_employee.emp_no+'</span>';
                     }
                 },
-                { "data": "purpose" },
-                { "data": "destination" },
                 { "data": "date_filed" },
                 { 
                     "targets": 0,
@@ -1111,8 +1110,6 @@
             "ajax": "/hris/obs/my",
             "columns": [
                 { "data": "ref_no" },
-                { "data": "purpose" },
-                { "data": "destination" },
                 { "data": "date_filed" },
                 { 
                     "targets": 0,
@@ -1174,8 +1171,6 @@
                         return  '<a href="/'+row.filer_employee.emp_photo+'" target="_blank"><img src="/'+row.filer_employee.emp_photo+'" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">'+row.filer_employee.full_name+'<br>'+row.filer_employee.emp_no+'</span>';
                     }
                 },
-                { "data": "purpose" },
-                { "data": "destination" },
                 { "data": "date_filed" },
                 { 
                     "targets": 0,
@@ -1463,6 +1458,93 @@
                 $('#others').prop('readonly', false);
             }else{
                 $('#others').prop('readonly', true);
+            }
+        });
+
+        $('#add_ob').click(function (){
+            var ob_date = $('#ob_date').val();
+            var ob_from = $('#ob_from').val();
+            var ob_to = $('#ob_to').val();
+            var purpose = $('#purpose').val() =="Others" ? $('#others').val() : $('#purpose').val() ;
+            var destination = $('#destination').val();
+            var others = $('#others').val();
+            $('#ob_date').removeClass('is-invalid');
+            $('#ob_from').removeClass('is-invalid');
+            $('#ob_to').removeClass('is-invalid');
+            $('#purpose').removeClass('is-invalid');
+            $('#destination').removeClass('is-invalid');
+            $('#others').removeClass('is-invalid');
+            var found = false;
+            var conflict = false;
+
+            if($.inArray(ob_date,existing_ob_date) > -1){
+                $.each(existing_ob_from, function (index, value){
+                    if(existing_ob_date[index]==ob_date){
+                        if((ob_from > existing_ob_from[index]) && (ob_from < existing_ob_to[index])){
+                            conflict = true
+                        }
+                    }
+                }); 
+            }
+
+            if(ob_date && ob_from && ob_to && purpose && !conflict && (ob_from < ob_to)){
+                var button = '<button type="button" class="btn btn-sm btn-danger" id="del_ob"><i class="fas fa-trash-alt"></i> Delete</button>';
+                var markup = "<tr><td>"+ob_date+"</td>"+
+                         "<td>"+ob_from+"</td>"+
+                         "<td>"+ob_to+"</td>"+
+                         "<td>"+destination+"</td>"+
+                         "<td>"+purpose+"</td>"+
+                         '<td class="text-center">'+button+"</td>"+
+                         '<input type="hidden" name="ob_date[]" value="'+ob_date+'" />'+
+                         '<input type="hidden" name="ob_from[]" value="'+ob_from+'" />'+
+                         '<input type="hidden" name="ob_to[]" value="'+ob_to+'" />'+
+                         '<input type="hidden" name="destination[]" value="'+destination+'" />'+
+                         '<input type="hidden" name="purpose[]" value="'+purpose+'" />'+
+                         "</tr>";
+
+                $('#ob_table tbody').append(markup);
+                existing_ob_date.push(ob_date);
+                existing_ob_from.push(ob_from);
+                existing_ob_to.push(ob_to);
+                $('#ob_from').val("");
+                $('#ob_to').val("");
+                $('#others').val("");
+                $('#destination').val("");
+            }else if(conflict){
+                alert("OB DateTime: "+ob_date+" "+ob_from+" - "+ob_to+"  has conflict with other schedule.");
+                $('#ob_date').addClass('is-invalid');
+                $('#ob_from').addClass('is-invalid');
+                $('#ob_to').addClass('is-invalid');
+            }else if(ob_from == ob_to){
+                $('#ob_from').addClass('is-invalid');
+                $('#ob_to').addClass('is-invalid');
+            }else{
+                if(!ob_from){
+                    $('#ob_from').addClass('is-invalid');
+                }
+                if(!ob_to){
+                    $('#ob_to').addClass('is-invalid');
+                }
+                if(!purpose){
+                    $('#purpose').addClass('is-invalid');
+                }
+                if(!destination){
+                    $('#destination').addClass('is-invalid');
+                }
+                if(purpose == "Others" && !others){
+                    $('#others').addClass('is-invalid');
+                }
+                if(ob_from > ob_to){
+                    $('#ob_from').addClass('is-invalid');
+                    $('#ob_to').addClass('is-invalid');
+                }
+            }
+        });
+
+        $("body").on("click", "#del_ob", function (){
+            if(confirm("Are you sure you want to delete this record?")){
+                $(this).parents("tr").remove();
+                existing_ob_date.splice($(this).parents("tr").index(),1);
             }
         });
 

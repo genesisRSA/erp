@@ -83,11 +83,15 @@ class CSController extends Controller
     public function create()
     {
         //
-        $reports_to = Employee::where('emp_no','=',Auth::user()->employee->reports_to)->first();
+        if(strtotime(date('H:i:s')) <= strtotime('15:00:00')){
+            $reports_to = Employee::where('emp_no','=',Auth::user()->employee->reports_to)->first();
 
-        return view('pages.hris.dashboard.cs.create')
-                ->with(array('site'=> 'hris', 'page'=>'change shift'))
-                ->with('reports_to',$reports_to);
+            return view('pages.hris.dashboard.cs.create')
+                    ->with(array('site'=> 'hris', 'page'=>'change shift'))
+                    ->with('reports_to',$reports_to);
+        }else{
+            return back();
+        }
     }
 
     /**
@@ -136,7 +140,7 @@ class CSController extends Controller
                 $lastid = 0;
             }
             
-            $lastid = "RSACS".date('Y').'-'.str_pad(($lastid+1), 5, '0', STR_PAD_LEFT);
+            $lastid = "RGCCS".date('Y').'-'.str_pad(($lastid+1), 5, '0', STR_PAD_LEFT);
 
             $cs = new CS();
             $cs->ref_no = $lastid;

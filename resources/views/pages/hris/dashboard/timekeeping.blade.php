@@ -115,8 +115,6 @@
                                 <tr>
                                     <th>Ref No.</th>
                                     <th>Filer</th>
-                                    <th>Purpose</th>
-                                    <th>Destination</th>
                                     <th>Date Filed</th>
                                     <th>Status</th>
                                     <th>Last Approved By</th>
@@ -137,8 +135,6 @@
                                 <tr>
                                     <th>Ref No.</th>
                                     <th>Filer</th>
-                                    <th>Purpose</th>
-                                    <th>Destination</th>
                                     <th>Date Filed</th>
                                     <th>Status</th>
                                     <th>Last Approved By</th>
