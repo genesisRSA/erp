@@ -79,7 +79,7 @@
                     @foreach ($errors->all() as $message) 
                         <li>{{$message}}</li>
                     @endforeach
-                </ul>
+                </ul> 
             </div>
         </div>
         <div class="modal-footer">

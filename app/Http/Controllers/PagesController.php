@@ -98,6 +98,65 @@ class PagesController extends Controller
         return view("report");  
     }
 
+    public function wfh(){
+        return view("wfhattendance")
+                ->with('user',"")
+                ->with('found', false);  
+    }
+
+    public function wfhcheck(Request $request){
+        if($request->input('cancel','')){
+            return redirect(route('wfh.attendance'));
+        }
+
+        if($request->input('transact','')){
+            $trans_type = $request->input('transact','');
+
+            if($trans_type == "time_in"){
+                DB::connection('mysql_live')->table('rgc_webportal.attendance_wfh')->insert(
+                    ['emp_code' => $request->input('emp_code',''), 'date_log' => date('Y-m-d'),
+                    'time_in' => date('Y-m-d H:i:s'), 'temp_time_in' => 'MOBILEWFH']
+                );
+            }else{
+                DB::connection('mysql_live')->table('rgc_webportal.attendance_wfh')
+                ->where('emp_code', $request->input('emp_code'))
+                ->where('date_log', date('Y-m-d'))
+                ->update(
+                    [$trans_type => date('Y-m-d H:i:s'), 'temp_'.$trans_type => 'MOBILEWFH']
+                );
+            }
+
+            return redirect(route('wfh.attendance'));
+        }
+
+        $user = DB::connection('mysql_live')->table('rgc_webportal.temp_emp')->where('emp_code','=', $request->input('emp_no',''))->get();
+        if(count($user)>0){
+            $today_log = DB::connection('mysql_live')->table('rgc_webportal.attendance_wfh')
+                        ->where('emp_code','=', $request->input('emp_no',''))
+                        ->where('date_log','=', date('Y-m-d'))
+                        ->get();
+            
+            if(count($today_log) > 0){
+                return view("wfhattendance")
+                ->with('user',$user[0])
+                ->with('found',true)
+                ->with('today_log',$today_log[0]); 
+            }else{
+                return view("wfhattendance")
+                ->with('user',$user[0])
+                ->with('found',true); 
+            }
+
+            
+        }else{
+            return view("wfhattendance")
+                ->with('user',"")
+                ->with('found', false);  
+        }
+
+         
+    }
+
     public function reports(){
         return view("pages.hris.dashboard.reports")
                     ->with(array('site'=> 'hris', 'page'=>'reports'));  
