@@ -132,10 +132,18 @@ class PagesController extends Controller
         $user = DB::connection('mysql_live')->table('rgc_webportal.temp_emp')->where('emp_code','=', $request->input('emp_no',''))->get();
         if(count($user)>0){
             $today_log = DB::connection('mysql_live')->table('rgc_webportal.attendance_wfh')
+                        //->select('SELECT emp_code,date_log,, , , , , , , ')
+                        ->select('emp_code','date_log',
+                        DB::raw('TIME_FORMAT(time_in,"%h:%i %p") as time_in'),
+                        DB::raw('TIME_FORMAT(ambreak_in,"%h:%i %p") as ambreak_in'),
+                        DB::raw('TIME_FORMAT(ambreak_out,"%h:%i %p") as ambreak_out'),
+                        DB::raw('TIME_FORMAT(lunch_in,"%h:%i %p") as lunch_in'),
+                        DB::raw('TIME_FORMAT(lunch_out,"%h:%i %p") as lunch_out'),
+                        DB::raw('TIME_FORMAT(pmbreak_in,"%h:%i %p") as pmbreak_in'),
+                        DB::raw('TIME_FORMAT(pmbreak_out,"%h:%i %p") as pmbreak_out'),
+                        DB::raw('TIME_FORMAT(time_out,"%h:%i %p") as time_out'))
                         ->where('emp_code','=', $request->input('emp_no',''))
-                        ->where('date_log','=', date('Y-m-d'))
-                        ->get();
-            
+                        ->where('date_log','=', date('Y-m-d'))->get();
             if(count($today_log) > 0){
                 return view("wfhattendance")
                 ->with('user',$user[0])
