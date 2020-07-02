@@ -82,3 +82,9 @@ Route::group(['middleware' => ['auth.ics']], function() {
     Route::get('/ics/barcode', 'PagesController@barcode');
 });
 
+
+Route::get('/dcs', 'PagesController@dcs_index')->name('dcs.index'); 
+Route::post('/dcs/login', 'Auth\DCSLoginController@login')->name('dcs.login');
+Route::group(['middleware' => ['auth.dcs']], function() {
+    Route::get('/dcs/home', 'PagesController@dcs_home')->name('dcs.home');
+});

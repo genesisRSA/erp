@@ -199,5 +199,20 @@ class PagesController extends Controller
     }
 
 
+    //DCS
+    public function dcs_index(){
+        if (Auth::check()) {
+            return redirect('/dcs/home');
+        }
+        return view("pages.dcs.index");
+    }
+
+    public function dcs_home(){
+        return view("pages.dcs.home")
+                    ->with(array('site'=> 'dcs', 'page'=>'home'));
+    }
+
+
+
 
 }

@@ -27,6 +27,8 @@
                             <th>Unit Cost</th>
                             <th>Total Amount</th>
                             <th>Currency</th>
+                            <th>PORemarks</th>
+                            <th>PRRemarks</th>
                         </tr>
                     </thead>
                 </table>
@@ -60,6 +62,8 @@
                 { "data": "UnitCost" },
                 { "data": "TotalAmount" },
                 { "data": "Currency" },
+                { "data": "PORemarks" },
+                { "data": "PRRemarks" },
             ]
         })
     })
