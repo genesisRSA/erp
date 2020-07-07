@@ -66,6 +66,8 @@ Route::group(['middleware' => ['auth']], function() {
 
 
 Route::get('/costing', 'PagesController@costing')->name('report.costing');
+Route::get('/prreport', 'PagesController@prreport')->name('report.prreport');
+
 Route::get('/wfh/attendance','PagesController@wfh')->name('wfh.attendance');
 Route::post('/wfh/check','PagesController@wfhcheck')->name('wfhcheck');
 

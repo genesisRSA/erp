@@ -98,6 +98,10 @@ class PagesController extends Controller
         return view("report");  
     }
 
+    public function prreport(){
+        return view("prreport");  
+    }
+
     public function wfh(){
         return view("wfhattendance")
                 ->with('user',"")

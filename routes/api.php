@@ -47,6 +47,7 @@ Route::get('/hris/ots/all', 'OTController@all');
 Route::get('/hris/ots/all_posted', 'OTController@all_posted');
 
 Route::get('/report/costing', 'AttendancesController@costing');
+Route::get('/report/prreport', 'AttendancesController@prreport');
 
 //ICS
 Route::get('/areas/all', 'AreasController@all');

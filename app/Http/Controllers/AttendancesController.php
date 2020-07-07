@@ -78,4 +78,13 @@ class AttendancesController extends Controller
             "data" => $costing
         ]);
     }
+
+    public function prreport(){
+        $prreport = DB::connection('sqlsrv')->table("dbo.pr")->get();
+        
+        return response()
+        ->json([
+            "data" => $prreport
+        ]);
+    }
 }
