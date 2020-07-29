@@ -65,12 +65,6 @@
                 
                 $("#carousel").on('slide.bs.carousel', function () {
                     currentIndex = $('div.active').index() + 1;
-                    var vids = $(this).find(".active video");
-                    if(vids.length > 0){
-                        vids[0].pause();
-                        vids[0].currentTime = 0;
-                        vids[0].play();
-                    }
                     //console.log("currentIndex:"+currentIndex);
                     //console.log("totalItems:"+totalItems);
                 });
@@ -96,6 +90,18 @@
 
                 
                 $('#carousel').find('.carousel-item').first().addClass('active');
+                $('#carousel').find('.carousel-item').first().each(function(){
+                    var vids = $(this).find("video");
+                    if(vids.length > 0){
+                        vids[0].pause();
+                        vids[0].currentTime = 0;
+                        vids[0].play();
+                    }else{
+                        if(currentIndex == totalItems){
+                            location.reload();
+                        }
+                    }
+                });
 
         </script>
     </body>
