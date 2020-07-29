@@ -30,6 +30,7 @@ Route::get('/hris/sites/{id}/domain', 'SitesController@domain');
 Route::get('/hris/sites/{id}/departments/', 'DepartmentsController@all');
 Route::get('/hris/departments/{id}/sections/', 'SectionsController@all');
 Route::get('/hris/sections/{id}/positions/', 'PositionsController@all');
+Route::get('/signages/all', 'SignagesController@all');
 
 Route::get('/hris/leaves/all', 'LeavesController@all');
 Route::get('/hris/leaves/all_posted', 'LeavesController@all_posted');

@@ -102,6 +102,14 @@ class PagesController extends Controller
         return view("prreport");  
     }
 
+    public function signage(){
+        return view("signage");  
+    }
+
+    public function managesignage(){
+        return view("managesignage");  
+    }
+
     public function wfh(){
         return view("wfhattendance")
                 ->with('user',"")

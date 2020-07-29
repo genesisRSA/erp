@@ -67,6 +67,10 @@ Route::group(['middleware' => ['auth']], function() {
 
 Route::get('/costing', 'PagesController@costing')->name('report.costing');
 Route::get('/prreport', 'PagesController@prreport')->name('report.prreport');
+Route::get('/signage', 'SignagesController@signage')->name('digital.signage');
+Route::get('/signagev', 'SignagesController@signage_vertical')->name('digital.signagev');
+Route::get('/managesignage', 'PagesController@managesignage')->name('digital.managesignage');
+Route::resource('/signages', 'SignagesController');
 
 Route::get('/wfh/attendance','PagesController@wfh')->name('wfh.attendance');
 Route::post('/wfh/check','PagesController@wfhcheck')->name('wfhcheck');
