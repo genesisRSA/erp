@@ -9,7 +9,7 @@
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <link href="{{ asset('css/template.css') }}" rel="stylesheet">
     </head>
-    <body>
+    <body style="background-color: black;">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
         <div id="carousel" class="carousel slide carousel-fade" data-ride="carousel" data-keyboard="true" data-interval="false">
             <div class="carousel-inner">
