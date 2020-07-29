@@ -110,6 +110,10 @@ class PagesController extends Controller
         return view("managesignage");  
     }
 
+    public function phpinfo(){
+        return view("info");
+    }
+
     public function wfh(){
         return view("wfhattendance")
                 ->with('user',"")

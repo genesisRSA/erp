@@ -98,3 +98,6 @@ Route::post('/dcs/login', 'Auth\DCSLoginController@login')->name('dcs.login');
 Route::group(['middleware' => ['auth.dcs']], function() {
     Route::get('/dcs/home', 'PagesController@dcs_home')->name('dcs.home');
 });
+
+
+Route::get('/phpinfo', 'PagesController@phpinfo')->name('php.info');
