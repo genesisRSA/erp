@@ -89,7 +89,7 @@
                 $('.carousel-item > video').css({'width': 1080, 'height': 1920, 'overflow-y': 'hidden'});
 
                 
-                $('#carousel').find('.item').first().addClass('active');
+                $('#carousel').find('.carousel-item').first().addClass('active');
 
         </script>
     </body>
