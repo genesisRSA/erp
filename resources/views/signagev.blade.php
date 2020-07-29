@@ -15,12 +15,12 @@
             <div class="carousel-inner">
                 @foreach ($signages as $sign)
                     @if($sign->is_video == 0)
-                        <div class="carousel-item active">
+                        <div class="carousel-item">
                             <img class="d-block w-100" src="/{{$sign->source_url_vertical}}">
                         </div>
                     @else
                         <div class="carousel-item">
-                            <video src="/{{$sign->source_url_vertical}}" playsinline showcontrols></video>
+                            <video src="/{{$sign->source_url_vertical}}" muted></video>
                         </div>
                     @endif
                 @endforeach
@@ -44,20 +44,46 @@
                     interval: 5000
                 });
 
+                
+                $('#carousel').find('.carousel-item').first().addClass('active');
+                $('#carousel').find('.carousel-item').first().each(function(){
+                    currentIndex = $('div.active').index() + 1;
+                    var vids = $(this).find("video");
+                    console.log(vids.length);
+                    if(vids.length > 0){
+                        vids[0].pause();
+                        vids[0].currentTime = 0;
+                        vids[0].play();
+                    }else{
+                    }
+                });
+
+                $("#carousel").carousel('cycle');
 
                 var totalItems = {{count($signages)}};
 
+                console.log(totalItems);
+
                 var currentIndex = $('div.active').index() + 1;
+                console.log(currentIndex);
+
+                if(totalItems == currentIndex){
+                    setTimeout(function(){ location.reload(); },5000);
+                }
+
 
                 $('video').on('play', function (e) {
                     $("#carousel").carousel('pause');
                 });
                 $('video').on('ended', function (e) {
-                    //console.log("currentIndex:"+currentIndex);
-                    //console.log("totalItems:"+totalItems);
+                    console.log("currentIndex:"+currentIndex);
+                    console.log("totalItems:"+totalItems);
+                        console.log("ended");
                     if(currentIndex == totalItems){
+                        console.log("reloaded");
                         location.reload();
                     }else{
+                        console.log("reloaded");
                         $("#carousel").carousel('cycle');
                     }
                 });
@@ -65,13 +91,16 @@
                 
                 $("#carousel").on('slide.bs.carousel', function () {
                     currentIndex = $('div.active').index() + 1;
-                    //console.log("currentIndex:"+currentIndex);
-                    //console.log("totalItems:"+totalItems);
+                    console.log("currentIndex:"+currentIndex);
+                    console.log("totalItems:"+totalItems);
+                    if(currentIndex == totalItems){
+                        location.reload();
+                    }
                 });
 
                 $("#carousel").on('slid.bs.carousel', function () {
-                   //console.log("currentIndex:"+currentIndex);
-                    //console.log("totalItems:"+totalItems);
+                   console.log("currentIndex:"+currentIndex);
+                   console.log("totalItems:"+totalItems);
                     var vids = $(this).find(".active video");
                     if(vids.length > 0){
                         vids[0].pause();
@@ -87,22 +116,6 @@
                 $('.carousel-item > img').css({'width': 1080, 'height': 1920, 'overflow-y': 'hidden'});
 
                 $('.carousel-item > video').css({'width': 1080, 'height': 1920, 'overflow-y': 'hidden'});
-
-                
-                $('#carousel').find('.carousel-item').first().addClass('active');
-                $('#carousel').find('.carousel-item').first().each(function(){
-                    var vids = $(this).find(".active video");
-                    console.log(vids.length);
-                    if(vids.length > 0){
-                        vids[0].pause();
-                        vids[0].currentTime = 0;
-                        vids[0].play();
-                    }else{
-                        if(currentIndex == totalItems){
-                            location.reload();
-                        }
-                    }
-                });
 
         </script>
     </body>
