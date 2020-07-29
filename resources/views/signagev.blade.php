@@ -67,7 +67,7 @@
                 var currentIndex = $('div.active').index() + 1;
                 console.log(currentIndex);
 
-                if(totalItems == currentIndex){
+                if(totalItems == currentIndex && totalItems == 0){
                     setTimeout(function(){ location.reload(); },5000);
                 }
 
