@@ -91,7 +91,8 @@
                 
                 $('#carousel').find('.carousel-item').first().addClass('active');
                 $('#carousel').find('.carousel-item').first().each(function(){
-                    var vids = $(this).find("video");
+                    var vids = $(this).find(".active video");
+                    console.log(vids.length);
                     if(vids.length > 0){
                         vids[0].pause();
                         vids[0].currentTime = 0;
