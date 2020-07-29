@@ -65,6 +65,12 @@
                 
                 $("#carousel").on('slide.bs.carousel', function () {
                     currentIndex = $('div.active').index() + 1;
+                    var vids = $(this).find(".active video");
+                    if(vids.length > 0){
+                        vids[0].pause();
+                        vids[0].currentTime = 0;
+                        vids[0].play();
+                    }
                     //console.log("currentIndex:"+currentIndex);
                     //console.log("totalItems:"+totalItems);
                 });
