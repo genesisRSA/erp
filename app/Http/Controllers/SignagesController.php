@@ -64,4 +64,27 @@ class SignagesController extends Controller
         return view('signagev')
                 ->with('signages',$signages);
     }
+
+    public function disable($id){
+        $sign = Signages::find($id);
+        $sign->is_enabled = 0;
+        if($sign->save()){
+            return redirect()->route('digital.managesignage')->withSuccess('Signage Successfully Disabled!');
+        }
+    }
+
+    public function enable($id){
+        $sign = Signages::find($id);
+        $sign->is_enabled = 1;
+        if($sign->save()){
+            return redirect()->route('digital.managesignage')->withSuccess('Signage Successfully Enabled!');
+        }
+    }
+
+    public function delete($id){
+        $sign = Signages::find($id);
+        if($sign->forceDelete()){
+            return redirect()->route('digital.managesignage')->withSuccess('Signage Successfully Deleted!');
+        }
+    }
 }

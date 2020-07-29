@@ -72,6 +72,10 @@ Route::get('/signagev', 'SignagesController@signage_vertical')->name('digital.si
 Route::get('/managesignage', 'PagesController@managesignage')->name('digital.managesignage');
 Route::resource('/signages', 'SignagesController');
 
+Route::get('/signages/{id}/disable', 'SignagesController@disable')->name('digital.disable');
+Route::get('/signages/{id}/enable', 'SignagesController@enable')->name('digital.enable');
+Route::get('/signages/{id}/delete', 'SignagesController@delete')->name('digital.delete');
+
 Route::get('/wfh/attendance','PagesController@wfh')->name('wfh.attendance');
 Route::post('/wfh/check','PagesController@wfhcheck')->name('wfhcheck');
 
