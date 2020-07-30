@@ -49,7 +49,6 @@
                 $('#carousel').find('.carousel-item').first().each(function(){
                     currentIndex = $('div.active').index() + 1;
                     var vids = $(this).find("video");
-                    console.log(vids.length);
                     if(vids.length > 0){
                         vids[0].pause();
                         vids[0].currentTime = 0;
@@ -62,10 +61,7 @@
 
                 var totalItems = {{count($signages)}};
 
-                console.log(totalItems);
-
                 var currentIndex = $('div.active').index() + 1;
-                console.log(currentIndex);
 
                 if(totalItems == currentIndex && totalItems == 0){
                     setTimeout(function(){ location.reload(); },5000);
@@ -76,14 +72,9 @@
                     $("#carousel").carousel('pause');
                 });
                 $('video').on('ended', function (e) {
-                    console.log("currentIndex:"+currentIndex);
-                    console.log("totalItems:"+totalItems);
-                        console.log("ended");
                     if(currentIndex == totalItems){
-                        console.log("reloaded");
                         location.reload();
                     }else{
-                        console.log("reloaded");
                         $("#carousel").carousel('cycle');
                     }
                 });
@@ -91,16 +82,12 @@
                 
                 $("#carousel").on('slide.bs.carousel', function () {
                     currentIndex = $('div.active').index() + 1;
-                    console.log("currentIndex:"+currentIndex);
-                    console.log("totalItems:"+totalItems);
                     if(currentIndex == totalItems){
                         location.reload();
                     }
                 });
 
                 $("#carousel").on('slid.bs.carousel', function () {
-                   console.log("currentIndex:"+currentIndex);
-                   console.log("totalItems:"+totalItems);
                     var vids = $(this).find(".active video");
                     if(vids.length > 0){
                         vids[0].pause();
