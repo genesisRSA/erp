@@ -26,8 +26,8 @@
                 @endforeach
                 @foreach ($jolist as $jo)
                     <div class="carousel-item">
-                        <h1 class="text-center" style="font-family: 'Dosis';font-size:80px;margin-top:10%;">{{$jo->PROJECTNAME}}</h1>
-                        <h1 class="text-center" style="font-family: 'Lato';font-size:50px;margin-top:30px;color:red;">({{$jo->JONUMBER}})</h1>
+                        <h1 class="text-center" style="font-size:80px;margin-top:10%;">{{$jo->PROJECTNAME}}</h1>
+                        <h1 class="text-center" style="font-size:50px;margin-top:30px;color:red;">({{$jo->JONUMBER}})</h1>
                         <div class="card border-secondary ml-3 mr-3" style="font-size:30px;margin-top:100px;">
                             <div class="card-header">PROJECT DETAILS</div>
                             <div class="card-body text-secondary">
@@ -59,9 +59,69 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="card border-success ml-3 mr-3" style="font-size:30px;margin-top:20px;">
+                            <div class="card-header bg-success text-white">PROJECT PROGRESS</div>
+                            <div class="card-body text-secondary">
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <strong>SALES</strong><br>
+                                        <div class="progress" style="font-size: 30px;height:30px;">
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%">75%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <strong>DESIGN</strong><br>
+                                        <div class="progress" style="font-size: 30px;height:30px;">
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%">75%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <strong>SOFTWARE</strong><br>
+                                        <div class="progress" style="font-size: 30px;height:30px;">
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%">75%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <strong>PURCHASING</strong><br>
+                                        <div class="progress" style="font-size: 30px;height:30px;">
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%">75%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <strong>PRODUCTION</strong><br>
+                                        <div class="progress" style="font-size: 30px;height:30px;">
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%">75%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <strong>ASSEMBLY</strong><br>
+                                        <div class="progress" style="font-size: 30px;height:30px;">
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%">75%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <strong>QC</strong><br>
+                                        <div class="progress" style="font-size: 30px;height:30px;">
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%">75%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 @endforeach
-            </div>
         <!--<a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="sr-only">Previous</span>
@@ -78,7 +138,7 @@
         <script type="text/javascript">
                 var $myCarousel = $("#carousel");
                 $myCarousel.carousel({
-                    interval: 5000
+                    interval: 10000
                 });
 
                 
@@ -93,6 +153,29 @@
                     }else{
                     }
                 });
+
+                $(".progress").each(function() {
+
+                    var value = $(this).attr('data-value');
+                    var left = $(this).find('.progress-left .progress-bar');
+                    var right = $(this).find('.progress-right .progress-bar');
+
+                    if (value > 0) {
+                        if (value <= 50) {
+                            right.css('transform', 'rotate(' + percentageToDegrees(value) + 'deg)')
+                        } else {
+                            right.css('transform', 'rotate(180deg)')
+                            left.css('transform', 'rotate(' + percentageToDegrees(value - 50) + 'deg)')
+                        }
+                    }
+
+                });
+
+                function percentageToDegrees(percentage) {
+
+                    return percentage / 100 * 360
+
+                }
 
                 $("#carousel").carousel('cycle');
 
