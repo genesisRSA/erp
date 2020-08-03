@@ -9,20 +9,57 @@
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <link href="{{ asset('css/template.css') }}" rel="stylesheet">
     </head>
-    <body style="background-color: black;overflow: hidden;">
+    <body style="background-color: #eee;overflow: hidden;">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
         <div id="carousel" class="carousel slide carousel-fade" data-ride="carousel" data-keyboard="true" data-interval="false">
             <div class="carousel-inner">
                 @foreach ($signages as $sign)
                     @if($sign->is_video == 0)
                         <div class="carousel-item">
-                            <img class="d-block w-100" src="/{{$sign->source_url}}">
+                            <img class="d-block w-100" src="/{{$sign->source_url_vertical}}">
                         </div>
                     @else
                         <div class="carousel-item">
-                            <video src="/{{$sign->source_url}}" muted></video>
+                            <video src="/{{$sign->source_url_vertical}}" muted></video>
                         </div>
                     @endif
+                @endforeach
+                @foreach ($jolist as $jo)
+                    <div class="carousel-item">
+                        <h1 class="text-center" style="font-family: 'Dosis';font-size:80px;margin-top:10%;">{{$jo->PROJECTNAME}}</h1>
+                        <h1 class="text-center" style="font-family: 'Lato';font-size:50px;margin-top:30px;color:red;">({{$jo->JONUMBER}})</h1>
+                        <div class="card border-secondary ml-3 mr-3" style="font-size:30px;margin-top:100px;">
+                            <div class="card-header">PROJECT DETAILS</div>
+                            <div class="card-body text-secondary">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <strong>CUSTOMER:</strong> {{$jo->CUSTOMER}}
+                                    </div>
+                                    <div class="col-md-8 text-right">
+                                        <strong>PROJECT OWNER:</strong> {{$jo->PROJECTOWNER}}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card border-primary" style="font-size:30px;margin-top:50px;">
+                                            <div class="card-header bg-primary text-white">SOFTWARE IN CHARGE</div>
+                                            <div class="card-body text-primary">
+                                                <p class="card-text">{{$jo->SOFTWAREINCHARGE}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card border-info" style="font-size:30px;margin-top:50px;">
+                                            <div class="card-header bg-info text-white">MECHANICAL IN CHARGE</div>
+                                            <div class="card-body text-info">
+                                                <p class="card-text">{{$jo->MECHANICALINCHARGE}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 @endforeach
             </div>
         <!--<a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
@@ -59,7 +96,7 @@
 
                 $("#carousel").carousel('cycle');
 
-                var totalItems = {{count($signages)}};
+                var totalItems = {{count($signages)+count($jolist)}};
 
                 var currentIndex = $('div.active').index() + 1;
 
@@ -100,9 +137,9 @@
                     }
                 });
 
-                $('.carousel-item > img').css({'width': '100%', 'height': '100%', 'overflow-y': 'hidden'});
+                $('.carousel-item > img').css({'width': 1080, 'height': 1920, 'overflow-y': 'hidden'});
 
-                $('.carousel-item > video').css({'width': '100%', 'height': '100%', 'overflow-y': 'hidden'});
+                $('.carousel-item > video').css({'width': 1080, 'height': 1920, 'overflow-y': 'hidden'});
 
         </script>
     </body>

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Http\Request;
 use App\Signages;
 
@@ -65,6 +67,16 @@ class SignagesController extends Controller
                 ->with('signages',$signages);
     }
 
+    public function signage_jolist()
+    {
+        $signages = Signages::where('is_enabled','=',1)->get();
+        $jo_list = DB::connection('sqlsrv')->table("JOLIST.dbo.jolist")->get();
+
+        return view('signagejo')
+                ->with('signages',$signages)
+                ->with('jolist',$jo_list);
+    }
+
     public function disable($id){
         $sign = Signages::find($id);
         $sign->is_enabled = 0;
@@ -86,5 +98,14 @@ class SignagesController extends Controller
         if($sign->forceDelete()){
             return redirect()->route('digital.managesignage')->withSuccess('Signage Successfully Deleted!');
         }
+    }
+
+    public function jolist(){
+        $jo_list = DB::connection('sqlsrv')->RAW("SELECT JOLIST.dbo.jolist")->get();
+        
+        return response()
+        ->json([
+            "data" => $jo_list
+        ]);
     }
 }

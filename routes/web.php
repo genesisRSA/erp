@@ -69,6 +69,7 @@ Route::get('/costing', 'PagesController@costing')->name('report.costing');
 Route::get('/prreport', 'PagesController@prreport')->name('report.prreport');
 Route::get('/signage', 'SignagesController@signage')->name('digital.signage');
 Route::get('/signagev', 'SignagesController@signage_vertical')->name('digital.signagev');
+Route::get('/signagejo', 'SignagesController@signage_jolist')->name('digital.signagejo');
 Route::get('/managesignage', 'PagesController@managesignage')->name('digital.managesignage');
 Route::resource('/signages', 'SignagesController');
 
@@ -101,3 +102,4 @@ Route::group(['middleware' => ['auth.dcs']], function() {
 
 
 Route::get('/phpinfo', 'PagesController@phpinfo')->name('php.info');
+Route::get('/jolist', 'SignagesController@jolist')->name('jo.list');
