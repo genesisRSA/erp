@@ -20,7 +20,7 @@
                         </div>
                     @else
                         <div class="carousel-item">
-                            <video src="/{{$sign->source_url_vertical}}" muted></video>
+                            <video src="/{{$sign->source_url_vertical}}" muted controls></video>
                         </div>
                     @endif
                 @endforeach

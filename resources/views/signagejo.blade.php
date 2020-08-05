@@ -164,7 +164,6 @@
                     setTimeout(function(){ location.reload(); },5000);
                 }
 
-
                 $('video').on('play', function (e) {
                     $("#carousel").carousel('pause');
                 });
