@@ -28,7 +28,7 @@
                         <h1 class="text-center" style="font-size:70px;margin-top:10%;">{{$jo->PROJECTNAME}}</h1>
                         <h1 class="text-center" style="font-size:50px;margin-top:30px;color:red;">({{$jo->JONUMBER}})</h1>
                         <h1 class="text-center mt-3">
-                            {{$jo->COLORCODESTATUS}}
+                            STATUS : <button class="btn btn-{{$jo->COLORCODESTATUS=='DELIVERED'?'success':'warning'}}" style="font-size:30px;">{{$jo->COLORCODESTATUS}}</button>
                         </h1>
                         <div class="card border-secondary ml-3 mr-3" style="font-size:30px;margin-top:100px;">
                             <div class="card-header">PROJECT DETAILS</div>
