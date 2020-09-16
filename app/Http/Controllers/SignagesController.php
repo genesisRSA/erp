@@ -77,6 +77,16 @@ class SignagesController extends Controller
                 ->with('jolist',$jo_list);
     }
 
+    public function signage_jolistv()
+    {
+        $signages = Signages::where('is_enabled','=',1)->get();
+        $jo_list = DB::connection('sqlsrv')->table("JOLIST.dbo.jolist")->get();
+
+        return view('signagejov')
+                ->with('signages',$signages)
+                ->with('jolist',$jo_list);
+    }
+
     public function disable($id){
         $sign = Signages::find($id);
         $sign->is_enabled = 0;

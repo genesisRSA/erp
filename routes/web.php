@@ -70,6 +70,7 @@ Route::get('/prreport', 'PagesController@prreport')->name('report.prreport');
 Route::get('/signage', 'SignagesController@signage')->name('digital.signage');
 Route::get('/signagev', 'SignagesController@signage_vertical')->name('digital.signagev');
 Route::get('/signagejo', 'SignagesController@signage_jolist')->name('digital.signagejo');
+Route::get('/signagejov', 'SignagesController@signage_jolistv')->name('digital.signagejov');
 Route::get('/managesignage', 'PagesController@managesignage')->name('digital.managesignage');
 Route::resource('/signages', 'SignagesController');
 
