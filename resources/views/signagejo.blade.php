@@ -25,14 +25,14 @@
                 @endforeach
                 @foreach ($jolist as $jo)
                     <div class="carousel-item">
-                        <h1 class="text-center" style="font-size:70px;margin-top:1%;">{{$jo->PROJECTNAME}}</h1>
-                        <h1 class="text-center" style="font-size:50px;margin-top:5px;color:red;">({{$jo->JONUMBER}})</h1>
-                        <h1 class="text-center mt-3">
-                            STATUS : <button class="btn btn-{{$jo->COLORCODESTATUS=='DELIVERED'?'success':'warning'}}" style="font-size:30px;">{{$jo->COLORCODESTATUS}}</button>
+                        <h1 class="text-center" style="font-size:40px;margin-top:1%;">{{$jo->PROJECTNAME}}</h1>
+                        <h1 class="text-center" style="font-size:20px;margin-top:5px;color:red;">({{$jo->JONUMBER}})</h1>
+                        <h1 class="text-center mt-3" style="font-size:15px;">
+                            STATUS : <button class="btn btn-{{$jo->COLORCODESTATUS=='DELIVERED'?'success':'warning'}}" style="font-size:15px;">{{$jo->COLORCODESTATUS}}</button>
                         </h1>
-                        <div class="row mt-5">
+                        <div class="row mt-4">
                             <div class="col-md-6">
-                                <div class="card border-secondary ml-3 mr-3" style="font-size:30px;margin-top:30px;">
+                                <div class="card border-secondary ml-1" style="font-size:15px;margin-top:5px;">
                                     <div class="card-header">PROJECT DETAILS</div>
                                     <div class="card-body text-secondary">
                                         <div class="row mb-3">
@@ -61,7 +61,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <div class="card border-primary" style="font-size:30px;margin-top:30px;">
+                                                <div class="card border-primary" style="font-size:15px;margin-top:10px;">
                                                     <div class="card-header bg-primary text-white">SOFTWARE IN CHARGE</div>
                                                     <div class="card-body text-primary">
                                                         <p class="card-text">{{$jo->SOFTWAREINCHARGE}}</p>
@@ -69,7 +69,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
-                                                <div class="card border-info" style="font-size:30px;margin-top:30px;">
+                                                <div class="card border-info" style="font-size:15px;margin-top:10px;">
                                                     <div class="card-header bg-info text-white">MECHANICAL IN CHARGE</div>
                                                     <div class="card-body text-info">
                                                         <p class="card-text">{{$jo->MECHANICALINCHARGE}}</p>
@@ -81,61 +81,61 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="card border-success ml-3 mr-3" style="font-size:30px;margin-top:20px;">
+                                <div class="card border-success mr-1" style="font-size:20px;margin-top:5px;">
                                     <div class="card-header bg-success text-white">PROJECT PROGRESS</div>
                                     <div class="card-body text-secondary">
-                                        <div class="row mb-3">
+                                        <div class="row mb-1">
                                             <div class="col-md-12">
                                                 <strong>SALES</strong><br>
-                                                <div class="progress bg-danger" style="font-size: 30px;height:30px;">
+                                                <div class="progress bg-danger" style="font-size: 15px;height:20px;">
                                                     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{number_format($jo->SALES_PERC, 2, '.', '')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{number_format($jo->SALES_PERC, 2, '.', '')}}%">{{number_format($jo->SALES_PERC, 2, '.', '')}}%</div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
+                                        <div class="row mb-1">
                                             <div class="col-md-12">
                                                 <strong>DESIGN</strong><br>
-                                                <div class="progress bg-danger" style="font-size: 30px;height:30px;">
+                                                <div class="progress bg-danger" style="font-size: 15px;height:20px;">
                                                     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{number_format($jo->DESIGN_PERC, 2, '.', '')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{number_format($jo->DESIGN_PERC, 2, '.', '')}}%">{{number_format($jo->DESIGN_PERC, 2, '.', '')}}%</div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
+                                        <div class="row mb-1">
                                             <div class="col-md-12">
                                                 <strong>SOFTWARE</strong><br>
-                                                <div class="progress bg-danger" style="font-size: 30px;height:30px;">
+                                                <div class="progress bg-danger" style="font-size: 15px;height:20px;">
                                                     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{number_format($jo->SOFT_PERC, 2, '.', '')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{number_format($jo->SOFT_PERC, 2, '.', '')}}%">{{number_format($jo->SOFT_PERC, 2, '.', '')}}%</div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
+                                        <div class="row mb-1">
                                             <div class="col-md-12">
                                                 <strong>PURCHASING</strong><br>
-                                                <div class="progress bg-danger" style="font-size: 30px;height:30px;">
+                                                <div class="progress bg-danger" style="font-size: 15px;height:20px;">
                                                     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{number_format($jo->PURCH_PERC, 2, '.', '')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{number_format($jo->PURCH_PERC, 2, '.', '')}}%">{{number_format($jo->PURCH_PERC, 2, '.', '')}}%</div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
+                                        <div class="row mb-1">
                                             <div class="col-md-12">
                                                 <strong>PRODUCTION</strong><br>
-                                                <div class="progress bg-danger" style="font-size: 30px;height:30px;">
+                                                <div class="progress bg-danger" style="font-size: 15px;height:20px;">
                                                     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{number_format($jo->PROD_PERC, 2, '.', '')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{number_format($jo->PROD_PERC, 2, '.', '')}}%">{{number_format($jo->PROD_PERC, 2, '.', '')}}%</div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
+                                        <div class="row mb-1">
                                             <div class="col-md-12">
                                                 <strong>ASSEMBLY</strong><br>
-                                                <div class="progress bg-danger" style="font-size: 30px;height:30px;">
+                                                <div class="progress bg-danger" style="font-size: 15px;height:20px;">
                                                     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{number_format($jo->ASSY_PERC, 2, '.', '')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{number_format($jo->ASSY_PERC, 2, '.', '')}}%">{{number_format($jo->ASSY_PERC, 2, '.', '')}}%</div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
+                                        <div class="row mb-1">
                                             <div class="col-md-12">
                                                 <strong>QC</strong><br>
-                                                <div class="progress bg-danger" style="font-size: 30px;height:30px;">
+                                                <div class="progress bg-danger" style="font-size: 15px;height:20px;">
                                                     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{number_format($jo->QC_PERC, 2, '.', '')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{number_format($jo->QC_PERC, 2, '.', '')}}%">{{number_format($jo->QC_PERC, 2, '.', '')}}%</div>
                                                 </div>
                                             </div>
