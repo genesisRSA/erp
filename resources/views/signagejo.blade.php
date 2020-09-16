@@ -222,9 +222,9 @@
                     }
                 });
                 
-                $('.carousel-item > img').css({'width': 3840, 'height': 2160, 'overflow-y': 'hidden'});
+                $('.carousel-item > img').css({'width': 1280, 'height': 720, 'overflow-y': 'hidden'});
 
-                $('.carousel-item > video').css({'width': 3840, 'height': 2160, 'overflow-y': 'hidden'});
+                $('.carousel-item > video').css({'width': 1280, 'height': 720, 'overflow-y': 'hidden'});
         </script>
     </body>
 </html>
