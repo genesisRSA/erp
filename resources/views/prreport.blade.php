@@ -27,6 +27,7 @@
                             <th>Status</th>
                             <th>UOM</th>
                             <th>OutstandingQuantity</th>
+                            <th>LastUpdate / Approved Date</th>
                         </tr>
                     </thead>
                 </table>
@@ -60,6 +61,7 @@
                 { "data": "Status" },
                 { "data": "UOM" },
                 { "data": "OutstandingQuantity" },
+                { "data": "LastUpdateLogDateTime" },
             ]
         })
     })
