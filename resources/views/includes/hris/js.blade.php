@@ -67,35 +67,59 @@
                     { "data": "time_in" },
                     { "data": "temp_time_in" },
                     { "data": "lunch_in",
-                    "render": function( data, type, row, meta ){
-                        if(data){
-                            return data;
-                        }else{
-                            return '<span class="bg-danger text-white p-2">NO LUNCH IN</span>';
+                        "render": function( data, type, row, meta ){
+                            if(data){
+                                return data;
+                            }else{
+                                return '<span class="bg-danger text-white p-2">NO LUNCH IN</span>';
+                            }
                         }
-                    }
                     },
-                    { "data": "temp_lunch_in" },
+                    { "data": "temp_lunch_in",
+                        "render": function( data, type, row, meta ){
+                            if(data){
+                                return data;
+                            }else{
+                                return '<span class="bg-danger text-white p-2">NO TEMP</span>';
+                            }
+                        }
+                    },
                     { "data": "lunch_out",
-                    "render": function( data, type, row, meta ){
-                        if(data){
-                            return data;
-                        }else{
-                            return '<span class="bg-danger text-white p-2">NO LUNCH OUT</span>';
+                        "render": function( data, type, row, meta ){
+                            if(data){
+                                return data;
+                            }else{
+                                return '<span class="bg-danger text-white p-2">NO LUNCH OUT</span>';
+                            }
                         }
-                    }
                     },
-                    { "data": "temp_lunch_out" },
+                    { "data": "temp_lunch_out",
+                        "render": function( data, type, row, meta ){
+                            if(data){
+                                return data;
+                            }else{
+                                return '<span class="bg-danger text-white p-2">NO TEMP</span>';
+                            }
+                        }
+                    },
                     { "data": "time_out",
-                    "render": function( data, type, row, meta ){
-                        if(data){
-                            return data;
-                        }else{
-                            return '<span class="bg-danger text-white p-2">NO TIME OUT</span>';
+                        "render": function( data, type, row, meta ){
+                            if(data){
+                                return data;
+                            }else{
+                                return '<span class="bg-danger text-white p-2">NO TIME OUT</span>';
+                            }
                         }
-                    }
                     },
-                    { "data": "temp_time_out" },
+                    { "data": "temp_time_out",
+                        "render": function( data, type, row, meta ){
+                            if(data){
+                                return data;
+                            }else{
+                                return '<span class="bg-danger text-white p-2">NO TEMP</span>';
+                            }
+                        }
+                    },
                 ]
             });
             
