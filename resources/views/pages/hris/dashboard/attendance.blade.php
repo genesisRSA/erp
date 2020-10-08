@@ -16,9 +16,9 @@
                 <li class="nav-item">
                     <a class="nav-link active" id="raw-tab" data-toggle="tab" href="#raw" role="tab" aria-controls="general" aria-selected="true">Raw Attendance</a>
                 </li>
-                <li class="nav-item">
+                <!--<li class="nav-item">
                     <a class="nav-link" id="calculated-tab" data-toggle="tab" href="#calculated" role="tab" aria-controls="calculated" aria-selected="false">Calculated Attendance</a>
-                </li>
+                </li>-->
             </ul>
             <div class="tab-content border border-top-0" id="myTabContent">
                 <!--RAW ATTENDANCE-->
@@ -27,25 +27,39 @@
                         <table id="attendance-dt" class="table table-striped table-bordered w-100">
                             <thead class="thead-dark">
                                 <tr>
+                                    <th>ID No.</th>
                                     <th>Employee Name</th>
                                     <th>Date</th>
-                                    <th>Time</th>
-                                    <th>Status</th>
+                                    <th>Time In</th>
+                                    <th>Temp</th>
+                                    <th>Lunch In</th>
+                                    <th>Temp</th>
+                                    <th>Lunch Out</th>
+                                    <th>Temp</th>
+                                    <th>Time Out</th>
+                                    <th>Temp</th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
+                                    <th>ID No.</th>
                                     <th>Employee Name</th>
                                     <th>Date</th>
-                                    <th>Time</th>
-                                    <th>Status</th>
+                                    <th>Time In</th>
+                                    <th>Temp</th>
+                                    <th>Lunch In</th>
+                                    <th>Temp</th>
+                                    <th>Lunch Out</th>
+                                    <th>Temp</th>
+                                    <th>Time Out</th>
+                                    <th>Temp</th>
                                 </tr>
                             </tfoot>
                         </table>
                     </div>
                 </div>
                 <!--END OF RAW ATTENDANCE-->
-                <!--CALCULATED ATTENDANCE-->
+                <!--CALCULATED ATTENDANCE
                 <div class="tab-pane fade" id="calculated" role="tabpanel" aria-labelledby="calculated-tab">
                     <div class="container-fluid pt-3 mb-3">
                         <table id="calcattendance-dt" class="table table-striped table-bordered w-100">
@@ -72,7 +86,7 @@
                         </table>
                     </div>
                 </div>
-                <!--END OF CALCULATED ATTENDANCE-->
+                -->
             </div>
 
 

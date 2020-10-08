@@ -24,6 +24,7 @@ Route::get('/hris/attendances/calc_all', 'AttendancesController@calc_all');
 Route::get('/hris/attendances/access_details/{id}', 'AttendancesController@access_details');
 Route::get('/hris/attendances/my_today/{emp_id}/{today}', 'AttendancesController@my_today');
 Route::get('/hris/attendances/my_attendance/{emp_id}', 'AttendancesController@my_attendance');
+Route::get('/hris/attendances/av_attendance/{date_from}/{date_to}', 'AttendancesController@av_attendance');
 
 Route::get('/hris/employees/all', 'EmployeesController@all');
 Route::get('/hris/sites/{id}/domain', 'SitesController@domain');
@@ -46,6 +47,7 @@ Route::get('/hris/css/all_posted', 'CSController@all_posted');
 
 Route::get('/hris/ots/all', 'OTController@all');
 Route::get('/hris/ots/all_posted', 'OTController@all_posted');
+
 
 Route::get('/report/costing', 'AttendancesController@costing');
 Route::get('/report/prreport', 'AttendancesController@prreport');

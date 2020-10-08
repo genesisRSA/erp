@@ -87,4 +87,13 @@ class AttendancesController extends Controller
             "data" => $prreport
         ]);
     }
+
+    public function av_attendance($date_from,$date_to){
+        $my_attendance = DB::connection('mysql_live')->select("SELECT * FROM aveera_db.attendance a LEFT JOIN aveera_db.temp_emp b ON b.emp_code = a.emp_code");
+        
+        return response()
+        ->json([
+            "data" => $my_attendance
+        ]);
+    }
 }

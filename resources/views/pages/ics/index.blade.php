@@ -22,7 +22,10 @@
                             <div class="container">
                                 <form method="POST" action="{{ route('ics.login') }}">
                                     @csrf
-                                    <h2 class="text-center text-white">Welcome to Inventory Control<br>Management System</h2>
+                                    @csrf
+                                    <h2 class="text-center text-white">
+                                        <img src="{{url('/images/rgclogo.png')}}" alt="Logo" style="max-height:70px;"><br>Welcome to Information Control<br> System
+                                    </h2>
                                     <hr style="width:40%;background-color:#fff;">
                                     <div class="form-group row">
                                         <div class="input-group mt-3">
