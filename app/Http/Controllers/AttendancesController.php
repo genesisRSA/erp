@@ -89,7 +89,7 @@ class AttendancesController extends Controller
     }
 
     public function av_attendance($date_from,$date_to){
-        $my_attendance = DB::connection('mysql_live')->select("SELECT * FROM aveera_db.attendance a LEFT JOIN aveera_db.temp_emp b ON b.emp_code = a.emp_code");
+        $my_attendance = DB::connection('mysql_live')->select("SELECT * FROM aveera_db.attendance a LEFT JOIN aveera_db.temp_emp b ON b.emp_code = a.emp_code WHERE a.date_log  BETWEEN '".$date_from."' AND '".$date_to."'");
         
         return response()
         ->json([

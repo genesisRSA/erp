@@ -24,6 +24,19 @@
                 <!--RAW ATTENDANCE-->
                 <div class="tab-pane fade show active" id="raw" role="tabpanel" aria-labelledby="raw-tab">
                     <div class="container-fluid pt-3 mb-3">
+                        <div class="row mb-3">
+                            <div class="col-md-2">
+                                <label>Date From</label>
+                                <input type="date" id="date_from" value="{{date('d')>=9&&date('d')<=23?date('Y-m-09'):date('Y-m-24',strtotime( '-1 month', strtotime( date('Y-m-d') ) ))}}" class="form-control">
+                            </div>
+                            <div class="col-md-3">
+                                <label>Date To</label><br>
+                                <div class="btn-group">
+                                    <input type="date" id="date_to" value="{{date('d')>=9&&date('d')<=23?date('Y-m-23'):date('Y-m-08')}}" class="form-control">
+                                    <button type="button" id="run_attendance" class="btn btn-success">View</button>
+                                </div>
+                            </div>
+                        </div>
                         <table id="attendance-dt" class="table table-striped table-bordered w-100">
                             <thead class="thead-dark">
                                 <tr>

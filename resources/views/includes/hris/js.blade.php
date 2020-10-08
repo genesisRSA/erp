@@ -43,64 +43,69 @@
         $('#myTab a[href="'+hash+'"]').tab('show');
 
         @if($page == "attendance")
+        $('body').on('click','#run_attendance',function(){
+                $("#attendance-dt").dataTable().fnDestroy()
 
-        var attendance_dt = $('#attendance-dt').DataTable({
-            dom: 'Bfrtip',
-            buttons: [
-                'pageLength',
-                { extend: 'excel',
-                  title: 'HRIS - Raw Attendance'
-                },
-                { extend: 'print',
-                  title: 'HRIS - Raw Attendance'
-                }
-            ],
-            "responsive": true,
-            "pagingType": "full",
-            "ajax": "/api/hris/attendances/av_attendance/"+$('#date_from').val()+"/"+$('#date_to').val(),
-            "columns": [
-                { "data": "emp_code" },
-                { "data": "emp_name" },
-                { "data": "date_log" },
-                { "data": "time_in" },
-                { "data": "temp_time_in" },
-                { "data": "lunch_in",
-                  "render": function( data, type, row, meta ){
-                      if(data){
-                        return data;
-                      }else{
-                        return '<span class="bg-danger text-white p-2">NO LUNCH IN</span>';
-                      }
-                  }
-                },
-                { "data": "temp_lunch_in" },
-                { "data": "lunch_out",
-                  "render": function( data, type, row, meta ){
-                      if(data){
-                        return data;
-                      }else{
-                        return '<span class="bg-danger text-white p-2">NO LUNCH OUT</span>';
-                      }
-                  }
-                },
-                { "data": "temp_lunch_out" },
-                { "data": "time_out",
-                  "render": function( data, type, row, meta ){
-                      if(data){
-                        return data;
-                      }else{
-                        return '<span class="bg-danger text-white p-2">NO TIME OUT</span>';
-                      }
-                  }
-                },
-                { "data": "temp_time_out" },
-            ]
-        });
-
-        buildSelect( attendance_dt );
-        attendance_dt.on( 'draw', function () {
+                var attendance_dt = $('#attendance-dt').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'pageLength',
+                    { extend: 'excel',
+                    title: 'HRIS - Raw Attendance'
+                    },
+                    { extend: 'print',
+                    title: 'HRIS - Raw Attendance'
+                    }
+                ],
+                "responsive": true,
+                "pagingType": "full",
+                "ajax": "/api/hris/attendances/av_attendance/"+$('#date_from').val()+"/"+$('#date_to').val(),
+                "columns": [
+                    { "data": "emp_code" },
+                    { "data": "emp_name" },
+                    { "data": "date_log" },
+                    { "data": "time_in" },
+                    { "data": "temp_time_in" },
+                    { "data": "lunch_in",
+                    "render": function( data, type, row, meta ){
+                        if(data){
+                            return data;
+                        }else{
+                            return '<span class="bg-danger text-white p-2">NO LUNCH IN</span>';
+                        }
+                    }
+                    },
+                    { "data": "temp_lunch_in" },
+                    { "data": "lunch_out",
+                    "render": function( data, type, row, meta ){
+                        if(data){
+                            return data;
+                        }else{
+                            return '<span class="bg-danger text-white p-2">NO LUNCH OUT</span>';
+                        }
+                    }
+                    },
+                    { "data": "temp_lunch_out" },
+                    { "data": "time_out",
+                    "render": function( data, type, row, meta ){
+                        if(data){
+                            return data;
+                        }else{
+                            return '<span class="bg-danger text-white p-2">NO TIME OUT</span>';
+                        }
+                    }
+                    },
+                    { "data": "temp_time_out" },
+                ]
+            });
+            
             buildSelect( attendance_dt );
-        } );
+            attendance_dt.on( 'draw', function () {
+                buildSelect( attendance_dt );
+            } );
+        });
+        
+
 
         /*var attendance_dt = $('#attendance-dt').DataTable({
             dom: 'Bfrtip',
