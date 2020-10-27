@@ -167,6 +167,33 @@
             <strong>Approved By: </strong>{{$approver}}<br>
             <strong>Remarks: </strong>{{$remarks}}<br>
         </p>
-        <i>For more details you can click <a href="{{url('/')}}/hris/ot/{{$ref_no}}">here.</a></i>
+        <i>For more details you can click <a href="{{url('/')}}/hris/{{$ref_no}}ot/">here.</a></i>
+    @endif
+
+@elseif($page=="digital signage")
+    @if(($status==0 && $receiver == "approver") || ($status==2 && $receiver == "approver"))
+        <h1>Good day, {{$approver}}</h1>
+        <p>There is a digital signage for your approval:<br><br>
+            <strong>Requested By: </strong>{{$requestor}}<br>
+        </p>
+        <i>For more details you can click <a href="{{url('/')}}/ics/signages">here.</a></i>
+    @elseif($status==2 && $receiver == "filer")
+        <h1>Good day, {{$requestor}}</h1>
+        <p>Your request is approved by HR:<br><br>
+            <strong>Approved By: </strong>{{$approver}}<br>
+        </p>
+        <i>For more details you can click <a href="{{url('/')}}/ics/signages">here.</a></i>
+    @elseif($status==1 && $receiver == "filer")
+        <h1>Good day, {{$requestor}}</h1>
+        <p>Your request is approved and posted:<br><br>
+            <strong>Approved By: </strong>{{$approver}}<br>
+        </p>
+        <i>For more details you can click <a href="{{url('/')}}/ics/signages">here.</a></i>
+    @elseif($status==3 && $receiver == "filer")
+        <h1>Good day, {{$requestor}}</h1>
+        <p>Your request is rejected:<br><br>
+            <strong>Rejected By: </strong>{{$approver}}<br>
+        </p>
+        <i>For more details you can click <a href="{{url('/')}}/ics/signages">here.</a></i>
     @endif
 @endif

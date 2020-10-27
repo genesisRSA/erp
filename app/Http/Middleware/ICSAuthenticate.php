@@ -16,7 +16,7 @@ class ICSAuthenticate extends Middleware
      */
     protected function redirectTo($request)
     {
-        if (!$request->expectsJson() && Auth::user()->is_admin) {
+        if (!$request->expectsJson()) {
             return redirect('/ics/home');
         }else{
             Auth::logout();

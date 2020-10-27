@@ -46,7 +46,7 @@ class AttendancesController extends Controller
     }
     
     public function my_today($emp_id,$today){
-        $my_today_attendance = DB::connection('mysql_live')->select("CALL my_today_attendance('".$emp_id."','".$today."')");
+        $my_today_attendance = DB::connection('mysql_live')->select("SELECT date_log, TIME_FORMAT(time_in,'%H:%i') as time_in, TIME_FORMAT(time_out,'%H:%i') as time_out,TIMEDIFF(time_out,time_in) as hours_work,TIMEDIFF(TIME_FORMAT(time_in,'%H:%i'),'08:00:00') as late FROM aveera_db.attendance WHERE emp_code = '$emp_id' AND date_log = '$today'");
         
         if(count($my_today_attendance) <= 0){
             return response()
@@ -62,7 +62,7 @@ class AttendancesController extends Controller
     }
     
     public function my_attendance($emp_id){
-        $my_attendance = DB::connection('mysql_live')->select("CALL my_attendance('".$emp_id."')");
+        $my_attendance = DB::connection('mysql_live')->select("SELECT date_log, TIME_FORMAT(time_in,'%H:%i') as time_in, TIME_FORMAT(time_out,'%H:%i') as time_out,TIMEDIFF(time_out,time_in) as hours_work,TIMEDIFF(TIME_FORMAT(time_in,'%H:%i'),'08:00:00') as late FROM aveera_db.attendance WHERE emp_code = '$emp_id' ORDER BY date_log DESC");
         
         return response()
         ->json([

@@ -15,7 +15,7 @@
     <body>
         <div class="container-fluid">
             <div class="d-flex flex-sm-row flex-md-column flex-lg-row flex-column" style="min-height:100vh;">
-                <img class="img-fluid my-auto mx-auto" src="{{url('/images/ais-banner.png')}}" alt="Banner" style="max-height:600px;">
+                <img class="img-fluid my-auto mx-auto" src="{{url('/images/dcs-banner.png')}}" alt="Banner" style="max-height:600px;">
                 <div class="row bg-teal align-self-stretch" style="min-width:30%;">
                     <div class="col-12 align-self-center">
                         <div class="form-group mt-3">

@@ -84,7 +84,7 @@
                                     <div class="col-md-12">
                                         <strong>SALES</strong><br>
                                         <div class="progress bg-danger" style="font-size: 30px;height:30px;">
-                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{number_format($jo->SALES_PERC, 2, '.', '')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{number_format($jo->SALES_PERC, 2, '.', '')}}%">{{number_format($jo->SALES_PERC, 2, '.', '')}}%</div>
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{$jo->SALES_PERC=='N/A'?0:number_format($jo->SALES_PERC, 2, '.', '')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$jo->SALES_PERC=='N/A'?0:number_format($jo->SALES_PERC, 2, '.', '')}}%">{{$jo->SALES_PERC=='N/A'?0:number_format($jo->SALES_PERC, 2, '.', '')}}%</div>
                                         </div>
                                     </div>
                                 </div>
@@ -92,7 +92,7 @@
                                     <div class="col-md-12">
                                         <strong>DESIGN</strong><br>
                                         <div class="progress bg-danger" style="font-size: 30px;height:30px;">
-                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{number_format($jo->DESIGN_PERC, 2, '.', '')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{number_format($jo->DESIGN_PERC, 2, '.', '')}}%">{{number_format($jo->DESIGN_PERC, 2, '.', '')}}%</div>
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{$jo->DESIGN_PERC=='N/A'?0:number_format($jo->DESIGN_PERC, 2, '.', '')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$jo->DESIGN_PERC=='N/A'?0:number_format($jo->DESIGN_PERC, 2, '.', '')}}%">{{$jo->DESIGN_PERC=='N/A'?0:number_format($jo->DESIGN_PERC, 2, '.', '')}}%</div>
                                         </div>
                                     </div>
                                 </div>
@@ -100,7 +100,7 @@
                                     <div class="col-md-12">
                                         <strong>SOFTWARE</strong><br>
                                         <div class="progress bg-danger" style="font-size: 30px;height:30px;">
-                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{number_format($jo->SOFT_PERC, 2, '.', '')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{number_format($jo->SOFT_PERC, 2, '.', '')}}%">{{number_format($jo->SOFT_PERC, 2, '.', '')}}%</div>
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{$jo->SOFT_PERC=='N/A'?0:number_format($jo->SOFT_PERC, 2, '.', '')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$jo->SOFT_PERC=='N/A'?0:number_format($jo->SOFT_PERC, 2, '.', '')}}%">{{$jo->SOFT_PERC=='N/A'?0:number_format($jo->SOFT_PERC, 2, '.', '')}}%</div>
                                         </div>
                                     </div>
                                 </div>
@@ -108,7 +108,7 @@
                                     <div class="col-md-12">
                                         <strong>PURCHASING</strong><br>
                                         <div class="progress bg-danger" style="font-size: 30px;height:30px;">
-                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{number_format($jo->PURCH_PERC, 2, '.', '')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{number_format($jo->PURCH_PERC, 2, '.', '')}}%">{{number_format($jo->PURCH_PERC, 2, '.', '')}}%</div>
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{$jo->PURCH_PERC=='N/A'?0:number_format($jo->PURCH_PERC, 2, '.', '')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$jo->PURCH_PERC=='N/A'?0:number_format($jo->PURCH_PERC, 2, '.', '')}}%">{{$jo->PURCH_PERC=='N/A'?0:number_format($jo->PURCH_PERC, 2, '.', '')}}%</div>
                                         </div>
                                     </div>
                                 </div>
@@ -116,7 +116,7 @@
                                     <div class="col-md-12">
                                         <strong>PRODUCTION</strong><br>
                                         <div class="progress bg-danger" style="font-size: 30px;height:30px;">
-                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{number_format($jo->PROD_PERC, 2, '.', '')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{number_format($jo->PROD_PERC, 2, '.', '')}}%">{{number_format($jo->PROD_PERC, 2, '.', '')}}%</div>
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{$jo->PROD_PERC=='N/A'?0:number_format($jo->PROD_PERC, 2, '.', '')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$jo->PROD_PERC=='N/A'?0:number_format($jo->PROD_PERC, 2, '.', '')}}%">{{$jo->PROD_PERC=='N/A'?0:number_format($jo->PROD_PERC, 2, '.', '')}}%</div>
                                         </div>
                                     </div>
                                 </div>
@@ -124,7 +124,7 @@
                                     <div class="col-md-12">
                                         <strong>ASSEMBLY</strong><br>
                                         <div class="progress bg-danger" style="font-size: 30px;height:30px;">
-                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{number_format($jo->ASSY_PERC, 2, '.', '')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{number_format($jo->ASSY_PERC, 2, '.', '')}}%">{{number_format($jo->ASSY_PERC, 2, '.', '')}}%</div>
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{$jo->ASSY_PERC=='N/A'?0:number_format($jo->ASSY_PERC, 2, '.', '')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$jo->ASSY_PERC=='N/A'?0:number_format($jo->ASSY_PERC, 2, '.', '')}}%">{{$jo->ASSY_PERC=='N/A'?0:number_format($jo->ASSY_PERC, 2, '.', '')}}%</div>
                                         </div>
                                     </div>
                                 </div>
@@ -132,7 +132,7 @@
                                     <div class="col-md-12">
                                         <strong>QC</strong><br>
                                         <div class="progress bg-danger" style="font-size: 30px;height:30px;">
-                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{number_format($jo->QC_PERC, 2, '.', '')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{number_format($jo->QC_PERC, 2, '.', '')}}%">{{number_format($jo->QC_PERC, 2, '.', '')}}%</div>
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{$jo->QC_PERC=='N/A'?0:number_format($jo->QC_PERC, 2, '.', '')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$jo->QC_PERC=='N/A'?0:number_format($jo->QC_PERC, 2, '.', '')}}%">{{$jo->QC_PERC=='N/A'?0:number_format($jo->QC_PERC, 2, '.', '')}}%</div>
                                         </div>
                                     </div>
                                 </div>

@@ -198,7 +198,7 @@
         @endif
 
         @if($page=="my attendance")
-            $.get("/api/hris/attendances/my_today/{{Auth::user()->employee->access_id}}/{{date('Y-m-d')}}/", function(res){
+            $.get("/api/hris/attendances/my_today/{{Auth::user()->employee->emp_no}}/{{date('Y-m-d')}}/", function(res){
                 var response = res.data;
                 $('#time-in').html(response.time_in);
                 $('#time-in-mini').html(response.time_in);
@@ -221,9 +221,9 @@
                 "responsive": true,
                 "pagingType": "full",
                 "aaSorting": [],
-                "ajax": "/api/hris/attendances/my_attendance/{{Auth::user()->employee->access_id}}",
+                "ajax": "/api/hris/attendances/my_attendance/{{Auth::user()->employee->emp_no}}",
                 "columns": [
-                    { "data": "att_date" },
+                    { "data": "date_log" },
                     { "data": "time_in" },
                     { "data": "time_out" },
                     { "data": "hours_work" },
@@ -268,7 +268,7 @@
                 "aaSorting": [],
                 "ajax": "/api/hris/attendances/my_attendance/{{$access_id}}",
                 "columns": [
-                    { "data": "att_date" },
+                    { "data": "date_log" },
                     { "data": "time_in" },
                     { "data": "time_out" },
                     { "data": "hours_work" },

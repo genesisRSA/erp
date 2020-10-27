@@ -2,13 +2,8 @@
     <ul class="csidebar-nav ics text-center">
         <li data-toggle="tooltip" data-placement="right" title="{{ Auth::user()->name }}"><img class="img-fluid user-logo rounded-circle bg-white" src="/{{ Auth::user()->employee->emp_photo }}" alt="user-logo"></li>
         <li><a @if($page=="home") {{'class=active'}} @endif href="home" data-toggle="tooltip" data-placement="right" title="Home"><i class="fas fa-home fa-2x"></i></a></li>
-        <li><a @if($page=="inventory stock") {{'class=active'}} @endif href="inventory_stock" data-toggle="tooltip" data-placement="right" title="Inventory Stock"><i class="fas fa-pallet fa-2x"></i></a></li>
-        <li><a @if($page=="asset barcoding") {{'class=active'}} @endif href="asset_barcoding" data-toggle="tooltip" data-placement="right" title="Asset Barcoding"><i class="fas fa-qrcode fa-2x"></i></a></li>
-
-        @if(Auth::user()->is_admin)
-        <li><a @if($page=="reports") {{'class=active'}} @endif href="reports" data-toggle="tooltip" data-placement="right" title="Reports"><i class="fas fa-chart-line fa-2x"></i></a></li>
-        
-        @endif
+        <li><a @if($page=="digital signage") {{'class=active'}} @endif href="signages" data-toggle="tooltip" data-placement="right" title="Digital Signage"><i class="fas fa-tablet-alt fa-2x"></i></i></a></li>
+       
     </ul>
     
     <ul class="csidebar-nav ics dark text-center align-items-end">

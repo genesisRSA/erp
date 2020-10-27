@@ -82,7 +82,7 @@ class PagesController extends Controller
                                  'page'=>'team attendance',
                                  'name'=> $employee->full_name,
                                  'emp_photo'=> $employee->emp_photo,
-                                 'access_id'=> $employee->access_id));  
+                                 'access_id'=> $employee->emp_no));  
     }
 
     public function timekeeping(){
