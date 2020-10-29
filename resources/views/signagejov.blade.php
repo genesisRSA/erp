@@ -58,19 +58,21 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="card border-primary" style="font-size:30px;margin-top:50px;">
-                                            <div class="card-header bg-primary text-white">SOFTWARE IN CHARGE</div>
-                                            <div class="card-body text-primary">
-                                                <p class="card-text">{{$jo->SOFTWAREINCHARGE}}</p>
+                                    <div class="col-md-12">
+                                        <div class="card-deck">
+                                            @if($jo->SOFTWAREINCHARGE <> 'N/A')
+                                            <div class="card border-primary" style="font-size:30px;margin-top:50px;">
+                                                <div class="card-header bg-primary text-white">SOFTWARE IN CHARGE</div>
+                                                <div class="card-body text-primary">
+                                                    <p class="card-text">{{$jo->SOFTWAREINCHARGE}}</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="card border-info" style="font-size:30px;margin-top:50px;">
-                                            <div class="card-header bg-info text-white">MECHANICAL IN CHARGE</div>
-                                            <div class="card-body text-info">
-                                                <p class="card-text">{{$jo->MECHANICALINCHARGE}}</p>
+                                            @endif
+                                            <div class="card border-info" style="font-size:30px;margin-top:50px;">
+                                                <div class="card-header bg-info text-white">MECHANICAL IN CHARGE</div>
+                                                <div class="card-body text-info">
+                                                    <p class="card-text">{{$jo->MECHANICALINCHARGE}}</p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -96,6 +98,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                @if($jo->SOFTWAREINCHARGE <> 'N/A')
                                 <div class="row mb-3">
                                     <div class="col-md-12">
                                         <strong>SOFTWARE</strong><br>
@@ -104,6 +107,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                @endif
                                 <div class="row mb-3">
                                     <div class="col-md-12">
                                         <strong>PURCHASING</strong><br>
