@@ -315,11 +315,46 @@
                     "render": function ( data, type, row, meta ) {
                         return  '<div class="btn-group btn-group-sm"><a href="employees/'+data+'" class="btn btn-primary"><i class="fas fa-eye"></i> View</a> '+
                                 '<a href="employees/'+data+'/edit" class="btn btn-warning"><i class="fas fa-edit"></i> Edit</a> '
+                                +'<a href="employees/'+data+'" class="btn btn-danger"><i class="fas fa-window-close"></i> Resign</a>'
+                                +'<a href="employees/'+data+'/movement" class="btn btn-secondary"><i class="fas fa-file-invoice"></i> Movement</a>' 
                                 @if(Auth::user()->is_admin)
                                 +'<a href="employees/'+data+'" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Delete</a> '
                                 +'<a href="employees/'+data+'/account" class="btn btn-success"><i class="fas fa-user"></i> Account</a>'
                                 @endif
                                // +'<a href="employees/'+data+'/201file" class="btn btn-secondary"><i class="fas fa-file-invoice"></i> 201</a>' 
+                                +'</div>';
+                    }
+                } 
+            ]
+        });
+
+        var remployee_dt = $('#resemployee-dt').DataTable({
+            "responsive": true,
+            "pagingType": "full",
+		    "columnDefs": [
+		            { responsivePriority: 1, targets: 1 },
+		            { responsivePriority: 2, targets: 3 },
+		    ],
+            "aaSorting": [],
+            "ajax": "/api/hris/employees/all_resign",
+            "columns": [
+                { "data": "site.site_code" },
+                { "data": "section.sect_desc" },
+                { "data": "position" },
+                {
+                    "targets": 3,
+                    "data": "emp_photo",
+                    "render": function ( data, type, row, meta ) {
+                        return  '<a href="/'+data+'" target="_blank"><img src="/'+data+'" class="img-fluid rounded-circle bg-white border" style="height:32px;"/> <span class="badge badge-secondary">'+row.full_name+'<br>'+row.emp_no+'</span></a>';
+                    }
+                },
+                {
+                    "targets": 4,
+                    "data": "id_no",
+                    "render": function ( data, type, row, meta ) {
+                        return  '<div class="btn-group btn-group-sm"><a href="employees/'+data+'" class="btn btn-primary"><i class="fas fa-eye"></i> View</a> '+
+                                '<a href="employees/'+data+'" class="btn btn-success"><i class="fas fa-check-square"></i> Re-activate</a>'
+                                +'<a href="employees/'+data+'/movement" class="btn btn-secondary"><i class="fas fa-file-invoice"></i> Movement</a>' 
                                 +'</div>';
                     }
                 } 

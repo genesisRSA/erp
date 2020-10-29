@@ -27,6 +27,7 @@ Route::get('/hris/attendances/my_attendance/{emp_id}', 'AttendancesController@my
 Route::get('/hris/attendances/av_attendance/{date_from}/{date_to}', 'AttendancesController@av_attendance');
 
 Route::get('/hris/employees/all', 'EmployeesController@all');
+Route::get('/hris/employees/all_resign', 'EmployeesController@all_resign');
 Route::get('/hris/sites/{id}/domain', 'SitesController@domain');
 Route::get('/hris/sites/{id}/departments/', 'DepartmentsController@all');
 Route::get('/hris/departments/{id}/sections/', 'SectionsController@all');

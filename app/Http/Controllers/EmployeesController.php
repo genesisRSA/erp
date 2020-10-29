@@ -39,6 +39,25 @@ class EmployeesController extends Controller
     public function all($is_admin = false)
     {
         $data = Employee::where('emp_no', '<>', 'admin')
+                        ->where('emp_cat', '<>', 'Resigned')
+                        ->with('site:site_code,site_desc')
+                        ->with('department:dept_code,dept_desc')
+                        ->with('section:sect_code,sect_desc')
+                        ->orderBy('emp_lname','ASC')
+                        ->get()
+                        ->each
+                        ->append(['full_name','id_no']);
+        
+        return response()
+            ->json([
+                "data" => $data
+        ]);
+    }
+
+    public function all_resign($is_admin = false)
+    {
+        $data = Employee::where('emp_no', '<>', 'admin')
+                        ->where('emp_cat', '=', 'Resigned')
                         ->with('site:site_code,site_desc')
                         ->with('department:dept_code,dept_desc')
                         ->with('section:sect_code,sect_desc')
@@ -533,6 +552,21 @@ class EmployeesController extends Controller
             }
         }else{
             return redirect()->route('hris.home')->withErrors(['Current password is incorrect!']);
+        }
+    }
+
+    
+
+    public function ics_change_password(Request $request){
+        $user = User::find($request->input('user_id'));
+        if(password_verify($request->input('current_password'), $user->password)){
+            $user->password = bcrypt($request->input('new_password'));
+            
+            if($user->save()){
+                return redirect()->route('ics.home')->withSuccess('Password successfully changed!');
+            }
+        }else{
+            return redirect()->route('ics.home')->withErrors(['Current password is incorrect!']);
         }
     }
 }

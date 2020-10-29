@@ -16,6 +16,11 @@
                 {{Auth::user()->name}}!
             </span>
             <hr>
+            @if ($message = Session::get('success'))
+                <div class="alert alert-success">
+                    <strong>Success,</strong> {{$message}}
+                </div>
+            @endif
             <p class="card-text">Welcome to our Information Control System!</p>
           </div>
     </div>

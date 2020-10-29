@@ -98,6 +98,7 @@ Route::group(['middleware' => ['auth.ics']], function() {
     Route::get('/ics/signages/{id}/approve', 'SignagesController@enable')->name('digital.approve');
     Route::get('/ics/signages/{id}/reject', 'SignagesController@reject')->name('digital.reject');
     Route::get('/ics/signages/{id}/delete', 'SignagesController@delete')->name('digital.delete');
+    Route::post('/ics/home', 'EmployeesController@ics_change_password')->name('icsaccount.changepassword');
 });
 
 

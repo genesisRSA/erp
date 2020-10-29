@@ -198,6 +198,10 @@
         @endif
         
 
+        $("body").on("click", "#settings", function (){
+            $('#settingsModal').modal('show');
+        });
+
         $("body").on("click", "#signout", function (){
             $('#logoutModal').modal('show');
         });

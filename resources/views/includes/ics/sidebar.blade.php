@@ -7,7 +7,7 @@
     </ul>
     
     <ul class="csidebar-nav ics dark text-center align-items-end">
-        <li><a href="settings" data-toggle="tooltip" data-placement="right" title="Account Settings"><i class="fas fa-cog fa-2x"></i></a></li>
+        <li><a href="#" id="settings" data-toggle="tooltip" data-placement="right" title="Account Settings"><i class="fas fa-cog fa-2x"></i></a></li>
         <li><a href="#" id="signout" class="text-danger" data-toggle="tooltip" data-placement="right" title="Sign Out"><i class="fas fa-power-off fa-2x"></i></a></li>
     </ul>
     <form id="logout-form" action="{{ route('ics.logout') }}" method="POST" style="display: none;">
