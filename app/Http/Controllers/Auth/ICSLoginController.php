@@ -86,12 +86,13 @@ class ICSLoginController extends Controller
     protected function authenticated(Request $request, $user){
         $user->api_token = Str::random(60);
         $user->save();
-        if ($user->is_admin == 1) {
+        return redirect('/ics/home');
+        /*if ($user->is_admin == 1) {
             return redirect('/ics/home');
         }else{
             Auth::logout();
             return redirect('/ics')->withErrors(["You dont have permission to access this site."]);
-        }
+        }*/
     }
 
     public function logout(Request $request) {

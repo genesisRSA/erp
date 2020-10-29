@@ -15,11 +15,11 @@
                 @foreach ($signages as $sign)
                     @if($sign->is_video == 0)
                         <div class="carousel-item">
-                            <img class="d-block w-100" src="/{{$sign->source_url_vertical}}">
+                            <img class="d-block w-100" src="/{{$sign->source_url}}">
                         </div>
                     @else
                         <div class="carousel-item">
-                            <video src="/{{$sign->source_url_vertical}}" muted></video>
+                            <video src="/{{$sign->source_url}}" muted></video>
                         </div>
                     @endif
                 @endforeach
@@ -100,6 +100,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        @if($jo->SOFTWAREINCHARGE <> 'N/A')
                                         <div class="row mb-1">
                                             <div class="col-md-12">
                                                 <strong>SOFTWARE</strong><br>
@@ -108,6 +109,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        @endif
                                         <div class="row mb-1">
                                             <div class="col-md-12">
                                                 <strong>PURCHASING</strong><br>
