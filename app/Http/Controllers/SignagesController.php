@@ -188,7 +188,6 @@ class SignagesController extends Controller
                                     Auth::user()->employee->full_name,''));
         }
 
-        $sign->is_enabled = 1;
         if($sign->save()){
             return redirect()->route('signages.index')->withSuccess('Signage Successfully Enabled!');
         }
