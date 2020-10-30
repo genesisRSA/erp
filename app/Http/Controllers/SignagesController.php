@@ -131,7 +131,17 @@ class SignagesController extends Controller
 
     public function disable($id){
         $sign = Signages::find($id);
+        $requestor = Employee::where('emp_no','=',$sign->created_by)->first();
         $sign->is_enabled = 0;
+        Mail::to($requestor->work_email, $requestor->full_name)
+            ->send(new LeaveMailable('RGC Digital Signage - Signage Request Rejected',
+                                    'digital signage',
+                                    $sign->is_enabled,
+                                    'filer',
+                                    $requestor->emp_fname,
+                                    '',
+                                    '',
+                                    Auth::user()->employee->full_name,''));
         if($sign->save()){
             return redirect()->route('signages.index')->withSuccess('Signage Successfully Disabled!');
         }
