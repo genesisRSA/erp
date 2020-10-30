@@ -169,7 +169,6 @@
         </p>
         <i>For more details you can click <a href="{{url('/')}}/hris/{{$ref_no}}ot/">here.</a></i>
     @endif
-
 @elseif($page=="digital signage")
     @if(($status==0 && $receiver == "approver") || ($status==2 && $receiver == "approver"))
         <h1>Good day, {{$approver}}</h1>

@@ -152,9 +152,9 @@ class SignagesController extends Controller
             }
                                         
             Mail::to($requestor->work_email, $requestor->full_name)
-            ->send(new LeaveMailable('RGC Digital Signage - Signage Request Approved',
+            ->send(new LeaveMailable('RGC Digital Signage - Signage Request HR Approved',
                                     'digital signage',
-                                    0,
+                                    $sign->is_enabled,
                                     'filer',
                                     $requestor->emp_fname,
                                     '',
@@ -168,7 +168,7 @@ class SignagesController extends Controller
             Mail::to($approver->work_email, $approver->full_name)
                 ->send(new LeaveMailable('RGC Digital Signage - Signage Request Approval',
                                         'digital signage',
-                                        0,
+                                        $sign->is_enabled,
                                         'approver',
                                         $approver->emp_fname,
                                         '',
@@ -180,7 +180,7 @@ class SignagesController extends Controller
             Mail::to($requestor->work_email, $requestor->full_name)
             ->send(new LeaveMailable('RGC Digital Signage - Signage Request Approved',
                                     'digital signage',
-                                    0,
+                                    1,
                                     'filer',
                                     $requestor->emp_fname,
                                     '',
