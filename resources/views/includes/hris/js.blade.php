@@ -315,7 +315,7 @@
                     "render": function ( data, type, row, meta ) {
                         return  '<div class="btn-group btn-group-sm"><a href="employees/'+data+'" class="btn btn-primary"><i class="fas fa-eye"></i> View</a> '+
                                 '<a href="employees/'+data+'/edit" class="btn btn-warning"><i class="fas fa-edit"></i> Edit</a> '
-                                +'<a href="employees/'+data+'" class="btn btn-danger"><i class="fas fa-window-close"></i> Resign</a>'
+                                +'<a href="employees/'+data+'/resign" class="btn btn-danger"><i class="fas fa-window-close"></i> Resign</a>'
                                 +'<a href="employees/'+data+'/movement" class="btn btn-secondary"><i class="fas fa-file-invoice"></i> Movement</a>' 
                                 @if(Auth::user()->is_admin)
                                 +'<a href="employees/'+data+'" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Delete</a> '

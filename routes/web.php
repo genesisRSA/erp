@@ -18,17 +18,20 @@ Auth::routes();
 Route::get('/hris', 'PagesController@hris_index')->name('hris.index');
 
 Route::group(['middleware' => ['auth']], function() {
+
     Route::get('/hris/home', 'PagesController@hris_home')->name('hris.home');
     Route::get('/hris/attendance', 'PagesController@attendance');
     Route::get('/hris/{id}/teamattendance', 'PagesController@team_attendance');
     Route::get('/hris/myattendance', 'PagesController@myattendance');
     Route::get('/hris/timekeeping', 'PagesController@timekeeping')->name('timekeeping');
     Route::resource('/hris/employees', 'EmployeesController');
+    Route::get('/hris/employees/{id}/resign', 'EmployeesController@resign')->name('employees.resign');
     
     Route::get('/hris/employees/{id}/account', 'EmployeesController@account')->name('account.create');
     Route::post('/hris/employees/account/store', 'EmployeesController@account_store')->name('account.store');
     Route::post('/hris/employees/account/update', 'EmployeesController@account_update')->name('account.update');
     Route::post('/hris/employees/account/change_password', 'EmployeesController@change_password')->name('account.changepassword');
+
     Route::resource('/hris/leave', 'LeavesController');
     Route::get('/hris/leave/{ref_no}/posting', 'LeavesController@for_posting');
     Route::post('/hris/leave/{leave}', 'LeavesController@post')->name('leave.post');
@@ -62,6 +65,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/hris/ots/{ref_no}/approval', 'OTController@for_approval');
     Route::get('/hris/ots/{ref_no}/posting', 'OTController@posting');
     Route::post('/hris/ots/{ot}', 'OTController@posted')->name('ot.posted');
+
 });
 
 

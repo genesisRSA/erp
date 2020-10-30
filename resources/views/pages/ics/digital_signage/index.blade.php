@@ -12,6 +12,11 @@
     </div>
     <div class="card mb-3">
         <div class="card-body">
+            @if ($message = Session::get('success'))
+                <div class="alert alert-success">
+                    <strong>Success,</strong> {{$message}}
+                </div>
+            @endif
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link active" id="my-tab" data-toggle="tab" href="#my" role="tab" aria-controls="leave" aria-selected="true">My Signages</a>

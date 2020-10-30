@@ -72,6 +72,11 @@ class EmployeesController extends Controller
         ]);
     }
 
+    public function resign($id){
+        return view('pages.hris.dashboard.employees.resign')
+                ->with(array('site'=> 'hris', 'page'=>'employees'));  
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -554,8 +559,6 @@ class EmployeesController extends Controller
             return redirect()->route('hris.home')->withErrors(['Current password is incorrect!']);
         }
     }
-
-    
 
     public function ics_change_password(Request $request){
         $user = User::find($request->input('user_id'));
