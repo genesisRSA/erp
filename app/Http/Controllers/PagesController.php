@@ -21,6 +21,7 @@ class PagesController extends Controller
 
     public function hris_home(){
         $bday = Employee::where('emp_no', '<>', 'admin')
+                        ->where('emp_cat','<>','Resigned')
                         ->whereMonth('dob', date('m'))
                         ->with('site:site_code,site_desc')
                         ->with('department:dept_code,dept_desc')
@@ -31,6 +32,7 @@ class PagesController extends Controller
                         ->append(['full_name','id_no']);
 
         $anniv = Employee::where('emp_no', '<>', 'admin')
+                        ->where('emp_cat','<>','Resigned')
                         ->where(DB::raw('YEAR(now())-YEAR(date_hired)'), '>=', '1')
                         ->whereMonth('date_hired', date('m'))
                         ->whereDay('date_hired', date('d'))
