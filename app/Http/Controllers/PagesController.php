@@ -26,7 +26,7 @@ class PagesController extends Controller
                         ->with('site:site_code,site_desc')
                         ->with('department:dept_code,dept_desc')
                         ->with('section:sect_code,sect_desc')
-                        ->orderBy('emp_lname','ASC')
+                        ->orderBy('dob','DESC')
                         ->get()
                         ->each
                         ->append(['full_name','id_no']);
@@ -51,8 +51,8 @@ class PagesController extends Controller
             
         $this_week_sd = date("Y-m-d",$monday);
         $this_week_ed = date("Y-m-d",$sunday);
-        $week_late = DB::connection('mysql_live')->select("CALL week_late('".$this_week_sd."','".$this_week_ed."')");
-        $week_early = DB::connection('mysql_live')->select("CALL week_early('".$this_week_sd."','".$this_week_ed."')");
+        $week_late = DB::connection('mysql')->select("CALL week_late('".$this_week_sd."','".$this_week_ed."')");
+        $week_early = DB::connection('mysql')->select("CALL week_early('".$this_week_sd."','".$this_week_ed."')");
         
         return view("pages.hris.dashboard.home")
                     ->with(array('site'=> 'hris', 'page'=>'home'))

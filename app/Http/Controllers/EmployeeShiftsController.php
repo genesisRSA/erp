@@ -46,6 +46,7 @@ class EmployeeShiftsController extends Controller
     {
         //
         $employees = Employee::where('emp_no', '<>', 'admin')
+                        ->where('emp_cat', '<>', 'Resigned')
                         ->with('site:site_code,site_desc')
                         ->with('department:dept_code,dept_desc')
                         ->with('section:sect_code,sect_desc')

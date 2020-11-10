@@ -59,9 +59,11 @@
                         <div class="list-group">
                             @foreach($week_early as $member)
                                 <a class="list-group-item list-group-item-action">
-                                    @php $emp = App\Employee::where('access_id','=',$member->emp_id)->first() @endphp
-                                    <img src="/{{ $emp ? $emp->emp_photo : 'storage/profile/1566540517.png' }}" class="img-fluid border bg-dark rounded-circle bg-white mr-2" style="height:32px;"/> <span class="badge badge-secondary">{{ $emp ? $emp->full_name : $member->employee_name }}</span>
-                                    <span class="float-right" style="font-size:9px;">{{ $member->num_early }} day(s)</span>
+                                    @php $emp = App\Employee::where('emp_no','=',$member->emp_code)->first() @endphp
+                                    @if ($emp)
+                                    <img src="/{{ $emp ? $emp->emp_photo : 'storage/profile/1566540517.png' }}" class="img-fluid border bg-dark rounded-circle bg-white mr-2" style="height:32px;"/> <span class="badge badge-secondary">{{ $emp->full_name }}</span>
+                                    <span class="float-right" style="font-size:9px;">{{ $member->early }} day(s)</span>
+                                    @endif
                                 </a>
                             @endforeach
                         </div>
@@ -94,9 +96,11 @@
                         <div class="list-group">
                             @foreach($week_late as $member)
                                 <a class="list-group-item list-group-item-action">
-                                    @php $emp = App\Employee::where('access_id','=',$member->emp_id)->first() @endphp
-                                    <img src="/{{ $emp ? $emp->emp_photo : 'storage/profile/1566540517.png' }}" class="img-fluid border bg-dark rounded-circle bg-white mr-2" style="height:32px;"/> <span class="badge badge-secondary">{{ $emp ? $emp->full_name : $member->employee_name }}</span>
-                                    <span class="float-right" style="font-size:9px;">{{ $member->num_late }} day(s)</span>
+                                    @php $emp = App\Employee::where('emp_no','=',$member->emp_code)->first() @endphp
+                                    @if ($emp)
+                                    <img src="/{{ $emp ? $emp->emp_photo : 'storage/profile/1566540517.png' }}" class="img-fluid border bg-dark rounded-circle bg-white mr-2" style="height:32px;"/> <span class="badge badge-secondary">{{ $emp->full_name }}</span>
+                                    <span class="float-right" style="font-size:9px;">{{ $member->late }} day(s)</span>
+                                    @endif
                                 </a>
                             @endforeach
                         </div>
