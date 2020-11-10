@@ -26,7 +26,7 @@ class PagesController extends Controller
                         ->with('site:site_code,site_desc')
                         ->with('department:dept_code,dept_desc')
                         ->with('section:sect_code,sect_desc')
-                        ->orderBy('dob','DESC')
+                        ->orderBy(DB::raw('DAYOFMONTH(dob)'),'ASC')
                         ->get()
                         ->each
                         ->append(['full_name','id_no']);
