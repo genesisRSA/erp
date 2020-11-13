@@ -115,3 +115,6 @@ Route::group(['middleware' => ['auth.dcs']], function() {
 
 Route::get('/phpinfo', 'PagesController@phpinfo')->name('php.info');
 Route::get('/jolist', 'SignagesController@jolist')->name('jo.list');
+
+
+Route::get('/rgc_entsys/home','ERPPageController@home')->name('res.home');
