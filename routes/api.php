@@ -62,3 +62,6 @@ Route::post('/ics/users/auth', 'ICSController@auth');
 Route::post('/ics/items/search', 'ICSController@search');
 Route::post('/ics/items/createstock', 'ICSController@create_stock');
 
+
+//RGC ENT SYS
+Route::get('/rgc_entsys/uom/all', 'UOMController@all');
