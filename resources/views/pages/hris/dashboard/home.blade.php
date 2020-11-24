@@ -136,7 +136,45 @@
         
         <div class="row">
             @if (count(Auth::user()->employee->team) > 0)
-                <div class="col-lg-8">
+                <div class="col-lg-4">
+                    <div class="card mb-3">
+                        <h5 class="card-header bg-primary text-white"><i class="fas fa-calendar-day"></i> Today is {{date('D M d, Y')}}</h5>
+                        <div class="card-body">
+                            <p><i class="fas fa-birthday-cake"></i> Birthday Celebrant(s) of {{date('F')}}</p>
+                            <div class="list-group">
+                                @if(count($bday_celebrants)>0)
+                                    @foreach($bday_celebrants as $member)
+                                        <a class="list-group-item list-group-item-action">
+                                            <img src="/{{ $member->emp_photo }}" class="img-fluid border bg-dark rounded-circle bg-white mr-2" style="height:32px;"/> <span class="badge badge-secondary">{{ $member->full_name }}</span>
+                                            <span class="float-right" style="font-size:9px;">{{ date('M d',strtotime($member->dob)) }}</span>
+                                        </a>
+                                    @endforeach
+                                @else
+                                    <a class="list-group-item list-group-item-action">No data available</a>  
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <h5 class="card-header bg-warning"><i class="fas fa-award"></i> Anniversary</h5>
+                        <div class="card-body">
+                            <p>Congratule these passionate employees!</p>
+                            <div class="list-group">
+                                @if(count($anniv_celebrants)>0)
+                                    @foreach($anniv_celebrants as $member)
+                                        <a class="list-group-item list-group-item-action">
+                                            <img src="/{{ $member->emp_photo }}" class="img-fluid border bg-dark rounded-circle bg-white mr-2" style="height:32px;"/> <span class="badge badge-secondary">{{ $member->full_name }}</span>
+                                            <span class="float-right" style="font-size:9px;">{{ date('Y')-date('Y',strtotime($member->date_hired)) }} year(s)</span>
+                                        </a>
+                                    @endforeach
+                                @else
+                                    <a class="list-group-item list-group-item-action">No data available</a>  
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
                     <div class="card mb-3">
                         <h5 class="card-header bg-dark text-white"><i class="fas fa-info-circle"></i> Notification Area</h5>
                         <div class="card-body">
@@ -163,7 +201,45 @@
                     </div>
                 </div>
             @else
-                <div class="col-lg-12">
+                <div class="col-lg-4">
+                    <div class="card mb-3">
+                        <h5 class="card-header bg-primary text-white"><i class="fas fa-calendar-day"></i> Today is {{date('D M d, Y')}}</h5>
+                        <div class="card-body">
+                            <p><i class="fas fa-birthday-cake"></i> Birthday Celebrant(s) of {{date('F')}}</p>
+                            <div class="list-group">
+                                @if(count($bday_celebrants)>0)
+                                    @foreach($bday_celebrants as $member)
+                                        <a class="list-group-item list-group-item-action">
+                                            <img src="/{{ $member->emp_photo }}" class="img-fluid border bg-dark rounded-circle bg-white mr-2" style="height:32px;"/> <span class="badge badge-secondary">{{ $member->full_name }}</span>
+                                            <span class="float-right" style="font-size:9px;">{{ date('M d',strtotime($member->dob)) }}</span>
+                                        </a>
+                                    @endforeach
+                                @else
+                                    <a class="list-group-item list-group-item-action">No data available</a>  
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <h5 class="card-header bg-warning"><i class="fas fa-award"></i> Anniversary</h5>
+                        <div class="card-body">
+                            <p>Congratule these passionate employees!</p>
+                            <div class="list-group">
+                                @if(count($anniv_celebrants)>0)
+                                    @foreach($anniv_celebrants as $member)
+                                        <a class="list-group-item list-group-item-action">
+                                            <img src="/{{ $member->emp_photo }}" class="img-fluid border bg-dark rounded-circle bg-white mr-2" style="height:32px;"/> <span class="badge badge-secondary">{{ $member->full_name }}</span>
+                                            <span class="float-right" style="font-size:9px;">{{ date('Y')-date('Y',strtotime($member->date_hired)) }} year(s)</span>
+                                        </a>
+                                    @endforeach
+                                @else
+                                    <a class="list-group-item list-group-item-action">No data available</a>  
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
                     <div class="card mb-3">
                         <h5 class="card-header bg-dark text-white"><i class="fas fa-info-circle"></i> Notification Area</h5>
                         <div class="card-body">
