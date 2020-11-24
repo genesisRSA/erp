@@ -121,7 +121,7 @@
                     <div class="card-body">
                         <p>See your team's attendance.</p>
                         <div class="list-group">
-                            @foreach(Auth::user()->employee->team as $member)
+                            @foreach(Auth::user()->employee->team->where('emp_cat','<>','Resigned') as $member)
                                 <a href="{{ $member->id_no }}/teamattendance" class="list-group-item list-group-item-action">
                                     <img src="/{{ $member->emp_photo }}" class="img-fluid border bg-dark rounded-circle bg-white mr-2" style="height:48px;"/> <span class="badge badge-primary">{{ $member->full_name }}</span>
                                     <i class="fas fa-chevron-right float-right mt-3"></i>

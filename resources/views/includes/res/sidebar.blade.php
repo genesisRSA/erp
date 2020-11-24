@@ -1,3 +1,4 @@
+<a href="#" data-target="slide-out" class="sidenav-trigger hide-on-med-and-up blue-text text-darken-4"><i class="material-icons">menu</i></a>
 <ul id="slide-out" class="sidenav sidenav-fixed">
     <div class="card" style="margin:0;">
         <div class="card-image">

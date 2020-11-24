@@ -14,8 +14,7 @@
         }
 
         .title{
-            margin-left: 60px;
-            padding-bottom: 30px;
+            margin-left: 30px;
         }
 
         .sidenav li.active{
@@ -51,8 +50,8 @@
         }
 
         .main-content{
-          margin-left: 85px;
-          margin-right: 85px;
+          padding-left: 30px;
+          padding-right: 30px;
         }
 
         /* width */
@@ -81,6 +80,13 @@
           right: 2%;
         }
 
+        .dataTables_wrapper .dataTables_filter{
+            float: right;
+        }
+        .dataTables_wrapper .dataTables_length{
+            float: left;
+        }
+
         @media only screen and (max-width : 992px) {
           header, main, footer {
             padding-left: 0;
@@ -92,14 +98,20 @@
             padding-bottom: 10px;
           }
           .main-content{
-            margin-left: 0;
-            margin-right: 0;
+            padding-left: 15px;
+            padding-right: 15px;
+          }
+
+          .sidenav-trigger{
+            position: absolute;
+            top: 25px;
+            left: 25px;
           }
         }
         
       </style> 
     </head>
-    <body>
+    <body class="blue darken-4">
       
       @include('includes.res.sidebar', ['page' => $page])
       <main>
@@ -120,6 +132,9 @@
           $('.collapsible').collapsible();
           $('.tap-target').tapTarget();
           $('.tooltipped').tooltip();
+          $('.modal').modal({
+            "dismissible":false
+          });
           //$('.tap-target').tapTarget('open');
         });
 
