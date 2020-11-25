@@ -4,7 +4,7 @@
         <div class="card-image">
             <img src="{{ asset('images/resbanner.png') }}">
             <a class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">power_settings_new</i></a>
-            <span class="card-title">Franz Delomen</span>
+            <span class="card-title flow-text">Franz Delomen</span>
         </div>
     </div>
     <li @if($page=='home')class="active"@endif><a href="#" class="waves-effect waves-light"><i class="material-icons">dashboard</i>Dashboard</a></li>
@@ -136,7 +136,7 @@
             <ul>
               <li><a href="#!">Accounts</a></li>
               <li><a href="#!">Currencies</a></li>
-              <li @if($subpage=='uom')class="active"@endif><a href="{{ route('res.params.uom')}}">Units</a></li>
+              <li @if($subpage=='uom')class="active"@endif><a href="{{ route('uom.index')}}">Units</a></li>
               <li><a href="#!">Payment Terms</a></li>
             </ul>
           </div>

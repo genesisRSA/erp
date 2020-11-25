@@ -118,4 +118,5 @@ Route::get('/jolist', 'SignagesController@jolist')->name('jo.list');
 
 
 Route::get('/rgc_entsys/home','ERPPageController@home')->name('res.home');
-Route::get('/rgc_entsys/uom','UOMController@index')->name('res.params.uom');
+Route::resource('/rgc_entsys/uom', 'UOMController');
+Route::post('/rgc_entsys/uom/patch', 'UOMController@patch')->name('uom.patch');

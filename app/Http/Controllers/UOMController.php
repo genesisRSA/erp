@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\UnitOfMeasure;
+use Validator;
 
 class UOMController extends Controller
 {
@@ -48,6 +49,25 @@ class UOMController extends Controller
     public function store(Request $request)
     {
         //
+        $field = [
+            'uom_name' => 'required',
+            'uom_code' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $field);
+         
+        if ($validator->fails()) {
+            return back()->withInput()
+                        ->withErrors($validator);
+        }else{
+            $uom = new UnitOfMeasure();
+            $uom->uom_name = $request->input('uom_name','');
+            $uom->uom_code = $request->input('uom_code','');
+
+            if($uom->save()){
+                return redirect()->route('uom.index')->withSuccess('Unit Successfully Added!');
+            }
+        }
     }
 
     /**
@@ -58,7 +78,10 @@ class UOMController extends Controller
      */
     public function show($id)
     {
-        //
+        return response()
+            ->json([
+                "data" => UnitOfMeasure::find($id)
+            ]);
     }
 
     /**
@@ -82,6 +105,29 @@ class UOMController extends Controller
     public function update(Request $request, $id)
     {
         //
+    }
+
+    public function patch(Request $request)
+    {
+        $field = [
+            'uom_name' => 'required',
+            'uom_code' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $field);
+         
+        if ($validator->fails()) {
+            return back()->withInput()
+                        ->withErrors($validator);
+        }else{
+            $uom = UnitOfMeasure::find($request->input('id',''));
+            $uom->uom_name = $request->input('uom_name','');
+            $uom->uom_code = $request->input('uom_code','');
+
+            if($uom->save()){
+                return redirect()->route('uom.index')->withSuccess('Unit Successfully Updated!');
+            }
+        }
     }
 
     /**
