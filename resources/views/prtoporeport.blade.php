@@ -69,6 +69,7 @@
                   }
                 },
                 { "data": "Item" },
+                { "data": "PORemarks" },
                 { "data": "Supplier",
                   "render": function ( data, type, row, meta ) {
                         if(data){ return data; } else { return '<strong class="text-danger">N/A</strong>'; }
