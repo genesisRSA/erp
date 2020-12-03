@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\UnitOfMeasure;
+use App\ProductCategory;
 use Validator;
 
-class UOMController extends Controller
+class ProductCategoriesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,17 +16,17 @@ class UOMController extends Controller
     public function index()
     {
         //
-        return view('res.uom.index')
-                ->with('site','res')
-                ->with('page','parameters')
-                ->with('subpage','uom');
+        return view('res.product_category.index')
+        ->with('site','res')
+        ->with('page','products')
+        ->with('subpage','productcategories');
     }
 
     public function all()
     {
         return response()
             ->json([
-                "data" => UnitOfMeasure::all()
+                "data" => ProductCategory::all()
             ]);
     }
 
@@ -50,8 +50,8 @@ class UOMController extends Controller
     {
         //
         $field = [
-            'uom_name' => 'required',
-            'uom_code' => 'required',
+            'prodcat_name' => 'required',
+            'prodcat_code' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $field);
@@ -60,12 +60,12 @@ class UOMController extends Controller
             return back()->withInput()
                         ->withErrors($validator);
         }else{
-            $uom = new UnitOfMeasure();
-            $uom->uom_name = $request->input('uom_name','');
-            $uom->uom_code = $request->input('uom_code','');
+            $prodcat = new ProductCategory();
+            $prodcat->prodcat_name = $request->input('prodcat_name','');
+            $prodcat->prodcat_code = $request->input('prodcat_code','');
 
-            if($uom->save()){
-                return redirect()->route('uom.index')->withSuccess('Unit Successfully Added');
+            if($prodcat->save()){
+                return redirect()->route('product_category.index')->withSuccess('Product Category Successfully Added');
             }
         }
     }
@@ -78,7 +78,8 @@ class UOMController extends Controller
      */
     public function show($id)
     {
-        $data = UnitOfMeasure::find($id);
+        //
+        $data = ProductCategory::find($id);
         return response()
             ->json([
                 "data" => $data
@@ -111,8 +112,8 @@ class UOMController extends Controller
     public function patch(Request $request)
     {
         $field = [
-            'uom_name' => 'required',
-            'uom_code' => 'required',
+            'prodcat_name' => 'required',
+            'prodcat_code' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $field);
@@ -121,12 +122,12 @@ class UOMController extends Controller
             return back()->withInput()
                         ->withErrors($validator);
         }else{
-            $uom = UnitOfMeasure::find($request->input('id',''));
-            $uom->uom_name = $request->input('uom_name','');
-            $uom->uom_code = $request->input('uom_code','');
+            $prodcat = ProductCategory::find($request->input('id',''));
+            $prodcat->prodcat_name = $request->input('prodcat_name','');
+            $prodcat->prodcat_code = $request->input('prodcat_code','');
 
-            if($uom->save()){
-                return redirect()->route('uom.index')->withSuccess('Unit Successfully Updated');
+            if($prodcat->save()){
+                return redirect()->route('product_category.index')->withSuccess('Product Category Successfully Updated');
             }
         }
     }
@@ -141,12 +142,12 @@ class UOMController extends Controller
     {
         //
     }
-    
+
     public function delete(Request $request)
     {
         //
-        if(UnitOfMeasure::destroy($request->input('id',''))){
-            return redirect()->route('uom.index')->withSuccess('Unit Successfully Deleted');
+        if(ProductCategory::destroy($request->input('id',''))){
+            return redirect()->route('product_category.index')->withSuccess('Product Category Successfully Deleted');
         }
     }
 }

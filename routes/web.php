@@ -71,6 +71,7 @@ Route::group(['middleware' => ['auth']], function() {
 
 Route::get('/costing', 'PagesController@costing')->name('report.costing');
 Route::get('/prreport', 'PagesController@prreport')->name('report.prreport');
+Route::get('/prtoporeport', 'PagesController@prtoporeport')->name('report.prtoporeport');
 Route::get('/signage', 'SignagesController@signage')->name('digital.signage');
 Route::get('/signagev', 'SignagesController@signage_vertical')->name('digital.signagev');
 Route::get('/signagejo', 'SignagesController@signage_jolist')->name('digital.signagejo');
@@ -118,5 +119,27 @@ Route::get('/jolist', 'SignagesController@jolist')->name('jo.list');
 
 
 Route::get('/rgc_entsys/home','ERPPageController@home')->name('res.home');
+
 Route::resource('/rgc_entsys/uom', 'UOMController');
 Route::post('/rgc_entsys/uom/patch', 'UOMController@patch')->name('uom.patch');
+Route::post('/rgc_entsys/uom/delete', 'UOMController@delete')->name('uom.delete');
+
+Route::resource('/rgc_entsys/currency', 'CurrenciesController');
+Route::post('/rgc_entsys/currency/patch', 'CurrenciesController@patch')->name('currency.patch');
+Route::post('/rgc_entsys/currency/delete', 'CurrenciesController@delete')->name('currency.delete');
+
+Route::resource('/rgc_entsys/payment_term', 'PaymentTermsController');
+Route::post('/rgc_entsys/payment_term/patch', 'PaymentTermsController@patch')->name('payment_term.patch');
+Route::post('/rgc_entsys/payment_term/delete', 'PaymentTermsController@delete')->name('payment_term.delete');
+
+Route::resource('/rgc_entsys/customer', 'CustomersController');
+Route::post('/rgc_entsys/customer/patch', 'CustomersController@patch')->name('customer.patch');
+Route::post('/rgc_entsys/customer/delete', 'CustomersController@delete')->name('customer.delete');
+
+Route::resource('/rgc_entsys/product_category', 'ProductCategoriesController');
+Route::post('/rgc_entsys/product_category/patch', 'ProductCategoriesController@patch')->name('product_category.patch');
+Route::post('/rgc_entsys/product_category/delete', 'ProductCategoriesController@delete')->name('product_category.delete');
+
+Route::resource('/rgc_entsys/product', 'ProductsController');
+Route::post('/rgc_entsys/product/patch', 'ProductsController@patch')->name('product.patch');
+Route::post('/rgc_entsys/product/delete', 'ProductsController@delete')->name('product.delete');

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\UnitOfMeasure;
+use App\PaymentTerm;
 use Validator;
 
-class UOMController extends Controller
+class PaymentTermsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,17 +16,17 @@ class UOMController extends Controller
     public function index()
     {
         //
-        return view('res.uom.index')
-                ->with('site','res')
-                ->with('page','parameters')
-                ->with('subpage','uom');
+        return view('res.payment_term.index')
+        ->with('site','res')
+        ->with('page','parameters')
+        ->with('subpage','payment_term');
     }
 
     public function all()
     {
         return response()
             ->json([
-                "data" => UnitOfMeasure::all()
+                "data" => PaymentTerm::all()
             ]);
     }
 
@@ -50,8 +50,8 @@ class UOMController extends Controller
     {
         //
         $field = [
-            'uom_name' => 'required',
-            'uom_code' => 'required',
+            'term_name' => 'required',
+            'term_days' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $field);
@@ -60,12 +60,13 @@ class UOMController extends Controller
             return back()->withInput()
                         ->withErrors($validator);
         }else{
-            $uom = new UnitOfMeasure();
-            $uom->uom_name = $request->input('uom_name','');
-            $uom->uom_code = $request->input('uom_code','');
+            $term = new PaymentTerm();
+            $term->term_name = $request->input('term_name','');
+            $term->term_days = $request->input('term_days','');
+            $term->is_endofmonth = $request->input('is_endofmonth','') ? true : false;
 
-            if($uom->save()){
-                return redirect()->route('uom.index')->withSuccess('Unit Successfully Added');
+            if($term->save()){
+                return redirect()->route('payment_term.index')->withSuccess('Payment Term Successfully Added');
             }
         }
     }
@@ -78,7 +79,8 @@ class UOMController extends Controller
      */
     public function show($id)
     {
-        $data = UnitOfMeasure::find($id);
+        //
+        $data = PaymentTerm::find($id);
         return response()
             ->json([
                 "data" => $data
@@ -111,8 +113,8 @@ class UOMController extends Controller
     public function patch(Request $request)
     {
         $field = [
-            'uom_name' => 'required',
-            'uom_code' => 'required',
+            'term_name' => 'required',
+            'term_days' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $field);
@@ -121,12 +123,13 @@ class UOMController extends Controller
             return back()->withInput()
                         ->withErrors($validator);
         }else{
-            $uom = UnitOfMeasure::find($request->input('id',''));
-            $uom->uom_name = $request->input('uom_name','');
-            $uom->uom_code = $request->input('uom_code','');
+            $term = PaymentTerm::find($request->input('id',''));
+            $term->term_name = $request->input('term_name','');
+            $term->term_days = $request->input('term_days','');
+            $term->is_endofmonth = $request->input('is_endofmonth','') ? true : false;
 
-            if($uom->save()){
-                return redirect()->route('uom.index')->withSuccess('Unit Successfully Updated');
+            if($term->save()){
+                return redirect()->route('payment_term.index')->withSuccess('Payment Term Successfully Updated');
             }
         }
     }
@@ -141,12 +144,12 @@ class UOMController extends Controller
     {
         //
     }
-    
+
     public function delete(Request $request)
     {
         //
-        if(UnitOfMeasure::destroy($request->input('id',''))){
-            return redirect()->route('uom.index')->withSuccess('Unit Successfully Deleted');
+        if(PaymentTerm::destroy($request->input('id',''))){
+            return redirect()->route('payment_term.index')->withSuccess('Payment Term Successfully Deleted');
         }
     }
 }

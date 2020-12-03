@@ -50,9 +50,10 @@ Route::get('/hris/css/all_posted', 'CSController@all_posted');
 Route::get('/hris/ots/all', 'OTController@all');
 Route::get('/hris/ots/all_posted', 'OTController@all_posted');
 
-
+//CANTIER
 Route::get('/report/costing', 'AttendancesController@costing');
 Route::get('/report/prreport', 'AttendancesController@prreport');
+Route::get('/report/prtoporeport', 'AttendancesController@prtoporeport');
 
 //ICS
 Route::get('/areas/all', 'AreasController@all');
@@ -62,6 +63,10 @@ Route::post('/ics/users/auth', 'ICSController@auth');
 Route::post('/ics/items/search', 'ICSController@search');
 Route::post('/ics/items/createstock', 'ICSController@create_stock');
 
-
 //RGC ENT SYS
 Route::get('/rgc_entsys/uom/all', 'UOMController@all');
+Route::get('/rgc_entsys/currency/all', 'CurrenciesController@all');
+Route::get('/rgc_entsys/payment_term/all', 'PaymentTermsController@all');
+Route::get('/rgc_entsys/customer/all', 'CustomersController@all');
+Route::get('/rgc_entsys/product_category/all', 'ProductCategoriesController@all');
+Route::get('/rgc_entsys/product/all', 'ProductsController@all');

@@ -104,6 +104,10 @@ class PagesController extends Controller
         return view("prreport");  
     }
 
+    public function prtoporeport(){
+        return view("prtoporeport");  
+    }
+
     public function signage(){
         return view("signage");  
     }

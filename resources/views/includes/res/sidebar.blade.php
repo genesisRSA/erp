@@ -12,11 +12,11 @@
     <li><a class="subheader">ERP Process</a></li>
     <li>
       <ul class="collapsible collapsible-accordion">
-        <li>
+        <li @if($page=='masterdata') class="active" @endif>
           <a class="collapsible-header waves-effect waves-light" style="padding-left:32px;"><i class="material-icons">storage</i>Master Data</a>
           <div class="collapsible-body">
             <ul>
-              <li><a href="#!">Customers</a></li>
+              <li @if($subpage=='customer') class="active" @endif><a href="{{ route('customer.index')}}">Customers</a></li>
               <li><a href="#!">Vendors</a></li>
               <li><a href="#!">Item Categories</a></li>
               <li><a href="#!">Item Subcategories</a></li>
@@ -28,12 +28,13 @@
     </li>
     <li class="no-padding">
       <ul class="collapsible collapsible-accordion">
-        <li>
+        <li @if($page=='products') class="active" @endif>
           <a class="collapsible-header waves-effect waves-light" style="padding-left:32px;"><i class="material-icons">build</i>Products</a>
           <div class="collapsible-body">
             <ul>
-              <li><a href="#!">Product List</a></li>
-              <li><a href="#!">Modules</a></li>
+              <li @if($subpage=='productcategories') class="active" @endif><a href="{{ route('product_category.index') }}">Product Categories</a></li>
+              <li @if($subpage=='productlist') class="active" @endif><a href="{{ route('product.index') }}">Product List</a></li>
+              <li><a href="#!">Module List</a></li>
             </ul>
           </div>
         </li>
@@ -135,9 +136,9 @@
           <div class="collapsible-body">
             <ul>
               <li><a href="#!">Accounts</a></li>
-              <li><a href="#!">Currencies</a></li>
-              <li @if($subpage=='uom')class="active"@endif><a href="{{ route('uom.index')}}">Units</a></li>
-              <li><a href="#!">Payment Terms</a></li>
+              <li @if($subpage=='currency') class="active" @endif><a href="{{ route('currency.index')}}">Currencies</a></li>
+              <li @if($subpage=='uom') class="active" @endif><a href="{{ route('uom.index')}}">Units</a></li>
+              <li @if($subpage=='payment_term') class="active" @endif><a href="{{ route('payment_term.index')}}">Payment Terms</a></li>
             </ul>
           </div>
         </li>

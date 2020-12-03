@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\UnitOfMeasure;
+use App\Currency;
 use Validator;
 
-class UOMController extends Controller
+class CurrenciesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,17 +16,17 @@ class UOMController extends Controller
     public function index()
     {
         //
-        return view('res.uom.index')
+        return view('res.currency.index')
                 ->with('site','res')
                 ->with('page','parameters')
-                ->with('subpage','uom');
+                ->with('subpage','currency');
     }
 
     public function all()
     {
         return response()
             ->json([
-                "data" => UnitOfMeasure::all()
+                "data" => Currency::all()
             ]);
     }
 
@@ -50,8 +50,10 @@ class UOMController extends Controller
     {
         //
         $field = [
-            'uom_name' => 'required',
-            'uom_code' => 'required',
+            'currency_name' => 'required',
+            'currency_code' => 'required',
+            'currency_words' => 'required',
+            'symbol' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $field);
@@ -60,12 +62,14 @@ class UOMController extends Controller
             return back()->withInput()
                         ->withErrors($validator);
         }else{
-            $uom = new UnitOfMeasure();
-            $uom->uom_name = $request->input('uom_name','');
-            $uom->uom_code = $request->input('uom_code','');
+            $currency = new Currency();
+            $currency->currency_name = $request->input('currency_name','');
+            $currency->currency_code = $request->input('currency_code','');
+            $currency->currency_words = $request->input('currency_words','');
+            $currency->symbol = $request->input('symbol','');
 
-            if($uom->save()){
-                return redirect()->route('uom.index')->withSuccess('Unit Successfully Added');
+            if($currency->save()){
+                return redirect()->route('currency.index')->withSuccess('Currency Successfully Added');
             }
         }
     }
@@ -78,7 +82,8 @@ class UOMController extends Controller
      */
     public function show($id)
     {
-        $data = UnitOfMeasure::find($id);
+        //
+        $data = Currency::find($id);
         return response()
             ->json([
                 "data" => $data
@@ -94,6 +99,7 @@ class UOMController extends Controller
     public function edit($id)
     {
         //
+        
     }
 
     /**
@@ -111,8 +117,10 @@ class UOMController extends Controller
     public function patch(Request $request)
     {
         $field = [
-            'uom_name' => 'required',
-            'uom_code' => 'required',
+            'currency_name' => 'required',
+            'currency_code' => 'required',
+            'currency_words' => 'required',
+            'symbol' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $field);
@@ -121,12 +129,14 @@ class UOMController extends Controller
             return back()->withInput()
                         ->withErrors($validator);
         }else{
-            $uom = UnitOfMeasure::find($request->input('id',''));
-            $uom->uom_name = $request->input('uom_name','');
-            $uom->uom_code = $request->input('uom_code','');
+            $currency = Currency::find($request->input('id',''));
+            $currency->currency_name = $request->input('currency_name','');
+            $currency->currency_code = $request->input('currency_code','');
+            $currency->currency_words = $request->input('currency_words','');
+            $currency->symbol = $request->input('symbol','');
 
-            if($uom->save()){
-                return redirect()->route('uom.index')->withSuccess('Unit Successfully Updated');
+            if($currency->save()){
+                return redirect()->route('currency.index')->withSuccess('Currency Successfully Updated');
             }
         }
     }
@@ -141,12 +151,12 @@ class UOMController extends Controller
     {
         //
     }
-    
+
     public function delete(Request $request)
     {
         //
-        if(UnitOfMeasure::destroy($request->input('id',''))){
-            return redirect()->route('uom.index')->withSuccess('Unit Successfully Deleted');
+        if(Currency::destroy($request->input('id',''))){
+            return redirect()->route('currency.index')->withSuccess('Currency Successfully Deleted');
         }
     }
 }
