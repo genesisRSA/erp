@@ -2,7 +2,7 @@
 <ul id="slide-out" class="sidenav sidenav-fixed">
     <div class="card" style="margin:0;">
         <div class="card-image">
-            <img src="{{ asset('images/resbanner.png') }}">
+            <img src="{{ asset('images/resbanner.png') }}" style="filter: blur(2px);">
             <a class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">power_settings_new</i></a>
             <span class="card-title flow-text">Franz Delomen</span>
         </div>

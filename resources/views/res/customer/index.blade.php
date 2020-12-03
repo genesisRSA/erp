@@ -289,11 +289,11 @@
         $('#edit_cust_person_pos').val(data.cust_person_pos);
         $('#edit_remarks').val(data.remarks);
         $('#editModal').modal('open');
-          M.updateTextFields();
-          $('.materialize-textarea').each(function (index) {
-              M.textareaAutoResize(this);
-              });
-          });
+        M.updateTextFields();
+        $('.materialize-textarea').each(function (index) {
+            M.textareaAutoResize(this);
+        });
+      });
     }
 
     function deleteItem(id){

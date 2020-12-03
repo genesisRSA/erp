@@ -20,14 +20,15 @@ class ProductsController extends Controller
         return view('res.product.index')
         ->with('site','res')
         ->with('page','products')
-        ->with('subpage','productlist');
+        ->with('subpage','productlist')
+        ->with('prodcat',ProductCategory::all());
     }
 
     public function all()
     {
         return response()
             ->json([
-                "data" => Product::all()
+                "data" => Product::with('prod_cat:id,prodcat_name')->get()
             ]);
     }
     /**
@@ -49,6 +50,31 @@ class ProductsController extends Controller
     public function store(Request $request)
     {
         //
+        $field = [
+            'prodcat_id' => 'required',
+            'prod_name' => 'required',
+            'prod_code' => 'required',
+            'prod_type' => 'required',
+            'prod_writeup' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $field);
+         
+        if ($validator->fails()) {
+            return back()->withInput()
+                        ->withErrors($validator);
+        }else{
+            $product = new Product();
+            $product->prodcat_id = $request->input('prodcat_id','');
+            $product->prod_name = $request->input('prod_name','');
+            $product->prod_code = $request->input('prod_code','');
+            $product->prod_type = $request->input('prod_type','');
+            $product->prod_writeup = $request->input('prod_writeup','');
+
+            if($product->save()){
+                return redirect()->route('product.index')->withSuccess('Product Successfully Added');
+            }
+        }
     }
 
     /**
@@ -60,6 +86,11 @@ class ProductsController extends Controller
     public function show($id)
     {
         //
+        $data = Product::find($id);
+        return response()
+            ->json([
+                "data" => $data
+            ]);
     }
 
     /**
@@ -84,6 +115,36 @@ class ProductsController extends Controller
     {
         //
     }
+
+    public function patch(Request $request)
+    {
+        $field = [
+            'prodcat_id' => 'required',
+            'prod_name' => 'required',
+            'prod_code' => 'required',
+            'prod_type' => 'required',
+            'prod_writeup' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $field);
+         
+        if ($validator->fails()) {
+            return back()->withInput()
+                        ->withErrors($validator);
+        }else{
+            $product = Product::find($request->input('id',''));
+            $product->prodcat_id = $request->input('prodcat_id','');
+            $product->prod_name = $request->input('prod_name','');
+            $product->prod_code = $request->input('prod_code','');
+            $product->prod_type = $request->input('prod_type','');
+            $product->prod_writeup = $request->input('prod_writeup','');
+
+            if($product->save()){
+                return redirect()->route('product.index')->withSuccess('Product Successfully Updated');
+            }
+        }
+    }
+
 
     /**
      * Remove the specified resource from storage.
