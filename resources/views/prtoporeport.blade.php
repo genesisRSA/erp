@@ -24,6 +24,7 @@
                             <th>PR to PO Days</th>
                             <th>Received Date</th>
                             <th>Item</th>
+                            <th>Remarks</th>
                             <th>Supplier Name</th>
                         </tr>
                     </thead>
@@ -61,11 +62,7 @@
                         if(data){ return data; } else { return '<strong class="text-danger">N/A</strong>'; }
                   }
                 },
-                { "data": "PRtoPODays",
-                  "render": function ( data, type, row, meta ) {
-                        if(data){ return data; } else { return '<strong class="text-danger">N/A</strong>'; }
-                  }
-                },
+                { "data": "PRtoPODays" },
                 { "data": "ReceivedDate",
                   "render": function ( data, type, row, meta ) {
                         if(data){ return data; } else { return '<strong class="text-danger">N/A</strong>'; }
