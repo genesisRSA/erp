@@ -208,7 +208,7 @@ class LeavesController extends Controller
             $leave->last_approved_by = "N/A";
             $leave->last_approved = "1990-01-01";
 
-            if($request->input('type') == "Sick Leave" && !$request->input('is_one_day')){
+            if($request->input('type') == "Sick Leave"){
                 $leave->next_approver = User::where('is_nurse','=','1')->first()->emp_no;
                 $leave->status = "For Fit to Work Verification";
 

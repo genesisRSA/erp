@@ -280,7 +280,7 @@ class OTController extends Controller
                                     'posted',
                                     'filer',
                                     Auth::user()->employee->emp_fname,
-                                    $cs->ref_no,
+                                    $ot->ref_no,
                                     '',
                                     $filer->full_name,
                                     'Posted');
