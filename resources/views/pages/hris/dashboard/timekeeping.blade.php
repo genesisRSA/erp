@@ -92,7 +92,8 @@
                 <!--Shift-->
                 <div class="tab-pane fade show" id="shift" role="tabpanel" aria-labelledby="shift-tab">
                     <div class="container-fluid pt-3 mb-3">
-                        <a href="{{ route('employeeshift.create') }}" class="btn btn-success mb-3"><i class="fas fa-plus-circle"></i> Create Shift</a>
+                        <a href="{{ route('employeeshift.create') }}" class="btn btn-success mb-3"><i class="fas fa-plus-circle"></i> Create Shift</a> 
+                        <a href="{{ route('employeeshift.create') }}" class="btn btn-warning mb-3"><i class="fas fa-upload"></i> Import Shift</a>
                         <table id="shift-dt" class="table table-striped table-bordered" style="width:100%;">
                             <thead class="thead-dark">
                                 <tr>
