@@ -37,6 +37,7 @@
                                     <th>Status</th>
                                     <th>Preview</th>
                                     <th>Preview Vertical</th>
+                                    <th>Expiration Date</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -54,6 +55,7 @@
                                     <th>Requestor</th>
                                     <th>Preview</th>
                                     <th>Preview Vertical</th>
+                                    <th>Expiration Date</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>

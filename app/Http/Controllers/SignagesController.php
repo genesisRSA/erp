@@ -40,6 +40,7 @@ class SignagesController extends Controller
         $signages->source_url = 'storage/videos/'.$filename;
         $signages->source_url_vertical = 'storage/videos/'.$filename_vertical;
         $signages->is_enabled = 0;
+        $signages->expiration_date = $request->input('expiration_date','');;
         $signages->is_video = $request->input('is_video','');
         $signages->last_approved_by = '0722-2019';
         $approver = Employee::where('emp_no','=',$signages->last_approved_by)->first();
@@ -63,6 +64,7 @@ class SignagesController extends Controller
     public function all($emp_no)
     {
         $data = Signages::where('created_by','=',$emp_no)
+                ->where('expiration_date','>=',date('Y-m-d'))
                 ->get();
         
         return response()
@@ -74,6 +76,7 @@ class SignagesController extends Controller
     public function forapproval($emp_no)
     {
         $data = Signages::where('last_approved_by','=',$emp_no)
+                ->where('expiration_date','>=',date('Y-m-d'))
                 ->where('is_enabled','<>','1')
                 ->where('is_enabled','<>','3')
                 ->with('requestor:emp_no,emp_photo,emp_fname,emp_lname')
@@ -87,7 +90,7 @@ class SignagesController extends Controller
 
     public function signage()
     {
-        $signages = Signages::where('is_enabled','=',1)->get();
+        $signages = Signages::where('is_enabled','=',1)->where('expiration_date','>=',date('Y-m-d'))->get();
         
         return view('signage')
                 ->with('signages',$signages);
@@ -95,7 +98,7 @@ class SignagesController extends Controller
 
     public function signage_vertical()
     {
-        $signages = Signages::where('is_enabled','=',1)->get();
+        $signages = Signages::where('is_enabled','=',1)->where('expiration_date','>=',date('Y-m-d'))->get();
         
         return view('signagev')
                 ->with('signages',$signages);
@@ -103,7 +106,7 @@ class SignagesController extends Controller
 
     public function signage_jolist()
     {
-        $signages = Signages::where('is_enabled','=',1)->get();
+        $signages = Signages::where('is_enabled','=',1)->where('expiration_date','>=',date('Y-m-d'))->get();
         $jo_list = DB::connection('sqlsrv')->table("JOLIST.dbo.jolist")->get();
 
         return view('signagejo')
@@ -113,7 +116,7 @@ class SignagesController extends Controller
 
     public function signage_jolistv()
     {
-        $signages = Signages::where('is_enabled','=',1)->get();
+        $signages = Signages::where('is_enabled','=',1)->where('expiration_date','>=',date('Y-m-d'))->get();
         $jo_list = DB::connection('sqlsrv')->table("JOLIST.dbo.jolist")->get();
 
         return view('signagejov')

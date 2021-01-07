@@ -58,6 +58,9 @@
                     }
                 },
                 {
+                    "data": "expiration_date",
+                },
+                {
                     "targets": 6,
                     "data": "id",
                     "render": function ( data, type, row, meta ) {
@@ -126,6 +129,9 @@
                             return '<video src="/'+data+'" class="text-center" loop muted controls style="height:384px;width:216px;"></video>';
                         }
                     }
+                },
+                {
+                    "data": "expiration_date",
                 },
                 {
                     "targets": 6,

@@ -66,6 +66,13 @@
                                         {{ $errors->first('source_url') }}
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label id="label_sexpiration_date">Expiration <sup class="text-danger">*</sup></label>
+                                    <input type="date" min="{{date('Y-m-d')}}" value="{{date('Y-m-d')}}" class="form-control {{ $errors->has('expiration_date') ? 'is-invalid' : '' }}" name="expiration_date" id="expiration_date" required/>
+                                    <div class="invalid-feedback">
+                                        {{ $errors->first('expiration_date') }}
+                                    </div>
+                                </div>
                             </form>
                         </div>
                         <div class="col-md-3 text-center">
