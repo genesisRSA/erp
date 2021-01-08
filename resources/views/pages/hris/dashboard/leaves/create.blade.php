@@ -58,7 +58,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                             </div>
-                                            <input type="date" class="form-control" min="{{ date('Y-m-d') }}" name="leave_from" id="leave_from" value="{{old('leave_from') ? old('leave_from') : date('Y-m-d')}}" />
+                                            <input type="date" class="form-control" name="leave_from" id="leave_from" value="{{old('leave_from') ? old('leave_from') : date('Y-m-d')}}" />
                                         <!--
                                             <input type="date" class="form-control" min="{{ date('Y-m-d',strtotime('next '.date('l'))) }}" name="leave_from" id="leave_from" value="{{old('leave_from') ? old('leave_from') : date('Y-m-d',strtotime('next '.date('l')))}}" />
                                         -->
