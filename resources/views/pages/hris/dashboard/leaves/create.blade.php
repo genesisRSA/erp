@@ -83,19 +83,69 @@
                                     <label>Date Range Option</label>
                                     <div class="custom-control custom-checkbox">
                                         <input type="checkbox" name="is_one_day" class="custom-control-input" id="is_one_day" {{old('is_one_day') ? 'checked' : ''}}>
-                                        <label class="custom-control-label" for="is_one_day">Is One Day ?</label>
+                                        <label class="custom-control-label" for="is_one_day">Is One Day ?</label><br>
+                                    </div>
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" name="is_half_day" class="custom-control-input" id="is_half_day" {{old('is_half_day') ? 'checked' : ''}}>
+                                        <label class="custom-control-label" for="is_half_day">Is Half Day ?</label>
                                     </div>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>Details <sup class="text-danger">*</sup></label>
-                                        <textarea class="form-control {{ $errors->has('details') ? 'is-invalid' : '' }}" name="details" id="details" rows="3" placeholder="Leave Details">{{old('details')}}</textarea>
-                                        <div class="invalid-feedback">
-                                            {{ $errors->first('details') }}
+                                        <div class="form-group">
+                                            <label>Reason for Leave <sup class="text-danger">*</sup></label>
+                                            <div class="input-group">
+                                                <textarea class="form-control {{ $errors->has('details') ? 'is-invalid' : '' }}" name="details" id="details" rows="1" placeholder="Please input reason for leave...">{{old('details')}}</textarea>
+                                                <div class="invalid-feedback">
+                                                    {{ $errors->first('details') }}
+                                                </div>
+                                                <div class="input-group-append">
+                                                    <button type="button" class="btn btn-sm btn-success" id="add_leave"><i class="fas fa-plus-circle"></i> Add Leave</button>
+                                                </div>
+                                            </div>
                                         </div>
+                                       
                                     </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <table class="table table-striped table-bordered" id="leave_table">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th class="bg-primary" colspan="6">Leave Details</th>
+                                            </tr>
+                                            <tr>
+                                                <th>Leave Type</th>
+                                                <th>Date From</th>
+                                                <th>Date To</th>
+                                                <th>Duration</th>
+                                                <th>Reason for Leave</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(old('date_from'))
+                                                @for ($i = 0; $i < count(old('date_from')); $i++)
+                                                    <tr>
+                                                        <td>{{old('leave_type.'.$i)}}</td>
+                                                        <td>{{old('date_from.'.$i)}}</td>
+                                                        <td>{{old('date_to.'.$i)}}</td>
+                                                        <td>{{old('duration.'.$i)}}</td>
+                                                        <td>{{old('reason.'.$i)}}</td>
+                                                        <td><button type="button" class="btn btn-sm btn-danger" id="del_leave"><i class="fas fa-trash-alt"></i> Delete</button></td>
+                                                        <input type="hidden" name="leave_type[]" value="{{old('leave_type.'.$i)}}" />
+                                                        <input type="hidden" name="date_from[]" value="{{old('date_from.'.$i)}}" />
+                                                        <input type="hidden" name="date_to[]" value="{{old('date_to.'.$i)}}" />
+                                                        <input type="hidden" name="duration[]" value="{{old('duration.'.$i)}}" />
+                                                        <input type="hidden" name="reason[]" value="{{old('reason.'.$i)}}" />
+                                                    </td>
+                                                @endfor
+                                            @endif
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                             @if($reports_to)

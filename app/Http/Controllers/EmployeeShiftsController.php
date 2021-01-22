@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Employee;
+use App\Shift;
 use Auth;
 use Validator;
 use Session;
@@ -11,6 +12,7 @@ use Carbon\Carbon;
 use App\EmployeeShift;
 use App\Shifts;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File; 
 use App\User;
 
 class EmployeeShiftsController extends Controller
@@ -60,6 +62,99 @@ class EmployeeShiftsController extends Controller
                 ->with('employees',$employees)
                 ->with('shifts',$shifts);
     }
+
+    public function import()
+    {
+        //
+        return view('pages.hris.dashboard.shifts.import')
+                ->with(array('site'=> 'hris', 'page'=>'shift', 'shift_table' => '' , 'error_count' => 0, 'file_path' => ''));
+    }
+    
+    function generate_shift_table($data){
+        $table = array();
+        $error_count = 0;
+        $row_no = 0;
+        foreach($data as $row){
+            $row_no++;
+            $has_error = false;
+            $remarks = null;
+            //check employee
+            $employee = Employee::where('emp_no',$row[0])->first();
+            $emp_no = $employee ? $employee->emp_no : $row[0];
+            $emp_name = $employee ? $employee->full_name : "N/A";
+            $emp_photo = $employee ? $employee->emp_photo : "N/A";
+            //check shift
+            $shift = Shift::where('shift_code',$row[2])
+                            ->where('shift_day',date('l',strtotime($row[1])))
+                            ->first();
+            $shift_desc = $shift ? $shift->shift_desc : $row[2];
+            $shift_date = $row[1];
+            $time_in = $shift ? $shift->shift_start : "N/A";
+            $time_out = $shift ? $shift->shift_end : "N/A";
+            
+            //generate error (if any)
+            if($emp_name == "N/A"){ $remarks .= "| Employee not exist. | "; $has_error = true;}
+            if($time_in == "N/A"){ $remarks .= "Shift not exist. | "; $has_error = true;}
+            $error_count = $has_error ? $error_count + 1 : $error_count + 0;
+            array_push($table,array(
+                "row_no" => $row_no,
+                "emp_no" => $emp_no,
+                "emp_name" => $emp_name,
+                "emp_photo" => $emp_photo,
+                "shift_desc" => $shift_desc,
+                "shift_day" => date('l',strtotime($row[1])),
+                "shift_date" => $shift_date,
+                "time_in" => date('h:i A',strtotime($time_in)),
+                "time_out" => date('h:i A',strtotime($time_out)),
+                "remarks" => $remarks,
+                "has_error" => $has_error
+            ));
+        }
+
+        return array('table' => $table, 'error_count' => $error_count);
+    }
+
+    public function upload(Request $request)
+    {
+        //
+        $field = [
+            'shift_file' => 'required|file',
+        ];
+
+        $validator = Validator::make($request->all(), $field);
+         
+        if ($validator->fails()) {
+            return back()->withInput()
+                        ->withErrors($validator);
+        }else{
+            $file = $request->file('shift_file');
+            $path = $file->getRealPath();
+            $data = array_map('str_getcsv', file($path));
+            $file->move(public_path(),$file->getClientOriginalName());
+            $data = array_splice($data,1,count($data));
+            $data = self::generate_shift_table($data);
+            $table = $data["table"];
+            $error_count = $data["error_count"];
+            return view('pages.hris.dashboard.shifts.import')
+                    ->with(array('site'=> 'hris', 'page'=>'shift', 'shift_table' => $table, 'error_count' => $error_count, 'file_path' => public_path()."\\".$file->getClientOriginalName()));
+        }
+    }
+
+    
+    public function import_submit(Request $request){
+        $path = $request->input('file_path');
+        $data = array_map('str_getcsv', file($path));
+        $data = array_splice($data,1,count($data));
+        $data = self::generate_shift_table($data);
+        $table = $data["table"];
+        $error_count = $data["error_count"];
+        File::delete($path);
+        
+        return view('pages.hris.dashboard.shifts.import')
+                ->with(array('site'=> 'hris', 'page'=>'shift', 'shift_table' => $table, 'error_count' => $error_count, 'file_path' => $path));
+    }
+
+    
 
     /**
      * Store a newly created resource in storage.

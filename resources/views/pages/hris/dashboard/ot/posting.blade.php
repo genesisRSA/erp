@@ -39,6 +39,7 @@
                                                 <th class="bg-primary" colspan="5">Overtime Details</th>
                                             </tr>
                                             <tr>
+                                                <th>Employee</th>
                                                 <th>OT Date</th>
                                                 <th>OT Duration From</th>
                                                 <th>OT Duration To</th>
@@ -49,9 +50,12 @@
                                             @if($ot_details)
                                                 @foreach ($ot_details as $item)
                                                     <tr>
+                                                        <td>@php $emp = App\Employee::where('emp_no',$item->emp_no)->first() @endphp
+                                                            <img src="/{{$emp->emp_photo}}" class="img-fluid rounded-circle bg-dark" style="height:48px;"/></a> <span class="badge badge-secondary">{{$emp->full_name}}<br>{{$emp->emp_no}}
+                                                        </td>
                                                         <td>{{$item->ot_date}}</td>
-                                                        <td>{{$item->ot_from}}</td>
-                                                        <td>{{$item->ot_to}}</td>
+                                                        <td>{{$item->ot_start }}</td>
+                                                        <td>{{$item->ot_end }}</td>
                                                         <td>{{$item->reason}}</td>
                                                     </td>
                                                 @endforeach
@@ -151,6 +155,7 @@
                         <div class="row mt-3 float-right">
                             @if($ot->status == 'Approved')
                             <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#postModal"><i class="fas fa-check-circle"></i> Post</button>
+                            <button type="button" class="btn btn-danger mr-2" data-toggle="modal" data-target="#voidModal"><i class="fas fa-times-circle"></i> Void</button>
                             @endif
                         </div>
                     </div>
@@ -159,7 +164,7 @@
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Post</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">Post Overtime</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                     </button>
@@ -169,6 +174,25 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-success" name="submit" value="post">Yes</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="voidModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Post Overtime</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to void this overtime?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-success" name="void" value="post">Yes</button>
                                     <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
                                 </div>
                             </div>

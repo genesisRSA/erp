@@ -31,6 +31,21 @@
                             <div class="row pt-3 mb-3">
                                 <div class="col-md-3">
                                     <div class="form-group">
+                                        <label>Person</label>
+                                        <select class="form-control" name="person" id="person">
+                                            <option value="" disabled selected>Choose Person...</option>
+                                            <option value="{{Auth::user()->emp_no}}">(Me) {{Auth::user()->name}}</option>
+                                            @foreach ($team as $t)
+                                                <option value="{{$t->emp_no}}">{{$t->full_name}}</option>
+                                            @endforeach
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            {{ $errors->first('person') }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
                                         <label>OT Date <sup class="text-danger">*</sup></label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
@@ -52,7 +67,9 @@
                                         <input type="time" class="form-control" id="ot_to" value="{{old('ot_to')}}"/>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Reason for Rendering OT <sup class="text-danger">*</sup></label>
                                         <div class="input-group">
@@ -69,9 +86,10 @@
                                     <table class="table table-striped table-bordered" id="ot_table">
                                         <thead class="thead-dark">
                                             <tr>
-                                                <th class="bg-primary" colspan="5">Overtime Details</th>
+                                                <th class="bg-primary" colspan="6">Overtime Details</th>
                                             </tr>
                                             <tr>
+                                                <th>Employee Name</th>
                                                 <th>OT Date</th>
                                                 <th>OT Duration From</th>
                                                 <th>OT Duration To</th>
@@ -83,11 +101,14 @@
                                             @if(old('ot_date'))
                                                 @for ($i = 0; $i < count(old('ot_date')); $i++)
                                                     <tr>
+                                                        <td>{{old('emp_name.'.$i)}}</td>
                                                         <td>{{old('ot_date.'.$i)}}</td>
                                                         <td>{{old('ot_from.'.$i)}}</td>
                                                         <td>{{old('ot_to.'.$i)}}</td>
                                                         <td>{{old('reason.'.$i)}}</td>
                                                         <td><button type="button" class="btn btn-sm btn-danger" id="del_ot"><i class="fas fa-trash-alt"></i> Delete</button></td>
+                                                        <input type="hidden" name="emp_name[]" value="{{old('emp_name.'.$i)}}" />
+                                                        <input type="hidden" name="emp_no[]" value="{{old('emp_no.'.$i)}}" />
                                                         <input type="hidden" name="ot_date[]" value="{{old('ot_date.'.$i)}}" />
                                                         <input type="hidden" name="ot_from[]" value="{{old('ot_from.'.$i)}}" />
                                                         <input type="hidden" name="ot_to[]" value="{{old('ot_to.'.$i)}}" />

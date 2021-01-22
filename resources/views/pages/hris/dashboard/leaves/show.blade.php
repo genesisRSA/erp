@@ -32,49 +32,35 @@
                     <!--Leave Information-->
                     <div class="tab-pane fade show active" id="leave" role="tabpanel" aria-labelledby="leave-tab">
                         <div class="container-fluid">
-                            <div class="row pt-3 mb-3">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Leave Type</label>
-                                        <input type="text" class="form-control" value="{{$leave->type}}" readonly/>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Date From</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                            </div>
-                                            <input type="date" class="form-control" name="leave_from" id="leave_from" value="{{$leave->leave_from}}"  readonly/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Date To</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                            </div>
-                                            <input type="date" class="form-control" name="leave_to" id="leave_to" value="{{$leave->leave_to}}" readonly/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <label>Date Range Option</label>
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" name="is_one_day" class="custom-control-input" id="" {{$leave->leave_from == $leave->leave_to ? 'checked' : ''}} readonly>
-                                        <label class="custom-control-label" for="is_one_day">Is One Day ?</label>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="row mb-3">
                                 <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label>Details</label>
-                                        <textarea class="form-control" name="details" id="details" rows="3" placeholder="Leave Details" readonly>{{$leave->details}}</textarea>
-                                    </div>
+                                    <table class="table table-striped table-bordered mt-3" id="leave_table">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th class="bg-primary" colspan="6">Leave Details</th>
+                                            </tr>
+                                            <tr>
+                                                <th>Leave Type</th>
+                                                <th>Date From</th>
+                                                <th>Date To</th>
+                                                <th>Duration</th>
+                                                <th>Reason for Leave</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if($leave_details)
+                                                @foreach ($leave_details as $item)
+                                                    <tr>
+                                                        <td>{{$item->leave_type}}</td>
+                                                        <td>{{$item->date_from}}</td>
+                                                        <td>{{$item->date_to}}</td>
+                                                        <td>{{$item->duration}}</td>
+                                                        <td>{{$item->reason}}</td>
+                                                    </td>
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                             <hr>

@@ -40,6 +40,7 @@
                                                 <th class="bg-primary" colspan="5">Overtime Details</th>
                                             </tr>
                                             <tr>
+                                                <th>Employee</th>
                                                 <th>OT Date</th>
                                                 <th>OT Duration From</th>
                                                 <th>OT Duration To</th>
@@ -50,9 +51,10 @@
                                             @if($ot_details)
                                                 @foreach ($ot_details as $item)
                                                     <tr>
+                                                        <td>{{App\Employee::where('emp_no',$item->emp_no)->first()->full_name}}</td>
                                                         <td>{{$item->ot_date}}</td>
-                                                        <td>{{$item->ot_from}}</td>
-                                                        <td>{{$item->ot_to}}</td>
+                                                        <td>{{$item->ot_start }}</td>
+                                                        <td>{{$item->ot_end }}</td>
                                                         <td>{{$item->reason}}</td>
                                                     </td>
                                                 @endforeach

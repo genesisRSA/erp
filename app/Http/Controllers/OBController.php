@@ -45,6 +45,7 @@ class OBController extends Controller
             ->json([
                 "data" => OB::orderBy('date_filed','asc')
                             ->where('status', '=', 'Posted')
+                            ->orWhere('status', '=', 'Voided')
                             ->with('filer_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->with('approved_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->with('approver_employee:emp_no,emp_photo,emp_fname,emp_lname')
@@ -285,24 +286,48 @@ class OBController extends Controller
         $logs = json_decode($ob->logs);
         
         $filer = Employee::where('emp_no','=',$ob->filer)->first();
-        $status = 'Posted';
-        $ob->next_approver = 'N/A';
-        $mailable = new LeaveMailable('HRIS - Official Business Request Posted',
-                                    'ob',
-                                    'posted',
-                                    'filer',
-                                    Auth::user()->employee->emp_fname,
-                                    $ob->ref_no,
-                                    $ob->purpose,
-                                    $filer->full_name,
-                                    'Posted');
-        
 
-        $log_entry = array('status' => $status,
-                            'transaction_date' => date('Y-m-d'),
-                            'approved_by' => Auth::user()->emp_no,
-                            'remarks' => 'Posted'
-                        );
+        if($request->input('void')){
+
+            $status = 'Voided';
+            $ob->next_approver = 'N/A';
+            $mailable = new LeaveMailable('HRIS - Official Business Request Voided',
+                                        'ob',
+                                        'void',
+                                        'filer',
+                                        Auth::user()->employee->emp_fname,
+                                        $ob->ref_no,
+                                        $ob->purpose,
+                                        $filer->full_name,
+                                        'Voided');
+    
+            $log_entry = array('status' => $status,
+                                'transaction_date' => date('Y-m-d'),
+                                'approved_by' => Auth::user()->emp_no,
+                                'remarks' => 'Voided'
+                            );
+
+        }else{
+            $status = 'Posted';
+            $ob->next_approver = 'N/A';
+            $mailable = new LeaveMailable('HRIS - Official Business Request Posted',
+                                        'ob',
+                                        'posted',
+                                        'filer',
+                                        Auth::user()->employee->emp_fname,
+                                        $ob->ref_no,
+                                        $ob->purpose,
+                                        $filer->full_name,
+                                        'Posted');
+            
+    
+            $log_entry = array('status' => $status,
+                                'transaction_date' => date('Y-m-d'),
+                                'approved_by' => Auth::user()->emp_no,
+                                'remarks' => 'Posted'
+                            );
+        }
+
         array_push($logs,$log_entry);
 
         $ob->logs = json_encode($logs);
@@ -312,7 +337,7 @@ class OBController extends Controller
 
         if($ob->save()){
             Mail::to($filer->work_email, $filer->full_name)->send($mailable);
-            return redirect()->route('timekeeping',['#obposted'])->withSuccess('Official Business Successfully Posted!');
+            return redirect()->route('timekeeping',['#obposted'])->withSuccess('Official Business Successfully '.$status.'!');
         }
     }
 

@@ -65,7 +65,6 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th>Ref No.</th>
-                                    <th>Type</th>
                                     <th>Date Filed</th>
                                     <th>Status</th>
                                     <th>Last Approved By</th>
@@ -85,7 +84,6 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th>Ref No.</th>
-                                    <th>Type</th>
                                     <th>Date Filed</th>
                                     <th>Status</th>
                                     <th>Last Approved By</th>
@@ -105,7 +103,6 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th>Ref No.</th>
-                                    <th>Type</th>
                                     <th>Requestor</th>
                                     <th>Date Filed</th>
                                     <th>Status</th>

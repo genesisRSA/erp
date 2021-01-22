@@ -174,6 +174,7 @@
                         <div class="row mt-3 float-right">
                             @if($cs->status == 'Approved')
                             <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#postModal"><i class="fas fa-check-circle"></i> Post</button>
+                            <button type="button" class="btn btn-danger mr-2" data-toggle="modal" data-target="#voidModal"><i class="fas fa-times-circle"></i> Void</button>
                             @endif
                         </div>
                     </div>
@@ -182,7 +183,7 @@
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Post</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">Post Change Shift</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                     </button>
@@ -192,6 +193,25 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-success" name="submit" value="post">Yes</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="voidModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Void Change Shift</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to void this change shift?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-success" name="void" value="post">Yes</button>
                                     <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
                                 </div>
                             </div>

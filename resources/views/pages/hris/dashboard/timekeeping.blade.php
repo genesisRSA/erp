@@ -54,7 +54,6 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th>Ref No.</th>
-                                    <th>Type</th>
                                     <th>Filer</th>
                                     <th>Date Filed</th>
                                     <th>Status</th>
@@ -75,7 +74,6 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th>Ref No.</th>
-                                    <th>Type</th>
                                     <th>Filer</th>
                                     <th>Date Filed</th>
                                     <th>Status</th>
@@ -93,14 +91,16 @@
                 <div class="tab-pane fade show" id="shift" role="tabpanel" aria-labelledby="shift-tab">
                     <div class="container-fluid pt-3 mb-3">
                         <a href="{{ route('employeeshift.create') }}" class="btn btn-success mb-3"><i class="fas fa-plus-circle"></i> Create Shift</a> 
-                        <a href="{{ route('employeeshift.create') }}" class="btn btn-warning mb-3"><i class="fas fa-upload"></i> Import Shift</a>
+                        <a href="{{ route('employeeshift.import') }}" class="btn btn-warning mb-3"><i class="fas fa-upload"></i> Import Shift</a>
                         <table id="shift-dt" class="table table-striped table-bordered" style="width:100%;">
                             <thead class="thead-dark">
                                 <tr>
                                     <th>Employee</th>
                                     <th>Shift</th>
-                                    <th>Date From</th>
-                                    <th>Date To</th>
+                                    <th>Date</th>
+                                    <th>Day</th>
+                                    <th>Time In</th>
+                                    <th>Time Out</th>
                                     <th></th>
                                 </tr>
                             </thead>

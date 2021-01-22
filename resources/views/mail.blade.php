@@ -3,7 +3,6 @@
         <h1>Good day, {{$approver}}</h1>
         <p>Please see below leave request for your approval:<br><br>
            <strong>Ref. No: </strong>{{$ref_no}}<br>
-           <strong>Leave Type: </strong>{{$leave_type}}<br>
            <strong>Requested By: </strong>{{$requestor}}<br><br><br>
         </p>
         <i>For more details you can click below: <br><a href="http://192.168.1.190:8000/hris/leaves/{{$ref_no}}/approval">Office Access</a>
@@ -13,7 +12,6 @@
         <h1>Good day, {{$requestor}}</h1>
         <p>You are fit to work:<br><br>
             <strong>Ref. No: </strong>{{$ref_no}}<br>
-            <strong>Leave Type: </strong>{{$leave_type}}<br>
             <strong>Approved By: </strong>{{$approver}}<br>
             <strong>Remarks: </strong>{{$remarks}}<br>
         </p>
@@ -24,7 +22,6 @@
         <h1>Good day, {{$requestor}}</h1>
         <p>Your leave request has been approved:<br><br>
             <strong>Ref. No: </strong>{{$ref_no}}<br>
-            <strong>Leave Type: </strong>{{$leave_type}}<br>
             <strong>Approved By: </strong>{{$approver}}<br>
             <strong>Remarks: </strong>{{$remarks}}<br>
         </p>
@@ -35,7 +32,6 @@
             <h1>Good day, {{$requestor}}</h1>
             <p>Your leave request has been declined:<br><br>
                 <strong>Ref. No: </strong>{{$ref_no}}<br>
-                <strong>Leave Type: </strong>{{$leave_type}}<br>
                 <strong>Approved By: </strong>{{$approver}}<br>
                 <strong>Remarks: </strong>{{$remarks}}<br>
             </p>
@@ -46,7 +42,16 @@
         <h1>Good day, {{$requestor}}</h1>
         <p>Your leave request has been posted:<br><br>
             <strong>Ref. No: </strong>{{$ref_no}}<br>
-            <strong>Leave Type: </strong>{{$leave_type}}<br>
+            <strong>Approved By: </strong>{{$approver}}<br>
+            <strong>Remarks: </strong>{{$remarks}}<br>
+        </p>
+        <i>For more details you can click below: <br><a href="http://192.168.1.190:8000/hris/leave/{{$ref_no}}">Office Access</a>
+        <br><a href="http://124.105.224.123:8000/hris/leave/{{$ref_no}}">Public Access</a>
+        </i>
+    @elseif($status=="void" && $receiver=="filer")
+        <h1>Good day, {{$requestor}}</h1>
+        <p>Your leave request has been voided:<br><br>
+            <strong>Ref. No: </strong>{{$ref_no}}<br>
             <strong>Approved By: </strong>{{$approver}}<br>
             <strong>Remarks: </strong>{{$remarks}}<br>
         </p>
@@ -96,6 +101,16 @@
     @elseif($status=="posted" && $receiver=="filer")
         <h1>Good day, {{$requestor}}</h1>
         <p>Your official business request has been posted:<br><br>
+            <strong>Ref. No: </strong>{{$ref_no}}<br>
+            <strong>Approved By: </strong>{{$approver}}<br>
+            <strong>Remarks: </strong>{{$remarks}}<br>
+        </p>
+        <i>For more details you can click below: <br><a href="http://192.168.1.190:8000/hris/ob/{{$ref_no}}">Office Access</a>
+        <br><a href="http://124.105.224.123:8000/hris/ob/{{$ref_no}}">Public Access</a>
+        </i>
+    @elseif($status=="void" && $receiver=="filer")
+        <h1>Good day, {{$requestor}}</h1>
+        <p>Your official business request has been voided:<br><br>
             <strong>Ref. No: </strong>{{$ref_no}}<br>
             <strong>Approved By: </strong>{{$approver}}<br>
             <strong>Remarks: </strong>{{$remarks}}<br>
@@ -158,6 +173,17 @@
         <i>For more details you can click below: <br><a href="http://192.168.1.190:8000/hris/cs/{{$ref_no}}">Office Access</a>
         <br><a href="http://124.105.224.123:8000/hris/cs/{{$ref_no}}">Public Access</a>
         </i>
+    @elseif($status=="void" && $receiver=="filer")
+        <h1>Good day, {{$requestor}}</h1>
+        <p>Your change shift request has been voided:<br><br>
+            <strong>Ref. No: </strong>{{$ref_no}}<br>
+            <strong>Type: </strong>{{$leave_type}}<br>
+            <strong>Approved By: </strong>{{$approver}}<br>
+            <strong>Remarks: </strong>{{$remarks}}<br>
+        </p>
+        <i>For more details you can click below: <br><a href="http://192.168.1.190:8000/hris/cs/{{$ref_no}}">Office Access</a>
+        <br><a href="http://124.105.224.123:8000/hris/cs/{{$ref_no}}">Public Access</a>
+        </i>
     @endif
 @elseif($page=="ot")
     @if($status=="filed" && $receiver=="approver")
@@ -201,6 +227,16 @@
     @elseif($status=="posted" && $receiver=="filer")
         <h1>Good day, {{$requestor}}</h1>
         <p>Your overtime request has been posted:<br><br>
+            <strong>Ref. No: </strong>{{$ref_no}}<br>
+            <strong>Approved By: </strong>{{$approver}}<br>
+            <strong>Remarks: </strong>{{$remarks}}<br>
+        </p>
+        <i>For more details you can click below: <br><a href="http://192.168.1.190:8000/hris/ot/{{$ref_no}}">Office Access</a>
+        <br><a href="http://124.105.224.123:8000/hris/ot/{{$ref_no}}">Public Access</a>
+        </i>
+    @elseif($status=="void" && $receiver=="filer")
+        <h1>Good day, {{$requestor}}</h1>
+        <p>Your overtime request has been voided:<br><br>
             <strong>Ref. No: </strong>{{$ref_no}}<br>
             <strong>Approved By: </strong>{{$approver}}<br>
             <strong>Remarks: </strong>{{$remarks}}<br>

@@ -45,6 +45,7 @@ class CSController extends Controller
             ->json([
                 "data" => CS::orderBy('date_filed','asc')
                             ->where('status', '=', 'Posted')
+                            ->orWhere('status', '=', 'Voided')
                             ->with('filer_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->with('approved_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->with('approver_employee:emp_no,emp_photo,emp_fname,emp_lname')
@@ -278,24 +279,48 @@ class CSController extends Controller
         $logs = json_decode($cs->logs);
         
         $filer = Employee::where('emp_no','=',$cs->filer)->first();
-        $status = 'Posted';
-        $cs->next_approver = 'N/A';
-        $mailable = new LeaveMailable('HRIS - Change Shift Request Posted',
-                                    'cs',
-                                    'posted',
-                                    'filer',
-                                    Auth::user()->employee->emp_fname,
-                                    $cs->ref_no,
-                                    $cs->type,
-                                    $filer->full_name,
-                                    'Posted');
-        
+        if($request->input('void')){
 
-        $log_entry = array('status' => $status,
-                            'transaction_date' => date('Y-m-d'),
-                            'approved_by' => Auth::user()->emp_no,
-                            'remarks' => 'Posted'
-                        );
+            $status = 'Voided';
+            $cs->next_approver = 'N/A';
+            $mailable = new LeaveMailable('HRIS - Change Shift Request Voided',
+                                        'cs',
+                                        'void',
+                                        'filer',
+                                        Auth::user()->employee->emp_fname,
+                                        $cs->ref_no,
+                                        $cs->type,
+                                        $filer->full_name,
+                                        'Voided');
+    
+            $log_entry = array('status' => $status,
+                                'transaction_date' => date('Y-m-d'),
+                                'approved_by' => Auth::user()->emp_no,
+                                'remarks' => 'Voided'
+                            );
+
+        }else{
+
+            $status = 'Posted';
+            $cs->next_approver = 'N/A';
+            $mailable = new LeaveMailable('HRIS - Change Shift Request Posted',
+                                        'cs',
+                                        'posted',
+                                        'filer',
+                                        Auth::user()->employee->emp_fname,
+                                        $cs->ref_no,
+                                        $cs->type,
+                                        $filer->full_name,
+                                        'Posted');
+            
+    
+            $log_entry = array('status' => $status,
+                                'transaction_date' => date('Y-m-d'),
+                                'approved_by' => Auth::user()->emp_no,
+                                'remarks' => 'Posted'
+                            );
+        }
+
         array_push($logs,$log_entry);
 
         $cs->logs = json_encode($logs);
@@ -305,7 +330,7 @@ class CSController extends Controller
 
         if($cs->save()){
             Mail::to($filer->work_email, $filer->full_name)->send($mailable);
-            return redirect()->route('timekeeping',['#csposted'])->withSuccess('Change Shift Successfully Posted!');
+            return redirect()->route('timekeeping',['#csposted'])->withSuccess('Change Shift Successfully '.$status.'!');
         }
     }
 

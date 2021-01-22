@@ -9,6 +9,7 @@ use Validator;
 use Session;
 use Carbon\Carbon;
 use App\OT;
+use App\OTDetails;
 use Illuminate\Support\Facades\DB;
 use App\User;
 use Illuminate\Support\Facades\Mail;
@@ -45,6 +46,7 @@ class OTController extends Controller
             ->json([
                 "data" => OT::orderBy('date_filed','asc')
                             ->where('status', '=', 'Posted')
+                            ->orWhere('status', '=', 'Voided')
                             ->with('filer_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->with('approved_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->with('approver_employee:emp_no,emp_photo,emp_fname,emp_lname')
@@ -84,15 +86,17 @@ class OTController extends Controller
     public function create()
     {
         //
-        if(strtotime(date('H:i:s')) <= strtotime('15:00:00')){
+        //if(strtotime(date('H:i:s')) <= strtotime('15:00:00')){
+            $team = Employee::where('reports_to','=',Auth::user()->employee->emp_no)->get();
             $reports_to = Employee::where('emp_no','=',Auth::user()->employee->reports_to)->first();
 
             return view('pages.hris.dashboard.ot.create')
                     ->with(array('site'=> 'hris', 'page'=>'overtime'))
-                    ->with('reports_to',$reports_to);
-        }else{
+                    ->with('reports_to',$reports_to)
+                    ->with('team',$team);
+        //}else{
             return back();
-        }
+        //}
     }
 
     /**
@@ -137,12 +141,15 @@ class OTController extends Controller
                 $ot_details = array();
 
                 for( $i = 0 ; $i < count($request->input('ot_date')) ; $i++ ){
-                    array_push($ot_details, [ 'ot_date' => $request->input('ot_date.'.$i),
-                                                'ot_from' => $request->input('ot_from.'.$i),
-                                                'ot_to' => $request->input('ot_to.'.$i),
+                    array_push($ot_details, [  'ref_no' => $lastid,
+                                                'emp_no' => $request->input('emp_no.'.$i),
+                                                'ot_date' => $request->input('ot_date.'.$i),
+                                                'ot_start' => $request->input('ot_from.'.$i),
+                                                'ot_end' => $request->input('ot_to.'.$i),
                                                 'reason' => $request->input('reason.'.$i)
                                               ]);
                 }
+                OTDetails::insert($ot_details);
                 $ot_details = json_encode($ot_details);
                 $ot->ot_details = $ot_details;
             }
@@ -273,24 +280,50 @@ class OTController extends Controller
         $logs = json_decode($ot->logs);
         
         $filer = Employee::where('emp_no','=',$ot->filer)->first();
-        $status = 'Posted';
-        $ot->next_approver = 'N/A';
-        $mailable = new LeaveMailable('HRIS - Overtime Request Posted',
-                                    'ot',
-                                    'posted',
-                                    'filer',
-                                    Auth::user()->employee->emp_fname,
-                                    $ot->ref_no,
-                                    '',
-                                    $filer->full_name,
-                                    'Posted');
-        
 
-        $log_entry = array('status' => $status,
-                            'transaction_date' => date('Y-m-d'),
-                            'approved_by' => Auth::user()->emp_no,
-                            'remarks' => 'Posted'
-                        );
+        if($request->input('void')){
+
+            $status = 'Voided';
+            $ot->next_approver = 'N/A';
+            $mailable = new LeaveMailable('HRIS - Overtime Request Voided',
+                                        'ot',
+                                        'void',
+                                        'filer',
+                                        Auth::user()->employee->emp_fname,
+                                        $ot->ref_no,
+                                        '',
+                                        $filer->full_name,
+                                        'Voided');
+    
+            $log_entry = array('status' => $status,
+                                'transaction_date' => date('Y-m-d'),
+                                'approved_by' => Auth::user()->emp_no,
+                                'remarks' => 'Void'
+                            );
+
+        }else{
+
+            $status = 'Posted';
+            $ot->next_approver = 'N/A';
+            $mailable = new LeaveMailable('HRIS - Overtime Request Posted',
+                                        'ot',
+                                        'posted',
+                                        'filer',
+                                        Auth::user()->employee->emp_fname,
+                                        $ot->ref_no,
+                                        '',
+                                        $filer->full_name,
+                                        'Posted');
+            
+    
+            $log_entry = array('status' => $status,
+                                'transaction_date' => date('Y-m-d'),
+                                'approved_by' => Auth::user()->emp_no,
+                                'remarks' => 'Posted'
+                            );
+
+        }
+
         array_push($logs,$log_entry);
 
         $ot->logs = json_encode($logs);
@@ -300,7 +333,7 @@ class OTController extends Controller
 
         if($ot->save()){
             Mail::to($filer->work_email, $filer->full_name)->send($mailable);
-            return redirect()->route('timekeeping',['#otposted'])->withSuccess('Change Shift Successfully Posted!');
+            return redirect()->route('timekeeping',['#otposted'])->withSuccess('Change Shift Successfully '.$status.'!');
         }
     }
 

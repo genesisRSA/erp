@@ -23,7 +23,7 @@
                                 <form method="POST" action="{{ route('login') }}">
                                     @csrf
                                     <h2 class="text-center text-white">
-                                        <img src="{{url('/images/rgclogo.png')}}" alt="Logo" style="max-height:70px;"><br>Welcome to HRIS
+                                        <img src="{{url('/images/rgclogo.png')}}" alt="Logo" style="max-height:70px;"><br>Welcome to ERIS
                                     </h2>
                                     <hr style="width:40%;background-color:#fff;">
                                     <div class="form-group row">

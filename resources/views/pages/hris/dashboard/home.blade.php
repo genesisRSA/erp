@@ -16,7 +16,7 @@
                 {{Auth::user()->name}}!
             </span>
             <hr>
-            <p class="card-text">Welcome to our HRIS! The Human Resource Information System (HRIS) is a software or online solution for the data entry, data tracking, and data information needs of the Human Resources, payroll, management, and accounting functions within a business.</p>
+            <p class="card-text">Welcome to our ERIS! The Employee Resource Information System (ERIS) is a software or online solution for the data entry, data tracking, and data information needs of the Human Resources, payroll, management, and accounting functions within a business.</p>
           </div>
     </div>
     @if ($message = Session::get('success'))
@@ -176,7 +176,7 @@
                 </div>
                 <div class="col-lg-4">
                     <div class="card mb-3">
-                        <h5 class="card-header bg-dark text-white"><i class="fas fa-info-circle"></i> Notification Area</h5>
+                        <h5 class="card-header bg-dark text-white"><i class="fas fa-bullhorn"></i> Events and Announcements</h5>
                         <div class="card-body">
                             <h5 class="card-title">Special title treatment</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
@@ -241,7 +241,7 @@
                 </div>
                 <div class="col-lg-8">
                     <div class="card mb-3">
-                        <h5 class="card-header bg-dark text-white"><i class="fas fa-info-circle"></i> Notification Area</h5>
+                        <h5 class="card-header bg-dark text-white"><i class="fas fa-bullhorn"></i> Events and Announcements</h5>
                         <div class="card-body">
                             <h5 class="card-title">Special title treatment</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>

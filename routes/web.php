@@ -37,6 +37,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/hris/leave/{leave}', 'LeavesController@post')->name('leave.post');
     Route::get('/hris/leave/{ref_no}/posted', 'LeavesController@show_posted');
     
+    Route::post('/hris/employeeshift/upload', 'EmployeeShiftsController@upload')->name('employeeshift.upload');
+    Route::post('/hris/employeeshift/importsubmit', 'EmployeeShiftsController@import_submit')->name('employeeshift.importsubmit');
+    Route::get('/hris/employeeshift/import', 'EmployeeShiftsController@import')->name('employeeshift.import');
     Route::resource('/hris/employeeshift', 'EmployeeShiftsController');
 
     Route::get('/hris/mytimekeeping', 'PagesController@mytimekeeping')->name('mytimekeeping');

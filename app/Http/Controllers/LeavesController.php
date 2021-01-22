@@ -9,6 +9,7 @@ use Validator;
 use Session;
 use Carbon\Carbon;
 use App\Leave;
+use App\LeaveDetails;
 use Illuminate\Support\Facades\DB;
 use App\User;
 use Illuminate\Support\Facades\Mail;
@@ -44,6 +45,7 @@ class LeavesController extends Controller
         return response()
             ->json([
                 "data" => Leave::where('status', '=', 'Posted')
+                            ->orWhere('status', '=', 'Voided')
                             ->with('filer_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->with('approved_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->with('approver_employee:emp_no,emp_photo,emp_fname,emp_lname')
@@ -96,7 +98,7 @@ class LeavesController extends Controller
      */
     public function create()
     {
-        if(strtotime(date('H:i:s')) <= strtotime('15:00:00')){
+        //if(strtotime(date('H:i:s')) <= strtotime('15:00:00')){
         //
             if(!$leave_credits = json_decode(Auth::user()->employee->leave_credits)){
                 $leave_credits = json_decode( json_encode( array(
@@ -120,9 +122,9 @@ class LeavesController extends Controller
                     ->with('reports_to',$reports_to)
                     ->with('leave_credits',$leave_credits);
 
-        }else{
-            return back();
-        }
+        //}else{
+        //    return back();
+        //}
     }
 
     /**
@@ -135,8 +137,11 @@ class LeavesController extends Controller
     {
         //
         $field = [
-            'leave_from' => 'required',
-            'details' => 'required',
+            'leave_type' => 'required',
+            'date_from' => 'required',
+            'date_to' => 'required',
+            'duration' => 'required',
+            'reason' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $field);
@@ -146,7 +151,7 @@ class LeavesController extends Controller
                         ->withErrors($validator);
         }else{
 
-            if(!$request->input('is_one_day'))
+            /*if(!$request->input('is_one_day'))
             {
                 $from = new Carbon($request->input('leave_from'));
                 $to = new Carbon($request->input('leave_to'));
@@ -182,7 +187,7 @@ class LeavesController extends Controller
                 ($request->input('type') == "Special Leave for Women" && $days > $leave_credits->special_leave) )
                 { return back()->withInput()
                     ->withErrors(['leave_to' => ['Leave credit is insufficient with the leave date range!']]); }   
-            }
+            }*/
 
            
 
@@ -198,17 +203,32 @@ class LeavesController extends Controller
 
             $leave = new Leave();
             $leave->ref_no = $lastid;
-            $leave->type = $request->input('type');
             $leave->filer = Auth::user()->emp_no;
-            $leave->leave_from = $request->input('leave_from');
-            $leave->leave_to = $request->input('is_one_day') ? $request->input('leave_from') : $request->input('leave_to');
-            $leave->details = $request->input('details');
             $leave->date_filed = date('Y-m-d');
+            $has_sickleave = false;
+            if($request->input('leave_type')){
+                $leave_details = array();
+
+                for( $i = 0 ; $i < count($request->input('leave_type')) ; $i++ ){
+                    if($request->input('leave_type.'.$i) == "Sick Leave"){$has_sickleave = true;}
+                    array_push($leave_details, [  'ref_no' => $lastid,
+                                                'emp_no' => $leave->filer,
+                                                'leave_type' => $request->input('leave_type.'.$i),
+                                                'date_from' => $request->input('date_from.'.$i),
+                                                'date_to' => $request->input('date_to.'.$i),
+                                                'duration' => $request->input('duration.'.$i),
+                                                'reason' => $request->input('reason.'.$i)
+                                              ]);
+                }
+                LeaveDetails::insert($leave_details);
+                $leave_details = json_encode($leave_details);
+                $leave->leave_details = $leave_details;
+            }
 
             $leave->last_approved_by = "N/A";
             $leave->last_approved = "1990-01-01";
 
-            if($request->input('type') == "Sick Leave"){
+            if($has_sickleave){
                 $leave->next_approver = User::where('is_nurse','=','1')->first()->emp_no;
                 $leave->status = "For Fit to Work Verification";
 
@@ -229,7 +249,7 @@ class LeavesController extends Controller
             $leave->logs = json_encode($logs);
 
             if($leave->save()){
-                if($request->input('type') == "Sick Leave"){
+                if($has_sickleave){
                     $approver = Employee::where('emp_no','=',User::where('is_nurse','=','1')->first()->emp_no)->first();
                 }else{
                     $approver = Employee::where('emp_no','=',Auth::user()->employee->reports_to)->first();
@@ -241,7 +261,7 @@ class LeavesController extends Controller
                                             'approver',
                                             $approver->emp_fname,
                                             $lastid,
-                                            $request->input('type'),
+                                            "",
                                             Auth::user()->employee->full_name,''));
                 return redirect()->route('mytimekeeping')->withSuccess('Leave Successfully Filed!');
             }
@@ -267,6 +287,7 @@ class LeavesController extends Controller
                 return view('pages.hris.dashboard.leaves.show')
                         ->with(array('site'=> 'hris', 'page'=>'leave'))
                         ->with('history',$history)
+                        ->with('leave_details',json_decode($leave->leave_details))
                         ->with('leave',$leave);
             }else{
                 return back()->withErrors(['leave' => ['You have no permission to access the document!']]);
@@ -286,6 +307,7 @@ class LeavesController extends Controller
             if(Auth::user()->is_hr || Auth::user()->is_admin){
                 return view('pages.hris.dashboard.leaves.posted')
                         ->with(array('site'=> 'hris', 'page'=>'leave'))
+                        ->with('leave_details',json_decode($leave->leave_details))
                         ->with('history',$history)
                         ->with('leave',$leave);
             }else{
@@ -306,6 +328,7 @@ class LeavesController extends Controller
             if($leave->next_approver == Auth::user()->emp_no){
                 return view('pages.hris.dashboard.leaves.approval')
                         ->with(array('site'=> 'hris', 'page'=>'leave'))
+                        ->with('leave_details',json_decode($leave->leave_details))
                         ->with('history',$history)
                         ->with('leave',$leave);
             }else{
@@ -326,6 +349,7 @@ class LeavesController extends Controller
             if(Auth::user()->is_hr || Auth::user()->is_admin){
                 return view('pages.hris.dashboard.leaves.posting')
                         ->with(array('site'=> 'hris', 'page'=>'leave'))
+                        ->with('leave_details',json_decode($leave->leave_details))
                         ->with('history',$history)
                         ->with('leave',$leave);
             }else{
@@ -441,95 +465,119 @@ class LeavesController extends Controller
         $leave = Leave::find($id);
         $logs = json_decode($leave->logs);
         $filer = Employee::where('emp_no','=',$leave->filer)->first();
-        $mailable = new LeaveMailable('HRIS - Leave Request Posted',
-                                    'leave',
-                                    'fit',
-                                    'filer',
-                                    Auth::user()->employee->full_name,
-                                    $leave->ref_no,
-                                    $request->input('type'),
-                                    $filer->emp_fname,
-                                    'Posted');
-        
-        $status = 'Posted';
-        $leave->next_approver = 'N/A';
-        $days = 0;
 
-        if($leave->type <> "Unpaid Leave"){
+        if($request->input('void')){
 
-            if($leave->leave_from == $leave->leave_to)
-                $days = 1;
-            else
-            {
-                $start = strtotime($leave->leave_from);
-                $end = strtotime($leave->leave_to);
+            $status = 'Voided';
+            $leave->next_approver = 'N/A';
+            $mailable = new LeaveMailable('HRIS - Leave Request Voided',
+                                        'leave',
+                                        'void',
+                                        'filer',
+                                        Auth::user()->employee->full_name,
+                                        $leave->ref_no,
+                                        $request->input('type'),
+                                        $filer->emp_fname,
+                                        'Voided');
+    
+            $log_entry = array('status' => $status,
+                                'transaction_date' => date('Y-m-d'),
+                                'approved_by' => Auth::user()->emp_no,
+                                'remarks' => 'Voided'
+                            );
 
-                while ($start <= $end) {
-                    if (date('N', $start) <= 6)
-                        $days++;  
-                    
-                    $start += 86400;
-                }
-            }
+        }else{
 
-            $leave_credits = json_decode($filer->leave_credits);
-
-            if($leave->type == "Sick Leave")
-            {
-                $leave_credits->sick_leave -= $days;
-            }
-            else if($leave->type == "Vacation Leave")
-            {
-                $leave_credits->vacation_leave -= $days;
-            }
-            else if($leave->type == "Admin Leave")
-            {
-                $leave_credits->admin_leave -= $days;
-            }
-            else if($leave->type == "Solo Parent Leave")
-            {
-                $leave_credits->solo_parent_leave -= $days;
-            }
-            else if($leave->type == "Bereavement Leave")
-            {
-                $leave_credits->bereavement_leave -= $days;
-            }
-            else if($leave->type == "Birthday Leave")
-            {
-                $leave_credits->bday_leave -= $days;
-            }
-            else if($leave->type == "Paternity Leave")
-            {
-                $leave_credits->paternity_leave -= $days;
-            }
-            else if($leave->type == "Maternity Leave")
-            {
-                $leave_credits->maternity_leave -= $days;
-            }
-            else if($leave->type == "Special Leave for Women")
-            {
-                $leave_credits->special_leave -= $days;
-            }
-            else if($leave->type == "Leave for Abused Women")
-            {
-                $leave_credits->abused_leave -= $days;
-            }
-            else if($leave->type == "Expanded Maternity Leave")
-            {
-                $leave_credits->expanded_leave -= $days;
-            }
-
-            $filer->leave_credits = json_encode($leave_credits);
-            $filer->save();
-
-        }
+            $mailable = new LeaveMailable('HRIS - Leave Request Posted',
+                                        'leave',
+                                        'posted',
+                                        'filer',
+                                        Auth::user()->employee->full_name,
+                                        $leave->ref_no,
+                                        $request->input('type'),
+                                        $filer->emp_fname,
+                                        'Posted');
             
-
-        $log_entry = array('status' => $status,
-                            'transaction_date' => date('Y-m-d'),
-                            'approved_by' => Auth::user()->emp_no,
-                            'remarks' => 'Posted'
-                        );
+            $status = 'Posted';
+            $leave->next_approver = 'N/A';
+            $days = 0;
+    
+            if($leave->type <> "Unpaid Leave"){
+    
+                if($leave->leave_from == $leave->leave_to)
+                    $days = 1;
+                else
+                {
+                    $start = strtotime($leave->leave_from);
+                    $end = strtotime($leave->leave_to);
+    
+                    while ($start <= $end) {
+                        if (date('N', $start) <= 6)
+                            $days++;  
+                        
+                        $start += 86400;
+                    }
+                }
+    
+                $leave_credits = json_decode($filer->leave_credits);
+    
+                if($leave->type == "Sick Leave")
+                {
+                    $leave_credits->sick_leave -= $days;
+                }
+                else if($leave->type == "Vacation Leave")
+                {
+                    $leave_credits->vacation_leave -= $days;
+                }
+                else if($leave->type == "Admin Leave")
+                {
+                    $leave_credits->admin_leave -= $days;
+                }
+                else if($leave->type == "Solo Parent Leave")
+                {
+                    $leave_credits->solo_parent_leave -= $days;
+                }
+                else if($leave->type == "Bereavement Leave")
+                {
+                    $leave_credits->bereavement_leave -= $days;
+                }
+                else if($leave->type == "Birthday Leave")
+                {
+                    $leave_credits->bday_leave -= $days;
+                }
+                else if($leave->type == "Paternity Leave")
+                {
+                    $leave_credits->paternity_leave -= $days;
+                }
+                else if($leave->type == "Maternity Leave")
+                {
+                    $leave_credits->maternity_leave -= $days;
+                }
+                else if($leave->type == "Special Leave for Women")
+                {
+                    $leave_credits->special_leave -= $days;
+                }
+                else if($leave->type == "Leave for Abused Women")
+                {
+                    $leave_credits->abused_leave -= $days;
+                }
+                else if($leave->type == "Expanded Maternity Leave")
+                {
+                    $leave_credits->expanded_leave -= $days;
+                }
+    
+                $filer->leave_credits = json_encode($leave_credits);
+                $filer->save();
+    
+            }
+    
+            $log_entry = array('status' => $status,
+                                'transaction_date' => date('Y-m-d'),
+                                'approved_by' => Auth::user()->emp_no,
+                                'remarks' => 'Posted'
+                            );
+            
+        }
 
         array_push($logs,$log_entry);
 
@@ -540,7 +588,7 @@ class LeavesController extends Controller
 
         if($leave->save()){
             Mail::to($filer->work_email, $filer->full_name)->send($mailable);
-            return redirect()->route('timekeeping',['#leaveposted'])->withSuccess('Leave Successfully Posted!');
+            return redirect()->route('timekeeping',['#leaveposted'])->withSuccess('Leave Successfully '.$status.'!');
         }
     }
 

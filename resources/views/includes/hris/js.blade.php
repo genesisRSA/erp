@@ -1,6 +1,8 @@
 <script type="text/javascript">
     var existing_rel = [];
     var existing_ot_date = [];
+    var existing_leave_date = [];
+    var existing_ot_emp = [];
     var existing_ob_date = [];
     var existing_ob_from = [];
     var existing_ob_to = [];
@@ -315,7 +317,7 @@
                     "render": function ( data, type, row, meta ) {
                         return  '<div class="btn-group btn-group-sm"><a href="employees/'+data+'" class="btn btn-primary"><i class="fas fa-eye"></i> View</a> '+
                                 '<a href="employees/'+data+'/edit" class="btn btn-warning"><i class="fas fa-edit"></i> Edit</a> '
-                                +'<a href="employees/'+data+'/resign" class="btn btn-danger"><i class="fas fa-window-close"></i> Resign</a>'
+                                +'<a href="#" class="btn btn-danger"><i class="fas fa-window-close"></i> Resign</a>'
                                 +'<a href="employees/'+data+'/movement" class="btn btn-secondary"><i class="fas fa-file-invoice"></i> Movement</a>' 
                                 @if(Auth::user()->is_admin)
                                 +'<a href="employees/'+data+'" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Delete</a> '
@@ -559,7 +561,6 @@
             "ajax": "/api/hris/leaves/all",
             "columns": [
                 { "data": "ref_no" },
-                { "data": "type" },
                 {  
                     "targets": 0,
                     "data": "filer",
@@ -625,7 +626,6 @@
             "ajax": "/api/hris/leaves/all_posted",
             "columns": [
                 { "data": "ref_no" },
-                { "data": "type" },
                 {  
                     "targets": 0,
                     "data": "filer",
@@ -639,12 +639,10 @@
                     "targets": 0,
                     "data": "status" ,
                     "render": function ( data, type, row, meta){
-                        if(data == "Approved"){
+                        if(data == "Approved" || data == "Posted"){
                             return '<span class="badge badge-success">'+data+'</span>';
-                        }else if(data == "Disapproved"){
+                        }else if(data == "Disapproved" || data == "Voided"){
                             return '<span class="badge badge-danger">'+data+'</span>';
-                        }else if(data == "Posted"){
-                            return '<span class="badge badge-secondary">'+data+'</span>';
                         }else{
                             return '<span class="badge badge-warning">'+data+'</span>';
                         }
@@ -803,7 +801,7 @@
                     "render": function ( data, type, row, meta){
                         if(data == "Approved" || data == "Posted"){
                             return '<span class="badge badge-success">'+data+'</span>';
-                        }else if(data == "Declined"){
+                        }else if(data == "Declined" || data == "Voided"){
                             return '<span class="badge badge-danger">'+data+'</span>';
                         }else{
                             return '<span class="badge badge-warning">'+data+'</span>';
@@ -920,7 +918,7 @@
                     "render": function ( data, type, row, meta){
                         if(data == "Approved" || data == "Posted"){
                             return '<span class="badge badge-success">'+data+'</span>';
-                        }else if(data == "Disapproved"){
+                        }else if(data == "Disapproved" || data == "Voided"){
                             return '<span class="badge badge-danger">'+data+'</span>';
                         }else{
                             return '<span class="badge badge-warning">'+data+'</span>';
@@ -1035,7 +1033,7 @@
                     "render": function ( data, type, row, meta){
                         if(data == "Approved" || data == "Posted"){
                             return '<span class="badge badge-success">'+data+'</span>';
-                        }else if(data == "Disapproved"){
+                        }else if(data == "Disapproved" || data == "Voided"){
                             return '<span class="badge badge-danger">'+data+'</span>';
                         }else{
                             return '<span class="badge badge-warning">'+data+'</span>';
@@ -1076,7 +1074,6 @@
             "ajax": "/hris/leaves/my",
             "columns": [
                 { "data": "ref_no" },
-                { "data": "type" },
                 { "data": "date_filed" },
                 { 
                     "targets": 0,
@@ -1134,18 +1131,15 @@
             "ajax": "/hris/leaves/my_posted",
             "columns": [
                 { "data": "ref_no" },
-                { "data": "type" },
                 { "data": "date_filed" },
                 { 
                     "targets": 0,
                     "data": "status" ,
                     "render": function ( data, type, row, meta){
-                        if(data == "Approved"){
+                        if(data == "Approved" || data == "Posted"){
                             return '<span class="badge badge-success">'+data+'</span>';
-                        }else if(data == "Declined"){
+                        }else if(data == "Declined" || data == "Voided"){
                             return '<span class="badge badge-danger">'+data+'</span>';
-                        }else if(data == "Posted"){
-                            return '<span class="badge badge-secondary">'+data+'</span>';
                         }else{
                             return '<span class="badge badge-warning">'+data+'</span>';
                         }
@@ -1192,7 +1186,6 @@
             "ajax": "/hris/leaves/approval",
             "columns": [
                 { "data": "ref_no" },
-                { "data": "type" },
                 {  
                     "targets": 0,
                     "data": "filer",
@@ -1509,6 +1502,16 @@
         $("#is_one_day").change(function (){
             if($(this).prop('checked')){
                 $('#leave_to').prop('readonly', true);
+                $('#is_half_day').prop('checked', false);
+            }else{
+                $('#leave_to').prop('readonly', false);
+            }
+        });
+
+        $("#is_half_day").change(function (){
+            if($(this).prop('checked')){
+                $('#leave_to').prop('readonly', true);
+                $('#is_one_day').prop('checked', false);
             }else{
                 $('#leave_to').prop('readonly', false);
             }
@@ -1557,6 +1560,8 @@
                 $('#date_to').val(moment(value).day(6).format("YYYY-MM-DD"));
                 $("#date_from").val(moment(value).day(1).format("YYYY-MM-DD"));
             });
+
+            $('#shiftimport-dt').DataTable();
 
             $('body').on('change', '#shift' ,function(){
                 $.get("/api/hris/shifts/"+$(this).val()+"/days/", function(res){
@@ -1666,8 +1671,8 @@
 
         $("body").on("click", "#del_ob", function (){
             if(confirm("Are you sure you want to delete this record?")){
-                $(this).parents("tr").remove();
                 existing_ob_date.splice($(this).parents("tr").index(),1);
+                $(this).parents("tr").remove();
             }
         });
 
@@ -1702,26 +1707,35 @@
         @if($page == "overtime")
 
         $('#add_ot').click(function (){
+            var emp_no = $('#person').val();
+            var emp_name = $('#person option:selected').text();
             var ot_date = $('#ot_date').val();
             var ot_from = $('#ot_from').val();
             var ot_to = $('#ot_to').val();
             var reason = $('#reason').val();
+            $('#person').removeClass('is-invalid');
             $('#ot_date').removeClass('is-invalid');
             $('#ot_from').removeClass('is-invalid');
             $('#ot_to').removeClass('is-invalid');
             $('#reason').removeClass('is-invalid');
             var found = false;
-            if($.inArray(ot_date,existing_ot_date) > -1){
-                found = true;
-            }
+            $.each(existing_ot_date, function(index, value){
+                if(existing_ot_date[index] == ot_date && existing_ot_emp[index] == emp_no){
+                    found = true;
+                    return false;
+                }
+            });
 
             if(ot_from && ot_to && reason && !found){
                 var button = '<button type="button" class="btn btn-sm btn-danger" id="del_ot"><i class="fas fa-trash-alt"></i> Delete</button>';
-                var markup = "<tr><td>"+ot_date+"</td>"+
+                var markup = "<tr><td>"+emp_name+"</td>"+
+                         "<td>"+ot_date+"</td>"+
                          "<td>"+ot_from+"</td>"+
                          "<td>"+ot_to+"</td>"+
                          "<td>"+reason+"</td>"+
                          '<td class="text-center">'+button+"</td>"+
+                         '<input type="hidden" name="emp_name[]" value="'+emp_name+'" />'+
+                         '<input type="hidden" name="emp_no[]" value="'+emp_no+'" />'+
                          '<input type="hidden" name="ot_date[]" value="'+ot_date+'" />'+
                          '<input type="hidden" name="ot_from[]" value="'+ot_from+'" />'+
                          '<input type="hidden" name="ot_to[]" value="'+ot_to+'" />'+
@@ -1729,12 +1743,14 @@
                          "</tr>";
 
                 $('#ot_table tbody').append(markup);
+                existing_ot_emp.push(emp_no);
                 existing_ot_date.push(ot_date);
                 $('#ot_from').val("");
                 $('#ot_to').val("");
                 $('#reason').val("");
             }else if(found){
-                alert("OT Date : "+ot_date+" already exist!");
+                alert("Employee: "+emp_name+"\nOT Date : "+ot_date+"\n Already exist!");
+                $('#person').addClass('is-invalid');
                 $('#ot_date').addClass('is-invalid');
             }else{
                 if(!ot_from){
@@ -1746,13 +1762,99 @@
                 if(!reason){
                     $('#reason').addClass('is-invalid');
                 }
+                if(!emp_no){
+                    $('#person').addClass('is-invalid');
+                }
             }
         });
 
         $("body").on("click", "#del_ot", function (){
             if(confirm("Are you sure you want to delete this record?")){
-                $(this).parents("tr").remove();
+                existing_ot_emp.splice($(this).parents("tr").index(),1);
                 existing_ot_date.splice($(this).parents("tr").index(),1);
+                $(this).parents("tr").remove();
+            }
+        });
+
+        @endif
+
+        @if($page == "leave")
+
+        $('#add_leave').click(function (){
+            var leave_type = $('#type option:selected').text();
+            var credit = 0;
+            var date_from = $('#leave_from').val();
+            var date_to = $('#leave_to').val();
+            var reason = $('#details').val();
+            var is_one_day = $('#is_one_day').is(":checked");
+            var is_half_day = $('#is_half_day').is(":checked");
+            $('#type').removeClass('is-invalid');
+            $('#leave_from').removeClass('is-invalid');
+            $('#leave_to').removeClass('is-invalid');
+            $('#details').removeClass('is-invalid');
+            var found = false;
+            var invalid = false;
+            if(new Date($('#leave_to').val()) < new Date($('#leave_from').val())){
+                invalid = true;
+            }
+            if(leave_type != "Unpaid Leave"){credit = leave_type.split(" : ")[1]; leave_type = leave_type.split(" : ")[0]; }
+
+            $.each(existing_leave_date, function(index, value){
+                if(existing_leave_date[index] == date_from){
+                    found = true;
+                    return false;
+                }
+            });
+
+            if(reason && !found && !invalid){
+                if(is_one_day == 1){ date_to = date_from; duration = 1;}
+                else if(is_half_day == 1){ date_to = date_from; duration = 0.5;}
+                else { const diffInMs = new Date(date_to) - new Date(date_from); duration = diffInMs / (1000 * 60 * 60 * 24); }
+                if(leave_type != "Unpaid Leave" && (duration > credit)){ alert("Insufficient leave credit!"); return false; }
+                    
+                var button = '<button type="button" class="btn btn-sm btn-danger" id="del_leave"><i class="fas fa-trash-alt"></i> Delete</button>';
+                var markup = "<tr><td>"+leave_type+"</td>"+
+                         "<td>"+date_from+"</td>"+
+                         "<td>"+date_to+"</td>"+
+                         "<td>"+duration+"</td>"+
+                         "<td>"+reason+"</td>"+
+                         '<td class="text-center">'+button+"</td>"+
+                         '<input type="hidden" name="leave_type[]" value="'+leave_type+'" />'+
+                         '<input type="hidden" name="date_from[]" value="'+date_from+'" />'+
+                         '<input type="hidden" name="date_to[]" value="'+date_to+'" />'+
+                         '<input type="hidden" name="duration[]" value="'+duration+'" />'+
+                         '<input type="hidden" name="reason[]" value="'+reason+'" />'+
+                         "</tr>";
+                $('#leave_table tbody').append(markup);
+                existing_leave_date.push(date_from);
+                $('#is_one_day').prop("checked",false);
+                $('#is_half_day').prop("checked",false);
+                $('#leave_to').prop("readonly", false);
+                $('#details').val("");
+            }else if(invalid){
+                alert("Leave end date is earlier than start date!");
+                $('#leave_from').addClass('is-invalid');
+                $('#leave_to').addClass('is-invalid');
+            }else if(found){
+                alert("Leave Date From : "+date_from+"\n Already exist!");
+                $('#leave_from').addClass('is-invalid');
+            }else{
+                if(!date_from){
+                    $('#leave_from').addClass('is-invalid');
+                }
+                if(!date_to){
+                    $('#leave_to').addClass('is-invalid');
+                }
+                if(!reason){
+                    $('#details').addClass('is-invalid');
+                }
+            }
+        });
+
+        $("body").on("click", "#del_leave", function (){
+            if(confirm("Are you sure you want to delete this record?")){
+                existing_leave_date.splice($(this).parents("tr").index(),1);
+                $(this).parents("tr").remove();
             }
         });
 
