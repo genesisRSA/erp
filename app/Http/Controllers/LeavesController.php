@@ -98,7 +98,7 @@ class LeavesController extends Controller
      */
     public function create()
     {
-        //if(strtotime(date('H:i:s')) <= strtotime('15:00:00')){
+        if(strtotime(date('H:i:s')) <= strtotime('15:00:00')){
         //
             if(!$leave_credits = json_decode(Auth::user()->employee->leave_credits)){
                 $leave_credits = json_decode( json_encode( array(
@@ -122,9 +122,9 @@ class LeavesController extends Controller
                     ->with('reports_to',$reports_to)
                     ->with('leave_credits',$leave_credits);
 
-        //}else{
-        //    return back();
-        //}
+        }else{
+            return back();
+        }
     }
 
     /**
@@ -255,7 +255,7 @@ class LeavesController extends Controller
                     $approver = Employee::where('emp_no','=',Auth::user()->employee->reports_to)->first();
                 }
                 Mail::to($approver->work_email, $approver->full_name)
-                    ->send(new LeaveMailable('HRIS - Leave Request Approval',
+                    ->send(new LeaveMailable('ERIS - Leave Request Approval',
                                             'leave',
                                             'filed',
                                             'approver',
@@ -394,7 +394,7 @@ class LeavesController extends Controller
             $leave = Leave::find($id);
             $logs = json_decode($leave->logs);
             $filer = Employee::where('emp_no','=',$leave->filer)->first();
-            $mailable = new LeaveMailable('HRIS - Leave Request Approved',
+            $mailable = new LeaveMailable('ERIS - Leave Request Approved',
                                         'leave',
                                         'fit',
                                         'filer',
@@ -408,7 +408,7 @@ class LeavesController extends Controller
                     if(Employee::where('emp_no','=',$leave->filer)->first()->reports_to){
                         $status = 'For Approval';
                         $leave->next_approver = Employee::where('emp_no','=',$leave->filer)->first()->reports_to;
-                        $mailable = new LeaveMailable('HRIS - Leave Request Fit to Work',
+                        $mailable = new LeaveMailable('ERIS - Leave Request Fit to Work',
                                                     'leave',
                                                     'fit',
                                                     'filer',
@@ -428,7 +428,7 @@ class LeavesController extends Controller
             }else{
                 $status = 'Declined';
                 $leave->next_approver = 'N/A';
-                $mailable = new LeaveMailable('HRIS - Leave Request Declined',
+                $mailable = new LeaveMailable('ERIS - Leave Request Declined',
                                             'leave',
                                             'declined',
                                             'filer',
@@ -470,7 +470,7 @@ class LeavesController extends Controller
 
             $status = 'Voided';
             $leave->next_approver = 'N/A';
-            $mailable = new LeaveMailable('HRIS - Leave Request Voided',
+            $mailable = new LeaveMailable('ERIS - Leave Request Voided',
                                         'leave',
                                         'void',
                                         'filer',
@@ -488,7 +488,7 @@ class LeavesController extends Controller
 
         }else{
 
-            $mailable = new LeaveMailable('HRIS - Leave Request Posted',
+            $mailable = new LeaveMailable('ERIS - Leave Request Posted',
                                         'leave',
                                         'posted',
                                         'filer',

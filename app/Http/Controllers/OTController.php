@@ -86,7 +86,7 @@ class OTController extends Controller
     public function create()
     {
         //
-        //if(strtotime(date('H:i:s')) <= strtotime('15:00:00')){
+        if(strtotime(date('H:i:s')) <= strtotime('15:00:00')){
             $team = Employee::where('reports_to','=',Auth::user()->employee->emp_no)->get();
             $reports_to = Employee::where('emp_no','=',Auth::user()->employee->reports_to)->first();
 
@@ -94,9 +94,9 @@ class OTController extends Controller
                     ->with(array('site'=> 'hris', 'page'=>'overtime'))
                     ->with('reports_to',$reports_to)
                     ->with('team',$team);
-        //}else{
+        }else{
             return back();
-        //}
+        }
     }
 
     /**
@@ -171,7 +171,7 @@ class OTController extends Controller
                 $approver = Employee::where('emp_no','=',Auth::user()->employee->reports_to)->first();
 
                 Mail::to($approver->work_email, $approver->full_name)
-                    ->send(new LeaveMailable('HRIS - Overtime Request Approval',
+                    ->send(new LeaveMailable('ERIS - Overtime Request Approval',
                                             'ot',
                                             'filed',
                                             'approver',
@@ -285,7 +285,7 @@ class OTController extends Controller
 
             $status = 'Voided';
             $ot->next_approver = 'N/A';
-            $mailable = new LeaveMailable('HRIS - Overtime Request Voided',
+            $mailable = new LeaveMailable('ERIS - Overtime Request Voided',
                                         'ot',
                                         'void',
                                         'filer',
@@ -305,7 +305,7 @@ class OTController extends Controller
 
             $status = 'Posted';
             $ot->next_approver = 'N/A';
-            $mailable = new LeaveMailable('HRIS - Overtime Request Posted',
+            $mailable = new LeaveMailable('ERIS - Overtime Request Posted',
                                         'ot',
                                         'posted',
                                         'filer',
@@ -354,7 +354,7 @@ class OTController extends Controller
             $logs = json_decode($ot->logs);
             
             $filer = Employee::where('emp_no','=',$ot->filer)->first();
-            $mailable = new LeaveMailable('HRIS - Overtime Request Approved',
+            $mailable = new LeaveMailable('ERIS - Overtime Request Approved',
                                         'ot',
                                         'approved',
                                         'filer',
@@ -368,7 +368,7 @@ class OTController extends Controller
                 if($ot->status == "For Pre-Approval"){
                         $status = 'For Approval';
                         $filer = Employee::where('emp_no','=',$ot->filer)->first();
-                        $mailable = new LeaveMailable('HRIS - Overtime Request Pre-approved',
+                        $mailable = new LeaveMailable('ERIS - Overtime Request Pre-approved',
                                         'ot',
                                         'pre-approved',
                                         'filer',
@@ -383,7 +383,7 @@ class OTController extends Controller
                     if(Employee::where('emp_no','=', Auth::user()->emp_no)->first()->reports_to){
                         $status = 'For Manager Approval';
                         $ot->next_approver = Employee::where('emp_no','=',Auth::user()->emp_no)->first()->reports_to;
-                        $mailable = new LeaveMailable('HRIS - Overtime For Manager Approval',
+                        $mailable = new LeaveMailable('ERIS - Overtime For Manager Approval',
                                                     'ot',
                                                     'manager',
                                                     'approver',
@@ -405,7 +405,7 @@ class OTController extends Controller
             }else{
                 $status = 'Declined';
                 $ot->next_approver = 'N/A';
-                $mailable = new LeaveMailable('HRIS - Overtime Request Declined',
+                $mailable = new LeaveMailable('ERIS - Overtime Request Declined',
                                             'ot',
                                             'declined',
                                             'filer',

@@ -176,7 +176,7 @@ class OBController extends Controller
                 $approver = Employee::where('emp_no','=',Auth::user()->employee->reports_to)->first();
 
                 Mail::to($approver->work_email, $approver->full_name)
-                    ->send(new LeaveMailable('HRIS - Official Business Request Approval',
+                    ->send(new LeaveMailable('ERIS - Official Business Request Approval',
                                             'ob',
                                             'filed',
                                             'approver',
@@ -291,7 +291,7 @@ class OBController extends Controller
 
             $status = 'Voided';
             $ob->next_approver = 'N/A';
-            $mailable = new LeaveMailable('HRIS - Official Business Request Voided',
+            $mailable = new LeaveMailable('ERIS - Official Business Request Voided',
                                         'ob',
                                         'void',
                                         'filer',
@@ -310,7 +310,7 @@ class OBController extends Controller
         }else{
             $status = 'Posted';
             $ob->next_approver = 'N/A';
-            $mailable = new LeaveMailable('HRIS - Official Business Request Posted',
+            $mailable = new LeaveMailable('ERIS - Official Business Request Posted',
                                         'ob',
                                         'posted',
                                         'filer',
@@ -358,7 +358,7 @@ class OBController extends Controller
             $logs = json_decode($ob->logs);
             
             $filer = Employee::where('emp_no','=',$ob->filer)->first();
-            $mailable = new LeaveMailable('HRIS - Official Business Request Approved',
+            $mailable = new LeaveMailable('ERIS - Official Business Request Approved',
                                         'ob',
                                         'approved',
                                         'filer',
@@ -373,7 +373,7 @@ class OBController extends Controller
                     if(Employee::where('emp_no','=', Auth::user()->emp_no)->first()->reports_to){
                         $status = 'For Manager Approval';
                         $ob->next_approver = Employee::where('emp_no','=',Auth::user()->emp_no)->first()->reports_to;
-                        $mailable = new LeaveMailable('HRIS - Official Business For Manager Approval',
+                        $mailable = new LeaveMailable('ERIS - Official Business For Manager Approval',
                                                     'ob',
                                                     'manager',
                                                     'approver',
@@ -394,7 +394,7 @@ class OBController extends Controller
             }else{
                 $status = 'Declined';
                 $ob->next_approver = 'N/A';
-                $mailable = new LeaveMailable('HRIS - Official Business Request Declined',
+                $mailable = new LeaveMailable('ERIS - Official Business Request Declined',
                                             'ob',
                                             'declined',
                                             'filer',

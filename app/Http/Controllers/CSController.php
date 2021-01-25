@@ -171,7 +171,7 @@ class CSController extends Controller
                 $approver = Employee::where('emp_no','=',Auth::user()->employee->reports_to)->first();
 
                 Mail::to($approver->work_email, $approver->full_name)
-                    ->send(new LeaveMailable('HRIS - Change Shift Request Approval',
+                    ->send(new LeaveMailable('ERIS - Change Shift Request Approval',
                                             'cs',
                                             'filed',
                                             'approver',
@@ -283,7 +283,7 @@ class CSController extends Controller
 
             $status = 'Voided';
             $cs->next_approver = 'N/A';
-            $mailable = new LeaveMailable('HRIS - Change Shift Request Voided',
+            $mailable = new LeaveMailable('ERIS - Change Shift Request Voided',
                                         'cs',
                                         'void',
                                         'filer',
@@ -303,7 +303,7 @@ class CSController extends Controller
 
             $status = 'Posted';
             $cs->next_approver = 'N/A';
-            $mailable = new LeaveMailable('HRIS - Change Shift Request Posted',
+            $mailable = new LeaveMailable('ERIS - Change Shift Request Posted',
                                         'cs',
                                         'posted',
                                         'filer',
@@ -351,7 +351,7 @@ class CSController extends Controller
             $logs = json_decode($cs->logs);
             
             $filer = Employee::where('emp_no','=',$cs->filer)->first();
-            $mailable = new LeaveMailable('HRIS - Change Shift Request Approved',
+            $mailable = new LeaveMailable('ERIS - Change Shift Request Approved',
                                         'cs',
                                         'approved',
                                         'filer',
@@ -366,7 +366,7 @@ class CSController extends Controller
                     if(Employee::where('emp_no','=', Auth::user()->emp_no)->first()->reports_to){
                         $status = 'For Manager Approval';
                         $cs->next_approver = Employee::where('emp_no','=',Auth::user()->emp_no)->first()->reports_to;
-                        $mailable = new LeaveMailable('HRIS - Change Shift For Manager Approval',
+                        $mailable = new LeaveMailable('ERIS - Change Shift For Manager Approval',
                                                     'cs',
                                                     'manager',
                                                     'approver',
@@ -387,7 +387,7 @@ class CSController extends Controller
             }else{
                 $status = 'Declined';
                 $cs->next_approver = 'N/A';
-                $mailable = new LeaveMailable('HRIS - Change Shift Request Declined',
+                $mailable = new LeaveMailable('ERIS - Change Shift Request Declined',
                                             'cs',
                                             'declined',
                                             'filer',
