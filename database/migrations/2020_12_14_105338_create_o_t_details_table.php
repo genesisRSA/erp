@@ -16,7 +16,7 @@ class CreateOTDetailsTable extends Migration
         Schema::create('o_t_details', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('ref_no');
-            $table->date('emp_no');
+            $table->text('emp_no');
             $table->date('ot_date');
             $table->text('ot_start');
             $table->text('ot_end');
