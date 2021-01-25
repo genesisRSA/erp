@@ -2,6 +2,7 @@
     var existing_rel = [];
     var existing_ot_date = [];
     var existing_leave_date = [];
+    var existing_leave_edate = [];
     var existing_ot_emp = [];
     var existing_ob_date = [];
     var existing_ob_from = [];
@@ -217,7 +218,7 @@
                 buttons: [
                     'pageLength',
                     { extend: 'print',
-                    title: 'HRIS - My Attendance'
+                    title: 'ERIS - My Attendance'
                     }
                 ],
                 "responsive": true,
@@ -240,6 +241,26 @@
                             }
                         }
                     } 
+                ]
+            });
+
+            var my_shift_dt = $('#my-shift-td').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'pageLength',
+                    { extend: 'print',
+                    title: 'ERIS - My Shift'
+                    }
+                ],
+                "responsive": true,
+                "pagingType": "full",
+                "aaSorting": [],
+                "ajax": "/api/hris/employeeshifts/my_shift/{{Auth::user()->employee->emp_no}}",
+                "columns": [
+                    { "data": "shift_date" },
+                    { "data": "shift_code" },
+                    { "data": "time_in" },
+                    { "data": "time_out" }, 
                 ]
             });
         @endif
@@ -701,16 +722,18 @@
                     "data": "shift",
                     'className': 'dt-center',
                     "render": function ( data, type, row, meta ) {
-                        return  row.shift.shift_desc;
+                        return  row.shift_code;
                     }
                 },
-                { "data": "date_from" },
-                { "data": "date_to" },
+                { "data": "shift_date" },
+                { "data": "shift_day" },
+                { "data": "time_in" },
+                { "data": "time_out" },
                 {
                     "targets": 0,
                     "data": "id",
                     "render": function ( data, type, row, meta ) {
-                        return  '<a href="employeeshift/'+data+'" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>';
+                        return  '<a href="employeeshift/delete/'+row.id+'" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Delete</a>';
                     }
                 }
             ] 
@@ -1525,6 +1548,10 @@
             $('#settingsModal').modal('show');
         });
 
+        $("body").on("click", "#alteration", function (){
+            $('#alterationModal').modal('show');
+        });
+
         $("body").on("keyup", "#new_password", function(){
             if($('#cnew_password').val()!=$(this).val()){
                 $('#new_password').addClass("is-invalid");
@@ -1794,15 +1821,30 @@
             $('#details').removeClass('is-invalid');
             var found = false;
             var invalid = false;
-            if(new Date($('#leave_to').val()) < new Date($('#leave_from').val())){
-                invalid = true;
+            if(!is_one_day && !is_half_day){
+                if(new Date($('#leave_to').val()) < new Date($('#leave_from').val())){
+                    invalid = true;
+                }
             }
+
             if(leave_type != "Unpaid Leave"){credit = leave_type.split(" : ")[1]; leave_type = leave_type.split(" : ")[0]; }
 
             $.each(existing_leave_date, function(index, value){
                 if(existing_leave_date[index] == date_from){
                     found = true;
                     return false;
+                }
+                
+                if(date_from >= existing_leave_date[index] && date_from <= existing_leave_edate[index]){
+                    found = true;
+                    return false;
+                }
+                
+                if(!is_one_day && !is_half_day){
+                    if(date_to >= existing_leave_date[index] && date_to <= existing_leave_edate[index]){
+                        found = true;
+                        return false;
+                    }
                 }
             });
 
@@ -1827,6 +1869,7 @@
                          "</tr>";
                 $('#leave_table tbody').append(markup);
                 existing_leave_date.push(date_from);
+                existing_leave_edate.push(date_to);
                 $('#is_one_day').prop("checked",false);
                 $('#is_half_day').prop("checked",false);
                 $('#leave_to').prop("readonly", false);
@@ -1836,7 +1879,7 @@
                 $('#leave_from').addClass('is-invalid');
                 $('#leave_to').addClass('is-invalid');
             }else if(found){
-                alert("Leave Date From : "+date_from+"\n Already exist!");
+                alert("Leave Date From : "+date_from+"\n Already exist or between date range!");
                 $('#leave_from').addClass('is-invalid');
             }else{
                 if(!date_from){
@@ -1853,6 +1896,7 @@
 
         $("body").on("click", "#del_leave", function (){
             if(confirm("Are you sure you want to delete this record?")){
+                existing_leave_edate.splice($(this).parents("tr").index(),1);
                 existing_leave_date.splice($(this).parents("tr").index(),1);
                 $(this).parents("tr").remove();
             }

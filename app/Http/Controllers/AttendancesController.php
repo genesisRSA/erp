@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Validator;
 
 class AttendancesController extends Controller
 {
@@ -62,7 +63,7 @@ class AttendancesController extends Controller
     }
     
     public function my_attendance($emp_id){
-        $my_attendance = DB::connection('mysql')->select("SELECT date_log, TIME_FORMAT(time_in,'%H:%i') as time_in, TIME_FORMAT(time_out,'%H:%i') as time_out,TIMEDIFF(time_out,time_in) as hours_work,TIMEDIFF(TIME_FORMAT(time_in,'%H:%i'),'08:00:00') as late FROM rgc_webportal.attendance WHERE emp_code = '$emp_id' ORDER BY date_log DESC");
+        $my_attendance = DB::connection('mysql')->select("SELECT date_log, TIME_FORMAT(time_in,'%H:%i') as time_in, TIME_FORMAT(time_out,'%H:%i') as time_out,TIMEDIFF(time_out,time_in) as hours_work,TIMEDIFF(TIME_FORMAT(time_in,'%H:%i'),(SELECT time_in FROM employee_shifts WHERE emp_no = '$emp_id' and shift_date = date_log)) as late FROM rgc_webportal.attendance WHERE emp_code = '$emp_id' and date_log IN (SELECT shift_date FROM employee_shifts WHERE emp_no = '$emp_id') ORDER BY date_log DESC");
         
         return response()
         ->json([
@@ -104,5 +105,28 @@ class AttendancesController extends Controller
         ->json([
             "data" => $my_attendance
         ]);
+    }
+
+    public function alteration(Request $request){
+        $field = [
+            'emp_no' => 'required',
+            'date_log' => 'required',
+            'time_in' => 'required',
+            'time_out' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $field);
+         
+        if ($validator->fails()) {
+            return back()->withInput()
+                        ->withErrors($validator);
+        }else{
+
+            DB::connection('mysql')->delete("DELETE FROM attendance WHERE emp_code = '".$request->input('emp_no')."' AND date_log = '".$request->input('date_log')."'");
+
+            if(DB::connection('mysql')->insert('INSERT INTO attendance (id, emp_code, date_log, time_in, time_out, temp_time_out) values (?, ?, ?, ?, ?, ?)', [0, $request->input('emp_no'), $request->input('date_log'), $request->input('date_log').' '.$request->input('time_in'), $request->input('date_log').' '.$request->input('time_out'), "ALTERATION"])){
+                return redirect()->route('hris.attendance')->withSuccess('Employee Successfully Added!');
+            }
+        }
     }
 }

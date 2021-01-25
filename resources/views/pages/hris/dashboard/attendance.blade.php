@@ -16,9 +16,9 @@
                 <li class="nav-item">
                     <a class="nav-link active" id="raw-tab" data-toggle="tab" href="#raw" role="tab" aria-controls="general" aria-selected="true">Raw Attendance</a>
                 </li>
-                <!--<li class="nav-item">
+                <li class="nav-item">
                     <a class="nav-link" id="calculated-tab" data-toggle="tab" href="#calculated" role="tab" aria-controls="calculated" aria-selected="false">Calculated Attendance</a>
-                </li>-->
+                </li>
             </ul>
             <div class="tab-content border border-top-0" id="myTabContent">
                 <!--RAW ATTENDANCE-->
@@ -29,12 +29,13 @@
                                 <label>Date From</label>
                                 <input type="date" id="date_from" value="{{date('d')>=9&&date('d')<=23?date('Y-m-09'):date('Y-m-24',strtotime( '-1 month', strtotime( date('Y-m-d') ) ))}}" class="form-control">
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <label>Date To</label><br>
                                 <div class="btn-group">
                                     <input type="date" id="date_to" value="{{date('d')>=9&&date('d')<=23?date('Y-m-23'):date('Y-m-08')}}" class="form-control">
                                     <button type="button" id="run_attendance" class="btn btn-success">View</button>
                                 </div>
+                                <button class="btn btn-warning" id="alteration"><i class="fas fa-upload"></i> Punch Alteration</button>
                             </div>
                         </div>
                         <table id="attendance-dt" class="table table-striped table-bordered w-100">
@@ -72,38 +73,50 @@
                     </div>
                 </div>
                 <!--END OF RAW ATTENDANCE-->
-                <!--CALCULATED ATTENDANCE
+                <!--CALCULATED ATTENDANCE-->
                 <div class="tab-pane fade" id="calculated" role="tabpanel" aria-labelledby="calculated-tab">
                     <div class="container-fluid pt-3 mb-3">
+                        <div class="row mb-3">
+                            <div class="col-md-2">
+                                <label>Date From</label>
+                                <input type="date" id="date_from" value="{{date('d')>=9&&date('d')<=23?date('Y-m-09'):date('Y-m-24',strtotime( '-1 month', strtotime( date('Y-m-d') ) ))}}" class="form-control">
+                            </div>
+                            <div class="col-md-4">
+                                <label>Date To</label><br>
+                                <div class="btn-group">
+                                    <input type="date" id="date_to" value="{{date('d')>=9&&date('d')<=23?date('Y-m-23'):date('Y-m-08')}}" class="form-control">
+                                    <button type="button" id="run_calcattendance" class="btn btn-success">View</button>
+                                </div>
+                            </div>
+                        </div>
                         <table id="calcattendance-dt" class="table table-striped table-bordered w-100">
                             <thead class="thead-dark">
                                 <tr>
                                     <th>Employee Name</th>
-                                    <th>Date</th>
-                                    <th>Time In</th>
-                                    <th>Time Out</th>
                                     <th>Hours Work</th>
-                                    <th>Late</th>
+                                    <th>Overtime</th>
+                                    <th>OB</th>
+                                    <th>Leave</th>
+                                    <th>Deduction</th>
+                                    <th>Total Hourks Work</th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
                                     <th>Employee Name</th>
-                                    <th>Date</th>
-                                    <th>Time In</th>
-                                    <th>Time Out</th>
                                     <th>Hours Work</th>
-                                    <th>Late</th>
+                                    <th>Overtime</th>
+                                    <th>OB</th>
+                                    <th>Leave</th>
+                                    <th>Deduction</th>
+                                    <th>Total Hourks Work</th>
                                 </tr>
                             </tfoot>
                         </table>
                     </div>
                 </div>
-                -->
+                
             </div>
-
-
-
         </div>
     </div>
 @stop

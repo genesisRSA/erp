@@ -40,6 +40,7 @@ Route::get('/hris/leaves/all_posted', 'LeavesController@all_posted');
 
 Route::get('/hris/shifts/{shift_code}/days', 'ShiftsController@shift_days');
 Route::get('/hris/employeeshifts/all', 'EmployeeShiftsController@all');
+Route::get('/hris/employeeshifts/my_shift/{id}', 'EmployeeShiftsController@my_shift');
 
 Route::get('/hris/obs/all', 'OBController@all');
 Route::get('/hris/obs/all_posted', 'OBController@all_posted');

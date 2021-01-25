@@ -20,9 +20,10 @@ Route::get('/hris', 'PagesController@hris_index')->name('hris.index');
 Route::group(['middleware' => ['auth']], function() {
 
     Route::get('/hris/home', 'PagesController@hris_home')->name('hris.home');
-    Route::get('/hris/attendance', 'PagesController@attendance');
+    Route::get('/hris/attendance', 'PagesController@attendance')->name('hris.attendance');
     Route::get('/hris/{id}/teamattendance', 'PagesController@team_attendance');
     Route::get('/hris/myattendance', 'PagesController@myattendance');
+    Route::post('/hris/attendance/alteration', 'AttendancesController@alteration')->name('attendance.alteration');
     Route::get('/hris/timekeeping', 'PagesController@timekeeping')->name('timekeeping');
     Route::resource('/hris/employees', 'EmployeesController');
     Route::get('/hris/employees/{id}/resign', 'EmployeesController@resign')->name('employees.resign');
@@ -40,6 +41,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/hris/employeeshift/upload', 'EmployeeShiftsController@upload')->name('employeeshift.upload');
     Route::post('/hris/employeeshift/importsubmit', 'EmployeeShiftsController@import_submit')->name('employeeshift.importsubmit');
     Route::get('/hris/employeeshift/import', 'EmployeeShiftsController@import')->name('employeeshift.import');
+    Route::get('/hris/employeeshift/delete/{id}', 'EmployeeShiftsController@delete');
     Route::resource('/hris/employeeshift', 'EmployeeShiftsController');
 
     Route::get('/hris/mytimekeeping', 'PagesController@mytimekeeping')->name('mytimekeeping');

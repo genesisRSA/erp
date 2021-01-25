@@ -17,7 +17,11 @@
                     </ul>
                 </div>
             @endif
-            
+            @if ($message = Session::get('success'))
+                <div class="alert alert-success">
+                    <strong>Success,</strong> {{$message}}
+                </div>
+            @endif
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" id="shift-tab" data-toggle="tab" href="#shift" role="tab" aria-controls="shift" aria-selected="true">Shift Information</a>

@@ -39,6 +39,17 @@ class EmployeeShiftsController extends Controller
         ]);
     }
 
+    
+    public function my_shift($id)
+    {
+        return response()
+            ->json([
+                "data" => EmployeeShift::where('emp_no','=',$id)
+                            ->orderBy('shift_date','DESC')
+                            ->get()
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -148,10 +159,21 @@ class EmployeeShiftsController extends Controller
         $data = self::generate_shift_table($data);
         $table = $data["table"];
         $error_count = $data["error_count"];
+        $db_table = array();
+        foreach($table as $col){
+            array_push($db_table, array(
+                "emp_no" => $col["emp_no"],
+                "shift_code" => $col["shift_desc"],
+                "shift_date" => $col["shift_date"],
+                "time_in" => $col["time_in"],
+                "time_out" => $col["time_out"],
+                "shift_day" => $col["shift_day"]
+            ));
+        }
+        EmployeeShift::insert($db_table);
         File::delete($path);
         
-        return view('pages.hris.dashboard.shifts.import')
-                ->with(array('site'=> 'hris', 'page'=>'shift', 'shift_table' => $table, 'error_count' => $error_count, 'file_path' => $path));
+        return redirect()->route('timekeeping',['#shift'])->withSuccess('Shift Successfully Uploaded!');
     }
 
     
@@ -221,6 +243,17 @@ class EmployeeShiftsController extends Controller
                 ->with(array('site'=> 'hris', 'page'=>'shift'))
                 ->with('emp_shift',$emp_shift)
                 ->with('shifts',$shifts);
+    }
+
+    
+    public function delete($id)
+    {
+        //
+        $emp_shift = EmployeeShift::find($id);
+
+        if($emp_shift->delete()){
+            return redirect()->route('timekeeping',['#shift'])->withSuccess('Shift Successfully Deleted!');
+        }
     }
 
     /**

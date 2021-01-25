@@ -14,11 +14,11 @@
         <div class="card-body">
             <div class="container-fluid pt-3 mb-3">
                 <div class="row">
-                    <div class="col-md-4 border-right">
+                    <div class="col-md-3 border-right">
                         <div class="d-none d-sm-block">
-                            <h1 class="p-3 mb-4 border-bottom"><i class="fas fa-calendar-day mr-3"></i> Today, {{date('M d, Y')}}</h1>
-                            <h2 class="p-3 border bg-success text-white"><i class="fas fa-sign-in-alt"></i> Time In:<span class="float-right" id="time-in"></span></h2>
-                            <h2 class="p-3 border bg-danger text-white"><i class="fas fa-sign-out-alt"></i> Time Out:<span class="float-right" id="time-out"></span></h2>
+                            <h3 class="p-3 mb-4 border-bottom"><i class="fas fa-calendar-day mr-3"></i> Today, {{date('M d, Y')}}</h1>
+                            <h5 class="p-3 border bg-success text-white"><i class="fas fa-sign-in-alt"></i> Time In:<span class="float-right" id="time-in"></span></h2>
+                            <h5 class="p-3 border bg-danger text-white"><i class="fas fa-sign-out-alt"></i> Time Out:<span class="float-right" id="time-out"></span></h2>
                         </div>
                         <div class="d-xl-none">
                             <div class="d-sm-none">
@@ -28,18 +28,48 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-8">
-                        <table id="my-attendance-td" class="table table-striped table-bordered">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Time In</th>
-                                    <th>Time Out</th>
-                                    <th>Hours Work</th>
-                                    <th>Late</th>
-                                </tr>
-                            </thead>
-                        </table>
+                    <div class="col-md-9">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="attendance-tab" data-toggle="tab" href="#attendance" role="tab" aria-controls="general" aria-selected="true">My Attendance</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="shift-tab" data-toggle="tab" href="#shift" role="tab" aria-controls="general" aria-selected="true">My Shift</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content border border-top-0" id="myTabContent">
+                            <!--MY ATTENDANCE-->
+                            <div class="tab-pane fade show active" id="attendance" role="tabpanel" aria-labelledby="attendance-tab">
+                                <div class="container-fluid mt-3">
+                                    <table id="my-attendance-td" class="table table-striped table-bordered">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Time In</th>
+                                                <th>Time Out</th>
+                                                <th>Hours Work</th>
+                                                <th>Late</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                            <!--MY SHIFT-->
+                            <div class="tab-pane fade" id="shift" role="tabpanel" aria-labelledby="shift-tab">
+                                <div class="container-fluid mt-3">
+                                    <table id="my-shift-td" class="table table-striped table-bordered" style="width: 100%;">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Shift</th>
+                                                <th>Time In</th>
+                                                <th>Time Out</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -84,3 +84,44 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="alterationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form method="POST" action="{{ route('attendance.alteration') }}">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Punch Alteration</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Employee No. <sup class="text-danger">*</sup></label>
+                        <input type="text" name="emp_no" class="form-control" placeholder="Please input employee no." required/>
+                        <div class="invalid-feedback">
+                            Employee does not exist!
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Date <sup class="text-danger">*</sup></label>
+                        <input type="date" id="date_log" name="date_log" class="form-control" required/>
+                    </div>
+                    <div class="form-group">
+                        <label>Time In <sup class="text-danger">*</sup></label>
+                        <input type="time" id="time_in" name="time_in" class="form-control" required/>
+                    </div>
+                    <div class="form-group">
+                        <label>Time Out <sup class="text-danger">*</sup></label>
+                        <input type="time" id="time_out" name="time_out" class="form-control" required/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Submit</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

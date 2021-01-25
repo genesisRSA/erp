@@ -106,16 +106,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-6">
-                <!--<div class="card mb-3">
-                    <h5 class="card-header bg-dark text-white"><i class="fas fa-info-circle"></i> Notification Area</h5>
-                    <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                </div>-->
                 <div class="card mb-3">
                     <h5 class="card-header"><i class="fas fa-sitemap"></i> My Team : Attendance</h5>
                     <div class="card-body">
@@ -128,6 +118,26 @@
                                 </a>
                             @endforeach
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card mb-3">
+                    <h5 class="card-header bg-dark text-white"><i class="fas fa-bullhorn"></i> Events and Announcements</h5>
+                    <div class="card-body">
+                        <!--<a href="#">
+                                <div class="card mb-3">
+                                    <img src="{{ asset('images/biggest.webp') }}" class="card-img-top" alt="...">
+                                    <div class="card-body text-dark">
+                                        <h5 class="card-title">Join RGC's the Biggest Loser</h5>
+                                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                    </div>
+                                </div>
+                            </a>-->
+                            <div class="list-group">
+                                <a class="list-group-item list-group-item-action">No data available</a>  
+                            </div>
                     </div>
                 </div>
             </div>
@@ -178,9 +188,19 @@
                     <div class="card mb-3">
                         <h5 class="card-header bg-dark text-white"><i class="fas fa-bullhorn"></i> Events and Announcements</h5>
                         <div class="card-body">
-                            <h5 class="card-title">Special title treatment</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                            <!--<a href="#">
+                                <div class="card mb-3">
+                                    <img src="{{ asset('images/biggest.webp') }}" class="card-img-top" alt="...">
+                                    <div class="card-body text-dark">
+                                        <h5 class="card-title">Join RGC's the Biggest Loser</h5>
+                                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                    </div>
+                                </div>
+                            </a>-->
+                            <div class="list-group">
+                                <a class="list-group-item list-group-item-action">No data available</a>  
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -243,9 +263,19 @@
                     <div class="card mb-3">
                         <h5 class="card-header bg-dark text-white"><i class="fas fa-bullhorn"></i> Events and Announcements</h5>
                         <div class="card-body">
-                            <h5 class="card-title">Special title treatment</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                            <!--<a href="#">
+                                <div class="card mb-3">
+                                    <img src="{{ asset('images/biggest.webp') }}" class="card-img-top" alt="...">
+                                    <div class="card-body text-dark">
+                                        <h5 class="card-title">Join RGC's the Biggest Loser</h5>
+                                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                    </div>
+                                </div>
+                            </a>-->
+                            <div class="list-group">
+                                <a class="list-group-item list-group-item-action">No data available</a>  
+                            </div>
                         </div>
                     </div>
                 </div>
