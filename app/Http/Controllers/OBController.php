@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Employee;
+use App\OBDetails;
 use Auth;
 use Validator;
 use Session;
@@ -148,13 +149,17 @@ class OBController extends Controller
                 $ob_details = array();
 
                 for( $i = 0 ; $i < count($request->input('ob_date')) ; $i++ ){
-                    array_push($ob_details, [ 'ob_date' => $request->input('ob_date.'.$i),
+                    array_push($ob_details, [   'ref_no' => $lastid,
+                                                'emp_no' => Auth::user()->emp_no,
+                                                'ob_date' => $request->input('ob_date.'.$i),
                                                 'ob_from' => $request->input('ob_from.'.$i),
                                                 'ob_to' => $request->input('ob_to.'.$i),
                                                 'destination' => $request->input('destination.'.$i),
                                                 'purpose' => $request->input('purpose.'.$i)
                                               ]);
                 }
+
+                OBDetails::insert($ob_details);
                 $ob_details = json_encode($ob_details);
                 $ob->ob_details = $ob_details;
             }
