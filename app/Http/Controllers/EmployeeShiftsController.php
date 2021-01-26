@@ -147,7 +147,7 @@ class EmployeeShiftsController extends Controller
             $table = $data["table"];
             $error_count = $data["error_count"];
             return view('pages.hris.dashboard.shifts.import')
-                    ->with(array('site'=> 'hris', 'page'=>'shift', 'shift_table' => $table, 'error_count' => $error_count, 'file_path' => public_path()."\\".$file->getClientOriginalName()));
+                    ->with(array('site'=> 'hris', 'page'=>'shift', 'shift_table' => $table, 'error_count' => $error_count, 'file_path' => public_path()."/".$file->getClientOriginalName()));
         }
     }
 
