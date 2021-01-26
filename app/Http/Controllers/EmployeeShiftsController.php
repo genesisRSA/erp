@@ -106,6 +106,7 @@ class EmployeeShiftsController extends Controller
             //generate error (if any)
             if($emp_name == "N/A"){ $remarks .= "| Employee not exist. | "; $has_error = true;}
             if($time_in == "N/A"){ $remarks .= "Shift not exist. | "; $has_error = true;}
+            if($shift_date == "0000-00-00"){ $remarks .= "Date Format not exist. | "; $has_error = true;}
             $error_count = $has_error ? $error_count + 1 : $error_count + 0;
             array_push($table,array(
                 "row_no" => $row_no,
@@ -165,8 +166,8 @@ class EmployeeShiftsController extends Controller
                 "emp_no" => $col["emp_no"],
                 "shift_code" => $col["shift_desc"],
                 "shift_date" => $col["shift_date"],
-                "time_in" => $col["time_in"],
-                "time_out" => $col["time_out"],
+                "time_in" => date('H:i:s',strtotime($col["time_in"])),
+                "time_out" => date('H:i:s',strtotime($col["time_out"])),
                 "shift_day" => $col["shift_day"]
             ));
         }
