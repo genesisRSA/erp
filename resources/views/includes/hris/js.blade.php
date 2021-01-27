@@ -69,7 +69,6 @@
                     }
                 ],
                 "responsive": true,
-                "pagingType": "full",
                 "ajax": "/api/hris/attendances/av_attendance/"+$('#date_from').val()+"/"+$('#date_to').val(),
                 "columns": [
                     { "data": "emp_code" },
@@ -230,7 +229,6 @@
                     }
                 ],
                 "responsive": true,
-                "pagingType": "full",
                 "aaSorting": [],
                 "ajax": "/api/hris/attendances/my_attendance/{{Auth::user()->employee->emp_no}}",
                 "columns": [
@@ -261,7 +259,6 @@
                     }
                 ],
                 "responsive": true,
-                "pagingType": "full",
                 "aaSorting": [],
                 "ajax": "/api/hris/employeeshifts/my_shift/{{Auth::user()->employee->emp_no}}",
                 "columns": [
@@ -295,7 +292,6 @@
                     }
                 ],
                 "responsive": true,
-                "pagingType": "full",
                 "aaSorting": [],
                 "ajax": "/api/hris/attendances/my_attendance/{{$access_id}}",
                 "columns": [
@@ -322,7 +318,6 @@
         @if($page == "employees")
         var employee_dt = $('#employee-dt').DataTable({
             "responsive": true,
-            "pagingType": "full",
 		    "columnDefs": [
 		            { responsivePriority: 1, targets: 1 },
 		            { responsivePriority: 2, targets: 3 },
@@ -361,7 +356,6 @@
 
         var remployee_dt = $('#resemployee-dt').DataTable({
             "responsive": true,
-            "pagingType": "full",
 		    "columnDefs": [
 		            { responsivePriority: 1, targets: 1 },
 		            { responsivePriority: 2, targets: 3 },
@@ -654,7 +648,6 @@
         var leaveposted_dt = $('#leaveposted-dt').DataTable({
             "responsive": true,
             "aaSorting": [],
-            "pagingType": "full",
             "ajax": "/api/hris/leaves/all_posted",
             "columns": [
                 { "data": "ref_no" },
@@ -717,7 +710,6 @@
         var shift_dt = $('#shift-dt').DataTable({
             "responsive": true,
             "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
-            "pagingType": "full",
             "ajax": "/api/hris/employeeshifts/all",
             "columns": [
                 {  
@@ -1104,7 +1096,6 @@
         var myleave_dt = $('#myleave-dt').DataTable({
             "responsive": true,
             "aaSorting": [],
-            "pagingType": "full",
             "ajax": "/hris/leaves/my",
             "columns": [
                 { "data": "ref_no" },
@@ -1161,7 +1152,6 @@
         var myleaveposted_dt = $('#myleaveposted-dt').DataTable({
             "responsive": true,
             "aaSorting": [],
-            "pagingType": "full",
             "ajax": "/hris/leaves/my_posted",
             "columns": [
                 { "data": "ref_no" },
@@ -1216,7 +1206,6 @@
         var leaveapproval_dt = $('#leaveapproval-dt').DataTable({
             "responsive": true,
             "aaSorting": [],
-            "pagingType": "full",
             "ajax": "/hris/leaves/approval",
             "columns": [
                 { "data": "ref_no" },
