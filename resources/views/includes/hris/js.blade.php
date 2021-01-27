@@ -642,7 +642,11 @@
                     "targets": 0,
                     "data": "ref_no",
                     "render": function ( data, type, row, meta ) {
-                        return '<a href="leave/'+data+'/posting" class="btn btn-success btn-sm"><i class="fas fa-vote-yea"></i> Post</a> ';
+                        if(row.status == "Approved"){
+                            return  '<a href="leave/'+data+'" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>'+
+                                    '<a href="leave/'+data+'/posting" class="btn btn-success btn-sm"><i class="fas fa-check-circle"></i> Post</a>';
+                        }else
+                        return  '<a href="leave/'+data+'" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>';
                     }
                 }
             ]
