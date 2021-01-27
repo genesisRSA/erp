@@ -586,7 +586,6 @@
         var leave_dt = $('#leave-dt').DataTable({
             "responsive": true,
             "aaSorting": [],
-            "pagingType": "full",
             "ajax": "/api/hris/leaves/all",
             "columns": [
                 { "data": "ref_no" },
