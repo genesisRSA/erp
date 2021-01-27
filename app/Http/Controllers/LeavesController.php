@@ -31,7 +31,7 @@ class LeavesController extends Controller
     {
         return response()
             ->json([
-                "data" => Leave::where('status', '=', 'Approved')
+                "data" => Leave::where('status', '<>', 'Posted')
                             ->with('filer_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->with('approved_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->with('approver_employee:emp_no,emp_photo,emp_fname,emp_lname')
