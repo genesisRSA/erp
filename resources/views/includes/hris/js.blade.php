@@ -646,7 +646,7 @@
                             return  '<a href="leave/'+data+'/posted" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>'+
                                     '<a href="leave/'+data+'/posting" class="btn btn-success btn-sm"><i class="fas fa-check-circle"></i> Post</a>';
                         }else
-                        return  '<a href="leave/'+data+'" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>';
+                        return  '<a href="leave/'+data+'/posted" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>';
                     }
                 }
             ]
