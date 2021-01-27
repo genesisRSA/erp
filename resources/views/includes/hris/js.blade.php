@@ -38,7 +38,7 @@
 
         $('form').submit(function(){
 
-            $("button:submit", this).html("Please Wait...").attr('disabled', 'disabled');
+            $("button:submit", this).html("Please Wait...");
 
             return true;
 
