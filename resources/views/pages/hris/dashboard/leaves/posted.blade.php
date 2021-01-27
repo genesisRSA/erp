@@ -87,7 +87,7 @@
                                         <label>Status</label><br>
                                         @if($leave->status == 'Approved')
                                             <button type="button" class="btn btn-success" style="width:100%;"><i class="fas fa-check-circle"></i>  {{$leave->status}}</button>
-                                        @elseif($leave->status == 'Declined')
+                                        @elseif($leave->status == 'Declined' || $leave->status == 'Voided')
                                             <button type="button" class="btn btn-danger" style="width:100%;"><i class="fas fa-times-circle"></i> {{$leave->status}}</button>
                                         @elseif($leave->status == 'Posted')
                                             <button type="button" class="btn btn-secondary" style="width:100%;"><i class="fas fa-vote-yea"></i> {{$leave->status}}</button>
@@ -130,7 +130,7 @@
                                             <td>
                                                 @if($log->status == 'Approved')
                                                     <button type="button" class="btn btn-success" style="width:100%;"><i class="fas fa-check-circle"></i>  {{$log->status}}</button>
-                                                @elseif($log->status == 'Declined')
+                                                @elseif($log->status == 'Declined' || $log->status == 'Voided')
                                                     <button type="button" class="btn btn-danger" style="width:100%;"><i class="fas fa-times-circle"></i> {{$log->status}}</button>
                                                     @elseif($log->status == 'Posted')
                                                     <button type="button" class="btn btn-secondary" style="width:100%;"><i class="fas fa-vote-yea"></i> {{$log->status}}</button>

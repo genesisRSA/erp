@@ -46,7 +46,6 @@ class OBController extends Controller
             ->json([
                 "data" => OB::orderBy('date_filed','asc')
                             ->where('status', '=', 'Posted')
-                            ->orWhere('status', '=', 'Voided')
                             ->with('filer_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->with('approved_employee:emp_no,emp_photo,emp_fname,emp_lname')
                             ->with('approver_employee:emp_no,emp_photo,emp_fname,emp_lname')

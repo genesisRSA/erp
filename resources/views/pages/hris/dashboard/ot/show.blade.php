@@ -87,7 +87,7 @@
                                         <label>Status</label><br>
                                         @if($ot->status == 'Approved' || $ot->status == 'Posted')
                                             <button type="button" class="btn btn-success" style="width:100%;"><i class="fas fa-check-circle"></i>  {{$ot->status}}</button>
-                                        @elseif($ot->status == 'Declined')
+                                        @elseif($ot->status == 'Declined' || $ot->status == 'Voided')
                                             <button type="button" class="btn btn-danger" style="width:100%;"><i class="fas fa-times-circle"></i> {{$ot->status}}</button>
                                         @else
                                             <button type="button" class="btn btn-warning" style="width:100%;"><i class="fas fa-hourglass-half"></i>  {{$ot->status}}</button>
@@ -128,7 +128,7 @@
                                             <td>
                                                 @if($log->status == 'Approved' || $log->status == 'Posted')
                                                     <button type="button" class="btn btn-success" style="width:100%;"><i class="fas fa-check-circle"></i>  {{$log->status}}</button>
-                                                @elseif($log->status == 'Declined')
+                                                @elseif($log->status == 'Declined' || $log->status == 'Voided')
                                                     <button type="button" class="btn btn-danger" style="width:100%;"><i class="fas fa-times-circle"></i> {{$log->status}}</button>
                                                 @else
                                                     <button type="button" class="btn btn-warning" style="width:100%;"><i class="fas fa-hourglass-half"></i>  {{$log->status}}</button>

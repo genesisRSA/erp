@@ -605,7 +605,7 @@
                     "render": function ( data, type, row, meta){
                         if(data == "Approved"){
                             return '<span class="badge badge-success">'+data+'</span>';
-                        }else if(data == "Disapproved"){
+                        }else if(data == "Disapproved" || data == "Declined" || data == "Voided"){
                             return '<span class="badge badge-danger">'+data+'</span>';
                         }else if(data == "Posted"){
                             return '<span class="badge badge-secondary">'+data+'</span>';
@@ -771,7 +771,7 @@
                     "render": function ( data, type, row, meta){
                         if(data == "Approved" || data == "Posted"){
                             return '<span class="badge badge-success">'+data+'</span>';
-                        }else if(data == "Declined"){
+                        }else if(data == "Declined" || data == "Voided"){
                             return '<span class="badge badge-danger">'+data+'</span>';
                         }else{
                             return '<span class="badge badge-warning">'+data+'</span>';
@@ -887,7 +887,7 @@
                     "render": function ( data, type, row, meta){
                         if(data == "Approved" || data == "Posted"){
                             return '<span class="badge badge-success">'+data+'</span>';
-                        }else if(data == "Disapproved"){
+                        }else if(data == "Disapproved" || data == "Declined" || data == "Voided"){
                             return '<span class="badge badge-danger">'+data+'</span>';
                         }else{
                             return '<span class="badge badge-warning">'+data+'</span>';
@@ -1003,7 +1003,7 @@
                     "render": function ( data, type, row, meta){
                         if(data == "Approved" || data == "Posted"){
                             return '<span class="badge badge-success">'+data+'</span>';
-                        }else if(data == "Disapproved" || data == "Declined"){
+                        }else if(data == "Disapproved" || data == "Declined" || data == "Voided"){
                             return '<span class="badge badge-danger">'+data+'</span>';
                         }else{
                             return '<span class="badge badge-warning">'+data+'</span>';
