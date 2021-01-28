@@ -33,8 +33,7 @@
                                     <div class="form-group">
                                         <label>Person</label>
                                         <select class="form-control" name="person" id="person">
-                                            <option value="" disabled selected>Choose Person...</option>
-                                            <option value="{{Auth::user()->emp_no}}">(Me) {{Auth::user()->name}}</option>
+                                            <option value="{{Auth::user()->emp_no}}" selected>(Me) {{Auth::user()->name}}</option>
                                             @foreach ($team as $t)
                                                 <option value="{{$t->emp_no}}">{{$t->full_name}}</option>
                                             @endforeach
