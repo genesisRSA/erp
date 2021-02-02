@@ -80,7 +80,7 @@
                                 @foreach($anniv_celebrants as $member)
                                     <a class="list-group-item list-group-item-action">
                                         <img src="/{{ $member->emp_photo }}" class="img-fluid border bg-dark rounded-circle bg-white mr-2" style="height:32px;"/> <span class="badge badge-secondary">{{ $member->full_name }}</span>
-                                        <span class="float-right" style="font-size:9px;">{{ date('Y')-date('Y',strtotime($member->date_hired)) }} year(s)</span>
+                                        <span class="float-right" style="font-size:9px;">{{ $member->date_hired.' | '.date('Y')-date('Y',strtotime($member->date_hired)) }} year(s)</span>
                                     </a>
                                 @endforeach
                             @else
@@ -174,7 +174,7 @@
                                     @foreach($anniv_celebrants as $member)
                                         <a class="list-group-item list-group-item-action">
                                             <img src="/{{ $member->emp_photo }}" class="img-fluid border bg-dark rounded-circle bg-white mr-2" style="height:32px;"/> <span class="badge badge-secondary">{{ $member->full_name }}</span>
-                                            <span class="float-right" style="font-size:9px;">{{ date('Y')-date('Y',strtotime($member->date_hired)) }} year(s)</span>
+                                            <span class="float-right" style="font-size:9px;">{{  $member->date_hired.' | '.date('Y')-date('Y',strtotime($member->date_hired)) }} year(s)</span>
                                         </a>
                                     @endforeach
                                 @else
