@@ -92,23 +92,33 @@
                         <table id="calcattendance-dt" class="table table-striped table-bordered w-100">
                             <thead class="thead-dark">
                                 <tr>
+                                    <th>ID No.</th>
                                     <th>Employee Name</th>
+                                    <th>Shift Date</th>
+                                    <th>Time In</th>
+                                    <th>Time Out</th>
                                     <th>Hours Work</th>
                                     <th>Overtime</th>
+                                    <th>Night Differential</th>
+                                    <th>Deduction</th>
                                     <th>OB</th>
                                     <th>Leave</th>
-                                    <th>Deduction</th>
                                     <th>Total Hourks Work</th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
+                                    <th>ID No.</th>
                                     <th>Employee Name</th>
+                                    <th>Shift Date</th>
+                                    <th>Time In</th>
+                                    <th>Time Out</th>
                                     <th>Hours Work</th>
                                     <th>Overtime</th>
+                                    <th>Night Differential</th>
+                                    <th>Deduction</th>
                                     <th>OB</th>
                                     <th>Leave</th>
-                                    <th>Deduction</th>
                                     <th>Total Hourks Work</th>
                                 </tr>
                             </tfoot>

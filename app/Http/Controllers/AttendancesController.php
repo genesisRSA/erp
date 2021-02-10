@@ -45,6 +45,15 @@ class AttendancesController extends Controller
                 "data" => $access_details
             ]);
     }
+
+    public function calc_attendance($date_from,$date_to){
+        $calc_att = DB::connection('mysql')->select("CALL calc_att('".$date_from."','".$date_to."')");
+
+        return response()  
+            ->json([
+                "data" => $calc_att
+            ]);
+    }
     
     public function my_today($emp_id,$today){
         $my_today_attendance = DB::connection('mysql')->select("SELECT date_log, TIME_FORMAT(time_in,'%H:%i') as time_in, TIME_FORMAT(time_out,'%H:%i') as time_out,TIMEDIFF(time_out,time_in) as hours_work,TIMEDIFF(TIME_FORMAT(time_in,'%H:%i'),'08:00:00') as late FROM rgc_webportal.attendance WHERE emp_code = '$emp_id' AND date_log = '$today'");
