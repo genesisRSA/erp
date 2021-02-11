@@ -153,7 +153,7 @@
                     }
                 ],
                 "responsive": true,
-                "ajax": "/api/hris/attendances/calc_attendance/"+$('#date_from').val()+"/"+$('#date_to').val(),
+                "ajax": "/api/hris/attendances/calc_attendance/"+$('#calcdate_from').val()+"/"+$('#calcdate_to').val(),
                 "columns": [
                     { "data": "emp_no" },
                     { "data": "name" },
