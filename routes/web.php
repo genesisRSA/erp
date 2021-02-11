@@ -125,6 +125,7 @@ Route::get('/jolist', 'SignagesController@jolist')->name('jo.list');
 
 Route::get('/rgc_entsys/home','ERPPageController@home')->name('res.home');
 
+// ERP
 Route::resource('/rgc_entsys/uom', 'UOMController');
 Route::post('/rgc_entsys/uom/patch', 'UOMController@patch')->name('uom.patch');
 Route::post('/rgc_entsys/uom/delete', 'UOMController@delete')->name('uom.delete');
@@ -140,6 +141,25 @@ Route::post('/rgc_entsys/payment_term/delete', 'PaymentTermsController@delete')-
 Route::resource('/rgc_entsys/customer', 'CustomersController');
 Route::post('/rgc_entsys/customer/patch', 'CustomersController@patch')->name('customer.patch');
 Route::post('/rgc_entsys/customer/delete', 'CustomersController@delete')->name('customer.delete');
+
+// start -> jp task
+Route::resource('/rgc_entsys/vendor', 'VendorController');
+Route::post('/rgc_entsys/vendor/patch', 'VendorController@patch')->name('vendor.patch');
+Route::post('/rgc_entsys/vendor/delete', 'VendorController@delete')->name('vendor.delete');
+
+Route::resource('/rgc_entsys/item_category', 'ItemCategoryController');
+Route::post('/rgc_entsys/item_category/patch', 'ItemCategoryController@patch')->name('item_category.patch');
+Route::post('/rgc_entsys/item_category/delete', 'ItemCategoryController@delete')->name('item_category.delete');
+
+Route::resource('/rgc_entsys/item_subcategory', 'ItemSubCategoryController');
+Route::post('/rgc_entsys/item_subcategory/patch', 'ItemSubCategoryController@patch')->name('item_subcategory.patch');
+Route::post('/rgc_entsys/item_subcategory/delete', 'ItemSubCategoryController@delete')->name('item_subcategory.delete');
+
+Route::resource('/rgc_entsys/assembly','AssemblyController');
+Route::post('/rgc_entsys/assembly/patch', 'AssemblyController@patch')->name('assembly.patch');
+Route::post('/rgc_entsys/assembly/delete', 'AssemblyController@delete')->name('assembly.delete');
+
+// end -> jp task
 
 Route::resource('/rgc_entsys/product_category', 'ProductCategoriesController');
 Route::post('/rgc_entsys/product_category/patch', 'ProductCategoriesController@patch')->name('product_category.patch');

@@ -69,5 +69,11 @@ Route::get('/rgc_entsys/uom/all', 'UOMController@all');
 Route::get('/rgc_entsys/currency/all', 'CurrenciesController@all');
 Route::get('/rgc_entsys/payment_term/all', 'PaymentTermsController@all');
 Route::get('/rgc_entsys/customer/all', 'CustomersController@all');
+
+Route::get('/rgc_entsys/vendor/all', 'VendorController@all');
+Route::get('/rgc_entsys/item_category/all','ItemCategoryController@all');
+Route::get('/rgc_entsys/item_subcategory/all','ItemSubCategoryController@all');
+Route::get('/rgc_entsys/assembly/all','AssemblyController@all');
+
 Route::get('/rgc_entsys/product_category/all', 'ProductCategoriesController@all');
 Route::get('/rgc_entsys/product/all', 'ProductsController@all');
