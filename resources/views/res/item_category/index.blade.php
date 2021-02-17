@@ -128,9 +128,14 @@
             {  "data": "cat_code" },
             {  "data": "cat_desc" },
             {
-                "data": "id",
+                "data": "system_generated",
                 "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem('+data+')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem('+data+')"><i class="material-icons">delete</i></a>';
+                  if (data=='0') {
+                    return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem('+row.id+')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem('+row.id+')"><i class="material-icons">delete</i></a>';
+                  } else {
+                    return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red waves-effect waves-light" disabled><i class="material-icons">delete</i></a>';
+                  }
+                   
                 }
             }
         ] 

@@ -159,6 +159,13 @@ Route::resource('/rgc_entsys/assembly','AssemblyController');
 Route::post('/rgc_entsys/assembly/patch', 'AssemblyController@patch')->name('assembly.patch');
 Route::post('/rgc_entsys/assembly/delete', 'AssemblyController@delete')->name('assembly.delete');
 
+Route::resource('/rgc_entsys/fabrication','FabricationController');
+Route::post('/rgc_entsys/fabrication/patch', 'FabricationController@patch')->name('fabrication.patch');
+Route::post('/rgc_entsys/fabrication/delete', 'FabricationController@delete')->name('fabrication.delete');
+
+Route::resource('/rgc_entsys/item_master','ItemMasterController');
+Route::post('/rgc_entsys/item_master/patch', 'ItemMasterController@patch')->name('item_master.patch');
+Route::post('/rgc_entsys/item_master/delete', 'ItemMasterController@delete')->name('item_master.delete');
 // end -> jp task
 
 Route::resource('/rgc_entsys/product_category', 'ProductCategoriesController');

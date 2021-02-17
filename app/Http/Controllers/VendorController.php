@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Vendor;
 use App\PaymentTerm;
 use App\Currency;
@@ -69,7 +70,7 @@ class VendorController extends Controller
         }else{
             $vendor = new Vendor();
             $vendor->ven_name = $request->input('ven_name','');
-            $vendor->ven_code = $request->input('ven_code','');
+            $vendor->ven_code = Str::upper($request->input('ven_code',''));
             $vendor->ven_num_code = $request->input('ven_num_code','');
             $vendor->ven_type = $request->input('ven_type','');
             $vendor->currency_id = $request->input('currency_id','');
@@ -172,7 +173,7 @@ class VendorController extends Controller
         }else{
             $vendor = Vendor::find($request->input('id',''));
             $vendor->ven_name = $request->input('ven_name','');
-            $vendor->ven_code = $request->input('ven_code','');
+            $vendor->ven_code = Str::upper($request->input('ven_code',''));
             $vendor->ven_type = $request->input('ven_type','');
             $vendor->currency_id = $request->input('currency_id','');
             $vendor->term_id = $request->input('term_id','');

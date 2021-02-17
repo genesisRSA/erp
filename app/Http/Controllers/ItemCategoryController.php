@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\ItemCategory;
 use Validator;
 
@@ -63,7 +64,7 @@ class ItemCategoryController extends Controller
                         ->withErrors($validator);
         }else{
             $itemcat = new ItemCategory();
-            $itemcat->cat_code = $request->input('cat_code','');
+            $itemcat->cat_code = Str::upper($request->input('cat_code',''));
             $itemcat->cat_desc = $request->input('cat_desc','');
 
             if($itemcat->save()){
@@ -125,7 +126,7 @@ class ItemCategoryController extends Controller
                         ->withErrors($validator);
         }else{
             $itemcat = ItemCategory::find($request->input('id',''));
-            $itemcat->cat_code = $request->input('cat_code','');
+            $itemcat->cat_code = Str::upper($request->input('cat_code',''));
             $itemcat->cat_desc = $request->input('cat_desc','');
 
             if($itemcat->save()){

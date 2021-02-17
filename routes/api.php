@@ -74,6 +74,8 @@ Route::get('/rgc_entsys/vendor/all', 'VendorController@all');
 Route::get('/rgc_entsys/item_category/all','ItemCategoryController@all');
 Route::get('/rgc_entsys/item_subcategory/all','ItemSubCategoryController@all');
 Route::get('/rgc_entsys/assembly/all','AssemblyController@all');
+Route::get('/rgc_entsys/fabrication/all','FabricationController@all');
+Route::get('/rgc_entsys/item_master/all','ItemMasterController@all');
 
 Route::get('/rgc_entsys/product_category/all', 'ProductCategoriesController@all');
 Route::get('/rgc_entsys/product/all', 'ProductsController@all');

@@ -17,10 +17,10 @@
           <div class="collapsible-body">
             <ul>
               <li @if($subpage=='customer') class="active" @endif><a href="{{ route('customer.index')}}">Customers</a></li>
-              <li><a href="#!">Vendors</a></li>
-              <li><a href="#!">Item Categories</a></li>
-              <li><a href="#!">Item Subcategories</a></li>
-              <li><a href="#!">Item Master</a></li>
+              <li @if($subpage=='vendor') class="active" @endif><a href="{{ route('vendor.index')}}">Vendors</a></li>
+              <li @if($subpage=='itemcategories') class="active" @endif><a href="{{ route('item_category.index')}}">Item Categories</a></li>
+              <li @if($subpage=='itemsubcat') class="active" @endif><a href="{{ route('item_subcategory.index')}}">Item Sub-Categories</a></li>
+              <li @if($subpage=='itemmaster') class="active" @endif><a href="{{ route('item_master.index') }}">Item Master</a></li>
             </ul>
           </div>
         </li>
@@ -33,8 +33,8 @@
           <div class="collapsible-body">
             <ul>
               <li @if($subpage=='productcategories') class="active" @endif><a href="{{ route('product_category.index') }}">Product Categories</a></li>
-              <li @if($subpage=='productlist') class="active" @endif><a href="{{ route('product.index') }}">Product List</a></li>
-              <li><a href="#!">Module List</a></li>
+              <li @if($subpage=='assemblylist') class="active" @endif><a href="{{ route('assembly.index') }}">Assembly List</a></li>
+              <li @if($subpage=='fabricationlist') class="active" @endif><a href="{{ route('fabrication.index') }}">Fabrication List</a></li>
             </ul>
           </div>
         </li>

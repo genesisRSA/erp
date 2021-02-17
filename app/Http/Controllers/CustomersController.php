@@ -79,8 +79,8 @@ class CustomersController extends Controller
         }else{
             $customer = new Customer();
             $customer->cust_name = $request->input('cust_name','');
-            $customer->cust_code = $request->input('cust_code','');
-            $customer->cust_num_code = $request->input('cust_num_code','');
+            $customer->cust_code = Str::upper($request->input('cust_code',''));
+            $customer->cust_num_code = Str::upper($request->input('cust_num_code',''));
             $customer->cust_type = $request->input('cust_type','');
             $customer->currency_id = $request->input('currency_id','');
             $customer->term_id = $request->input('term_id','');
@@ -164,7 +164,7 @@ class CustomersController extends Controller
         }else{
             $customer = Customer::find($request->input('id',''));
             $customer->cust_name = $request->input('cust_name','');
-            $customer->cust_code = $request->input('cust_code','');
+            $customer->cust_code = Str::upper($request->input('cust_code',''));
             $customer->cust_type = $request->input('cust_type','');
             $customer->currency_id = $request->input('currency_id','');
             $customer->term_id = $request->input('term_id','');

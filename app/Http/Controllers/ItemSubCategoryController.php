@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\ItemCategory;
 use App\ItemSubCategory;
 use Validator;
@@ -65,8 +66,8 @@ class ItemSubCategoryController extends Controller
                         ->withErrors($validator);
         }else{
             $itemsubcat = new ItemSubCategory();
-            $itemsubcat->cat_code = $request->input('cat_code','');
-            $itemsubcat->subcat_code = $request->input('subcat_code','');
+            $itemsubcat->cat_code = Str::upper($request->input('cat_code',''));
+            $itemsubcat->subcat_code = Str::upper($request->input('subcat_code',''));
             $itemsubcat->subcat_desc = $request->input('subcat_desc','');
 
             if($itemsubcat->save()){
@@ -129,8 +130,8 @@ class ItemSubCategoryController extends Controller
                         ->withErrors($validator);
         }else{
             $itemsubcat = ItemSubCategory::find($request->input('id',''));
-            $itemsubcat->cat_code = $request->input('cat_code','');
-            $itemsubcat->subcat_code = $request->input('subcat_code','');
+            $itemsubcat->cat_code = Str::upper($request->input('cat_code',''));
+            $itemsubcat->subcat_code = Str::upper($request->input('subcat_code',''));
             $itemsubcat->subcat_desc = $request->input('subcat_desc','');
 
             if($itemsubcat->save()){

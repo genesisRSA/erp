@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\ProductCategory;
 use App\Product;
 use Validator;
@@ -67,7 +68,7 @@ class ProductsController extends Controller
             $product = new Product();
             $product->prodcat_id = $request->input('prodcat_id','');
             $product->prod_name = $request->input('prod_name','');
-            $product->prod_code = $request->input('prod_code','');
+            $product->prod_code = Str::upper($request->input('prod_code',''));
             $product->prod_type = $request->input('prod_type','');
             $product->prod_writeup = $request->input('prod_writeup','');
 
@@ -135,7 +136,7 @@ class ProductsController extends Controller
             $product = Product::find($request->input('id',''));
             $product->prodcat_id = $request->input('prodcat_id','');
             $product->prod_name = $request->input('prod_name','');
-            $product->prod_code = $request->input('prod_code','');
+            $product->prod_code = Str::upper($request->input('prod_code',''));
             $product->prod_type = $request->input('prod_type','');
             $product->prod_writeup = $request->input('prod_writeup','');
 

@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use App\Currency;
+use App\Fabrication;
+use App\Assembly;
 use Validator;
 
-class CurrenciesController extends Controller
+class FabricationController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,17 +18,21 @@ class CurrenciesController extends Controller
     public function index()
     {
         //
-        return view('res.currency.index')
+        $fab = Fabrication::all();
+        $assembly = Assembly::all();
+        return view('res.fabrication.index')
                 ->with('site','res')
-                ->with('page','parameters')
-                ->with('subpage','currency');
+                ->with('page','products')
+                ->with('subpage','fabricationlist')
+                ->with('fabrication',$fab)
+                ->with('assycode',$assembly);
     }
 
     public function all()
     {
         return response()
             ->json([
-                "data" => Currency::all()
+                "data" => Fabrication::all()
             ]);
     }
 
@@ -49,12 +54,11 @@ class CurrenciesController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        $field = [
-            'currency_name' => 'required',
-            'currency_code' => 'required',
-            'currency_words' => 'required',
-            'symbol' => 'required',
+         //
+         $field = [
+            'assy_code' => 'required',
+            'fab_code' => 'required|unique:fabrications',
+            'fab_desc' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $field);
@@ -63,14 +67,17 @@ class CurrenciesController extends Controller
             return back()->withInput()
                         ->withErrors($validator);
         }else{
-            $currency = new Currency();
-            $currency->currency_name = $request->input('currency_name','');
-            $currency->currency_code = Str::upper($request->input('currency_code',''));
-            $currency->currency_words = $request->input('currency_words','');
-            $currency->symbol = $request->input('symbol','');
+            $fabrication = new Fabrication();
+            $fabrication->assy_code = Str::upper($request->input('assy_code',''));
+            $fabrication->fab_code = Str::upper($request->input('fab_code',''));
+            $fabrication->fab_desc = $request->input('fab_desc','');
+            $fabrication->length = $request->input('fab_length','');
+            $fabrication->width = $request->input('fab_width','');
+            $fabrication->thickness = $request->input('fab_thickness','');
+            $fabrication->radius = $request->input('fab_radius','');
 
-            if($currency->save()){
-                return redirect()->route('currency.index')->withSuccess('Currency Successfully Added');
+            if($fabrication->save()){
+                return redirect()->route('fabrication.index')->withSuccess('Fabrication Details Successfully Added');
             }
         }
     }
@@ -84,7 +91,7 @@ class CurrenciesController extends Controller
     public function show($id)
     {
         //
-        $data = Currency::find($id);
+        $data = Fabrication::find($id);
         return response()
             ->json([
                 "data" => $data
@@ -100,7 +107,6 @@ class CurrenciesController extends Controller
     public function edit($id)
     {
         //
-        
     }
 
     /**
@@ -118,10 +124,9 @@ class CurrenciesController extends Controller
     public function patch(Request $request)
     {
         $field = [
-            'currency_name' => 'required',
-            'currency_code' => 'required',
-            'currency_words' => 'required',
-            'symbol' => 'required',
+            'assy_code' => 'required',
+            'fab_code' => 'required|unique:fabrications',
+            'fab_desc' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $field);
@@ -130,14 +135,17 @@ class CurrenciesController extends Controller
             return back()->withInput()
                         ->withErrors($validator);
         }else{
-            $currency = Currency::find($request->input('id',''));
-            $currency->currency_name = $request->input('currency_name','');
-            $currency->currency_code = Str::upper($request->input('currency_code',''));
-            $currency->currency_words = $request->input('currency_words','');
-            $currency->symbol = $request->input('symbol','');
+            $fab = Fabrication::find($request->input('id',''));
+            $fab->assy_code = Str::upper($request->input('assy_code',''));
+            $fab->fab_code = Str::upper($request->input('fab_code',''));
+            $fab->fab_desc = $request->input('fab_desc','');
+            $fab->length = $request->input('fab_length','');
+            $fab->width = $request->input('fab_width','');
+            $fab->thickness = $request->input('fab_thickness','');
+            $fab->radius = $request->input('fab_radius','');
 
-            if($currency->save()){
-                return redirect()->route('currency.index')->withSuccess('Currency Successfully Updated');
+            if($fab->save()){
+                return redirect()->route('fabrication.index')->withSuccess('Fabrication Details Successfully Updated');
             }
         }
     }
@@ -156,8 +164,8 @@ class CurrenciesController extends Controller
     public function delete(Request $request)
     {
         //
-        if(Currency::destroy($request->input('id',''))){
-            return redirect()->route('currency.index')->withSuccess('Currency Successfully Deleted');
+        if(Fabrication::destroy($request->input('id',''))){
+            return redirect()->route('fabrication.index')->withSuccess('Fabrication Details Successfully Deleted');
         }
     }
 }

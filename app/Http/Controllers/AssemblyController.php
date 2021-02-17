@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use App\Currency;
+use App\Assembly;
+
+use App\Product;
 use Validator;
 
-class CurrenciesController extends Controller
+class AssemblyController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,20 +19,23 @@ class CurrenciesController extends Controller
     public function index()
     {
         //
-        return view('res.currency.index')
+        $assemblycode = Assembly::all();
+        $prodcode = Product::all();
+        return view('res.assembly.index')
                 ->with('site','res')
-                ->with('page','parameters')
-                ->with('subpage','currency');
+                ->with('page','assemblylist')
+                ->with('subpage','assemblylist')
+                ->with('products',$prodcode)
+                ->with('assycode',$assemblycode);
     }
 
     public function all()
     {
         return response()
             ->json([
-                "data" => Currency::all()
+                "data" => Assembly::all()
             ]);
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -51,10 +56,9 @@ class CurrenciesController extends Controller
     {
         //
         $field = [
-            'currency_name' => 'required',
-            'currency_code' => 'required',
-            'currency_words' => 'required',
-            'symbol' => 'required',
+            'prod_code' => 'required',
+            'assy_code' => 'required|unique:assemblies',
+            'assy_desc' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $field);
@@ -63,14 +67,14 @@ class CurrenciesController extends Controller
             return back()->withInput()
                         ->withErrors($validator);
         }else{
-            $currency = new Currency();
-            $currency->currency_name = $request->input('currency_name','');
-            $currency->currency_code = Str::upper($request->input('currency_code',''));
-            $currency->currency_words = $request->input('currency_words','');
-            $currency->symbol = $request->input('symbol','');
+            $assembly = new Assembly();
+            $assembly->prod_code = Str::upper($request->input('prod_code',''));
+            $assembly->assy_code = Str::upper($request->input('assy_code',''));
+            $assembly->assy_desc = $request->input('assy_desc','');
+            $assembly->parent_assy_code = $request->input('parent_assy_code','');
 
-            if($currency->save()){
-                return redirect()->route('currency.index')->withSuccess('Currency Successfully Added');
+            if($assembly->save()){
+                return redirect()->route('assembly.index')->withSuccess('Assembly Details Successfully Added');
             }
         }
     }
@@ -84,7 +88,7 @@ class CurrenciesController extends Controller
     public function show($id)
     {
         //
-        $data = Currency::find($id);
+        $data = Assembly::find($id);
         return response()
             ->json([
                 "data" => $data
@@ -100,7 +104,6 @@ class CurrenciesController extends Controller
     public function edit($id)
     {
         //
-        
     }
 
     /**
@@ -118,10 +121,10 @@ class CurrenciesController extends Controller
     public function patch(Request $request)
     {
         $field = [
-            'currency_name' => 'required',
-            'currency_code' => 'required',
-            'currency_words' => 'required',
-            'symbol' => 'required',
+            'prod_code' => 'required',
+            'assy_code' => 'required|unique:assemblies',
+            'assy_desc' => 'required',
+            'parent_assy_code' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $field);
@@ -130,14 +133,14 @@ class CurrenciesController extends Controller
             return back()->withInput()
                         ->withErrors($validator);
         }else{
-            $currency = Currency::find($request->input('id',''));
-            $currency->currency_name = $request->input('currency_name','');
-            $currency->currency_code = Str::upper($request->input('currency_code',''));
-            $currency->currency_words = $request->input('currency_words','');
-            $currency->symbol = $request->input('symbol','');
+            $assembly = Assembly::find($request->input('id',''));
+            $assembly->prod_code = $request->input('prod_code','');
+            $assembly->assy_code = $request->input('assy_code','');
+            $assembly->assy_desc = $request->input('assy_desc','');
+            $assembly->parent_assy_code = $request->input('parent_assy_code','');
 
-            if($currency->save()){
-                return redirect()->route('currency.index')->withSuccess('Currency Successfully Updated');
+            if($assembly->save()){
+                return redirect()->route('assembly.index')->withSuccess('Assembly Details Successfully Updated');
             }
         }
     }
@@ -156,8 +159,8 @@ class CurrenciesController extends Controller
     public function delete(Request $request)
     {
         //
-        if(Currency::destroy($request->input('id',''))){
-            return redirect()->route('currency.index')->withSuccess('Currency Successfully Deleted');
+        if(Assembly::destroy($request->input('id',''))){
+            return redirect()->route('assembly.index')->withSuccess('Assembly Details Successfully Deleted');
         }
     }
 }

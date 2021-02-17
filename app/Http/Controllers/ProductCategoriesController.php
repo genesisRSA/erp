@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\ProductCategory;
 use Validator;
 
@@ -62,7 +63,7 @@ class ProductCategoriesController extends Controller
         }else{
             $prodcat = new ProductCategory();
             $prodcat->prodcat_name = $request->input('prodcat_name','');
-            $prodcat->prodcat_code = $request->input('prodcat_code','');
+            $prodcat->prodcat_code = Str::upper($request->input('prodcat_code',''));
 
             if($prodcat->save()){
                 return redirect()->route('product_category.index')->withSuccess('Product Category Successfully Added');
@@ -124,7 +125,7 @@ class ProductCategoriesController extends Controller
         }else{
             $prodcat = ProductCategory::find($request->input('id',''));
             $prodcat->prodcat_name = $request->input('prodcat_name','');
-            $prodcat->prodcat_code = $request->input('prodcat_code','');
+            $prodcat->prodcat_code = Str::upper($request->input('prodcat_code',''));
 
             if($prodcat->save()){
                 return redirect()->route('product_category.index')->withSuccess('Product Category Successfully Updated');
