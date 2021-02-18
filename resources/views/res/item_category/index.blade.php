@@ -36,7 +36,7 @@
         <h4>Add Item Category</h4><br><br>
         <div class="row">
           <div class="input-field col s12 m6">
-            <input placeholder="	PBIX-80-LM" name="cat_code" type="text" class="validate" required>
+            <input placeholder="PBIX-80-LM" name="cat_code" type="text" class="validate" required>
             <label for="cat_code">Item Category Code<sup class="red-text">*</sup></label>
           </div>
           <div class="input-field col s12 m6">
