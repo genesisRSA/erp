@@ -32,6 +32,8 @@
           <a class="collapsible-header waves-effect waves-light" style="padding-left:32px;"><i class="material-icons">build</i>Products</a>
           <div class="collapsible-body">
             <ul>
+              <li @if($subpage=='productlist') class="active" @endif><a href="{{ route('product.index') }}">Product List</a></li>
+              
               <li @if($subpage=='productcategories') class="active" @endif><a href="{{ route('product_category.index') }}">Product Categories</a></li>
               <li @if($subpage=='assemblylist') class="active" @endif><a href="{{ route('assembly.index') }}">Assembly List</a></li>
               <li @if($subpage=='fabricationlist') class="active" @endif><a href="{{ route('fabrication.index') }}">Fabrication List</a></li>
