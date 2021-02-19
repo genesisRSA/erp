@@ -21,7 +21,7 @@ class ItemSubCategoryController extends Controller
         $itemcode = ItemCategory::all();
         return view('res.item_subcategory.index')
                 ->with('site','res')
-                ->with('page','itemsubcategory')
+                ->with('page','masterdata')
                 ->with('subpage','itemsubcat')
                 ->with('itemcode',$itemcode);
     }

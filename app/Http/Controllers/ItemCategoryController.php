@@ -19,7 +19,7 @@ class ItemCategoryController extends Controller
         //
         return view('res.item_category.index')
             ->with('site','res')
-            ->with('page','itemcategory')
+            ->with('page','masterdata')
             ->with('subpage','itemcategories');
     }
 

@@ -57,33 +57,38 @@
             </select>
             <label for="item_subcat_code">Sub-Category Code<sup class="red-text">*</sup></label>
           </div>
-        </div>
 
-        <div class="row">
           <div class="input-field col s12 m4">
             <input placeholder="" name="item_code" type="text" class="validate" required>
             <label for="item_code">Item Code<sup class="red-text">*</sup></label>
           </div>
-          <div class="input-field col s12 m8">
-            <input placeholder="" name="item_desc" type="text" class="validate" required>
+        </div>
+
+        <div class="row">
+          <div class="input-field col s12 m12">
+            <textarea placeholder="" name="item_desc" class="materialize-textarea" required></textarea>
             <label for="item_desc">Item Description<sup class="red-text">*</sup></label>
           </div>
         </div>
 
         <div class="row">
-          <div class="input-field col s12 m2">
+          <div class="col s12 m6 right-align">
+            <label>
+                <br>
+                <input style="" placeholder="e.g $" type="checkbox" onclick="distext('add_item_oem')"/>
+                <span style="font-size: 12px">Click to set N/A</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="input-field col s12 m6">
             <input placeholder="" name="item_oem" id="add_item_oem" type="text" class="validate">
             <label for="item_oem">OEM Part Number<sup class="red-text">(optional)</sup></label>
           </div>
-          <div class="col s12 m1">
-            <label>
-                <br>
-                <input placeholder="e.g $" class="filled-in" type="checkbox" onclick="distext('add_item_oem')"/>
-                <span>N/A</span>
-            </label>
-          </div>
 
-          <div class="input-field col s12 m3">
+
+          <div class="input-field col s12 m6">
             <select id="add_item_uom" name="item_uom" required>
               <option value="" disabled selected>Choose your option</option>
               @foreach ($uom as $i)
@@ -92,66 +97,71 @@
             </select>
             <label for="item_uom">Unit Of Measure Code<sup class="red-text">*</sup></label>
           </div>
+        </div>
 
-          <div class="input-field col s12 m3">
+        <div class="row">
+          <div class="input-field col s12 m6">
             <input placeholder="" name="item_safety" type="text" class="validate" required>
             <label for="item_safety">Safety Stock<sup class="red-text">*</sup></label>
           </div>
-          <div class="input-field col s12 m3">
+          <div class="input-field col s12 m6">
             <input placeholder="" name="item_max" type="text" class="validate" required>
             <label for="item_max">Maximum Stock<sup class="red-text">*</sup></label>
           </div>
         </div>
 
+
         <div class="row" style="display:none" id="adtlinfo">
-          <div class="input-field col s12 m2">
+          <div class="col s12 m6 right-align">
+            <label>
+                <br>
+                <input placeholder="e.g $"  type="checkbox" onclick="distext('add_item_length')"/>
+                  <span style="font-size: 12px">Click to set N/A</span>
+            </label>
+          </div>
+         
+          <div class="col s12 m6 right-align">
+            <label>
+                <br>
+                <input placeholder="e.g $"  type="checkbox" onclick="distext('add_item_width')"/>
+                  <span style="font-size: 12px">Click to set N/A</span>
+            </label>
+          </div>
+
+          <div class="input-field col s12 m6">
             <input placeholder="" name="item_length" id="add_item_length" type="text" class="validate">
-            <label for="item_length">Length<sup class="red-text">(optional)</sup></label>
-          </div>
-          <div class="col s12 m1">
-            <label>
-                <br>
-                <input placeholder="e.g $" class="filled-in" type="checkbox" onclick="distext('add_item_length')"/>
-                <span>N/A</span>
-            </label>
+            <label for="item_length">Length<sup class="red-text"></sup></label>
           </div>
 
-          <div class="input-field col s12 m2">
+          <div class="input-field col s12 m6">
             <input placeholder="" name="item_width" id="add_item_width" type="text" class="validate">
-            <label for="item_width">Width<sup class="red-text">(optional)</sup></label>
+            <label for="item_width">Width<sup class="red-text">*</sup></label>
           </div>
-          <div class="col s12 m1">
+ 
+          <div class="col s12 m6 right-align">
             <label>
                 <br>
-                <input placeholder="e.g $" class="filled-in" type="checkbox" onclick="distext('add_item_width')"/>
-                <span>N/A</span>
+                <input placeholder="e.g $"  type="checkbox" onclick="distext('add_item_thickness')"/>
+                  <span style="font-size: 12px">Click to set N/A</span>
+            </label>
+          </div>
+      
+          <div class="col s12 m6 right-align">
+            <label>
+                <br>
+                <input placeholder="e.g $"  type="checkbox" onclick="distext('add_item_radius')"/>
+                  <span style="font-size: 12px">Click to set N/A</span>
             </label>
           </div>
 
-          <div class="input-field col s12 m2">
+          <div class="input-field col s12 m6">
             <input placeholder="" name="item_thickness" id="add_item_thickness" type="text" class="validate">
-            <label for="item_thickness">Thickness<sup class="red-text">(optional)</sup></label>
+            <label for="item_thickness">Thickness<sup class="red-text">*</sup></label>
           </div>
-          <div class="col s12 m1">
-            <label>
-                <br>
-                <input placeholder="e.g $" class="filled-in" type="checkbox" onclick="distext('add_item_thickness')"/>
-                <span>N/A</span>
-            </label>
-          </div>
-
-          <div class="input-field col s12 m2">
+          <div class="input-field col s12 m6">
             <input placeholder="" name="item_radius" id="add_item_radius" type="text" class="validate">
-            <label for="item_radius">Radius<sup class="red-text">(optional)</sup></label>
+            <label for="item_radius">Radius<sup class="red-text">*</sup></label>
           </div>
-          <div class="col s12 m1">
-            <label>
-                <br>
-                <input placeholder="e.g $" class="filled-in" type="checkbox" onclick="distext('add_item_radius')"/>
-                <span>N/A</span>
-            </label>
-          </div>
-          
         </div>
         
 
@@ -190,34 +200,37 @@
             </select>
             <label for="item_subcat_code">Sub-Category Code<sup class="red-text">*</sup></label>
           </div>
-        </div>
-
-        <div class="row">
           <div class="input-field col s12 m4">
             <input placeholder="" id="edit_item_code" name="item_code" type="text" class="validate" required>
             <label for="item_code">Item Code<sup class="red-text">*</sup></label>
           </div>
-          <div class="input-field col s12 m8">
-            <input placeholder="" id="edit_item_desc" name="item_desc" type="text" class="validate" required>
+        </div>
+
+        <div class="row">
+          
+          <div class="input-field col s12 m12">
+            <textarea placeholder="" id="edit_item_desc" name="item_desc" class="materialize-textarea" required></textarea>
             <label for="item_desc">Item Description<sup class="red-text">*</sup></label>
           </div>
         </div>
 
         <div class="row">
-          <div class="input-field col s12 m2">
+          <div class="col s12 m6 right-align">
+            <label>
+                <br>
+                <input placeholder="e.g $" name="is_na_oem" type="checkbox" onclick="distext('edit_item_oem')"/>
+                <span style="font-size: 12px">Click to set N/A</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="input-field col s12 m6">
             <input placeholder="" id="edit_item_oem" name="item_oem" type="text" class="validate">
             <label for="item_oem">OEM Part Number<sup class="red-text">(optional)</sup></label>
           </div>
-          <div class="col s12 m1">
-            <label>
-                <br>
-                <input placeholder="e.g $" name="is_na_oem" class="filled-in" type="checkbox" onclick="distext('edit_item_oem')"/>
-                <span>N/A</span>
-            </label>
-          </div>
-
-
-          <div class="input-field col s12 m3">
+       
+          <div class="input-field col s12 m6">
             <select id="edit_item_uom" name="item_uom" required>
               <option value="" disabled selected>Choose your option</option>
               @foreach ($uom as $i)
@@ -227,11 +240,11 @@
             <label for="item_uom">Unit Of Measure Code<sup class="red-text">*</sup></label>
           </div>
 
-          <div class="input-field col s12 m3">
+          <div class="input-field col s12 m6">
             <input placeholder="" id="edit_item_safety" name="item_safety" type="text" class="validate" required>
             <label for="item_safety">Safety Stock<sup class="red-text">*</sup></label>
           </div>
-          <div class="input-field col s12 m3">
+          <div class="input-field col s12 m6">
             <input placeholder="" id="edit_item_max" name="item_max" type="text" class="validate" required>
             <label for="item_max">Maximum Stock<sup class="red-text">*</sup></label>
           </div>
@@ -239,59 +252,59 @@
 
         <div class="row" style="display:block" id="adtlinfoedit">
         {{-- <div class="row"> --}}
-          <div class="input-field col s12 m2">
+          <div class="col s12 m6 right-align">
+            <label>
+                <br>
+                <input placeholder="e.g $" name="is_na_len" type="checkbox" onclick="distext('edit_item_length')"/>
+                <span style="font-size: 12px">Click to set N/A</span>
+            </label>
+          </div>
+
+          <div class="col s12 m6 right-align">
+            <label>
+                <br>
+                <input placeholder="e.g $" name="is_na_wid" type="checkbox" onclick="distext('edit_item_width')"/>
+                <span style="font-size: 12px">Click to set N/A</span>
+            </label>
+          </div>
+
+          <div class="input-field col s12 m6">
             <input placeholder="" id="edit_item_length" name="item_length" type="text" class="validate">
-            <label for="item_length">Length<sup class="red-text">(optional)</sup></label>
+            <label for="item_length">Length<sup class="red-text">*</sup></label>
           </div>
-          <div class="col s12 m1">
-            <label>
-                <br>
-                <input placeholder="e.g $" name="is_na_len" class="filled-in" type="checkbox" onclick="distext('edit_item_length')"/>
-                <span>N/A</span>
-            </label>
-          </div>
-
-          <div class="input-field col s12 m2">
-            <input placeholder="" id="edit_item_width" name="item_width" type="text" class="validate">
-            <label for="item_width">Width<sup class="red-text">(optional)</sup></label>
-          </div>
-          <div class="col s12 m1">
-            <label>
-                <br>
-                <input placeholder="e.g $" name="is_na_wid" class="filled-in" type="checkbox" onclick="distext('edit_item_width')"/>
-                <span>N/A</span>
-            </label>
-          </div>
-
-
-          <div class="input-field col s12 m2">
-            <input placeholder="" id="edit_item_thickness" name="item_thickness" type="text" class="validate">
-            <label for="item_thickness">Thickness<sup class="red-text">(optional)</sup></label>
-          </div>
-          <div class="col s12 m1">
-            <label>
-                <br>
-                <input placeholder="e.g $" name="is_na_thic" class="filled-in" type="checkbox" onclick="distext('edit_item_thickness')"/>
-                <span>N/A</span>
-            </label>
-          </div>
-
-
-          <div class="input-field col s12 m2">
-            <input placeholder="" id="edit_item_radius" name="item_radius" type="text" class="validate">
-            <label for="item_radius">Radius<sup class="red-text">(optional)</sup></label>
-          </div>
-          <div class="col s12 m1">
-            <label>
-                <br>
-                <input placeholder="e.g $" name="is_na_rad" class="filled-in" type="checkbox" onclick="distext('edit_item_radius')"/>
-                <span>N/A</span>
-            </label>
-          </div>
-        </div>
         
+          <div class="input-field col s12 m6">
+            <input placeholder="" id="edit_item_width" name="item_width" type="text" class="validate">
+            <label for="item_width">Width<sup class="red-text">*</sup></label>
+          </div>
 
+          <div class="col s12 m6 right-align">
+            <label>
+                <br>
+                <input placeholder="e.g $" name="is_na_thic" type="checkbox" onclick="distext('edit_item_thickness')"/>
+                <span style="font-size: 12px">Click to set N/A</span>
+            </label>
+          </div>
 
+          <div class="col s12 m6 right-align">
+            <label>
+                <br>
+                <input placeholder="e.g $" name="is_na_rad" type="checkbox" onclick="distext('edit_item_radius')"/>
+                <span style="font-size: 12px">Click to set N/A</span>
+            </label>
+          </div>
+
+          <div class="input-field col s12 m6">
+            <input placeholder="" id="edit_item_thickness" name="item_thickness" type="text" class="validate">
+            <label for="item_thickness">Thickness<sup class="red-text">*</sup></label>
+          </div>
+
+          <div class="input-field col s12 m6">
+            <input placeholder="" id="edit_item_radius" name="item_radius" type="text" class="validate">
+            <label for="item_radius">Radius<sup class="red-text">*</sup></label>
+          </div>
+
+        </div>
       </div>
       <div class="modal-footer">
         <button class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Update</button>
@@ -388,27 +401,81 @@
  
             $('#edit_item_safety').val(data.safety_stock);
             $('#edit_item_max').val(data.maximum_stock);
-            $('#edit_item_length').val(data.length);
-            $('#edit_item_width').val(data.width);
-            $('#edit_item_thickness').val(data.thickness);
-            $('#edit_item_radius').val(data.radius);
+
+            if((data.length=='')){
+              $('#edit_item_length').val('N/A');
+            } else {
+              $('#edit_item_length').val(data.length);
+            }
+
+            if((data.width=='')){
+              $('#edit_item_width').val('N/A');
+            } else {
+              $('#edit_item_width').val(data.width);
+            }
+
+            if((data.thickness=='')){
+              $('#edit_item_thickness').val('N/A');
+            } else {
+              $('#edit_item_thickness').val(data.thickness);
+            }
+
+            if((data.radius=='')){
+              $('#edit_item_radius').val('N/A');
+            } else {
+              $('#edit_item_radius').val(data.radius);
+            }
+
             $('#editModal').modal('open');
         });
+    }
+
+    function distext(id){
+
+      if (document.getElementById(id).disabled == true ){
+        document.getElementById(id).disabled = false
+        if(id=='edit_item_oem' || id=='edit_item_length' || id=='edit_item_width' || id=='edit_item_thickness' || id=='edit_item_radius'){
+          var idx = $('#edit_id').val();
+          $.get('item_master/'+idx, function(response){
+          var data = response.data;
+            if(data!='') {
+              switch(id){
+                case 'edit_item_oem':
+                $('#'+id).val(data.oem_partno);
+                break;
+
+                case 'edit_item_length':
+                $('#'+id).val(data.length);
+                break;
+
+                case 'edit_item_width':
+                $('#'+id).val(data.width);
+                break;
+
+                case 'edit_item_thickness':
+                $('#'+id).val(data.thickness);
+                break;
+
+                case 'edit_item_radius':
+                $('#'+id).val(data.radius);
+                break;
+              };
+            } else {
+              $('#'+id).val('');
+            }
+          })
+        } 
+        $('#'+id).val('');
+      } else {
+        document.getElementById(id).disabled = true
+        $('#'+id).val('N/A');
+      }
+
     }
 
     function deleteItem(id){
         $('#del_id').val(id);
         $('#deleteModal').modal('open');
-    }
-
-    function distext(id){
-      if (document.getElementById(id).disabled == true ){
-        document.getElementById(id).disabled = false
-        $('#'+id).val('');
-      } else {
-        document.getElementById(id).disabled = false
-        $('#'+id).val('N/A');
-      }
     }
 
     var itemaster_dt = $('#itemmaster-dt').DataTable({

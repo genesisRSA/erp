@@ -23,7 +23,7 @@ class AssemblyController extends Controller
         $prodcode = Product::all();
         return view('res.assembly.index')
                 ->with('site','res')
-                ->with('page','assemblylist')
+                ->with('page','products')
                 ->with('subpage','assemblylist')
                 ->with('products',$prodcode)
                 ->with('assycode',$assemblycode);
