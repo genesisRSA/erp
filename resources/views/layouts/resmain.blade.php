@@ -1,6 +1,7 @@
 <!DOCTYPE html>
   <html>
     <head>
+      <script src="http://code.jquery.com/jquery-3.4.1.js"></script>
       <!--Import Google Icon Font-->
       <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
       <!--Import materialize.css-->
@@ -78,6 +79,16 @@
           position: fixed;
           bottom: 5%;
           right: 2%;
+        }
+
+        input[type=checkbox]{
+           /* Double-sized Checkboxes */
+          -ms-transform: scale(1); /* IE */
+          -moz-transform: scale(1); /* FF */
+          -webkit-transform: scale(1); /* Safari and Chrome */
+          -o-transform: scale(1); /* Opera */
+          transform: scale(1);
+          padding: 1px;
         }
 
         .dataTables_wrapper .dataTables_filter{

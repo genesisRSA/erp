@@ -63,7 +63,7 @@ class UOMController extends Controller
         }else{
             $uom = new UnitOfMeasure();
             $uom->uom_name = $request->input('uom_name','');
-            $uom->uom_code = Str::upper($request->input('uom_code',''));
+            $uom->uom_code = $request->input('uom_code','');
 
             if($uom->save()){
                 return redirect()->route('uom.index')->withSuccess('Unit Successfully Added');

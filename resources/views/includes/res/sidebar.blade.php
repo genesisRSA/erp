@@ -31,10 +31,9 @@
         <li @if($page=='products') class="active" @endif>
           <a class="collapsible-header waves-effect waves-light" style="padding-left:32px;"><i class="material-icons">build</i>Products</a>
           <div class="collapsible-body">
-            <ul>
-              <li @if($subpage=='productlist') class="active" @endif><a href="{{ route('product.index') }}">Product List</a></li>
-              
+            <ul>              
               <li @if($subpage=='productcategories') class="active" @endif><a href="{{ route('product_category.index') }}">Product Categories</a></li>
+              <li @if($subpage=='productlist') class="active" @endif><a href="{{ route('product.index') }}">Product List</a></li>
               <li @if($subpage=='assemblylist') class="active" @endif><a href="{{ route('assembly.index') }}">Assembly List</a></li>
               <li @if($subpage=='fabricationlist') class="active" @endif><a href="{{ route('fabrication.index') }}">Fabrication List</a></li>
             </ul>
@@ -120,12 +119,12 @@
     <li><a class="subheader">Administration</a></li>
     <li class="no-padding">
       <ul class="collapsible collapsible-accordion">
-        <li>
+        <li @if($page=='admin')class="active"@endif>
           <a class="collapsible-header waves-effect waves-light" style="padding-left:32px;"><i class="material-icons">admin_panel_settings</i>Admin Panel</a>
           <div class="collapsible-body">
             <ul>
-              <li><a href="#!">Site Permission</a></li>
-              <li><a href="#!">Approval Matrix</a></li>
+              <li @if($subpage=='permission') class="active" @endif><a href="#!">Site Permission</a></li>
+              <li @if($subpage=='approver') class="active" @endif><a href="{{ route('approver.index') }}">Approver Matrix</a></li>
             </ul>
           </div>
         </li>

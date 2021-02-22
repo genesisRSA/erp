@@ -35,7 +35,7 @@
     <form method="POST" action="{{route('assembly.store')}}">
     @csrf
       <div class="modal-content">
-        <h4>Add </h4><br><br>
+        <h4>Add Assembly Details</h4><br><br>
         <div class="row">
           <div class="input-field col s12 m3">
             <select id="add_prod_code" name="prod_code" required>
@@ -61,7 +61,7 @@
                 <option value="{{$i->assy_code}}">{{$i->assy_desc}}</option>
               @endforeach
             </select>
-            <label for="parent_assy_code">Parent Assembly<sup class="red-text">*</sup></label>
+            <label for="parent_assy_code">Parent Assembly<sup class="red-text"></sup></label>
           </div>
         </div>
       </div>
@@ -103,7 +103,7 @@
                 <option value="{{$i->assy_code}}">{{$i->assy_desc}}</option>
               @endforeach
             </select>
-            <label for="parent_assy_code">Parent Assembly Code<sup class="red-text">*</sup></label>
+            <label for="parent_assy_code">Parent Assembly Code<sup class="red-text"></sup></label>
           </div>
         </div>
       </div>
@@ -140,6 +140,8 @@
   <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
   <script type="text/javascript" src="{{ asset('datatables/datatables.js') }}"></script>
   <script type="text/javascript">
+
+
     function editItem(id){
         $.get('assembly/'+id, function(response){
             var data = response.data;
@@ -148,7 +150,13 @@
             $('#edit_prod_code').formSelect();
             $('#edit_assy_code').val(data.assy_code);
             $('#edit_assy_desc').val(data.assy_desc);
+
             $('#edit_parent_assy_code option[value="'+data.parent_assy_code+'"]').prop('selected', true);
+
+            // if(data.assy_code==data.parent_assy_code){
+            //    $('#edit_parent_assy_code').find('option').val(data.parent_assy_code).remove();
+            // } 
+      
             $('#edit_parent_assy_code').formSelect();
             $('#editModal').modal('open');
         });

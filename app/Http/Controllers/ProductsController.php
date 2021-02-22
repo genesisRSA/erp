@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\ProductCategory;
 use App\Product;
+use App\Site;
 use Validator;
 
 class ProductsController extends Controller
@@ -22,7 +23,8 @@ class ProductsController extends Controller
         ->with('site','res')
         ->with('page','products')
         ->with('subpage','productlist')
-        ->with('prodcat',ProductCategory::all());
+        ->with('prodcat',ProductCategory::all())
+        ->with('sitecode',Site::all());
     }
 
     public function all()
@@ -53,6 +55,7 @@ class ProductsController extends Controller
         //
         $field = [
             'prodcat_id' => 'required',
+            'site_code' => 'required',
             'prod_name' => 'required',
             'prod_code' => 'required',
             'prod_type' => 'required',
@@ -67,6 +70,7 @@ class ProductsController extends Controller
         }else{
             $product = new Product();
             $product->prodcat_id = $request->input('prodcat_id','');
+            $product->site_code = $request->input('site_code');
             $product->prod_name = $request->input('prod_name','');
             $product->prod_code = Str::upper($request->input('prod_code',''));
             $product->prod_type = $request->input('prod_type','');

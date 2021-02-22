@@ -56,19 +56,19 @@
         </div>
         <div class="row">
           <div class="input-field col s12 m3">
-            <input placeholder="" name="fab_length" type="text" class="validate" required>
+            <input placeholder="" name="fab_length" type="text" class="number validate" required>
             <label for="fab_length">Length<sup class="red-text">*</sup></label>
           </div>
           <div class="input-field col s12 m3">
-            <input placeholder="" name="fab_width" type="text" class="validate" required>
+            <input placeholder="" name="fab_width" type="text" class="number validate" required>
             <label for="fab_width">Width<sup class="red-text">*</sup></label>
           </div>
           <div class="input-field col s12 m3">
-            <input placeholder="" name="fab_thickness" type="text" class="validate" required>
+            <input placeholder="" name="fab_thickness" type="text" class="number validate" required>
             <label for="fab_thickness">Thickness<sup class="red-text">*</sup></label>
           </div>
           <div class="input-field col s12 m3">
-            <input placeholder="" name="fab_radius" type="text" class="validate" required>
+            <input placeholder="" name="fab_radius" type="text" class="number validate" required>
             <label for="fab_radius">Radius<sup class="red-text">*</sup></label>
           </div>
         </div>
@@ -107,19 +107,19 @@
         </div>
         <div class="row">
           <div class="input-field col s12 m3">
-            <input placeholder="" name="fab_length" id="edit_fab_length" type="text" class="validate">
+            <input placeholder="" name="fab_length" id="edit_fab_length" type="text" class="number validate">
             <label for="fab_length">Length<sup class="red-text">*</sup></label>
           </div>
           <div class="input-field col s12 m3">
-            <input placeholder="" name="fab_width" id="edit_fab_width" type="text" class="validate">
+            <input placeholder="" name="fab_width" id="edit_fab_width" type="text" class="number validate">
             <label for="fab_width">Width<sup class="red-text">*</sup></label>
           </div>
           <div class="input-field col s12 m3">
-            <input placeholder="" name="fab_thickness" id="edit_fab_thickness" type="text" class="validate">
+            <input placeholder="" name="fab_thickness" id="edit_fab_thickness" type="text" class="number validate">
             <label for="fab_thickness">Thickness<sup class="red-text">*</sup></label>
           </div>
           <div class="input-field col s12 m3">
-            <input placeholder="" name="fab_radius" id="edit_fab_radius" type="text" class="validate">
+            <input placeholder="" name="fab_radius" id="edit_fab_radius" type="text" class="number validate">
             <label for="fab_radius">Radius<sup class="red-text">*</sup></label>
           </div>
         </div>
@@ -177,6 +177,15 @@
         $('#del_id').val(id);
         $('#deleteModal').modal('open');
     }
+
+    $('.number').on('keypress', function(evt){
+      var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+        if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57))
+            return false;
+
+        return true;
+    })
+ 
 
     var category_dt = $('#fabrication-dt').DataTable({
         "lengthChange": false,

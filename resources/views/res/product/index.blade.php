@@ -35,7 +35,18 @@
     <form method="POST" action="{{route('product.store')}}">
     @csrf
       <div class="modal-content">
-        <h4>Add Product</h4><br><br>
+        <h4>Add Product Details</h4><br><br>
+        <div class="row">
+          <div class="input-field col s12 m4">
+             <select name="site_code" required>
+                  <option value="" disabled selected>Choose your option</option>
+              @foreach ($sitecode as $s)
+                  <option value="{{$s->site_code}}">{{$s->site_desc}}</option>
+              @endforeach
+             </select>
+            <label for="site_code">Site<sup class="red-text">*</sup></label>
+          </div>
+        </div>
         <div class="row">
             <div class="input-field col s12 m4">
                 <select name="prodcat_id" required>
@@ -83,6 +94,17 @@
     @csrf
       <div class="modal-content">
         <h4>Edit Product Category</h4><br><br>
+        <div class="row">
+          <div class="input-field col s12 m4">
+             <select name="site_code" id="edit_site_code" required>
+                  <option value="" disabled selected>Choose your option</option>
+              @foreach ($sitecode as $s)
+                  <option value="{{$s->site_code}}">{{$s->site_desc}}</option>
+              @endforeach
+             </select>
+            <label for="site_code">Site<sup class="red-text">*</sup></label>
+          </div>
+        </div>
         <div class="row">
             <div class="input-field col s12 m4">
                 <input type="hidden" name="id" id="edit_id">
@@ -156,6 +178,8 @@
         $.get('product/'+id, function(response){
             var data = response.data;
             $('#edit_id').val(data.id);
+            $('#edit_site_code option[value="'+data.site_code+'"]').prop('selected', true);
+            $('#edit_site_code').formSelect();
             $('#edit_prodcat_id option[value="'+data.prodcat_id+'"]').prop('selected', true);
             $('#edit_prodcat_id').formSelect();
             $('#edit_prod_name').val(data.prod_name);

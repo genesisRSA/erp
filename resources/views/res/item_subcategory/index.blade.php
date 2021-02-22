@@ -46,7 +46,7 @@
             <label>Item Category<sup class="red-text">*</sup></label>
           </div>
           <div class="input-field col s12 m4">
-            <input placeholder="	PBIX-80-LM" name="subcat_code" type="text" class="validate" required>
+            <input placeholder="PBIX-80-LM" name="subcat_code" type="text" class="validate" required>
             <label for="subcat_code">Item Sub-Category Code<sup class="red-text">*</sup></label>
           </div>
           <div class="input-field col s12 m4">

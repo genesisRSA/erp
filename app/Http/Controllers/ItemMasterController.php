@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use App\ItemMaster;
 use App\ItemCategory;
 use App\ItemSubCategory;
 use App\UnitOfMeasure;
 use Validator;
+ 
 
 class ItemMasterController extends Controller
 {
@@ -31,6 +33,7 @@ class ItemMasterController extends Controller
                 ->with('itemmaster',$itemmaster)
                 ->with('itemcat',$itemcat)
                 ->with('itemsubcat',$itemsubcat)
+
                 ->with('uom',$uom);
     }
 
@@ -67,6 +70,7 @@ class ItemMasterController extends Controller
             'item_cat_code' => 'required',
             'item_subcat_code' => 'required',
             'item_code' => 'required|unique:item_masters',
+            'oem_partno' => 'unique:item_masters',
         ];
 
         $validator = Validator::make($request->all(), $field);
@@ -112,6 +116,13 @@ class ItemMasterController extends Controller
             ]);
     }
 
+    public function getSubCategory($id)
+    {
+        $data = ItemSubCategory::where('cat_code',$id)->get();
+        \Log::info($data);
+        return response()->json(['data' => $data]);
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -141,6 +152,7 @@ class ItemMasterController extends Controller
             'item_cat_code' => 'required',
             'item_subcat_code' => 'required',
             'item_code' => 'required',
+ 
         ];
 
         $validator = Validator::make($request->all(), $field);

@@ -166,6 +166,11 @@ Route::post('/rgc_entsys/fabrication/delete', 'FabricationController@delete')->n
 Route::resource('/rgc_entsys/item_master','ItemMasterController');
 Route::post('/rgc_entsys/item_master/patch', 'ItemMasterController@patch')->name('item_master.patch');
 Route::post('/rgc_entsys/item_master/delete', 'ItemMasterController@delete')->name('item_master.delete');
+Route::get('/rgc_entsys/item_master/getSubCategory/{id}', 'ItemMasterController@getSubCategory');
+
+Route::resource('/rgc_entsys/approver','ApproverMatrixController');
+// Route::post('/rgc_entsys/approver/patch','ApproverMatrixController@patch');
+
 // end -> jp task
 
 Route::resource('/rgc_entsys/product_category', 'ProductCategoriesController');

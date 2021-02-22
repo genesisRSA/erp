@@ -46,16 +46,16 @@
                 <option value="{{$ic->cat_code}}">{{$ic->cat_desc}}</option>
               @endforeach
             </select>
-            <label for="item_cat_code">Category Code<sup class="red-text">*</sup></label>
+            <label for="item_cat_code">Category<sup class="red-text">*</sup></label>
           </div>
           <div class="input-field col s12 m4">
             <select id="add_item_subcat_code" name="item_subcat_code" required>
-              <option value="" disabled selected>Choose your option</option>
-              @foreach ($itemsubcat as $isc)
+              {{-- <option value="" disabled selected>Choose your option</option> --}}
+              {{-- @foreach ($itemsubcat as $isc)
                 <option value="{{$isc->subcat_code}}">{{$isc->subcat_desc}}</option>
-              @endforeach
+              @endforeach --}}
             </select>
-            <label for="item_subcat_code">Sub-Category Code<sup class="red-text">*</sup></label>
+            <label for="item_subcat_code">Sub-Category<sup class="red-text">*</sup></label>
           </div>
 
           <div class="input-field col s12 m4">
@@ -72,21 +72,18 @@
         </div>
 
         <div class="row">
-          <div class="col s12 m6 right-align">
-            <label>
-                <br>
-                <input style="" placeholder="e.g $" type="checkbox" onclick="distext('add_item_oem')"/>
-                <span style="font-size: 12px">Click to set N/A</span>
-            </label>
-          </div>
-        </div>
-
-        <div class="row">
           <div class="input-field col s12 m6">
-            <input placeholder="" name="item_oem" id="add_item_oem" type="text" class="validate">
-            <label for="item_oem">OEM Part Number<sup class="red-text">(optional)</sup></label>
+            <input placeholder="" name="oem_partno" id="add_item_oem" type="text" class="validate">
+            <label for="oem_partno">OEM Part Number<sup class="red-text">(optional)</sup></label>
+            {{-- checkbox --}}
+            <div class="col s12 m6 left-align">
+              <label>
+                  <input style="" placeholder="e.g $" type="checkbox" onclick="distext('add_item_oem')"/>
+                  <span style="font-size: 12px">Click to set N/A</span>
+              </label>
+            </div>
+            {{-- end checkbox --}}
           </div>
-
 
           <div class="input-field col s12 m6">
             <select id="add_item_uom" name="item_uom" required>
@@ -95,72 +92,64 @@
                 <option value="{{$i->uom_code}}">{{$i->uom_name}}</option>
               @endforeach
             </select>
-            <label for="item_uom">Unit Of Measure Code<sup class="red-text">*</sup></label>
+            <label for="item_uom">Unit Of Measure<sup class="red-text">*</sup></label>
           </div>
         </div>
 
         <div class="row">
           <div class="input-field col s12 m6">
-            <input placeholder="" name="item_safety" type="text" class="validate" required>
+            <input placeholder="" name="item_safety" type="text" class="number validate" required>
             <label for="item_safety">Safety Stock<sup class="red-text">*</sup></label>
           </div>
           <div class="input-field col s12 m6">
-            <input placeholder="" name="item_max" type="text" class="validate" required>
+            <input placeholder="" name="item_max" type="text" class="number validate" required>
             <label for="item_max">Maximum Stock<sup class="red-text">*</sup></label>
           </div>
         </div>
 
-
         <div class="row" style="display:none" id="adtlinfo">
-          <div class="col s12 m6 right-align">
-            <label>
-                <br>
-                <input placeholder="e.g $"  type="checkbox" onclick="distext('add_item_length')"/>
-                  <span style="font-size: 12px">Click to set N/A</span>
-            </label>
-          </div>
-         
-          <div class="col s12 m6 right-align">
-            <label>
-                <br>
-                <input placeholder="e.g $"  type="checkbox" onclick="distext('add_item_width')"/>
-                  <span style="font-size: 12px">Click to set N/A</span>
-            </label>
-          </div>
-
           <div class="input-field col s12 m6">
-            <input placeholder="" name="item_length" id="add_item_length" type="text" class="validate">
+            <input placeholder="" name="item_length" id="add_item_length" type="text" class="number validate">
             <label for="item_length">Length<sup class="red-text"></sup></label>
+            <div class="col s12 m6 left-align">
+              <label>
+                  <input placeholder="e.g $"  type="checkbox" onclick="distext('add_item_length')"/>
+                    <span style="font-size: 12px">Click to set N/A</span>
+              </label>
+            </div>
           </div>
 
           <div class="input-field col s12 m6">
-            <input placeholder="" name="item_width" id="add_item_width" type="text" class="validate">
-            <label for="item_width">Width<sup class="red-text">*</sup></label>
+            <input placeholder="" name="item_width" id="add_item_width" type="text" class="number validate">
+            <label for="item_width">Width<sup class="red-text"></sup></label>
+            <div class="col s12 m6 left-align">
+              <label>
+                  <input placeholder="e.g $"  type="checkbox" onclick="distext('add_item_width')"/>
+                    <span style="font-size: 12px">Click to set N/A</span>
+              </label>
+            </div>
           </div>
  
-          <div class="col s12 m6 right-align">
-            <label>
-                <br>
-                <input placeholder="e.g $"  type="checkbox" onclick="distext('add_item_thickness')"/>
-                  <span style="font-size: 12px">Click to set N/A</span>
-            </label>
-          </div>
-      
-          <div class="col s12 m6 right-align">
-            <label>
-                <br>
-                <input placeholder="e.g $"  type="checkbox" onclick="distext('add_item_radius')"/>
-                  <span style="font-size: 12px">Click to set N/A</span>
-            </label>
+          <div class="input-field col s12 m6">
+            <input placeholder="" name="item_thickness" id="add_item_thickness" type="text" class="number validate">
+            <label for="item_thickness">Thickness<sup class="red-text"></sup></label>
+            <div class="col s12 m6 left-align">
+              <label>
+                  <input placeholder="e.g $"  type="checkbox" onclick="distext('add_item_thickness')"/>
+                    <span style="font-size: 12px">Click to set N/A</span>
+              </label>
+            </div>
           </div>
 
           <div class="input-field col s12 m6">
-            <input placeholder="" name="item_thickness" id="add_item_thickness" type="text" class="validate">
-            <label for="item_thickness">Thickness<sup class="red-text">*</sup></label>
-          </div>
-          <div class="input-field col s12 m6">
-            <input placeholder="" name="item_radius" id="add_item_radius" type="text" class="validate">
+            <input placeholder="" name="item_radius" id="add_item_radius" type="text" class="number validate">
             <label for="item_radius">Radius<sup class="red-text">*</sup></label>
+            <div class="col s12 m6 left-align">
+              <label>
+                  <input placeholder="e.g $"  type="checkbox" onclick="distext('add_item_radius')"/>
+                    <span style="font-size: 12px">Click to set N/A</span>
+              </label>
+            </div>
           </div>
         </div>
         
@@ -189,16 +178,16 @@
                 <option value="{{$ic->cat_code}}">{{$ic->cat_desc}}</option>
               @endforeach
             </select>
-            <label for="item_cat_code">Category Code<sup class="red-text">*</sup></label>
+            <label for="item_cat_code">Category<sup class="red-text">*</sup></label>
           </div>
           <div class="input-field col s12 m4">
             <select id="edit_item_subcat_code" name="item_subcat_code" required>
-              <option value="" disabled selected>Choose your option</option>
+              {{-- <option value="" disabled selected>Choose your option</option>
               @foreach ($itemsubcat as $isc)
                 <option value="{{$isc->subcat_code}}">{{$isc->subcat_desc}}</option>
-              @endforeach
+              @endforeach --}}
             </select>
-            <label for="item_subcat_code">Sub-Category Code<sup class="red-text">*</sup></label>
+            <label for="item_subcat_code">Sub-Category<sup class="red-text">*</sup></label>
           </div>
           <div class="input-field col s12 m4">
             <input placeholder="" id="edit_item_code" name="item_code" type="text" class="validate" required>
@@ -209,25 +198,21 @@
         <div class="row">
           
           <div class="input-field col s12 m12">
-            <textarea placeholder="" id="edit_item_desc" name="item_desc" class="materialize-textarea" required></textarea>
+            <textarea id="edit_item_desc" name="item_desc" class="materialize-textarea" required></textarea>
             <label for="item_desc">Item Description<sup class="red-text">*</sup></label>
           </div>
         </div>
 
         <div class="row">
-          <div class="col s12 m6 right-align">
-            <label>
-                <br>
-                <input placeholder="e.g $" name="is_na_oem" type="checkbox" onclick="distext('edit_item_oem')"/>
-                <span style="font-size: 12px">Click to set N/A</span>
-            </label>
-          </div>
-        </div>
-
-        <div class="row">
           <div class="input-field col s12 m6">
-            <input placeholder="" id="edit_item_oem" name="item_oem" type="text" class="validate">
-            <label for="item_oem">OEM Part Number<sup class="red-text">(optional)</sup></label>
+            <input placeholder="" id="edit_item_oem" name="oem_partno" type="text" class="validate">
+            <label for="oem_partno">OEM Part Number<sup class="red-text">(optional)</sup></label>
+            <div class="col s12 m6 left-align">
+              <label>
+                  <input placeholder="e.g $" name="is_na_oem" type="checkbox" onclick="distext('edit_item_oem')"/>
+                  <span style="font-size: 12px">Click to set N/A</span>
+              </label>
+            </div>
           </div>
        
           <div class="input-field col s12 m6">
@@ -237,71 +222,65 @@
                 <option value="{{$i->uom_code}}">{{$i->uom_name}}</option>
               @endforeach
             </select>
-            <label for="item_uom">Unit Of Measure Code<sup class="red-text">*</sup></label>
+            <label for="item_uom">Unit Of Measure<sup class="red-text">*</sup></label>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="input-field col s12 m6">
+            <input placeholder="" id="edit_item_safety" name="item_safety" type="text" class="number validate" required>
+            <label for="item_safety">Safety Stock<sup class="red-text">*</sup></label>
           </div>
 
           <div class="input-field col s12 m6">
-            <input placeholder="" id="edit_item_safety" name="item_safety" type="text" class="validate" required>
-            <label for="item_safety">Safety Stock<sup class="red-text">*</sup></label>
-          </div>
-          <div class="input-field col s12 m6">
-            <input placeholder="" id="edit_item_max" name="item_max" type="text" class="validate" required>
+            <input placeholder="" id="edit_item_max" name="item_max" type="text" class="number validate" required>
             <label for="item_max">Maximum Stock<sup class="red-text">*</sup></label>
           </div>
         </div>
 
         <div class="row" style="display:block" id="adtlinfoedit">
-        {{-- <div class="row"> --}}
-          <div class="col s12 m6 right-align">
-            <label>
-                <br>
-                <input placeholder="e.g $" name="is_na_len" type="checkbox" onclick="distext('edit_item_length')"/>
-                <span style="font-size: 12px">Click to set N/A</span>
-            </label>
-          </div>
-
-          <div class="col s12 m6 right-align">
-            <label>
-                <br>
-                <input placeholder="e.g $" name="is_na_wid" type="checkbox" onclick="distext('edit_item_width')"/>
-                <span style="font-size: 12px">Click to set N/A</span>
-            </label>
-          </div>
-
           <div class="input-field col s12 m6">
-            <input placeholder="" id="edit_item_length" name="item_length" type="text" class="validate">
+            <input placeholder="" id="edit_item_length" name="item_length" type="text" class="number validate">
             <label for="item_length">Length<sup class="red-text">*</sup></label>
+            <div class="col s12 m6 left-align">
+              <label>
+                  <input placeholder="e.g $" name="is_na_len" type="checkbox" onclick="distext('edit_item_length')"/>
+                  <span style="font-size: 12px">Click to set N/A</span>
+              </label>
+            </div>
           </div>
         
           <div class="input-field col s12 m6">
-            <input placeholder="" id="edit_item_width" name="item_width" type="text" class="validate">
+            <input placeholder="" id="edit_item_width" name="item_width" type="text" class="number validate">
             <label for="item_width">Width<sup class="red-text">*</sup></label>
-          </div>
-
-          <div class="col s12 m6 right-align">
-            <label>
-                <br>
-                <input placeholder="e.g $" name="is_na_thic" type="checkbox" onclick="distext('edit_item_thickness')"/>
-                <span style="font-size: 12px">Click to set N/A</span>
-            </label>
-          </div>
-
-          <div class="col s12 m6 right-align">
-            <label>
-                <br>
-                <input placeholder="e.g $" name="is_na_rad" type="checkbox" onclick="distext('edit_item_radius')"/>
-                <span style="font-size: 12px">Click to set N/A</span>
-            </label>
+            <div class="col s12 m6 left-align">
+              <label>
+                  <input placeholder="e.g $" name="is_na_wid" type="checkbox" onclick="distext('edit_item_width')"/>
+                  <span style="font-size: 12px">Click to set N/A</span>
+              </label>
+            </div>
           </div>
 
           <div class="input-field col s12 m6">
-            <input placeholder="" id="edit_item_thickness" name="item_thickness" type="text" class="validate">
+            <input placeholder="" id="edit_item_thickness" name="item_thickness" type="text" class="number validate">
             <label for="item_thickness">Thickness<sup class="red-text">*</sup></label>
+            <div class="col s12 m6 left-align">
+              <label>
+                  <input placeholder="e.g $" name="is_na_thic" type="checkbox" onclick="distext('edit_item_thickness')"/>
+                  <span style="font-size: 12px">Click to set N/A</span>
+              </label>
+            </div>
           </div>
 
           <div class="input-field col s12 m6">
-            <input placeholder="" id="edit_item_radius" name="item_radius" type="text" class="validate">
+            <input placeholder="" id="edit_item_radius" name="item_radius" type="text" class="number validate">
             <label for="item_radius">Radius<sup class="red-text">*</sup></label>
+            <div class="col s12 m6 left-align">
+              <label>
+                  <input placeholder="e.g $" name="is_na_rad" type="checkbox" onclick="distext('edit_item_radius')"/>
+                  <span style="font-size: 12px">Click to set N/A</span>
+              </label>
+            </div>
           </div>
 
         </div>
@@ -333,13 +312,90 @@
     </form>
   </div>
 
+
   <!-- End of MODALS -->
 
   <!-- SCRIPTS -->
   
   <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
+   {{-- <script type="text/javascript" src="{{ asset('js/jquery.min.js') }}"></script> --}}
+  <script type="text/javascript" src="http://code.jquery.com/jquery-3.4.1.js"></script>
+ 
   <script type="text/javascript" src="{{ asset('datatables/datatables.js') }}"></script>
+
   <script type="text/javascript">
+  
+    $('.number').on('keypress', function(evt){
+      var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+        if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57))
+            return false;
+
+        return true;
+    })
+
+    $(document).ready(function () {
+ 
+        $('#add_item_cat_code').change(function () {
+             var id = $(this).val();
+
+          $('#add_item_subcat_code').find('option').remove();
+
+            $.ajax({
+              url:'/rgc_entsys/item_master/getSubCategory/'+id,
+              type:'get',
+              dataType:'json',
+              success:function (response) {
+                  var dropdown = $("#add_item_subcat_code");
+                  var len = 0;
+                  if (response.data != null) {
+                      len = response.data.length;
+                  }
+
+                  if (len>0) {
+                      for (var i = 0; i<len; i++) {
+                            var id = response.data[i].subcat_code;
+                            var name = response.data[i].subcat_desc;
+
+                            var option = "<option value='"+id+"'>"+name+"</option>"; 
+                            dropdown.append(option);
+                      }
+                  }
+                  dropdown.formSelect();
+              }
+            });
+        });
+
+        $('#edit_item_cat_code').change(function () {
+             var id = $(this).val();
+
+          $('#edit_item_subcat_code').find('option').remove();
+
+            $.ajax({
+              url:'/rgc_entsys/item_master/getSubCategory/'+id,
+              type:'get',
+              dataType:'json',
+              success:function (response) {
+                  var dropdown = $("#edit_item_subcat_code");
+                  var len = 0;
+                  if (response.data != null) {
+                      len = response.data.length;
+                  }
+
+                  if (len>0) {
+                      for (var i = 0; i<len; i++) {
+                            var id = response.data[i].subcat_code;
+                            var name = response.data[i].subcat_desc;
+
+                            var option = "<option value='"+id+"'>"+name+"</option>"; 
+                            dropdown.append(option);
+                      }
+                  }
+                  dropdown.formSelect();
+              }
+            });
+        });
+    });
+
 
     $("select[name='item_cat_code']").on('change', function()
     {
@@ -356,7 +412,7 @@
     })
 
     
-    $("select[name='item_cat_code']").on('change', function()
+    $('#edit_item_cat_code').on('change', function()
     {
         var catx = $(this).val();
         var x = document.getElementById("adtlinfoedit");
@@ -427,6 +483,10 @@
             }
 
             $('#editModal').modal('open');
+            M.updateTextFields();
+            $('.materialize-textarea').each(function (index) {
+                M.textareaAutoResize(this);
+            });
         });
     }
 
