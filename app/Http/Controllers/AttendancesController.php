@@ -46,8 +46,17 @@ class AttendancesController extends Controller
             ]);
     }
 
-    public function calc_attendance($date_from,$date_to){
-        $calc_att = DB::connection('mysql')->select("CALL calc_att('".$date_from."','".$date_to."')");
+    public function calc_attendance($site_code,$date_from,$date_to){
+        $calc_att = DB::connection('mysql')->select("CALL calc_att_new('".$site_code."','".$date_from."','".$date_to."')");
+
+        return response()  
+            ->json([
+                "data" => $calc_att
+            ]);
+    }
+
+    public function raw_attendance($site_code,$date_from,$date_to){
+        $calc_att = DB::connection('mysql')->select("CALL raw_att('".$site_code."','".$date_from."','".$date_to."')");
 
         return response()  
             ->json([
@@ -72,7 +81,7 @@ class AttendancesController extends Controller
     }
     
     public function my_attendance($emp_id){
-        $my_attendance = DB::connection('mysql')->select("SELECT date_log, TIME_FORMAT(time_in,'%H:%i') as time_in, TIME_FORMAT(time_out,'%H:%i') as time_out,TIMEDIFF(time_out,time_in) as hours_work,TIMEDIFF(TIME_FORMAT(time_in,'%H:%i'),(SELECT time_in FROM employee_shifts WHERE emp_no = '$emp_id' and shift_date = date_log)) as late FROM rgc_webportal.attendance WHERE emp_code = '$emp_id' and date_log IN (SELECT shift_date FROM employee_shifts WHERE emp_no = '$emp_id') ORDER BY date_log DESC");
+        $my_attendance = DB::connection('mysql')->select("CALL my_raw_att('".$emp_id."')");
         
         return response()
         ->json([
