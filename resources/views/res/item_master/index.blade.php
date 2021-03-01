@@ -182,10 +182,10 @@
           </div>
           <div class="input-field col s12 m4">
             <select id="edit_item_subcat_code" name="item_subcat_code" required>
-              {{-- <option value="" disabled selected>Choose your option</option>
+              <option value="" disabled selected>Choose your option</option>
               @foreach ($itemsubcat as $isc)
                 <option value="{{$isc->subcat_code}}">{{$isc->subcat_desc}}</option>
-              @endforeach --}}
+              @endforeach
             </select>
             <label for="item_subcat_code">Sub-Category<sup class="red-text">*</sup></label>
           </div>

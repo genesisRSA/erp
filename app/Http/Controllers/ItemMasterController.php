@@ -152,7 +152,6 @@ class ItemMasterController extends Controller
             'item_cat_code' => 'required',
             'item_subcat_code' => 'required',
             'item_code' => 'required',
- 
         ];
 
         $validator = Validator::make($request->all(), $field);

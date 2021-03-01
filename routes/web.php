@@ -169,7 +169,14 @@ Route::post('/rgc_entsys/item_master/delete', 'ItemMasterController@delete')->na
 Route::get('/rgc_entsys/item_master/getSubCategory/{id}', 'ItemMasterController@getSubCategory');
 
 Route::resource('/rgc_entsys/approver','ApproverMatrixController');
-// Route::post('/rgc_entsys/approver/patch','ApproverMatrixController@patch');
+Route::post('/rgc_entsys/approver/delete','ApproverMatrixController@delete')->name('approver.delete');
+Route::post('/rgc_entsys/approver/patch','ApproverMatrixController@patch')->name('approver.patch');
+
+Route::resource('/rgc_entsys/forecast','SalesForecastController');
+Route::post('/rgc_entsys/forecast/delete', 'SalesForecastController@delete')->name('forecast.delete');
+Route::post('/rgc_entsys/forecast/patch', 'SalesForecastController@patch')->name('forecast.patch');
+Route::get('/rgc_entsys/forecast/getApprover/{id}/{modules}', 'SalesForecastController@getApprover');
+
 
 // end -> jp task
 

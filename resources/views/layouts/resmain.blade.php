@@ -81,6 +81,25 @@
           right: 2%;
         }
 
+        .tabs .tab a {
+          color: black;
+        }
+        .tabs .tab a.active {
+          color: black;
+        }
+        .tabs .tab a:hover {
+          color: black;
+        }
+        .tabs .tab a:focus {
+          background-color: rgba(66, 74, 66, 0);
+        }
+        .tabs .tab a:focus.active {
+          background-color: rgba(66, 74, 66, 0);
+        }
+        .tabs .indicator {
+          background-color: blue;
+        }
+
         input[type=checkbox]{
            /* Double-sized Checkboxes */
           -ms-transform: scale(1); /* IE */

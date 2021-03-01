@@ -43,12 +43,14 @@
     </li>
     <li class="no-padding">
       <ul class="collapsible collapsible-accordion">
-        <li>
+        <li @if($page=='sales') class="active" @endif>
           <a class="collapsible-header waves-effect waves-light" style="padding-left:32px;"><i class="material-icons">request_page</i>Sales</a>
           <div class="collapsible-body">
             <ul>
-              <li><a href="#!">Sales Quotation</a></li>
-              <li><a href="#!">Sales Order</a></li>
+              <li @if($subpage=='visit') class="active" @endif><a href="#">Sales Visit</a></li>
+              <li @if($subpage=='forecast') class="active" @endif><a href="{{ route('forecast.index') }}">Sales Forecast</a></li>
+              <li @if($subpage=='quotation') class="active" @endif><a href="#!">Sales Quotation</a></li>
+              <li @if($subpage=='order') class="active" @endif><a href="#!">Sales Order</a></li>
             </ul>
           </div>
         </li>

@@ -77,6 +77,8 @@ Route::get('/rgc_entsys/assembly/all','AssemblyController@all');
 Route::get('/rgc_entsys/fabrication/all','FabricationController@all');
 Route::get('/rgc_entsys/item_master/all','ItemMasterController@all');
 Route::get('/rgc_entsys/approver/all','ApproverMatrixController@all');
+Route::get('/rgc_entsys/forecast/all','SalesForecastController@all');
+Route::get('/rgc_entsys/forecast/all_approval','SalesForecastController@all_approval');
 
 Route::get('/rgc_entsys/product_category/all', 'ProductCategoriesController@all');
 Route::get('/rgc_entsys/product/all', 'ProductsController@all');
