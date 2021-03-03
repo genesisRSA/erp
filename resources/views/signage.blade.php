@@ -21,7 +21,7 @@
                     @else
                         <div class="carousel-item">
                             <video src="/{{$sign->source_url}}" muted autoplay></video>
-                            <iframe src="/{{$sign->source_url}}" autoplay style="display:none"></iframe>
+                            <iframe src="/{{$sign->source_url}}" style="display:none"></iframe>
                         </div>
                     @endif
                 @endforeach
@@ -54,7 +54,6 @@
                         vids[0].pause();
                         vids[0].currentTime = 0;
                         vids[0].play();
-                        $('.carousel-item.active iframe').contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo' }), '*');
                     }else{
                     }
                 });
@@ -70,15 +69,16 @@
                 }
 
 
-                $('.carousel-item.active video').on('play', function (e) {
+                $('video').on('play', function (e) {
                     $("#carousel").carousel('pause');
+                    $('iframe').contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo' }), '*');
                 });
 
                 $('video').on('ended', function (e) {
                     if(currentIndex == totalItems){
                         location.reload();
                     }else{
-                        $('.carousel-item.active iframe').contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'stopVideo' }), '*');
+                        $('iframe').contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'stopVideo' }), '*');
                         $("#carousel").carousel('cycle');
                     }
                 });
@@ -97,7 +97,6 @@
                         vids[0].pause();
                         vids[0].currentTime = 0;
                         vids[0].play();
-                        $('.carousel-item.active iframe').contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo' }), '*');
                     }else{
                         if(currentIndex == totalItems){
                             location.reload();
