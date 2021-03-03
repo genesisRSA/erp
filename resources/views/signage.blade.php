@@ -50,10 +50,9 @@
                     currentIndex = $('div.active').index() + 1;
                     var vids = $(this).find("video");
                     if(vids.length > 0){
-                        // vids[0].pause();
-                        // vids[0].currentTime = 0;
-                        // vids[0].play();
-                        vids[0].muted = false;
+                        vids[0].pause();
+                        vids[0].currentTime = 0;
+                        vids[0].play();
                     }else{
                     }
                 });
@@ -71,7 +70,9 @@
 
                 $('video').on('play', function (e) {
                     $("#carousel").carousel('pause');
+                    e.muted = false;
                 });
+
                 $('video').on('ended', function (e) {
                     if(currentIndex == totalItems){
                         location.reload();
@@ -91,11 +92,9 @@
                 $("#carousel").on('slid.bs.carousel', function () {
                     var vids = $(this).find(".active video");
                     if(vids.length > 0){
-                        // vids[0].pause();
-                        // vids[0].currentTime = 0;
-                        // vids[0].play();
-                        
-                        vids[0].muted = false;
+                        vids[0].pause();
+                        vids[0].currentTime = 0;
+                        vids[0].play();
                     }else{
                         if(currentIndex == totalItems){
                             location.reload();
