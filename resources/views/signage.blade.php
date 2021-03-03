@@ -21,6 +21,7 @@
                     @else
                         <div class="carousel-item">
                             <video src="/{{$sign->source_url}}" muted autoplay></video>
+                            <iframe src="/{{$sign->source_url}}" allow="autoplay" style="display:none"></iframe>
                         </div>
                     @endif
                 @endforeach
@@ -75,6 +76,7 @@
                     if(currentIndex == totalItems){
                         location.reload();
                     }else{
+                        $('iframe').src = $('iframe').src
                         $("#carousel").carousel('cycle');
                     }
                 });
