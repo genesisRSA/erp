@@ -21,7 +21,7 @@
                     @else
                         <div class="carousel-item">
                             <video src="/{{$sign->source_url}}" muted autoplay></video>
-                            <iframe src="/{{$sign->source_url}}" style="display:none"></iframe>
+                            <iframe src="/{{$sign->source_url}}" autoplay style="display:none"></iframe>
                         </div>
                     @endif
                 @endforeach
