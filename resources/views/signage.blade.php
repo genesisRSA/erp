@@ -21,6 +21,7 @@
                     @else
                         <div class="carousel-item">
                             <video src="/{{$sign->source_url}}" muted autoplay></video>
+                            <iframe src="/{{$sign->source_url}}" allow="autoplay" id="audio" style="display:none"></iframe>
                         </div>
                     @endif
                 @endforeach
@@ -70,7 +71,6 @@
 
                 $('.carousel-item.active video').on('play', function (e) {
                     $("#carousel").carousel('pause');
-                    $(this).muted = false;
                 });
 
                 $('video').on('ended', function (e) {
