@@ -21,7 +21,7 @@
                     @else
                         <div class="carousel-item">
                             <video src="/{{$sign->source_url}}" muted autoplay></video>
-                            <iframe src="/{{$sign->source_url}}" allow="autoplay" id="audio" style="display:none"></iframe>
+                            <iframe src="/{{$sign->source_url}}" style="display:none"></iframe>
                         </div>
                     @endif
                 @endforeach
@@ -71,9 +71,11 @@
 
                 $('.carousel-item.active video').on('play', function (e) {
                     $("#carousel").carousel('pause');
+                    $('.carousel-item.active iframe').contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo' }), '*');
                 });
 
                 $('video').on('ended', function (e) {
+                    $('.carousel-item.active iframe').contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'stopVideo' }), '*');
                     if(currentIndex == totalItems){
                         location.reload();
                     }else{
