@@ -70,7 +70,8 @@
 
                 $('video').on('play', function (e) {
                     $("#carousel").carousel('pause');
-                    e.muted = false;
+                    alert("played");
+                    $(this).muted = false;
                 });
 
                 $('video').on('ended', function (e) {
