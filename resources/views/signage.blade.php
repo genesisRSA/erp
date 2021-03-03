@@ -33,7 +33,6 @@
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="sr-only">Next</span>
             </a>-->
-            <button type="button" id="unMute" style="position:absolute;bottom:200px;"></button>
         </div>
 
         <!-- Optional JavaScript -->
@@ -70,7 +69,6 @@
 
                 $('video').on('play', function (e) {
                     $("#carousel").carousel('pause');
-                    $('video').prop("muted", false);
                 });
 
                 $('video').on('ended', function (e) {
