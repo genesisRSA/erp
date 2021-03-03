@@ -69,7 +69,6 @@
                 }
 
                 $('video').on('play', function (e) {
-                        $('iframe').src += "?autoplay=1";
                     $("#carousel").carousel('pause');
                 });
 
