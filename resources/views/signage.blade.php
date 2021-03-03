@@ -68,9 +68,8 @@
                 }
 
 
-                $('video').on('play', function (e) {
+                $('.carousel-item.active video').on('play', function (e) {
                     $("#carousel").carousel('pause');
-                    alert("played");
                     $(this).muted = false;
                 });
 
