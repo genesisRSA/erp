@@ -53,7 +53,7 @@
                         vids[0].pause();
                         vids[0].currentTime = 0;
                         vids[0].play();
-                        vids[0].prop('muted', false);
+                        vids[0].muted = false;
                     }else{
                     }
                 });
@@ -94,7 +94,7 @@
                         vids[0].pause();
                         vids[0].currentTime = 0;
                         vids[0].play();
-                        vids[0].prop('muted', false);
+                        vids[0].muted = false;
                     }else{
                         if(currentIndex == totalItems){
                             location.reload();
