@@ -70,7 +70,7 @@
 
                 $('#unMute').on("click",function(){
                     console.log("muted");
-                    $('video').muted = false;
+                    $('video').prop("muted", false);
                 });
 
 
