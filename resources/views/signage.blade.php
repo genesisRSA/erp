@@ -68,15 +68,9 @@
                     setTimeout(function(){ location.reload(); },5000);
                 }
 
-                $('#unMute').on("click",function(){
-                    console.log("muted");
-                    $('video').prop("muted", false);
-                });
-
-
                 $('video').on('play', function (e) {
                     $("#carousel").carousel('pause');
-                    $('#unMute').click();
+                    $('video').prop("muted", false);
                 });
 
                 $('video').on('ended', function (e) {
