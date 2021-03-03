@@ -20,7 +20,7 @@
                         </div>
                     @else
                         <div class="carousel-item">
-                            <video controls autoplay src="/{{$sign->source_url}}"></video>
+                            <video src="/{{$sign->source_url}}" muted></video>
                         </div>
                     @endif
                 @endforeach
@@ -53,6 +53,7 @@
                         vids[0].pause();
                         vids[0].currentTime = 0;
                         vids[0].play();
+                        vids[0].prop('muted', false);
                     }else{
                     }
                 });
@@ -93,6 +94,7 @@
                         vids[0].pause();
                         vids[0].currentTime = 0;
                         vids[0].play();
+                        vids[0].prop('muted', false);
                     }else{
                         if(currentIndex == totalItems){
                             location.reload();
