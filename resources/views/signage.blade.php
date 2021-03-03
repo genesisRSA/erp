@@ -21,7 +21,6 @@
                     @else
                         <div class="carousel-item">
                             <video src="/{{$sign->source_url}}" muted autoplay></video>
-                            <iframe src="/{{$sign->source_url}}" style="display:none"></iframe>
                         </div>
                     @endif
                 @endforeach
@@ -34,6 +33,7 @@
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="sr-only">Next</span>
             </a>-->
+            <button type="button" id="unMute" style="position:absolute;bottom:200px;"></button>
         </div>
 
         <!-- Optional JavaScript -->
@@ -68,17 +68,20 @@
                     setTimeout(function(){ location.reload(); },5000);
                 }
 
+                $('#unMute').on("click",function(){
+                    $('video').muted = false;
+                });
+
 
                 $('video').on('play', function (e) {
                     $("#carousel").carousel('pause');
-                    $('iframe').contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo' }), '*');
+                    $('#unMute').click();
                 });
 
                 $('video').on('ended', function (e) {
                     if(currentIndex == totalItems){
                         location.reload();
                     }else{
-                        $('iframe').contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'stopVideo' }), '*');
                         $("#carousel").carousel('cycle');
                     }
                 });
