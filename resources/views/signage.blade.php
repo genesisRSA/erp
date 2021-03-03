@@ -54,6 +54,7 @@
                         vids[0].pause();
                         vids[0].currentTime = 0;
                         vids[0].play();
+                        $('.carousel-item.active iframe').contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo' }), '*');
                     }else{
                     }
                 });
@@ -71,14 +72,13 @@
 
                 $('.carousel-item.active video').on('play', function (e) {
                     $("#carousel").carousel('pause');
-                    $('.carousel-item.active iframe').contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo' }), '*');
                 });
 
                 $('video').on('ended', function (e) {
-                    $('.carousel-item.active iframe').contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'stopVideo' }), '*');
                     if(currentIndex == totalItems){
                         location.reload();
                     }else{
+                        $('.carousel-item.active iframe').contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'stopVideo' }), '*');
                         $("#carousel").carousel('cycle');
                     }
                 });
@@ -97,6 +97,7 @@
                         vids[0].pause();
                         vids[0].currentTime = 0;
                         vids[0].play();
+                        $('.carousel-item.active iframe').contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo' }), '*');
                     }else{
                         if(currentIndex == totalItems){
                             location.reload();
