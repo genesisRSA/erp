@@ -98,18 +98,18 @@
 
         <div class="row">
           <div class="input-field col s12 m6">
-            <input placeholder="" name="item_safety" type="text" class="number validate" required>
+            <input placeholder="" name="item_safety" type="number" class="number validate" required>
             <label for="item_safety">Safety Stock<sup class="red-text">*</sup></label>
           </div>
           <div class="input-field col s12 m6">
-            <input placeholder="" name="item_max" type="text" class="number validate" required>
+            <input placeholder="" name="item_max" type="number" class="number validate" required>
             <label for="item_max">Maximum Stock<sup class="red-text">*</sup></label>
           </div>
         </div>
 
         <div class="row" style="display:none" id="adtlinfo">
           <div class="input-field col s12 m6">
-            <input placeholder="" name="item_length" id="add_item_length" type="text" class="number validate">
+            <input placeholder="" name="item_length" id="add_item_length" type="number" class="number validate">
             <label for="item_length">Length<sup class="red-text"></sup></label>
             <div class="col s12 m6 left-align">
               <label>
@@ -120,7 +120,7 @@
           </div>
 
           <div class="input-field col s12 m6">
-            <input placeholder="" name="item_width" id="add_item_width" type="text" class="number validate">
+            <input placeholder="" name="item_width" id="add_item_width" type="number" class="number validate">
             <label for="item_width">Width<sup class="red-text"></sup></label>
             <div class="col s12 m6 left-align">
               <label>
@@ -131,7 +131,7 @@
           </div>
  
           <div class="input-field col s12 m6">
-            <input placeholder="" name="item_thickness" id="add_item_thickness" type="text" class="number validate">
+            <input placeholder="" name="item_thickness" id="add_item_thickness" type="number" class="number validate">
             <label for="item_thickness">Thickness<sup class="red-text"></sup></label>
             <div class="col s12 m6 left-align">
               <label>
@@ -142,7 +142,7 @@
           </div>
 
           <div class="input-field col s12 m6">
-            <input placeholder="" name="item_radius" id="add_item_radius" type="text" class="number validate">
+            <input placeholder="" name="item_radius" id="add_item_radius" type="number" class="number validate">
             <label for="item_radius">Radius<sup class="red-text">*</sup></label>
             <div class="col s12 m6 left-align">
               <label>
@@ -228,19 +228,19 @@
         
         <div class="row">
           <div class="input-field col s12 m6">
-            <input placeholder="" id="edit_item_safety" name="item_safety" type="text" class="number validate" required>
+            <input placeholder="" id="edit_item_safety" name="item_safety" type="number" class="number validate" required>
             <label for="item_safety">Safety Stock<sup class="red-text">*</sup></label>
           </div>
 
           <div class="input-field col s12 m6">
-            <input placeholder="" id="edit_item_max" name="item_max" type="text" class="number validate" required>
+            <input placeholder="" id="edit_item_max" name="item_max" type="number" class="number validate" required>
             <label for="item_max">Maximum Stock<sup class="red-text">*</sup></label>
           </div>
         </div>
 
         <div class="row" style="display:block" id="adtlinfoedit">
           <div class="input-field col s12 m6">
-            <input placeholder="" id="edit_item_length" name="item_length" type="text" class="number validate">
+            <input placeholder="" id="edit_item_length" name="item_length" type="number" class="number validate">
             <label for="item_length">Length<sup class="red-text">*</sup></label>
             <div class="col s12 m6 left-align">
               <label>
@@ -251,7 +251,7 @@
           </div>
         
           <div class="input-field col s12 m6">
-            <input placeholder="" id="edit_item_width" name="item_width" type="text" class="number validate">
+            <input placeholder="" id="edit_item_width" name="item_width" type="number" class="number validate">
             <label for="item_width">Width<sup class="red-text">*</sup></label>
             <div class="col s12 m6 left-align">
               <label>
@@ -262,7 +262,7 @@
           </div>
 
           <div class="input-field col s12 m6">
-            <input placeholder="" id="edit_item_thickness" name="item_thickness" type="text" class="number validate">
+            <input placeholder="" id="edit_item_thickness" name="item_thickness" type="number" class="number validate">
             <label for="item_thickness">Thickness<sup class="red-text">*</sup></label>
             <div class="col s12 m6 left-align">
               <label>
@@ -273,7 +273,7 @@
           </div>
 
           <div class="input-field col s12 m6">
-            <input placeholder="" id="edit_item_radius" name="item_radius" type="text" class="number validate">
+            <input placeholder="" id="edit_item_radius" name="item_radius" type="number" class="number validate">
             <label for="item_radius">Radius<sup class="red-text">*</sup></label>
             <div class="col s12 m6 left-align">
               <label>

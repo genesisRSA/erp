@@ -33,7 +33,6 @@ class ItemMasterController extends Controller
                 ->with('itemmaster',$itemmaster)
                 ->with('itemcat',$itemcat)
                 ->with('itemsubcat',$itemsubcat)
-
                 ->with('uom',$uom);
     }
 

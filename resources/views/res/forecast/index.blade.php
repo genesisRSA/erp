@@ -10,13 +10,13 @@
   
     {{-- <ul id="tabs-swipe-demo" class="tabs"> --}}
     <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
-      <li class="tab col s12 m4 l4"><a class="active" href="#ongoing">On-going Forecasts</a></li>
+      <li class="tab col s12 m4 l4"><a class="active" href="#ongoing">Sales Forecasts</a></li>
       <li class="tab col s12 m4 l4"><a href="#approval">For Approval</a></li>
     </ul>
 
     <div id="ongoing" name="ongoing">
-      <div class="col s12 m12">
-        <div class="card">
+
+        <div class="card" style="margin-top: 0px">
           <div class="card-content">
             <table class="responsive-table highlight" id="forecast-dt" style="width: 100%">
               <thead>
@@ -31,15 +31,13 @@
               </thead>
             </table>
           </div>
-        </div>
       </div>
       
-      <a href="#addModal" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped modal-trigger" id="add-button" data-position="left" data-tooltip="Add Sales Forecast Details"><i class="material-icons">add</i></a>
+      <a href="#addModal" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped modal-trigger" id="add-button"  onclick="getApprover(1,'add','Sales Forecast');" data-position="left" data-tooltip="Add Sales Forecast Details"><i class="material-icons">add</i></a>
     </div>
 
     <div id="approval" name="approval">
-      <div class="col s12 m12 l12">
-        <div class="card">
+        <div class="card" style="margin-top: 0px">
           <div class="card-content">
             <table class="responsive-table highlight" id="approval-dt" style="width: 100%">
               <thead>
@@ -56,7 +54,6 @@
             </table>
           </div>
         </div>
-      </div>
     </div>
 
   </div>
@@ -73,7 +70,7 @@
         <ul id="tabs-swipe-demo" class="tabs">
           <li class="tab col s12 m4 l4"><a class="active" href="#forecast">Forecast Details</a></li>
           {{-- need ID and module for getApprover()  --}}
-          <li class="tab col s12 m4 l4"><a href="#signatories" onclick="getApprover(1,'add','Sales Forecast');">Signatories</a></li>
+          <li class="tab col s12 m4 l4"><a href="#signatories">Signatories</a></li>
         </ul><br>
 
         <div id="forecast" name="forecast">
@@ -135,11 +132,11 @@
             <div class="input-field col s12 m3 l5">
               <select id="add_prod_code" name="prod_code" required>
                 <option value="" disabled selected>Choose your option</option>
-                @foreach ($products as $prod)
+                {{-- @foreach ($products as $prod)
                   <option value="{{$prod->prod_code}}">{{$prod->prod_name}}</option>
-                @endforeach
+                @endforeach --}}
               </select>
-              <label for="prod_code">Item<sup class="red-text">*</sup></label>
+              <label for="prod_code">Product<sup class="red-text">*</sup></label>
             </div>
 
             <div class="input-field col s12 m3 l3">
@@ -159,25 +156,25 @@
               <select id="add_currency_code" name="currency_code" onchange="computeTotal('add');" required>
                 <option value="0" disabled selected>Choose your option</option>
                 @foreach ($currencies as $curr)
-                  <option value="{{$curr->symbol}}">{{$curr->currency_name}}</option>
+                  <option value="{{$curr->currency_code}}">{{$curr->symbol}} - {{$curr->currency_name}}</option>
                 @endforeach
               </select>
               <label for="currency_code">Currency<sup class="red-text">*</sup></label>
             </div>
 
             <div class="input-field col s12 m3 l3">
-              <input placeholder="0.00" id="add_unit_price" name="unit_price" type="text" class="number validate" onchange="computeTotal('add');" required>
+              <input placeholder="0.00" id="add_unit_price" name="unit_price" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('add');" required>
               <label for="unit_price">Unit Price<sup class="red-text">*</sup></label>
             </div>
 
             <div class="input-field col s12 m3 l3">
               {{--  pattern="^[\d,]+$" --}}
-              <input placeholder="0" id="add_quantity" name="quantity" type="text" class="number validate" onchange="computeTotal('add');" required>
+              <input placeholder="0" id="add_quantity" name="quantity" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('add');" required>
               <label for="quantity">Quantity<sup class="red-text">*</sup></label>
             </div>
 
             <div class="input-field col s12 m3 l3">
-              <input placeholder="0" id="add_total_price" name="total_price" type="text" class="number" required readonly>
+              <input placeholder="0" id="add_total_price" name="total_price" type="text" style="text-align: right" class="number" required readonly>
               <label for="total_price">Total Price<sup class="red-text">*</sup></label>
             </div>
 
@@ -187,10 +184,12 @@
 
         <div id="signatories" name="signatories">
 
+          {{-- current signatories --}}
           <div class="row">
             <div class="col s12 m12 l12">
               <div class="card">
-                <div class="card-content">
+                <h6><b>Current Signatories</b></h6><hr>
+                <div class="card-content" style="padding: 10px; padding-top: 0px">
                   <table class="highlight" id="matrix-dt">
                     <thead>
                       <tr>
@@ -205,6 +204,28 @@
               </div>
             </div>
           </div>
+
+          {{-- history signatories --}}
+
+          {{-- <div class="row">
+            <div class="col s12 m12 l12">
+              <div class="card">
+                <h6><b>Approval History</b></h6><hr>
+                <div class="card-content" style="padding: 10px; padding-top: 0px">
+                  <table class="highlight" id="matrix-dt-h">
+                    <thead>
+                      <tr>
+                          <th>Sequence</th> 
+                          <th>Approver ID</th> 
+                          <th>Approver Name</th> 
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div> --}}
           
         </div>
 
@@ -293,7 +314,7 @@
                   <option value="{{$prod->prod_code}}">{{$prod->prod_name}}</option>
                 @endforeach
               </select>
-              <label for="prod_code">Item<sup class="red-text">*</sup></label>
+              <label for="prod_code">Product<sup class="red-text">*</sup></label>
             </div>
 
             <div class="input-field col s12 m3 l3">
@@ -306,8 +327,6 @@
               <label for="uom_code">Unit of Measure<sup class="red-text">*</sup></label>
             </div>
 
-          
-
           </div>
 
           <div class="row">
@@ -315,38 +334,40 @@
               <select id="edit_currency_code" name="currency_code" onchange="computeTotal('edit');" required>
                 <option value="0" disabled selected>Choose your option</option>
                 @foreach ($currencies as $curr)
-                  <option value="{{$curr->symbol}}">{{$curr->currency_name}}</option>
+                  <option value="{{$curr->currency_code}}">{{$curr->symbol}} - {{$curr->currency_name}}</option>
                 @endforeach
               </select>
               <label for="currency_code">Currency<sup class="red-text">*</sup></label>
             </div>
 
             <div class="input-field col s12 m3 l3">
-              <input placeholder="0.00" id="edit_unit_price" name="unit_price" type="text" class="number validate" onchange="computeTotal('edit');" required>
+              <input placeholder="0.00" id="edit_unit_price" name="unit_price" type="number" step="0.0001" style="text-align: right" class="number validate" onkeyup="computeTotal('edit');" required>
               <label for="unit_price">Unit Price<sup class="red-text">*</sup></label>
             </div>
 
             <div class="input-field col s12 m3 l3">
               {{--  pattern="^[\d,]+$" --}}
-              <input placeholder="0" id="edit_quantity" name="quantity" type="text" class="number validate" onchange="computeTotal('edit');" required>
+              <input placeholder="0" id="edit_quantity" name="quantity" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('edit');" required>
               <label for="quantity">Quantity<sup class="red-text">*</sup></label>
             </div>
 
             <div class="input-field col s12 m3 l3">
-              <input placeholder="0" id="edit_total_price" name="total_price" type="text" class="number validate" required readonly>
+              <input placeholder="0" id="edit_total_price" name="total_price" type="text" step="0.0001" style="text-align: right" class="number validate" required readonly>
               <label for="total_price">Total Price<sup class="red-text">*</sup></label>
             </div>
 
           </div>
 
         </div>
-
+ 
         <div id="edit-signatories" name="edit-signatories">
 
+          {{-- current signatories --}}
           <div class="row">
             <div class="col s12 m12 l12">
               <div class="card">
-                <div class="card-content">
+                <h6><b>Current Signatories</b></h6><hr>
+                <div class="card-content" style="padding: 10px; padding-top: 0px">
                   <table class="highlight" id="matrix-dt-edit">
                     <thead>
                       <tr>
@@ -361,6 +382,27 @@
               </div>
             </div>
           </div>
+
+          {{-- history signatories --}}
+          {{-- <div class="row">
+            <div class="col s12 m12 l12">
+              <div class="card">
+                <h6><b>Approval History</b></h6><hr>
+                <div class="card-content" style="padding: 10px; padding-top: 0px">
+                  <table class="highlight" id="matrix-dt-edit-h">
+                    <thead>
+                      <tr>
+                          <th>Sequence</th> 
+                          <th>Approver ID</th> 
+                          <th>Approver Name</th> 
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div> --}}
           
         </div>
      
@@ -368,6 +410,164 @@
       <div class="modal-footer">
         <button class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Update</button>
         <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Cancel</a>
+      </div>
+    </form>
+  </div>
+
+  <div id="AppModal" class="modal">
+    <form method="POST" action="{{route('forecast.approve')}}">
+    {{-- <form> --}}
+    @csrf
+      <div class="modal-content">
+        <h4>Sales Forecast Details Approval</h4>
+
+        <ul id="tabs-swipe-demo" class="tabs">
+          <li class="tab col s12 m4 l4"><a class="active" href="#app-forecast">Forecast Details</a></li>
+          <li class="tab col s12 m4 l4"><a href="#app-signatories" id="app_signatories">Signatories</a></li>
+        </ul><br>
+
+        {{-- hidden items --}}
+        <input type="hidden" name="id" id="id_app"/>
+        <input type="hidden" name="seq" id="seq_app"/>
+        <input type="hidden" name="appid" id="appid_app"/>
+        <input type="hidden" name="appname" id="appname_app">
+        {{-- hidden items --}}
+
+        <div id="app-forecast" name="app-forecast">
+          <div class="row">
+            <div class="input-field col s12 m4 l6">
+              <input placeholder="0" type="text" id="app_forecast_code" name="forecast_code" readonly>
+              <label for="forecast_code">Forecast Code<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m2 l3">
+              <input placeholder="0" type="text" id="app_forecast_year" name="forecast_year" readonly>
+              <label for="forecast_year">Forecast Year<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m2 l3">
+              <input placeholder="0" type="text" id="app_forecast_month" name="forecast_month" readonly>
+              <label for="forecast_month">Forecast Month<sup class="red-text">*</sup></label>
+            </div> 
+          </div>
+
+          <div class="row">
+            <div class="input-field col s12 m3 l4">
+              <input placeholder="0" type="text" id="app_site_code" name="site_code" readonly>
+              <label for="site_code">Site<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m3 l5">
+              <input placeholder="0" type="text" id="app_prod_code" name="prod_code" readonly>
+              <label for="prod_code">Product<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m3 l3">
+              <input placeholder="0" type="text" id="app_uom_code" name="uom_code" readonly>
+              <label for="uom_code">Unit of Measure<sup class="red-text">*</sup></label>
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="input-field col s12 m3 l3">
+              <input placeholder="0" type="text" id="app_currency_code" name="currency_code" readonly>
+              <label for="currency_code">Currency<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m3 l3">
+              <input placeholder="0" id="app_unit_price" name="unit_price" type="text" style="text-align: right" class="number validate" readonly>
+              <label for="unit_price">Unit Price<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m3 l3">
+              <input placeholder="0" id="app_quantity" name="quantity" type="number" style="text-align: right" class="number validate" readonly>
+              <label for="quantity">Quantity<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m3 l3">
+              <input placeholder="0" id="app_total_price" name="total_price" type="text" style="text-align: right" class="number validate" readonly>
+              <label for="total_price">Total Price<sup class="red-text">*</sup></label>
+            </div>
+ 
+
+          </div>
+          <hr style="padding:1px;color:blue;background-color:blue">
+
+        </div>
+ 
+        <div id="app-signatories" name="app-signatories">
+
+          {{-- current signatories --}}
+          <div class="row">
+            <div class="col s12 m12 l12">
+              <div class="card">
+                <h6><b>Current Signatories</b></h6><hr>
+                <div class="card-content" style="padding: 10px; padding-top: 0px">
+                  <table class="highlight" id="matrix-dt-app">
+                    <thead>
+                      <tr>
+                          <th>Sequence</th> 
+                          <th>Approver ID</th> 
+                          <th>Approver Name</th> 
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {{-- history signatories --}}
+          <div class="row">
+            <div class="col s12 m12 l12">
+              <div class="card">
+                <h6><b>Approval History</b></h6><hr>
+                <div class="card-content" style="padding: 10px; padding-top: 0px">
+                  <table class="highlight" id="matrix-dt-app-h">
+                    <thead>
+                      <tr>
+                          <th>Sequence</th> 
+                          <th>Approver Name</th> 
+                          <th>Status</th>
+                          <th>Remarks</th>
+                          <th>Action Date</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr style="padding:1px;color:blue;background-color:blue">
+        </div>
+        
+      </div>
+      <div class="modal-footer">
+
+     
+        <div class="row">
+
+          <div class="input-field col s12 m8 l8">
+
+            <i class="material-icons prefix">mode_edit</i>
+            <textarea class="materialize-textare" type="text" id="app_remarks" name="remarks" placeholder="Please input remarks here.." style="height: 150px;" required/></textarea>
+            
+          </div>
+          
+          <div class="input-field col s12 m4 l4">
+            <input type="hidden" id="status" name="status">
+
+            <button id="btnApp" name="approve" value="Approve" onclick="getStatus('Approve');" class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Approve</button>
+            
+            <button id="btnRej" name="reject" value="Reject" onclick="getStatus('Reject');" class="red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Reject</button>
+
+            <a href="#!" class="modal-close orange waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Cancel</a>
+          </div>
+
+      </div>
       </div>
     </form>
   </div>
@@ -400,30 +600,31 @@
   <script type="text/javascript" src="{{ asset('datatables/datatables.js') }}"></script>
   <script type="text/javascript">
 
-
     $(document).ready(function () {
+
         $('.tabs').tabs();
 
-        $('#add_item_cat_code').change(function () {
+        $('#add_site_code').change(function () {
              var id = $(this).val();
 
-          $('#add_item_subcat_code').find('option').remove();
+          $('#add_prod_code').find('option').remove();
 
             $.ajax({
-              url:'/rgc_entsys/item_master/getSubCategory/'+id,
+              url:'/rgc_entsys/forecast/getProducts/'+id,
               type:'get',
               dataType:'json',
               success:function (response) {
-                  var dropdown = $("#add_item_subcat_code");
+                  var dropdown = $("#add_prod_code");
                   var len = 0;
                   if (response.data != null) {
                       len = response.data.length;
                   }
 
+                  dropdown.append('<option value="" disabled selected>Choose your option</option>');
                   if (len>0) {
                       for (var i = 0; i<len; i++) {
-                            var id = response.data[i].subcat_code;
-                            var name = response.data[i].subcat_desc;
+                            var id = response.data[i].prod_code;
+                            var name = response.data[i].prod_name;
 
                             var option = "<option value='"+id+"'>"+name+"</option>"; 
                             dropdown.append(option);
@@ -434,26 +635,27 @@
             });
         });
 
-        $('#edit_item_cat_code').change(function () {
+        $('#edit_site_code').change(function () {
              var id = $(this).val();
 
-          $('#edit_item_subcat_code').find('option').remove();
+          $('#edit_prod_code').find('option').remove();
 
             $.ajax({
-              url:'/rgc_entsys/item_master/getSubCategory/'+id,
+              url:'/rgc_entsys/forecast/getProducts/'+id,
               type:'get',
               dataType:'json',
               success:function (response) {
-                  var dropdown = $("#edit_item_subcat_code");
+                  var dropdown = $("#edit_prod_code");
                   var len = 0;
                   if (response.data != null) {
                       len = response.data.length;
                   }
 
+                  dropdown.append('<option value="" disabled selected>Choose your option</option>');
                   if (len>0) {
                       for (var i = 0; i<len; i++) {
-                            var id = response.data[i].subcat_code;
-                            var name = response.data[i].subcat_desc;
+                            var id = response.data[i].prod_code;
+                            var name = response.data[i].prod_name;
 
                             var option = "<option value='"+id+"'>"+name+"</option>"; 
                             dropdown.append(option);
@@ -472,25 +674,38 @@
             return true;
         })
 
+        $('#app_signatories').on('click', function(){
+          var id = $('#id_app').val();
+          getApproverMatrix(id);
+        })
+
+
     });
 
-    function getApprover(id, loc, modules){
+    function getStatus(status)
+    {
+      var stat = status;
+      $('#status').val(stat);
+    }
 
+    function getApprover(id, loc, modules)
+    {
           $.get('forecast/getApprover/'+id+'/'+modules, function(response){
 
                 var AppendString = "";
                 var i, j = "";
                 var data = response.data;
                 var dataMatrix = data.matrix;
-                console.log(dataMatrix);
                 var matrix = JSON.parse(dataMatrix);
-                console.log(matrix);
+               
 
                 if(loc=='add'){
                   var myTable = document.getElementById("matrix-dt");
-                } else {
+                } 
+                else if(loc=='edit') {
                   var myTable = document.getElementById("matrix-dt-edit");
-                }
+                } 
+              
                 var rowCount = myTable.rows.length;
                 for (var x=rowCount-1; x>0; x--) 
                   {
@@ -516,11 +731,79 @@
                   }
                 if(loc=='add'){
                   $('#matrix-dt').find('tbody').append(AppendString);
-                } else {
+                } 
+                else if(loc=='edit') {
                   $('#matrix-dt-edit').find('tbody').append(AppendString);
                 }
+          });
+    } 
 
-            });
+    function getApproverMatrix(id)
+    {
+          $.get('forecast/getApproverMatrix/'+id, function(response){
+
+                var AppendString = "";
+                var AppendStringH = "";
+
+                var i, j, k, l = "";
+                var data = response.data;
+                var dataMatrix = data.matrix;
+                var dataMatrixH = data.matrix_h;
+                
+                var matrix = JSON.parse(dataMatrix);
+                var matrixh = JSON.parse(dataMatrixH);
+               
+                var myTable = document.getElementById("matrix-dt-app");
+                var myTableH = document.getElementById("matrix-dt-app-h");
+    
+    
+                var rowCount = myTable.rows.length;
+                for (var x=rowCount-1; x>0; x--) 
+                  {
+                    myTable.deleteRow(x); 
+                  }
+
+                var rowCountH = myTableH.rows.length;
+                for (var h=rowCountH-1; h>0; h--) 
+                  {
+                    myTableH.deleteRow(h); 
+                  }
+
+                for(i in matrix)
+                  {
+                    for(j in matrix[i].sequence)
+                    {
+                      AppendString += 
+                      "<tr><td>" + matrix[i].sequence + 
+                      "</td><td>" + matrix[i].approver_emp_no + 
+                      "</td><td>" + matrix[i].approver_name + 
+                            '<input type="hidden" name="app_seq[]" value="'+matrix[i].sequence+'"/>' + 
+                            '<input type="hidden" name="app_id[]" value="'+matrix[i].approver_emp_no+'"/>'+
+                            '<input type="hidden" name="app_fname[]" value="'+matrix[i].approver_name+'"/>'+
+                            '<input type="hidden" name="app_nstatus[]" value="'+matrix[i].next_status+'"/>'+
+                            '<input type="hidden" name="app_gate[]" value="'+matrix[i].is_gate+'"/>'+
+                      "</td></tr>";
+                    }
+                  }
+
+                for(k in matrixh)
+                  {
+                    for(l in matrixh[k].sequence)
+                    {
+                      AppendStringH += 
+                      "<tr><td>" + matrixh[k].sequence + 
+                      "</td><td>" + matrixh[k].approver_name + 
+                      "</td><td>" + matrixh[k].status + 
+                      "</td><td>" + matrixh[k].remarks +
+                      "</td><td>" + matrixh[k].action_date +    
+                      "</td></tr>";
+                    }
+                  }
+
+                  $('#matrix-dt-app').find('tbody').append(AppendString);
+                  $('#matrix-dt-app-h').find('tbody').append(AppendStringH);
+
+          });
     } 
 
     function computeTotal(loc)
@@ -529,11 +812,18 @@
       {
         var unit_price = $('#add_unit_price').val();
         var quantity = $('#add_quantity').val();
-        var currency = $('#add_currency_code').val();
+
+        var e = document.getElementById('add_currency_code');
+        var currency = e.options[e.selectedIndex].text;
+        currency = currency.substr(currency, 1);
+
       } else {
         var unit_price = $('#edit_unit_price').val();
         var quantity = $('#edit_quantity').val();
-        var currency = $('#edit_currency_code').val();
+
+        var e = document.getElementById('edit_currency_code');
+        var currency = e.options[e.selectedIndex].text;
+        currency = currency.substr(currency, 1);
       }
 
       if(unit_price == ''){
@@ -548,11 +838,10 @@
         currency = '';
       }
 
-      unit_price = unit_price.replace(/,/g, "");
-
       var total_price = unit_price * quantity;
-
-      var total_w_currency = currency + '' + total_price;
+      var total_price_w_com = addCommas(total_price);
+      var total_w_currency = currency + ' ' + total_price_w_com;
+      //var total_w_currency = total_price_w_com + ' ' + currency;
 
       if(loc=='add')
       {
@@ -562,7 +851,15 @@
       }
     }
 
-    function editItem(id){
+    function addCommas(x) 
+    {
+      var parts = x.toString().split(".");
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return parts.join(".");
+    }
+
+    function editItem(id)
+    {
         $.get('forecast/'+id, function(response){
             var data = response.data;
             $('#edit_id').val(data.id);
@@ -590,12 +887,58 @@
         });
     }
 
-    function deleteItem(id){
+    function appItem(id)
+    {
+        $.get('forecast/'+id, function(response){
+
+            const formatter = new Intl.NumberFormat('en-US', {
+              minimumFractionDigits: 4,      
+              maximumFractionDigits: 4,
+            });
+
+            var data = response.data;
+            var dataUP = data.unit_price;
+            var dataTP = data.total_price;
+            var curr_x = data.currency;
+            var curr_name = curr_x.currency_name;
+            var curr = dataTP.substr(dataTP, 1);
+            
+            dataTP = dataTP.substr(2);
+            dataTP = dataTP.replace(/,/g, "");
+
+            var dataUPx = formatter.format(dataUP);
+            var dataTPx = formatter.format(dataTP);
+            var unitPrice = addCommas(dataUPx);
+            var totalPrice = addCommas(dataTPx)
+            totalPrice = curr + " " + totalPrice;
+
+            $('#id_app').val(data.id);
+            $('#seq_app').val(data.current_sequence);
+            $('#appid_app').val(data.current_approver);
+            
+            $('#app_forecast_code').val(data.forecast_code);
+            $('#app_forecast_year').val(data.forecast_year);
+            $('#app_forecast_month').val(data.forecast_month);
+            $('#app_site_code').val(data.site_code);
+            $('#app_prod_code').val(data.prod_code);
+            $('#app_uom_code').val(data.uom_code);
+            $('#app_currency_code').val(curr_name);
+            $('#app_unit_price').val(unitPrice);
+            $('#app_quantity').val(data.quantity);
+            $('#app_total_price').val(totalPrice);
+
+            $('#AppModal').modal('open');
+            
+        });
+    }
+
+    function deleteItem(id)
+    {
         $('#del_id').val(id);
         $('#deleteModal').modal('open');
     }
 
- var forecast = $('#forecast-dt').DataTable({
+    var forecast = $('#forecast-dt').DataTable({
         "lengthChange": false,
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
@@ -616,9 +959,7 @@
         ]
     });
 
-
-   var approvaldt = $('#approval-dt').DataTable({
-        "responsive": true,
+    var approvaldt = $('#approval-dt').DataTable({
         "lengthChange": false,
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
@@ -634,7 +975,7 @@
             {
                 "data": "id",
                 "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="checkApproval('+row.id+')"><i class="material-icons">rate_review</i></a>';
+                    return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="appItem('+row.id+'), getApproverMatrix('+row.id+')"><i class="material-icons">rate_review</i></a>';
                 }
             }
         ]

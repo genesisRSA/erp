@@ -11,4 +11,9 @@ class Product extends Model
     {
         return $this->hasOne('App\ProductCategory','id','prodcat_id');
     }
+
+    public function site()
+    {
+        return $this->hasOne('App\Site','site_code','site_code');
+    }
 }

@@ -49,7 +49,7 @@
             <select name="app_req" id="app_req" required>
               <option value="0" disabled selected>Choose your option</option>
               @foreach ($employee as $emp)
-                <option value="{{$emp->emp_no}}">{{$emp->emp_fname}}</option>                 
+                <option value="{{$emp->emp_no}}">{{$emp->full_name}}</option>                 
               @endforeach
             </select>
             <label for="app_req">Requestor<sup class="red-text">*</sup></label>
@@ -61,7 +61,7 @@
             <select name="app_approver" id="app_approver" required>
               <option value="" disabled selected>Choose your option</option>
               @foreach ($employee as $emp)
-               <option value="{{$emp->emp_no}}">{{$emp->emp_fname}}</option>                 
+               <option value="{{$emp->emp_no}}">{{$emp->full_name}}</option>                 
               @endforeach
             </select>
             <label for="app_approver">Approver<sup class="red-text">*</sup></label>
@@ -142,7 +142,7 @@
             <select name="edit_app_req" id="edit_app_req" required>
               <option value="0" disabled selected>Choose your option</option>
               @foreach ($employee as $emp)
-                <option value="{{$emp->emp_no}}">{{$emp->emp_fname}}</option>                 
+                <option value="{{$emp->emp_no}}">{{$emp->full_name}}</option>                 
               @endforeach
             </select>
             <label for="edit_app_req">Requestor<sup class="red-text">*</sup></label>
@@ -154,7 +154,7 @@
             <select name="edit_app_approver" id="edit_app_approver">
               <option value="" disabled selected>Choose your option</option>
               @foreach ($employee as $emp)
-               <option value="{{$emp->emp_no}}">{{$emp->emp_fname}}</option>                 
+               <option value="{{$emp->emp_no}}">{{$emp->full_name}}</option>                 
               @endforeach
             </select>
             <label for="edit_app_approver">Approver<sup class="red-text">*</sup></label>
@@ -242,27 +242,25 @@
   <script type="text/javascript" src="{{ asset('datatables/datatables.js') }}"></script>
   <script type="text/javascript">
     var NStatus = [];
+    var NEStaus = [];
     $(document).ready(function(){
-      var Seq = 0;
+      // var SeqAdd = 0;
+      // var SeqEdit = 0;
      
       $('#btnAdd').on('click', function(){
-        addRow(Seq, '#btnAdd');
-        Seq += 1;
+        addRow('#btnAdd');
       });
 
       $('#btnDel').on('click', function(){
         deleteAllRow('#btnDel');
-        Seq = 0;
       });
 
       $('#btnAddEdit').on('click', function(){
-        addRow(Seq, '#btnAddEdit');
-        Seq += 1;
+        addRow('#btnAddEdit');
       });
 
       $('#btnDelEdit').on('click', function(){
         deleteAllRow('#btnDelEdit');
-        Seq = 0;
       });
     });
 
@@ -281,14 +279,12 @@
        
     }
 
-
-
     function deleteRow(r) {
       var i = r.parentNode.parentNode.rowIndex;
       document.getElementById("matrix-dt").deleteRow(i);
     }
 
-    function addRow(Seq, btn){
+    function addRow(btn){
       if(btn == '#btnAdd'){
 
         var ApproverID = $('#app_approver').val();
@@ -309,21 +305,28 @@
           if(ApproverText!='Choose your option' && Status != null)
             {
               NStatus.push(Status);
-          
+
+              var myTab = document.getElementById('matrix-dt');
+              var SeqAdd = myTab.rows.length - 1;
+              
               $('#matrix-dt').find('tbody').append("<tr>"+
-              "<td>" + Seq + "</td>" + 
+              "<td>" + SeqAdd + "</td>" + 
               "<td>" + ApproverText + "</td>" + 
               "<td>" + Status + "</td>" +
               "<td>" + Gatex + "</td>" +
-              '<input type="hidden" name="app_seq[]" value="'+Seq+'"/>' + 
+              '<input type="hidden" name="app_seq[]" value="'+SeqAdd+'"/>' + 
               '<input type="hidden" name="app_id[]" value="'+ApproverID+'"/>'+
               '<input type="hidden" name="app_fname[]" value="'+ApproverText+'"/>'+
               '<input type="hidden" name="app_nstatus[]" value="'+Status+'"/>'+
               '<input type="hidden" name="app_gate[]" value="'+Gatex+'"/>'+
               "</tr>");
+
+        
             }
         }
-      } else {
+      } 
+      else 
+      {
         var ApproverID = $('#edit_app_approver').val();
         var Approverx = document.getElementById("edit_app_approver");
         var ApproverText = Approverx.options[Approverx.selectedIndex].text;
@@ -332,7 +335,7 @@
         var Status = $('#edit_app_nstatus').val();
         var found = false;
 
-        if($.inArray(Status,NStatus) > -1){
+        if($.inArray(Status,NEStatus) > -1){
           found = true;
         } else {
           found = false;
@@ -342,14 +345,16 @@
         {
             if(ApproverText!='Choose your option' && Status != null)
             {
-              NStatus.push(Status);
+              NEStatus.push(Status);
+              var myTab = document.getElementById('matrix-dt-edit');
+              var SeqEdit = myTab.rows.length - 1;
               
               $('#matrix-dt-edit').find('tbody').append("<tr>"+
-              "<td>" + Seq + "</td>" + 
+              "<td>" + SeqEdit + "</td>" + 
               "<td>" + ApproverText + "</td>" + 
               "<td>" + Status + "</td>" +
               "<td>" + Gatex + "</td>" +
-              '<input type="hidden" name="edit_app_seq[]" value="'+Seq+'"/>' + 
+              '<input type="hidden" name="edit_app_seq[]" value="'+SeqEdit+'"/>' + 
               '<input type="hidden" name="edit_app_id[]" value="'+ApproverID+'"/>'+
               '<input type="hidden" name="edit_app_fname[]" value="'+ApproverText+'"/>'+
               '<input type="hidden" name="edit_app_nstatus[]" value="'+Status+'"/>'+
@@ -371,6 +376,7 @@
           myTable.deleteRow(x); 
         }
         NStatus = [];
+        NEStatus = [];
       } else {
         var myTable = document.getElementById("matrix-dt-edit");
         var rowCount = myTable.rows.length;
@@ -379,12 +385,14 @@
           myTable.deleteRow(x); 
         }
         NStatus = [];
+        NEStatus = [];
       }
     }
 
     function editItem(id){
         $.get('approver/'+id, function(response){
             NStatus = [];
+            deleteAllRow('#btnDelEdit');
             var data = response.data;
             var dataEmp = data.employee_details;
             var dataMatrix = data.matrix;
@@ -415,7 +423,7 @@
                                '<input type="hidden" name="edit_app_fname[]" value="'+matrix[i].approver_name+'"/>' +
                                '<input type="hidden" name="edit_app_nstatus[]" value="'+matrix[i].next_status+'"/>' +
                                '<input type="hidden" name="edit_app_gate[]" value="'+matrix[i].is_gate+'"/></tr>';
-                  NStatus.push(matrix[i].next_status);
+                  NEStatus.push(matrix[i].next_status);
                 }
               }
 
@@ -441,7 +449,7 @@
             {  "data": "module" },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return row.employee_details.emp_fname;
+                  return row.employee_details.full_name;
                 }
             },
             {

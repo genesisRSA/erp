@@ -14,6 +14,7 @@
             <thead>
               <tr>
                   <th>ID</th> 
+                  <th>Site</th>
                   <th>Product Category</th>
                   <th>Name</th>
                   <th>Code</th>
@@ -195,7 +196,7 @@
         });
     }
 
-    function deleteItem(id){
+  function deleteItem(id){
         $('#del_id').val(id);
         $('#deleteModal').modal('open');
     }
@@ -208,6 +209,11 @@
         "ajax": "/api/rgc_entsys/product/all",
         "columns": [
             {  "data": "id" },
+            {  "data": "site",
+                "render": function ( data, type, row, meta ) {
+                    return row.site.site_desc;
+                } 
+            },
             {  "data": "prod_cat",
                 "render": function ( data, type, row, meta ) {
                     return row.prod_cat.prodcat_name;

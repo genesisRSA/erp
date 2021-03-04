@@ -31,7 +31,9 @@ class ProductsController extends Controller
     {
         return response()
             ->json([
-                "data" => Product::with('prod_cat:id,prodcat_name')->get()
+                "data" => Product::with('prod_cat:id,prodcat_name')
+                                    ->with('site:site_code,site_desc')
+                                    ->get()
             ]);
     }
     /**
@@ -160,5 +162,13 @@ class ProductsController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function delete(Request $request)
+    {
+        //
+        if(Product::destroy($request->input('id',''))){
+            return redirect()->route('product.index')->withSuccess('Product Successfully Deleted');
+        }
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 use App\SalesForecast;
 use App\ApproverMatrix;
 use App\Product;
@@ -56,12 +57,13 @@ class SalesForecastController extends Controller
     {
         return response()
         ->json([
-            "data" => SalesForecast::all()
+            "data" => SalesForecast::where('status','=','Pending')
+                                    ->get()
         ]); 
     }
 
     public function getApprover($id,$module)
-    {
+    {   
         return response()
         ->json([
             "data" => DB::table('approver_matrices')
@@ -70,9 +72,21 @@ class SalesForecastController extends Controller
                                 ['module','=',$module],
                                 ])
                             ->first()
+         
         ]);
     }
 
+    public function getApproverMatrix($id)
+    {   
+        $data = SalesForecast::where('id','=',$id)->first();
+        return response()->json(['data' => $data]);
+    }
+
+    public function getProducts($id)
+    {
+        $data = Product::where('site_code',$id)->get();
+        return response()->json(['data' => $data]);
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -91,11 +105,13 @@ class SalesForecastController extends Controller
      */
     public function store(Request $request)
     {
-        //
+    
         $field = [
+            'currency_code' => 'required',
             'unit_price' => 'required',
             'quantity' => 'required',
             'total_price' => 'required',
+            'app_seq' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $field);
@@ -132,6 +148,10 @@ class SalesForecastController extends Controller
                                                 'next_status' => $request->input('app_nstatus.'.$i),
                                                 'is_gate' => $request->input('app_gate.'.$i)
                                                 ]);
+                        if($request->input('app_seq.'.$i)==0) {
+                            $forecast->current_sequence = $request->input('app_seq.'.$i);
+                            $forecast->current_approver = $request->input('app_id.'.$i);
+                        }
                     }
 
                     $approvers = json_encode($approvers);            
@@ -152,10 +172,14 @@ class SalesForecastController extends Controller
      */
     public function show($id)
     {
-        $data = SalesForecast::find($id);
+        //$data = SalesForecast::find($id);
+        // ->with('currency:currency_code,currency_name');
+                      
         return response()
         ->json([
-            "data" => $data
+            "data" => SalesForecast::where('id','=',$id)
+                        ->with('currency:currency_code,currency_name')
+                        ->first()
         ]);
     }
 
@@ -185,8 +209,9 @@ class SalesForecastController extends Controller
     public function patch(Request $request)
     {
         $field = [
+            'currency_code' => 'required',
             'unit_price' => 'required',
-            'add_quantity' => 'required',
+            'quantity' => 'required',
             'total_price' => 'required',
         ];
 
@@ -212,6 +237,132 @@ class SalesForecastController extends Controller
 
             if($forcas->save()){
                 return redirect()->route('forecast.index')->withSuccess('Sales Forecast Details Successfully Updated');
+            }
+        }
+    }
+
+    public function approve(Request $request)
+    {
+        $field = [
+            //'edit_app_module' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $field);
+                              
+        if ($validator->fails()) {
+            return  back()->withInput()
+                            ->withErrors($validator);
+        }else{
+
+            $forecast_app = SalesForecast::find($request->input('id', ''));
+    
+            $curr_id = $request->input('id','');
+            $curr_seq = $request->input('seq','');
+            $curr_app = $request->input('appid','');
+            $status = $request->input('status','');
+            $remarks = $request->input('remarks','');
+            $date = date('Y-m-d H:i:s');
+            $curr_seq_db = $forecast_app->current_sequence;
+            $matrix = json_decode($forecast_app->matrix, true);
+            $matrixh = json_decode($forecast_app->matrix_h) ? json_decode($forecast_app->matrix_h) : array();
+
+            $gate = $matrix[0]['is_gate'];
+            
+            if($status=='Approve')
+            {
+                if($gate=='true')
+                { 
+                    for($i=0; $i < count($matrix); $i++)
+                    {
+                        if($curr_seq==$curr_seq_db)
+                        {
+                            array_push($matrixh, [
+                                'sequence' => $matrix[$i]['sequence'],
+                                'approver_emp_no' => $matrix[$i]['approver_emp_no'],
+                                'approver_name' => $matrix[$i]['approver_name'],
+                                'status' => $status,
+                                'remarks' => $remarks,
+                                'action_date' => $date,
+                            ]);
+                            $curr_seq += 1;
+                        }
+                        else
+                        {
+                            array_push($matrixh, [
+                                'sequence' => $matrix[$i]['sequence'],
+                                'approver_emp_no' => $matrix[$i]['approver_emp_no'],
+                                'approver_name' => $matrix[$i]['approver_name'],
+                                'status' => 'Bypassed',
+                                'remarks' => 'Bypassed',
+                                'action_date' => $date,
+                            ]);
+                        }
+                    }
+                    $forecast_app->status = 'Approved';
+                    $forecast_app->approved_by = $curr_app;
+                    $forecast_app->updated_by = $curr_app;
+                    $matrix = [];
+                }
+                else 
+                {
+                    array_push($matrixh,[
+                        'sequence' => $curr_seq,
+                        'approver_emp_no' => $curr_app,
+                        'approver_name' => $matrix[0]['approver_name'],
+                        'status' => $status,
+                        'remarks' => $remarks,
+                        'action_date' => $date,
+                    ]);
+                    $curr_seq += 1;
+                    array_splice($matrix,0,1);
+                    $forecast_app->approved_by = $curr_app;
+                    $forecast_app->updated_by = $curr_app;
+                }
+            }
+            else
+            {
+                 for($i=0; $i < count($matrix); $i++)
+                    {
+                        if($curr_seq==$curr_seq_db)
+                        {
+                            array_push($matrixh, [
+                                'sequence' => $matrix[$i]['sequence'],
+                                'approver_emp_no' => $matrix[$i]['approver_emp_no'],
+                                'approver_name' => $matrix[$i]['approver_name'],
+                                'status' => $status,
+                                'remarks' => $remarks,
+                                'action_date' => $date,
+                            ]);
+                            $curr_seq += 1;
+                        }
+                        else
+                        {
+                            array_push($matrixh, [
+                                'sequence' => $matrix[$i]['sequence'],
+                                'approver_emp_no' => $matrix[$i]['approver_emp_no'],
+                                'approver_name' => $matrix[$i]['approver_name'],
+                                'status' => 'Bypassed',
+                                'remarks' => 'Bypassed',
+                                'action_date' => $date,
+                            ]);
+                        }
+                    }
+                $forecast_app->status = 'Rejected';
+                $forecast_app->approved_by = 'N/A';
+                $forecast_app->updated_by = $curr_app;
+                $matrix = [];
+            }
+            
+            $forecast_app->current_sequence = $curr_seq;
+            $forecast_app->matrix = json_encode($matrix);
+            $forecast_app->matrix_h = json_encode($matrixh);
+
+            if($forecast_app->save()){
+                if($status=='Approve'){
+                    return redirect()->route('forecast.index')->withSuccess('Sales Forecast Successfully Approved');
+                } else {
+                    return redirect()->route('forecast.index')->withSuccess('Sales Forecast Successfully Rejected');
+                }
             }
         }
     }
