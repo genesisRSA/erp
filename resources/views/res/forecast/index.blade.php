@@ -81,7 +81,7 @@
               <label for="forecast_code">Forecast Code<sup class="red-text">*</sup></label>
             </div>
 
-            <div class="input-field col s12 m2 l3">
+            <div class="input-field col s12 m4 l3">
               <select id="add_forecast_year" name="forecast_year" onchange="getApprover(1,'add','Sales Forecast');" required>
                 <option value="" disabled selected>Choose your option</option>
                 <option value="2021">2021</option>
@@ -98,7 +98,7 @@
               <label for="forecast_year">Forecast Year<sup class="red-text">*</sup></label>
             </div>
 
-            <div class="input-field col s12 m2 l3">
+            <div class="input-field col s12 m4 l3">
               <select id="add_forecast_month" name="forecast_month" required>
                 <option value="" disabled selected>Choose your option</option>
                 <option value="January">January</option>
@@ -119,7 +119,7 @@
           </div>
 
           <div class="row">
-            <div class="input-field col s12 m3 l4">
+            <div class="input-field col s12 m4 l4">
               <select id="add_site_code" name="site_code" required>
                 <option value="" disabled selected>Choose your option</option>
                 @foreach ($sites as $site)
@@ -129,7 +129,7 @@
               <label for="site_code">Site<sup class="red-text">*</sup></label>
             </div>
 
-            <div class="input-field col s12 m3 l5">
+            <div class="input-field col s12 m4 l5">
               <select id="add_prod_code" name="prod_code" required>
                 <option value="" disabled selected>Choose your option</option>
                 {{-- @foreach ($products as $prod)
@@ -139,7 +139,7 @@
               <label for="prod_code">Product<sup class="red-text">*</sup></label>
             </div>
 
-            <div class="input-field col s12 m3 l3">
+            <div class="input-field col s12 m4 l3">
               <select id="add_uom_code" name="uom_code" required>
                 <option value="0" disabled selected>Choose your option</option>
                 @foreach ($uoms as $uom)
@@ -163,7 +163,7 @@
             </div>
 
             <div class="input-field col s12 m3 l3">
-              <input placeholder="0.00" id="add_unit_price" name="unit_price" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('add');" required>
+              <input placeholder="0.0000" id="add_unit_price" name="unit_price" type="number" step="0.0001" style="text-align: right" class="number validate" onkeyup="computeTotal('add');" required>
               <label for="unit_price">Unit Price<sup class="red-text">*</sup></label>
             </div>
 
@@ -174,7 +174,7 @@
             </div>
 
             <div class="input-field col s12 m3 l3">
-              <input placeholder="0" id="add_total_price" name="total_price" type="text" style="text-align: right" class="number" required readonly>
+              <input placeholder="0.0000" id="add_total_price" name="total_price" type="text" step="0.0001"  style="text-align: right" class="number" required readonly>
               <label for="total_price">Total Price<sup class="red-text">*</sup></label>
             </div>
 
@@ -256,7 +256,7 @@
               <label for="forecast_code">Forecast Code<sup class="red-text">*</sup></label>
             </div>
 
-            <div class="input-field col s12 m2 l3">
+            <div class="input-field col s12 m4 l3">
               <select id="edit_forecast_year" name="forecast_year" required>
                 <option value="" disabled selected>Choose your option</option>
                 <option value="2021">2021</option>
@@ -273,7 +273,7 @@
               <label for="forecast_year">Forecast Year<sup class="red-text">*</sup></label>
             </div>
 
-            <div class="input-field col s12 m2 l3">
+            <div class="input-field col s12 m4 l3">
               <select id="edit_forecast_month" name="forecast_month" required>
                 <option value="" disabled selected>Choose your option</option>
                 <option value="January">January</option>
@@ -295,7 +295,7 @@
           </div>
 
           <div class="row">
-            <div class="input-field col s12 m3 l4">
+            <div class="input-field col s12 m4 l4">
               <select id="edit_site_code" name="site_code" required>
                 <option value="" disabled selected>Choose your option</option>
                 @foreach ($sites as $site)
@@ -307,7 +307,7 @@
 
           
 
-            <div class="input-field col s12 m3 l5">
+            <div class="input-field col s12 m4 l5">
               <select id="edit_prod_code" name="prod_code" required>
                 <option value="" disabled selected>Choose your option</option>
                 @foreach ($products as $prod)
@@ -317,7 +317,7 @@
               <label for="prod_code">Product<sup class="red-text">*</sup></label>
             </div>
 
-            <div class="input-field col s12 m3 l3">
+            <div class="input-field col s12 m4 l3">
               <select id="edit_uom_code" name="uom_code" required>
                 <option value="0" disabled selected>Choose your option</option>       
                   @foreach ($uoms as $i)
@@ -341,7 +341,7 @@
             </div>
 
             <div class="input-field col s12 m3 l3">
-              <input placeholder="0.00" id="edit_unit_price" name="unit_price" type="number" step="0.0001" style="text-align: right" class="number validate" onkeyup="computeTotal('edit');" required>
+              <input placeholder="0.0000" id="edit_unit_price" name="unit_price" type="number" step="0.0001" style="text-align: right" class="number validate" onkeyup="computeTotal('edit');" required>
               <label for="unit_price">Unit Price<sup class="red-text">*</sup></label>
             </div>
 
@@ -548,23 +548,24 @@
       <div class="modal-footer">
 
      
-        <div class="row">
+        <div class="row" style="padding: 10px">
 
-          <div class="input-field col s12 m8 l8">
+          <div class="input-field col s12 m9 l9">
 
-            <i class="material-icons prefix">mode_edit</i>
-            <textarea class="materialize-textare" type="text" id="app_remarks" name="remarks" placeholder="Please input remarks here.." style="height: 150px;" required/></textarea>
-            
+            {{-- <i class="material-icons prefix">mode_edit</i> --}}
+            <textarea class="materialize-textarea" type="text" id="app_remarks" name="remarks" placeholder="Please input remarks here.." style="height: 150px; border-left: 10px; border-color: black; padding-left:20px;" required/></textarea>
+            <label for="icon_prefix2">Remarks</label>
+
           </div>
           
-          <div class="input-field col s12 m4 l4">
+          <div class="input-field col s12 m3 l3">
             <input type="hidden" id="status" name="status">
 
-            <button id="btnApp" name="approve" value="Approve" onclick="getStatus('Approve');" class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Approve</button>
+            <button id="btnApp" name="approve" value="Approve" onclick="getStatus('Approved');" class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Approve</button>
             
-            <button id="btnRej" name="reject" value="Reject" onclick="getStatus('Reject');" class="red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Reject</button>
+            <button id="btnRej" name="reject" value="Reject" onclick="getStatus('Reject');" class="red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Reject&nbsp;&nbsp;&nbsp;</button>
 
-            <a href="#!" class="modal-close orange waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Cancel</a>
+            <a href="#!" class="modal-close orange waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Cancel&nbsp;&nbsp;</a>
           </div>
 
       </div>
@@ -838,8 +839,15 @@
         currency = '';
       }
 
+      const formatter = new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 4,      
+        maximumFractionDigits: 4,
+      });
+
+      
       var total_price = unit_price * quantity;
-      var total_price_w_com = addCommas(total_price);
+      var totalprice = formatter.format(total_price);
+      var total_price_w_com = addCommas(totalprice);
       var total_w_currency = currency + ' ' + total_price_w_com;
       //var total_w_currency = total_price_w_com + ' ' + currency;
 
@@ -949,7 +957,30 @@
             {  "data": "site_code" },
             {  "data": "prod_code" },
             {  "data": "forecast_code" },
-            {  "data": "status" },
+            // {  "data": "status" },
+            {
+                "data": "status",
+                "render": function ( data, type, row, meta ) {
+                  switch(data){
+                    case 'Approved':
+                      return  '<span class="badge green white-text">Approved</span>';
+                    break;
+                    case 'Pending':
+                      return  '<span class="badge blue white-text">Pending</span>';
+                    break;
+                    case 'Rejected':
+                      return  '<span class="badge red white-text">Rejected</span>';
+                    break;
+                    case 'For Approval':
+                      return  '<span class="badge yellow white-text">For Approval</span>';
+                    break;
+                    case 'For Review':
+                      return  '<span class="badge yellow white-text">For Review</span>';
+                    break;
+                  }
+                   
+                }
+            },
             {
                 "data": "id",
                 "render": function ( data, type, row, meta ) {

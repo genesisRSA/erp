@@ -259,16 +259,19 @@ class SalesForecastController extends Controller
             $curr_id = $request->input('id','');
             $curr_seq = $request->input('seq','');
             $curr_app = $request->input('appid','');
+            $curr_status = $forecast_app->status;
             $status = $request->input('status','');
             $remarks = $request->input('remarks','');
+            
             $date = date('Y-m-d H:i:s');
             $curr_seq_db = $forecast_app->current_sequence;
             $matrix = json_decode($forecast_app->matrix, true);
             $matrixh = json_decode($forecast_app->matrix_h) ? json_decode($forecast_app->matrix_h) : array();
 
             $gate = $matrix[0]['is_gate'];
+            $next_status = $matrix[0]['next_status'];
             
-            if($status=='Approve')
+            if($status=='Approved')
             {
                 if($gate=='true')
                 { 
@@ -309,12 +312,13 @@ class SalesForecastController extends Controller
                         'sequence' => $curr_seq,
                         'approver_emp_no' => $curr_app,
                         'approver_name' => $matrix[0]['approver_name'],
-                        'status' => $status,
+                        'status' => $curr_status,
                         'remarks' => $remarks,
                         'action_date' => $date,
                     ]);
                     $curr_seq += 1;
                     array_splice($matrix,0,1);
+                    $forecast_app->status = $next_status;
                     $forecast_app->approved_by = $curr_app;
                     $forecast_app->updated_by = $curr_app;
                 }
@@ -329,7 +333,7 @@ class SalesForecastController extends Controller
                                 'sequence' => $matrix[$i]['sequence'],
                                 'approver_emp_no' => $matrix[$i]['approver_emp_no'],
                                 'approver_name' => $matrix[$i]['approver_name'],
-                                'status' => $status,
+                                'status' => $curr_status,
                                 'remarks' => $remarks,
                                 'action_date' => $date,
                             ]);
