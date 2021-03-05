@@ -228,7 +228,7 @@ class LeavesController extends Controller
             $leave->last_approved = "1990-01-01";
 
             if($has_sickleave){
-                $leave->next_approver = User::where('is_nurse','=','1')->first()->emp_no;
+                $leave->next_approver = '1006-2020';
                 $leave->status = "For Fit to Work Verification";
 
                 $logs = array(array('status' => 'For Fit to Work Verification',
