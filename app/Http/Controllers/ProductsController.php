@@ -127,6 +127,7 @@ class ProductsController extends Controller
     {
         $field = [
             'prodcat_id' => 'required',
+            'site_code' => 'required',
             'prod_name' => 'required',
             'prod_code' => 'required',
             'prod_type' => 'required',
@@ -140,6 +141,7 @@ class ProductsController extends Controller
                         ->withErrors($validator);
         }else{
             $product = Product::find($request->input('id',''));
+            $product->site_code = $request->input('site_code','');
             $product->prodcat_id = $request->input('prodcat_id','');
             $product->prod_name = $request->input('prod_name','');
             $product->prod_code = Str::upper($request->input('prod_code',''));

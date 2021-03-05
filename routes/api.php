@@ -80,5 +80,7 @@ Route::get('/rgc_entsys/approver/all','ApproverMatrixController@all');
 Route::get('/rgc_entsys/forecast/all','SalesForecastController@all');
 Route::get('/rgc_entsys/forecast/all_approval','SalesForecastController@all_approval');
 
+Route::get('/rgc_entsys/quotation/all','SalesQuotationController@all');
+
 Route::get('/rgc_entsys/product_category/all', 'ProductCategoriesController@all');
 Route::get('/rgc_entsys/product/all', 'ProductsController@all');

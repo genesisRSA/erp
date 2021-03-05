@@ -3,14 +3,14 @@
 @section('content')
   <div class="row blue-text text-darken-4 white" style="border-bottom: 1px solid rgba(0,0,0,0.14);">
     <div class="col s12 m12">
-        <h4 class="title"><span class="grey-text darken-4">Sales<i class="material-icons">arrow_forward_ios</i></span> Sales Forecast</h4>
+        <h4 class="title"><span class="grey-text darken-4">Sales<i class="material-icons">arrow_forward_ios</i></span> Sales Quotation</h4>
     </div>
   </div>
   <div class="row main-content">
   
     {{-- <ul id="tabs-swipe-demo" class="tabs"> --}}
     <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
-      <li class="tab col s12 m4 l4"><a class="active" href="#ongoing">Sales Forecasts</a></li>
+      <li class="tab col s12 m4 l4"><a class="active" href="#ongoing">Sales Quotation</a></li>
       <li class="tab col s12 m4 l4"><a href="#approval">For Approval</a></li>
     </ul>
 
@@ -18,13 +18,13 @@
 
         <div class="card" style="margin-top: 0px">
           <div class="card-content">
-            <table class="responsive-table highlight" id="forecast-dt" style="width: 100%">
+            <table class="responsive-table highlight" id="quotation-dt" style="width: 100%">
               <thead>
                 <tr>
                     <th>ID</th> 
                     <th>Site Code</th>
                     <th>Product Code</th>
-                    <th>Forecast Code</th>
+                    <th>Quotation Code</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -32,8 +32,8 @@
             </table>
           </div>
       </div>
-      
-      <a href="#addModal" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped modal-trigger" id="add-button"  onclick="getApprover(1,'add','Sales Forecast');" data-position="left" data-tooltip="Add Sales Forecast Details"><i class="material-icons">add</i></a>
+      {{--  onclick="getApprover(2,'add','Sales Quotation');" --}}
+      <a href="#askModal" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped modal-trigger" id="add-button"  data-position="left" data-tooltip="Add Sales Quotation Details"><i class="material-icons">add</i></a>
     </div>
 
     <div id="approval" name="approval">
@@ -45,7 +45,7 @@
                     <th>ID</th> 
                     <th>Site Code</th>
                     <th>Product Code</th>
-                    <th>Forecast Code</th>
+                    <th>Quotation Code</th>
                     <th>Filed By</th>
                     <th>Status</th>
                     <th>Action</th>
@@ -59,69 +59,52 @@
   </div>
 
   <!-- MODALS -->
+  <div id="askModal" class="modal">
+    <div class="modal-content">
+      <h4>Sales Quotation</h4><i class="material-icons left">assignment</i>
+      <p>Do you want to create a quotation based on your sales forecast?</p>
+    </div>
+    <div class="modal-footer">
+      <a href="#addForecast" class="modal-close green waves-effect waves-dark btn modal-trigger" onclick="callModal('yes'), getApprover(2,'forecast','Sales Quotation');"  ><i class="material-icons left">check_circle</i>Yes</a>
+      <a href="#addModal" class="modal-close red waves-effect waves-dark btn modal-trigger" onclick="callModal('no'), getApprover(2,'add','Sales Quotation');"><i class="material-icons left">highlight_off</i>No</a>
+    </div>
+  </div>
 
   <div id="addModal" class="modal">
-    <form method="POST" action="{{route('forecast.store')}}">
+    {{-- <form method="POST" action="{{route('forecast.store')}}"> --}}
       <form>
     @csrf
       <div class="modal-content">
-        <h4>Add Sales Forecast</h4>
-
+        <h4>Add Sales Quotation</h4>
         <ul id="tabs-swipe-demo" class="tabs">
-          <li class="tab col s12 m4 l4"><a class="active" href="#forecast">Forecast Details</a></li>
-          {{-- need ID and module for getApprover()  --}}
+          <li class="tab col s12 m4 l4"><a class="active" href="#quotation">Quotation Details</a></li>
+          {{-- need auth ID and module for getApprover()  --}}
           <li class="tab col s12 m4 l4"><a href="#signatories">Signatories</a></li>
         </ul><br>
 
-        <div id="forecast" name="forecast">
+        <div id="quotation" name="quotation">
 
           <div class="row">
-            <div class="input-field col s12 m4 l6">
-              <input type="text" id="add_forecast_code" name="forecast_code" value="{{$forecast}}{{$today}}-{{$lastforecast}}" readonly/>
-              <label for="forecast_code">Forecast Code<sup class="red-text">*</sup></label>
+            <div class="input-field col s12 m6 l6">
+              <input type="text" id="add_quotation_code" name="quotation_code" value="{{$quot}}{{$today}}-{{$lastquotation}}" readonly/>
+              <label for="quotation_code">Quotation Code<sup class="red-text">*</sup></label>
             </div>
-
-            <div class="input-field col s12 m4 l3">
-              <select id="add_forecast_year" name="forecast_year" onchange="getApprover(1,'add','Sales Forecast');" required>
-                <option value="" disabled selected>Choose your option</option>
-                <option value="2021">2021</option>
-                <option value="2022">2022</option>
-                <option value="2023">2023</option>
-                <option value="2024">2024</option>
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
-                <option value="2027">2027</option>
-                <option value="2028">2028</option>
-                <option value="2029">2029</option>
-                <option value="2030">2030</option>
+        
+            <div class="input-field col s12 m6 l6">
+              <select id="add_customer_code" name="customer_code">
+                <option value="" disabled selected>Choose Customer</option>
+                @foreach ($customers as $customer)
+                  <option value="{{$customer->cust_code}}">{{$customer->cust_name}}</option>
+                @endforeach
               </select>
-              <label for="forecast_year">Forecast Year<sup class="red-text">*</sup></label>
+              <label for="customer_code">Customer<sup class="red-text">*</sup></label>
             </div>
-
-            <div class="input-field col s12 m4 l3">
-              <select id="add_forecast_month" name="forecast_month" required>
-                <option value="" disabled selected>Choose your option</option>
-                <option value="January">January</option>
-                <option value="February">February</option>
-                <option value="March">March</option>
-                <option value="April">April</option>
-                <option value="May">May</option>
-                <option value="June">June</option>
-                <option value="July">July</option>
-                <option value="August">August</option>
-                <option value="September">September</option>
-                <option value="October">October</option>
-                <option value="November">November</option>
-                <option value="December">December</option>
-              </select>
-              <label for="forecast_month">Forecast Month<sup class="red-text">*</sup></label>
-            </div> 
           </div>
 
           <div class="row">
             <div class="input-field col s12 m4 l4">
               <select id="add_site_code" name="site_code" required>
-                <option value="" disabled selected>Choose your option</option>
+                <option value="" disabled selected>Choose Site</option>
                 @foreach ($sites as $site)
                   <option value="{{$site->site_code}}">{{$site->site_desc}}</option>
                 @endforeach
@@ -131,17 +114,14 @@
 
             <div class="input-field col s12 m4 l5">
               <select id="add_prod_code" name="prod_code" required>
-                <option value="" disabled selected>Choose your option</option>
-                {{-- @foreach ($products as $prod)
-                  <option value="{{$prod->prod_code}}">{{$prod->prod_name}}</option>
-                @endforeach --}}
+                <option value="" disabled selected>Choose Product</option>
               </select>
               <label for="prod_code">Product<sup class="red-text">*</sup></label>
             </div>
 
             <div class="input-field col s12 m4 l3">
               <select id="add_uom_code" name="uom_code" required>
-                <option value="0" disabled selected>Choose your option</option>
+                <option value="0" disabled selected>Choose Unit of Measure</option>
                 @foreach ($uoms as $uom)
                   <option value="{{$uom->uom_code}}">{{$uom->uom_name}}</option>
                 @endforeach
@@ -152,34 +132,83 @@
           </div>
 
           <div class="row">
-            <div class="input-field col s12 m3 l3">
+            <div class="input-field col s12 m6 l6">
+              <select id="add_payment_term" name="payment_term" required>
+                <option value="0" disabled selected>Choose Payment Term</option>
+                @foreach ($payment as $payments)
+                  <option value="{{$payments->id}}">{{$payments->term_name}}</option>
+                @endforeach
+              </select>
+              <label for="payment_term">Payment Term<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m6 l6">
               <select id="add_currency_code" name="currency_code" onchange="computeTotal('add');" required>
-                <option value="0" disabled selected>Choose your option</option>
+                <option value="0" disabled selected>Choose Currency</option>
                 @foreach ($currencies as $curr)
                   <option value="{{$curr->currency_code}}">{{$curr->symbol}} - {{$curr->currency_name}}</option>
                 @endforeach
               </select>
               <label for="currency_code">Currency<sup class="red-text">*</sup></label>
             </div>
+          </div>
 
-            <div class="input-field col s12 m3 l3">
-              <input placeholder="0.0000" id="add_unit_price" name="unit_price" type="number" step="0.0001" style="text-align: right" class="number validate" onkeyup="computeTotal('add');" required>
+          <div class="row" style="margin-bottom: 0px">
+            <div class="input-field col s12 m4 l4">
+              <input placeholder="0.00" id="add_unit_price" name="unit_price" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('add');" required>
               <label for="unit_price">Unit Price<sup class="red-text">*</sup></label>
             </div>
 
-            <div class="input-field col s12 m3 l3">
-              {{--  pattern="^[\d,]+$" --}}
+            <div class="input-field col s12 m4 l4">
               <input placeholder="0" id="add_quantity" name="quantity" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('add');" required>
               <label for="quantity">Quantity<sup class="red-text">*</sup></label>
             </div>
 
-            <div class="input-field col s12 m3 l3">
-              <input placeholder="0.0000" id="add_total_price" name="total_price" type="text" step="0.0001"  style="text-align: right" class="number" required readonly>
+            <div class="input-field col s12 m4 l4">
+              <input placeholder="0" id="add_total_price" name="total_price" type="text" style="text-align: right" class="number" required readonly>
               <label for="total_price">Total Price<sup class="red-text">*</sup></label>
+            </div>
+            
+            <div class="input-field col s12 m12 l12">
+              <a class="blue waves-effect waves-light btn right-align" id="btnAdd" onclick="addProduct('m');"><i class="material-icons left">add_circle</i>Add Product</a>
             </div>
 
           </div>
+           
+          <div class="row">
+            <div class="col s12 m12 l12">
+              <div class="card">
+                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Product List</b></h6><hr style="margin: 0px">
+                <div class="card-content" style="padding: 10px; padding-top: 0px">
+                  <table class="highlight responsive-table" id="product-dt">
+                    <thead>
+                      <tr>
+                          {{-- <th></th> --}}
+                          <th class="left-align">Product Code</th> 
+                          <th class="left-align">Product Name</th> 
+                          <th class="left-align">Unit of Measure</th>
+                          <th class="left-align">Currency</th>
+                          <th class="left-align">Unit Price</th>
+                          <th class="left-align">Quantity</th>
+                          <th class="left-align">Total Price</th>
+                          <th class="left-align">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
 
+          <div class="row col s12 m12 l12">
+              <div class="col s12 m8 l8"></div>
+              <div class="col s12 m4 l4 right-align">
+              <input placeholder="0" id="add_grand_total" name="grand_total" type="text" style="text-align: right; left: 75%; font-size: 25px" class="number" required readonly>
+              <label for="grand_total" style="left: 75%; font-size:20px;"><b>Grand Total Price</b><sup class="red-text"></sup></label>
+            </div>
+          </div>
+          
         </div>
 
         <div id="signatories" name="signatories">
@@ -188,6 +217,7 @@
           <div class="row">
             <div class="col s12 m12 l12">
               <div class="card">
+ 
                 <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Current Signatories</b></h6><hr style="margin: 0px">
                 <div class="card-content" style="padding: 10px; padding-top: 0px">
                   <table class="highlight" id="matrix-dt">
@@ -209,6 +239,192 @@
 
       </div>
       <div class="modal-footer">
+      
+        <button class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Save</button>
+        <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Cancel</a>
+      </div>
+    </form>
+  </div>
+
+  <div id="addForecast" class="modal">
+    {{-- <form method="POST" action="{{route('forecast.store')}}"> --}}
+      <form>
+    @csrf
+      <div class="modal-content">
+        <h4>Add Sales Quotation Using Forecast</h4>
+        <ul id="tabs-swipe-demo" class="tabs">
+          <li class="tab col s12 m4 l4"><a class="active" href="#forecast">Quotation Details</a></li>
+          {{-- need auth ID and module for getApprover()  --}}
+          <li class="tab col s12 m4 l4"><a href="#signatory">Signatories</a></li>
+        </ul><br>
+
+        <div id="forecast" name="forecast">
+
+          <div class="row">
+            <div class="input-field col s12 m6 l6">
+              <input type="text" id="f_quotation_code" name="quotation_code" value="{{$quot}}{{$today}}-{{$lastquotation}}" readonly/>
+              <label for="quotation_code">Quotation Code<sup class="red-text">*</sup></label>
+            </div>
+        
+            <div class="input-field col s12 m6 l6">
+              <select id="f_forecast_code" name="forecast_code">
+                <option value="" disabled selected>Choose Forecast Code</option>
+                @foreach ($forecast_code as $forecast_codes)
+                  <option value="{{$forecast_codes->forecast_code}}">{{$forecast_codes->forecast_code}}</option>
+                @endforeach
+              </select>
+              <label for="forecast_code">Forecast<sup class="red-text">*</sup></label>
+            </div>
+          </div>
+
+
+          <div id="details" style="display:none">
+
+            <div class="row">
+
+              <div class="input-field col s12 m4 l4">
+                <select id="f_site_code" name="site_code" required>
+                  <option value="" disabled selected>Choose Site</option>
+                  @foreach ($sites as $site)
+                    <option value="{{$site->site_code}}">{{$site->site_desc}}</option>
+                  @endforeach
+                </select>
+                <label for="site_code">Site<sup class="red-text">*</sup></label>
+              </div>
+
+              <div class="input-field col s12 m4 l5">
+                <select id="f_prod_code" name="prod_code" required>
+                  <option value="" disabled selected>Choose Product</option>
+                </select>
+                <label for="prod_code">Product<sup class="red-text">*</sup></label>
+              </div>
+
+              <div class="input-field col s12 m4 l3">
+                <select id="f_uom_code" name="uom_code" required>
+                  <option value="0" disabled selected>Choose Unit of Measure</option>
+                  @foreach ($uoms as $uom)
+                    <option value="{{$uom->uom_code}}">{{$uom->uom_name}}</option>
+                  @endforeach
+                </select>
+                <label for="uom_code">Unit of Measure<sup class="red-text">*</sup></label>
+              </div>
+
+            </div>
+
+            <div class="row">
+
+              <div class="input-field col s12 m6 l6">
+                <select id="f_payment_term" name="payment_term" required>
+                  <option value="0" disabled selected>Choose Payment Term</option>
+                  @foreach ($payment as $payments)
+                    <option value="{{$payments->id}}">{{$payments->term_name}}</option>
+                  @endforeach
+                </select>
+                <label for="payment_term">Payment Term<sup class="red-text">*</sup></label>
+              </div>
+
+              <div class="input-field col s12 m6 l6">
+                <select id="f_currency_code" name="currency_code" onchange="computeTotal('add');" required>
+                  <option value="0" disabled selected>Choose Currency</option>
+                  @foreach ($currencies as $curr)
+                    <option value="{{$curr->currency_code}}">{{$curr->symbol}} - {{$curr->currency_name}}</option>
+                  @endforeach
+                </select>
+                <label for="currency_code">Currency<sup class="red-text">*</sup></label>
+              </div>
+
+            </div>
+
+            <div class="row" style="margin-bottom: 0px">
+              
+              <div class="input-field col s12 m4 l4">
+                <input placeholder="0.00" id="f_unit_price" name="unit_price" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('add');" required>
+                <label for="unit_price">Unit Price<sup class="red-text">*</sup></label>
+              </div>
+
+              <div class="input-field col s12 m4 l4">
+                <input placeholder="0" id="f_quantity" name="quantity" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('add');" required>
+                <label for="quantity">Quantity<sup class="red-text">*</sup></label>
+              </div>
+
+              <div class="input-field col s12 m4 l4">
+                <input placeholder="0" id="f_total_price" name="total_price" type="text" style="text-align: right" class="number" required readonly>
+                <label for="total_price">Total Price<sup class="red-text">*</sup></label>
+              </div>
+              
+              <div class="input-field col s12 m12 l12">
+                <a class="blue waves-effect waves-light btn right-align" id="btnAddF" onclick="addProduct('f');"><i class="material-icons left">add_circle</i>Add Product</a>
+              </div>
+
+            </div>
+            
+            <div class="row">
+              <div class="col s12 m12 l12">
+                <div class="card">
+                  <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Product List</b></h6><hr style="margin: 0px">
+                  <div class="card-content" style="padding: 10px; padding-top: 0px">
+                    <table class="highlight responsive-table" id="product-dt-f">
+                      <thead>
+                        <tr>
+                            {{-- <th></th> --}}
+                            <th class="left-align">Product Code</th> 
+                            <th class="left-align">Product Name</th> 
+                            <th class="left-align">Unit of Measure</th>
+                            <th class="left-align">Currency</th>
+                            <th class="left-align">Unit Price</th>
+                            <th class="left-align">Quantity</th>
+                            <th class="left-align">Total Price</th>
+                            <th class="left-align">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row col s12 m12 l12">
+                <div class="col s12 m8 l8"></div>
+                <div class="col s12 m4 l4 right-align">
+                  <input placeholder="0" id="f_grand_total" name="grand_total" type="text" style="text-align: right; left: 75%; font-size: 25px" class="number" required readonly>
+                  <label for="grand_total" style="left: 75%; font-size:20px;"><b>Grand Total Price</b><sup class="red-text"></sup></label>
+                </div>
+            </div>
+          
+          </div>
+          
+        </div>
+
+        <div id="signatory" name="signatory">
+
+          {{-- current signatories --}}
+          <div class="row">
+            <div class="col s12 m12 l12">
+              <div class="card">
+ 
+                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Current Signatories</b></h6><hr style="margin: 0px">
+                <div class="card-content" style="padding: 10px; padding-top: 0px">
+                  <table class="highlight" id="matrix-dt-f">
+                    <thead>
+                      <tr>
+                          <th>Sequence</th> 
+                          <th>Approver ID</th> 
+                          <th>Approver Name</th> 
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+
+      </div>
+      <div class="modal-footer">
+      
         <button class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Save</button>
         <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Cancel</a>
       </div>
@@ -216,7 +432,8 @@
   </div>
 
   <div id="editModal" class="modal">
-    <form method="POST" action="{{route('forecast.patch')}}">
+    {{-- <form method="POST" action="{{route('quotation.patch')}}"> --}}
+    <form>
     @csrf
       <div class="modal-content">
         <h4>Edit Sales Forecast Details</h4>
@@ -234,7 +451,7 @@
               <label for="forecast_code">Forecast Code<sup class="red-text">*</sup></label>
             </div>
 
-            <div class="input-field col s12 m4 l3">
+            <div class="input-field col s12 m2 l3">
               <select id="edit_forecast_year" name="forecast_year" required>
                 <option value="" disabled selected>Choose your option</option>
                 <option value="2021">2021</option>
@@ -251,7 +468,7 @@
               <label for="forecast_year">Forecast Year<sup class="red-text">*</sup></label>
             </div>
 
-            <div class="input-field col s12 m4 l3">
+            <div class="input-field col s12 m2 l3">
               <select id="edit_forecast_month" name="forecast_month" required>
                 <option value="" disabled selected>Choose your option</option>
                 <option value="January">January</option>
@@ -273,7 +490,7 @@
           </div>
 
           <div class="row">
-            <div class="input-field col s12 m4 l4">
+            <div class="input-field col s12 m3 l4">
               <select id="edit_site_code" name="site_code" required>
                 <option value="" disabled selected>Choose your option</option>
                 @foreach ($sites as $site)
@@ -285,7 +502,7 @@
 
           
 
-            <div class="input-field col s12 m4 l5">
+            <div class="input-field col s12 m3 l5">
               <select id="edit_prod_code" name="prod_code" required>
                 <option value="" disabled selected>Choose your option</option>
                 @foreach ($products as $prod)
@@ -295,7 +512,7 @@
               <label for="prod_code">Product<sup class="red-text">*</sup></label>
             </div>
 
-            <div class="input-field col s12 m4 l3">
+            <div class="input-field col s12 m3 l3">
               <select id="edit_uom_code" name="uom_code" required>
                 <option value="0" disabled selected>Choose your option</option>       
                   @foreach ($uoms as $i)
@@ -319,7 +536,7 @@
             </div>
 
             <div class="input-field col s12 m3 l3">
-              <input placeholder="0.0000" id="edit_unit_price" name="unit_price" type="number" step="0.0001" style="text-align: right" class="number validate" onkeyup="computeTotal('edit');" required>
+              <input placeholder="0.00" id="edit_unit_price" name="unit_price" type="number" step="0.0001" style="text-align: right" class="number validate" onkeyup="computeTotal('edit');" required>
               <label for="unit_price">Unit Price<sup class="red-text">*</sup></label>
             </div>
 
@@ -371,7 +588,7 @@
     </form>
   </div>
 
-  <div id="AppModal" class="modal">
+  <div id="appModal" class="modal">
     <form method="POST" action="{{route('forecast.approve')}}">
     {{-- <form> --}}
     @csrf
@@ -505,24 +722,23 @@
       <div class="modal-footer">
 
      
-        <div class="row" style="padding: 10px">
+        <div class="row">
 
-          <div class="input-field col s12 m9 l9">
+          <div class="input-field col s12 m8 l8">
 
-            {{-- <i class="material-icons prefix">mode_edit</i> --}}
-            <textarea class="materialize-textarea" type="text" id="app_remarks" name="remarks" placeholder="Please input remarks here.." style="height: 150px; border-left: 10px; border-color: black; padding-left:20px;" required/></textarea>
-            <label for="icon_prefix2">Remarks</label>
-
+            <i class="material-icons prefix">mode_edit</i>
+            <textarea class="materialize-textare" type="text" id="app_remarks" name="remarks" placeholder="Please input remarks here.." style="height: 150px;" required/></textarea>
+            
           </div>
           
-          <div class="input-field col s12 m3 l3">
+          <div class="input-field col s12 m4 l4">
             <input type="hidden" id="status" name="status">
 
-            <button id="btnApp" name="approve" value="Approve" onclick="getStatus('Approved');" class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Approve</button>
+            <button id="btnApp" name="approve" value="Approve" onclick="getStatus('Approve');" class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Approve</button>
             
-            <button id="btnRej" name="reject" value="Reject" onclick="getStatus('Reject');" class="red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Reject&nbsp;&nbsp;&nbsp;</button>
+            <button id="btnRej" name="reject" value="Reject" onclick="getStatus('Reject');" class="red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Reject</button>
 
-            <a href="#!" class="modal-close orange waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Cancel&nbsp;&nbsp;</a>
+            <a href="#!" class="modal-close orange waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Cancel</a>
           </div>
 
       </div>
@@ -593,6 +809,37 @@
             });
         });
 
+        $('#f_site_code').change(function () {
+             var id = $(this).val();
+
+          $('#f_prod_code').find('option').remove();
+
+            $.ajax({
+              url:'/rgc_entsys/forecast/getProducts/'+id,
+              type:'get',
+              dataType:'json',
+              success:function (response) {
+                  var dropdown = $("#f_prod_code");
+                  var len = 0;
+                  if (response.data != null) {
+                      len = response.data.length;
+                  }
+
+                  dropdown.append('<option value="" disabled selected>Choose your option</option>');
+                  if (len>0) {
+                      for (var i = 0; i<len; i++) {
+                            var id = response.data[i].prod_code;
+                            var name = response.data[i].prod_name;
+
+                            var option = "<option value='"+id+"'>"+name+"</option>"; 
+                            dropdown.append(option);
+                      }
+                  }
+                  dropdown.formSelect();
+              }
+            });
+        });
+
         $('#edit_site_code').change(function () {
              var id = $(this).val();
 
@@ -637,8 +884,57 @@
           getApproverMatrix(id);
         })
 
+        $("select[name='forecast_code']").on('change', function()
+        {
+            var id = $(this).val();
+            var x = document.getElementById("details");
+            x.style.display = "block";
+
+            $.get('quotation/getForecast/'+id, function(response){
+              var AppendString = "";
+              var i, j = "";
+              var data = response.data;
+              var product = data.product;
+
+              $('#f_site_code option[value="'+data.site_code+'"]').prop('selected', true);
+              $('#f_site_code').formSelect();
+              $('#f_prod_code option[value="'+data.prod_code+'"]').prop('selected', true);
+              $('#f_prod_code').formSelect();
+              $('#f_uom_code option[value="'+data.uom_code+'"]').prop('selected', true);
+              $('#f_uom_code').formSelect();
+              $('#f_currency_code option[value="'+data.currency_code+'"]').prop('selected', true);
+              $('#f_currency_code').formSelect();      
+              $('#f_unit_price').val(data.unit_price);
+              $('#f_quantity').val(data.quantity);
+              $('#f_total_price').val(data.total_price);
+
+              var forecastx = 'f';
+              var AppendString =  "<tr>"+
+                                    "<td>" + data.prod_code + "</td>" +
+                                    "<td>" + product.prod_name + "</td>" +
+                                    "<td>" + data.uom_code + "</td>" +
+                                    "<td>" + data.currency_code + "</td>" +
+                                    "<td>" + data.unit_price + "</td>" +
+                                    "<td>" + data.quantity + "</td>" +
+                                    "<td>" + data.total_price + "</td>" +
+                                    "<td>" + '<a href="#" class="btn-small red waves-effect waves-light" onclick="deleteRow(this,\''+ forecastx +'\');" ><i class="material-icons small icon-demo">delete_sweep</i></a>' + "</td>"
+                                  "</tr>";
+
+              $('#product-dt-f').find('tbody').append(AppendString);
+
+              computeGrandTotal('f');     
+
+            });
+        })
+
 
     });
+
+    function callModal(checker)
+    {
+      var check = checker;
+      $('#checker').val(check);
+    }
 
     function getStatus(status)
     {
@@ -648,7 +944,7 @@
 
     function getApprover(id, loc, modules)
     {
-          $.get('forecast/getApprover/'+id+'/'+modules, function(response){
+          $.get('quotation/getApprover/'+id+'/'+modules, function(response){
 
                 var AppendString = "";
                 var i, j = "";
@@ -659,6 +955,9 @@
 
                 if(loc=='add'){
                   var myTable = document.getElementById("matrix-dt");
+                } 
+                else if(loc=='forecast') {
+                  var myTable = document.getElementById("matrix-dt-f");
                 } 
                 else if(loc=='edit') {
                   var myTable = document.getElementById("matrix-dt-edit");
@@ -690,6 +989,9 @@
                 if(loc=='add'){
                   $('#matrix-dt').find('tbody').append(AppendString);
                 } 
+                else if(loc=='forecast') {
+                  $('#matrix-dt-f').find('tbody').append(AppendString);
+                }
                 else if(loc=='edit') {
                   $('#matrix-dt-edit').find('tbody').append(AppendString);
                 }
@@ -762,10 +1064,20 @@
                   $('#matrix-dt-app-h').find('tbody').append(AppendStringH);
 
           });
-    } 
+    }
+
+    function getForecast()
+    {
+      var fc = document.getElementById('f_forecast_code');
+      var forecast_code = fc.options[fc.selectedIndex].text;
+
+
+
+    }
 
     function computeTotal(loc)
     {
+      
       if(loc=='add')
       {
         var unit_price = $('#add_unit_price').val();
@@ -801,9 +1113,8 @@
         maximumFractionDigits: 4,
       });
 
-      
       var total_price = unit_price * quantity;
-      var totalprice = formatter.format(total_price);
+      var totalprice  = formatter.format(total_price);
       var total_price_w_com = addCommas(totalprice);
       var total_w_currency = currency + ' ' + total_price_w_com;
       //var total_w_currency = total_price_w_com + ' ' + currency;
@@ -816,11 +1127,132 @@
       }
     }
 
+    function computeGrandTotal(loc)
+    {
+        var locx = loc
+        const formatter = new Intl.NumberFormat('en-US', {
+            minimumFractionDigits: 4,      
+            maximumFractionDigits: 4,
+          });
+        if(locx=='f')
+        {
+          var myTableF =  document.getElementById("product-dt-f");
+          var rowCountF = myTableF.rows.length;
+          if(rowCountF>1){
+            var currencyF = myTableF.rows[1].cells[3].innerHTML;
+          }  
+          var resultF = 0;
+          
+          for (var f=1; f < rowCountF; f++)
+          {
+            resultF = resultF + (parseFloat(myTableF.rows[f].cells[4].innerHTML) * parseFloat(myTableF.rows[f].cells[5].innerHTML));
+          }
+
+          if(resultF<=0){
+            var gt_w_curr_f = '';
+          } else {
+            var grand_total_f = formatter.format(resultF);
+            var gt_w_curr_f = currencyF + ' ' + grand_total_f;
+          }
+          $('#f_grand_total').val(gt_w_curr_f); 
+
+        }
+        else
+        {
+          var myTable =  document.getElementById("product-dt");
+          var rowCount = myTable.rows.length;
+          if(rowCount>1){
+            var currency = myTable.rows[1].cells[3].innerHTML;
+          }  
+          var result = 0;
+          
+          for (var i=1; i < rowCount; i++)
+          {
+            result = result + (parseFloat(myTable.rows[i].cells[4].innerHTML) * parseFloat(myTable.rows[i].cells[5].innerHTML));
+          }
+
+          if(result<=0){
+            var gt_w_curr = '';
+          } else {
+            var grand_total = formatter.format(result);
+            var gt_w_curr = currency + ' ' + grand_total;
+          }
+          $('#add_grand_total').val(gt_w_curr);
+         
+        }
+    }
+
     function addCommas(x) 
     {
       var parts = x.toString().split(".");
       parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       return parts.join(".");
+    }
+
+    function addProduct(loc)
+    {
+        var locx = loc;
+
+        if(locx=='f')
+        {
+          var prod_code_f = $('#f_prod_code').val(); // product code
+          var pc_f = document.getElementById('f_prod_code');
+          var prod_name_f = pc_f.options[pc_f.selectedIndex].text; // product name
+          var uom_f = $('#f_uom_code').val(); //uom
+          var unit_price_f = $('#f_unit_price').val(); //unit price
+          var quantity_f = $('#f_quantity').val(); //quantity
+          var total_price_f = $('#f_total_price').val(); //total price
+
+          var cf = document.getElementById('f_currency_code');
+          var currency_f = cf.options[cf.selectedIndex].text;
+          currency_f = currency_f.substr(currency_f, 1); // currency
+
+          var forecastx = 'f';
+          var AppendString_f =  "<tr>"+
+                                // "<td>" + rowCount + "</td>" +
+                                "<td>" + prod_code_f + "</td>" +
+                                "<td>" + prod_name_f + "</td>" +
+                                "<td>" + uom_f + "</td>" +
+                                "<td>" + currency_f + "</td>" +
+                                "<td>" + unit_price_f + "</td>" +
+                                "<td>" + quantity_f + "</td>" +
+                                "<td>" + total_price_f + "</td>" +
+                                "<td>" + '<a href="#" class="btn-small red waves-effect waves-light" onclick="deleteRow(this,\''+ forecastx +'\')" ><i class="material-icons small icon-demo">delete_sweep</i></a>' + "</td>"
+                              "</tr>";
+          $('#product-dt-f').find('tbody').append(AppendString_f);
+          computeGrandTotal(locx);  
+        }
+        else
+        {
+          var product_code = $('#add_prod_code').val(); // product code
+          var pc = document.getElementById('add_prod_code');
+          var product_name = pc.options[pc.selectedIndex].text; // product name
+          var uom = $('#add_uom_code').val(); //uom
+          var unit_price = $('#add_unit_price').val(); //unit price
+          var quantity = $('#add_quantity').val(); //quantity
+          var total_price = $('#add_total_price').val(); //total price
+
+          var c = document.getElementById('add_currency_code');
+          var currency = c.options[c.selectedIndex].text;
+          currency = currency.substr(currency, 1); // currency
+
+          var forecastx = 'm';
+          var AppendString =  "<tr>"+
+                                // "<td>" + rowCount + "</td>" +
+                                "<td>" + product_code + "</td>" +
+                                "<td>" + product_name + "</td>" +
+                                "<td>" + uom + "</td>" +
+                                "<td>" + currency + "</td>" +
+                                "<td>" + unit_price + "</td>" +
+                                "<td>" + quantity + "</td>" +
+                                "<td>" + total_price + "</td>" +
+                                "<td>" + '<a href="#" class="btn-small red waves-effect waves-light" onclick="deleteRow(this,\''+ forecastx +'\');" ><i class="material-icons small icon-demo">delete_sweep</i></a>' + "</td>"
+                              "</tr>";
+                              
+          $('#product-dt').find('tbody').append(AppendString);
+          computeGrandTotal(locx);     
+        }
+        
     }
 
     function editItem(id)
@@ -892,7 +1324,7 @@
             $('#app_quantity').val(data.quantity);
             $('#app_total_price').val(totalPrice);
 
-            $('#AppModal').modal('open');
+            $('#appModal').modal('open');
             
         });
     }
@@ -903,41 +1335,35 @@
         $('#deleteModal').modal('open');
     }
 
-    var forecast = $('#forecast-dt').DataTable({
+    function deleteRow(r,loc) 
+    {
+      var locx = loc;
+      if(locx=='f')
+      {
+        var i = r.parentNode.parentNode.rowIndex;
+        document.getElementById("product-dt-f").deleteRow(i);
+        computeGrandTotal('f');
+      }
+      else
+      {
+        var i = r.parentNode.parentNode.rowIndex;
+        document.getElementById("product-dt").deleteRow(i);
+        computeGrandTotal('m');
+      }
+    }
+
+    var quotation = $('#quotation-dt').DataTable({
         "lengthChange": false,
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/rgc_entsys/forecast/all",
+        "ajax": "/api/rgc_entsys/quotation/all",
         "columns": [
             {  "data": "id" },
             {  "data": "site_code" },
             {  "data": "prod_code" },
-            {  "data": "forecast_code" },
-            // {  "data": "status" },
-            {
-                "data": "status",
-                "render": function ( data, type, row, meta ) {
-                  switch(data){
-                    case 'Approved':
-                      return  '<span class="badge green white-text">Approved</span>';
-                    break;
-                    case 'Pending':
-                      return  '<span class="badge blue white-text">Pending</span>';
-                    break;
-                    case 'Rejected':
-                      return  '<span class="badge red white-text">Rejected</span>';
-                    break;
-                    case 'For Approval':
-                      return  '<span class="badge yellow white-text">For Approval</span>';
-                    break;
-                    case 'For Review':
-                      return  '<span class="badge yellow white-text">For Review</span>';
-                    break;
-                  }
-                   
-                }
-            },
+            {  "data": "quotation_code" },
+            {  "data": "status" },
             {
                 "data": "id",
                 "render": function ( data, type, row, meta ) {

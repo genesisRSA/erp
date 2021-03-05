@@ -181,6 +181,13 @@ Route::get('/rgc_entsys/forecast/getApproverMatrix/{id}', 'SalesForecastControll
 Route::get('/rgc_entsys/forecast/getProducts/{id}', 'SalesForecastController@getProducts');
 
 Route::resource('/rgc_entsys/quotation','SalesQuotationController');
+Route::post('/rgc_entsys/quotation/delete', 'SalesQuotationController@delete')->name('quotation.delete');
+Route::post('/rgc_entsys/quotation/patch', 'SalesQuotationController@patch')->name('quotation.patch');
+Route::post('/rgc_entsys/quotation/approve', 'SalesQuotationController@approve')->name('quotation.approve');
+Route::get('/rgc_entsys/quotation/getApprover/{id}/{module}', 'SalesQuotationController@getApprover');
+Route::get('/rgc_entsys/quotation/getApproverMatrix/{id}', 'SalesQuotationController@getApproverMatrix');
+Route::get('/rgc_entsys/quotation/getForecast/{id}', 'SalesQuotationController@getForecast');
+Route::get('/rgc_entsys/quotation/getProducts/{id}', 'SalesQuotationController@getProducts');
 
 
 // end -> jp task
