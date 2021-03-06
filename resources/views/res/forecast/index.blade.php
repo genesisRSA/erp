@@ -23,8 +23,8 @@
                 <tr>
                     <th>ID</th> 
                     <th>Site Code</th>
-                    <th>Product Code</th>
                     <th>Forecast Code</th>
+                    <th>Product Code</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -371,7 +371,112 @@
     </form>
   </div>
 
-  <div id="AppModal" class="modal">
+  <div id="viewModal" class="modal">
+    <form>
+    @csrf
+      <div class="modal-content">
+        <h4>Sales Forecast Details</h4>
+
+        <ul id="tabs-swipe-demo" class="tabs">
+          <li class="tab col s12 m4 l4"><a class="active" href="#view-forecast">Forecast Details</a></li>
+          <li class="tab col s12 m4 l4"><a href="#view-signatories" onclick="getApprover(1,'view','Sales Forecast');">Signatories</a></li>
+        </ul><br>
+
+        <div id="view-forecast" name="view-forecast">
+          <input type="hidden" name="id" id="view_id">
+          <div class="row">
+            <div class="input-field col s12 m4 l6">
+              <input type="text" id="view_forecast_code" name="forecast_code" placeholder="FORECAST" readonly/>
+              <label for="forecast_code">Forecast Code<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m4 l3">
+              <input placeholder="0" type="text" id="view_forecast_year" name="forecast_year" readonly>
+              <label for="forecast_year">Forecast Year<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m4 l3">
+              <input placeholder="0" type="text" id="view_forecast_month" name="forecast_month" readonly>
+              <label for="forecast_month">Forecast Month<sup class="red-text">*</sup></label>
+            </div> 
+          </div>
+
+          <div class="row">
+            <div class="input-field col s12 m4 l4">
+              <input placeholder="0" type="text" id="view_site_code" name="site_code" readonly>
+              <label for="site_code">Site<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m4 l5">
+              <input placeholder="0" type="text" id="view_prod_code" name="prod_code" readonly>
+              <label for="prod_code">Product<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m4 l3">
+              <input placeholder="0" type="text" id="view_uom_code" name="uom_code" readonly>
+              <label for="uom_code">Unit of Measure<sup class="red-text">*</sup></label>
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="input-field col s12 m3 l3">
+              <input placeholder="0.0000" type="text" id="view_currency_code" name="currency_code" readonly>
+              <label for="currency_code">Currency<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m3 l3">
+              <input placeholder="0.0000" id="view_unit_price" name="unit_price" type="number" step="0.0001" style="text-align: right" class="number validate" readonly>
+              <label for="unit_price">Unit Price<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m3 l3">
+              <input placeholder="0" id="view_quantity" name="quantity" type="number" style="text-align: right" class="number validate" readonly>
+              <label for="quantity">Quantity<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m3 l3">
+              <input placeholder="0" id="view_total_price" name="total_price" type="text" step="0.0001" style="text-align: right" class="number validate" required readonly>
+              <label for="total_price">Total Price<sup class="red-text">*</sup></label>
+            </div>
+
+          </div>
+
+        </div>
+ 
+        <div id="view-signatories" name="view-signatories">
+
+          {{-- current signatories --}}
+          <div class="row">
+            <div class="col s12 m12 l12">
+              <div class="card">
+                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Current Signatories</b></h6><hr style="margin: 0px">
+                <div class="card-content" style="padding: 10px; padding-top: 0px">
+                  <table class="highlight" id="matrix-dt-view">
+                    <thead>
+                      <tr>
+                          <th>Sequence</th> 
+                          <th>Approver ID</th> 
+                          <th>Approver Name</th> 
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+     
+      </div>
+      <div class="modal-footer">
+        <a href="#!" class="modal-close green waves-effect waves-light btn"><i class="material-icons left">keyboard_return</i>Return</a>
+      </div>
+    </form>
+  </div>
+
+  <div id="appModal" class="modal">
     <form method="POST" action="{{route('forecast.approve')}}">
     {{-- <form> --}}
     @csrf
@@ -663,6 +768,9 @@
                 else if(loc=='edit') {
                   var myTable = document.getElementById("matrix-dt-edit");
                 } 
+                else if(loc=='view') {
+                  var myTable = document.getElementById("matrix-dt-view");
+                } 
               
                 var rowCount = myTable.rows.length;
                 for (var x=rowCount-1; x>0; x--) 
@@ -692,6 +800,9 @@
                 } 
                 else if(loc=='edit') {
                   $('#matrix-dt-edit').find('tbody').append(AppendString);
+                }
+                else if(loc=='view') {
+                  $('#matrix-dt-view').find('tbody').append(AppendString);
                 }
           });
     } 
@@ -852,6 +963,32 @@
         });
     }
 
+    function viewItem(id)
+    {
+        $.get('forecast/'+id, function(response){
+            var data = response.data;
+            var curr_symbol = data.currency.symbol;
+            var curr_name = data.currency.currency_name;
+            var currency =  curr_symbol + ' - ' + curr_name;
+            
+            
+            $('#view_id').val(data.id);
+            $('#view_forecast_code').val(data.forecast_code);
+            $('#view_forecast_year').val(data.forecast_year);
+            $('#view_forecast_month').val(data.forecast_month);
+            $('#view_site_code').val(data.sites.site_desc);
+            $('#view_prod_code').val(data.products.prod_name);
+            $('#view_uom_code').val(data.uoms.uom_name);
+            $('#view_currency_code').val(currency);
+            $('#view_unit_price').val(data.unit_price);
+            $('#view_quantity').val(data.quantity);
+            $('#view_total_price').val(data.total_price);
+
+            $('#viewModal').modal('open');
+            
+        });
+    }
+
     function appItem(id)
     {
         $.get('forecast/'+id, function(response){
@@ -892,7 +1029,7 @@
             $('#app_quantity').val(data.quantity);
             $('#app_total_price').val(totalPrice);
 
-            $('#AppModal').modal('open');
+            $('#appModal').modal('open');
             
         });
     }
@@ -911,10 +1048,22 @@
         "ajax": "/api/rgc_entsys/forecast/all",
         "columns": [
             {  "data": "id" },
-            {  "data": "site_code" },
-            {  "data": "prod_code" },
-            {  "data": "forecast_code" },
-            // {  "data": "status" },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.sites.site_desc;
+                }
+            },
+            {
+                "data": "id",
+                "render": function ( data, type, row, meta ) {
+                    return  '<a href="#" onclick="viewItem('+row.id+')">'+row.forecast_code+'</a>';
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.products.prod_name;
+                }
+            },
             {
                 "data": "status",
                 "render": function ( data, type, row, meta ) {
@@ -958,7 +1107,11 @@
             {  "data": "site_code" },
             {  "data": "prod_code" },
             {  "data": "forecast_code" },
-            {  "data": "created_by" },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.employee_details.full_name;
+                }
+            },
             {  "data": "status" },
             {
                 "data": "id",

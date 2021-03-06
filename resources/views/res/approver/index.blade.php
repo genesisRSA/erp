@@ -88,7 +88,7 @@
         </div>
 
         <div class="row">
-          <div class="col s4 m4 l4">
+          <div class="col s12 m12 l12">
             <button type="button" name="btnAdd" id="btnAdd" class="blue waves-effect waves-light btn"><i class="material-icons left">add_box</i>Add Approver</button>
             <button type="button" name="btnDel" id="btnDel" class="red waves-effect waves-light btn"><i class="material-icons left">delete_sweep</i>Clear All</button>
           </div>
@@ -181,7 +181,7 @@
         </div>
 
         <div class="row">
-          <div class="col s4 m4 l4">
+          <div class="col s12 m12 l12">
             <button type="button" name="btnAddEdit" id="btnAddEdit" class="blue waves-effect waves-light btn"><i class="material-icons left">add_box</i>Add Approver</button>
             <button type="button" name="btnDelEdit" id="btnDelEdit" class="red waves-effect waves-light btn"><i class="material-icons left">delete_sweep</i>Clear All</button>
           </div>
@@ -441,7 +441,7 @@
     var category_dt = $('#approver-dt').DataTable({
         "lengthChange": false,
         "pageLength": 15,
-        //"aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+        "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
         "ajax": "/api/rgc_entsys/approver/all",
         "columns": [

@@ -49,7 +49,9 @@ class SalesForecastController extends Controller
     {
         return response()
         ->json([
-            "data" => SalesForecast::all()
+            "data" => SalesForecast::with('products:prod_code,prod_name')
+                        ->with('sites:site_code,site_desc')
+                        ->get()
         ]); 
     }
 
@@ -57,8 +59,9 @@ class SalesForecastController extends Controller
     {
         return response()
         ->json([
-            "data" => SalesForecast::where('status','=','Pending')
-                                    ->get()
+            "data" => SalesForecast::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
+                                  ->where('status','=','Pending')
+                                  ->get()
         ]); 
     }
 
@@ -179,6 +182,10 @@ class SalesForecastController extends Controller
         ->json([
             "data" => SalesForecast::where('id','=',$id)
                         ->with('currency:currency_code,currency_name')
+                        ->with('products:prod_code,prod_name')
+                        ->with('sites:site_code,site_desc')
+                        ->with('currency:currency_code,currency_name,symbol')
+                        ->with('uoms:uom_code,uom_name')
                         ->first()
         ]);
     }

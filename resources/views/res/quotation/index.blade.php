@@ -23,8 +23,8 @@
                 <tr>
                     <th>ID</th> 
                     <th>Site Code</th>
-                    <th>Product Code</th>
                     <th>Quotation Code</th>
+                    <th>Customer Code</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -71,8 +71,8 @@
   </div>
 
   <div id="addModal" class="modal">
-    {{-- <form method="POST" action="{{route('forecast.store')}}"> --}}
-      <form>
+    <form method="POST" action="{{route('quotation.store')}}">
+      {{-- <form> --}}
     @csrf
       <div class="modal-content">
         <h4>Add Sales Quotation</h4>
@@ -100,7 +100,31 @@
               <label for="customer_code">Customer<sup class="red-text">*</sup></label>
             </div>
           </div>
+          
+          <div class="row">
+            <div class="input-field col s12 m6 l6">
+              <select id="add_payment_term" name="payment_term" required>
+                <option value="0" disabled selected>Choose Payment Term</option>
+                @foreach ($payment as $payments)
+                  <option value="{{$payments->id}}">{{$payments->term_name}}</option>
+                @endforeach
+              </select>
+              <label for="payment_term">Payment Term<sup class="red-text">*</sup></label>
+            </div>
 
+            <div class="input-field col s12 m6 l6">
+              <select id="add_currency_code" name="currency_code" onchange="computeTotal('add');" required>
+                <option value="0" disabled selected>Choose Currency</option>
+                @foreach ($currencies as $curr)
+                  <option value="{{$curr->currency_code}}">{{$curr->symbol}} - {{$curr->currency_name}}</option>
+                @endforeach
+              </select>
+              <label for="currency_code">Currency<sup class="red-text">*</sup></label>
+            </div>
+          </div>
+
+          <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 1em; background-color:#0d47a1" class="white-text"><b>Product Details</b></h6>
+          
           <div class="row">
             <div class="input-field col s12 m4 l4">
               <select id="add_site_code" name="site_code" required>
@@ -129,28 +153,6 @@
               <label for="uom_code">Unit of Measure<sup class="red-text">*</sup></label>
             </div>
 
-          </div>
-
-          <div class="row">
-            <div class="input-field col s12 m6 l6">
-              <select id="add_payment_term" name="payment_term" required>
-                <option value="0" disabled selected>Choose Payment Term</option>
-                @foreach ($payment as $payments)
-                  <option value="{{$payments->id}}">{{$payments->term_name}}</option>
-                @endforeach
-              </select>
-              <label for="payment_term">Payment Term<sup class="red-text">*</sup></label>
-            </div>
-
-            <div class="input-field col s12 m6 l6">
-              <select id="add_currency_code" name="currency_code" onchange="computeTotal('add');" required>
-                <option value="0" disabled selected>Choose Currency</option>
-                @foreach ($currencies as $curr)
-                  <option value="{{$curr->currency_code}}">{{$curr->symbol}} - {{$curr->currency_name}}</option>
-                @endforeach
-              </select>
-              <label for="currency_code">Currency<sup class="red-text">*</sup></label>
-            </div>
           </div>
 
           <div class="row" style="margin-bottom: 0px">
@@ -247,7 +249,7 @@
   </div>
 
   <div id="addForecast" class="modal">
-    {{-- <form method="POST" action="{{route('forecast.store')}}"> --}}
+    <form method="POST" action="{{route('quotation.store')}}">
       <form>
     @csrf
       <div class="modal-content">
@@ -265,10 +267,22 @@
               <input type="text" id="f_quotation_code" name="quotation_code" value="{{$quot}}{{$today}}-{{$lastquotation}}" readonly/>
               <label for="quotation_code">Quotation Code<sup class="red-text">*</sup></label>
             </div>
+          </div>  
+
+          <div class="row">
+            <div class="input-field col s12 m6 l6">
+              <select id="add_customer_code" name="customer_code">
+                <option value="" disabled selected>Choose Customer</option>
+                @foreach ($customers as $customer)
+                  <option value="{{$customer->cust_code}}">{{$customer->cust_name}}</option>
+                @endforeach
+              </select>
+              <label for="customer_code">Customer<sup class="red-text">*</sup></label>
+            </div>
         
             <div class="input-field col s12 m6 l6">
               <select id="f_forecast_code" name="forecast_code">
-                <option value="" disabled selected>Choose Forecast Code</option>
+                <option value="0" disabled selected>Choose Forecast Code</option>
                 @foreach ($forecast_code as $forecast_codes)
                   <option value="{{$forecast_codes->forecast_code}}">{{$forecast_codes->forecast_code}}</option>
                 @endforeach
@@ -282,9 +296,35 @@
 
             <div class="row">
 
+              <div class="input-field col s12 m6 l6">
+                <select id="f_payment_term" name="payment_term" required>
+                  <option value="0" disabled selected>Choose Payment Term</option>
+                  @foreach ($payment as $payments)
+                    <option value="{{$payments->id}}">{{$payments->term_name}}</option>
+                  @endforeach
+                </select>
+                <label for="payment_term">Payment Term<sup class="red-text">*</sup></label>
+              </div>
+
+              <div class="input-field col s12 m6 l6">
+                <select id="f_currency_code" name="currency_code" onchange="computeTotal('f');" required>
+                  <option value="0" disabled selected>Choose Currency</option>
+                  @foreach ($currencies as $curr)
+                    <option value="{{$curr->currency_code}}">{{$curr->symbol}} - {{$curr->currency_name}}</option>
+                  @endforeach
+                </select>
+                <label for="currency_code">Currency<sup class="red-text">*</sup></label>
+              </div>
+
+            </div>
+
+            <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 1em; background-color:#0d47a1" class="white-text"><b>Product Details</b></h6>
+
+            <div class="row">
+
               <div class="input-field col s12 m4 l4">
                 <select id="f_site_code" name="site_code" required>
-                  <option value="" disabled selected>Choose Site</option>
+                  <option value="0" disabled selected>Choose Site</option>
                   @foreach ($sites as $site)
                     <option value="{{$site->site_code}}">{{$site->site_desc}}</option>
                   @endforeach
@@ -311,39 +351,15 @@
 
             </div>
 
-            <div class="row">
-
-              <div class="input-field col s12 m6 l6">
-                <select id="f_payment_term" name="payment_term" required>
-                  <option value="0" disabled selected>Choose Payment Term</option>
-                  @foreach ($payment as $payments)
-                    <option value="{{$payments->id}}">{{$payments->term_name}}</option>
-                  @endforeach
-                </select>
-                <label for="payment_term">Payment Term<sup class="red-text">*</sup></label>
-              </div>
-
-              <div class="input-field col s12 m6 l6">
-                <select id="f_currency_code" name="currency_code" onchange="computeTotal('add');" required>
-                  <option value="0" disabled selected>Choose Currency</option>
-                  @foreach ($currencies as $curr)
-                    <option value="{{$curr->currency_code}}">{{$curr->symbol}} - {{$curr->currency_name}}</option>
-                  @endforeach
-                </select>
-                <label for="currency_code">Currency<sup class="red-text">*</sup></label>
-              </div>
-
-            </div>
-
             <div class="row" style="margin-bottom: 0px">
               
               <div class="input-field col s12 m4 l4">
-                <input placeholder="0.00" id="f_unit_price" name="unit_price" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('add');" required>
+                <input placeholder="0.00" id="f_unit_price" name="unit_price" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('f');" required>
                 <label for="unit_price">Unit Price<sup class="red-text">*</sup></label>
               </div>
 
               <div class="input-field col s12 m4 l4">
-                <input placeholder="0" id="f_quantity" name="quantity" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('add');" required>
+                <input placeholder="0" id="f_quantity" name="quantity" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('f');" required>
                 <label for="quantity">Quantity<sup class="red-text">*</sup></label>
               </div>
 
@@ -747,14 +763,14 @@
   </div>
 
   <div id="deleteModal" class="modal bottom-sheet">
-    <form method="POST" action="{{route('forecast.delete')}}">
+    <form method="POST" action="{{route('quotation.delete')}}">
         @csrf
         <div class="modal-content">
-            <h4>Delete Sales Forecast Details</h4><br><br>
+            <h4>Delete Sales Quotation Details</h4><br><br>
             <div class="row">
                 <div class="col s12 m6">
                     <input type="hidden" name="id" id="del_id">
-                    <p>Are you sure you want to delete this <strong>Sales Forecast Details</strong>?</p>
+                    <p>Are you sure you want to delete this <strong>Sales Quotation Details</strong>?</p>
                 </div>
             </div>
         </div>
@@ -773,9 +789,9 @@
   <script type="text/javascript" src="http://code.jquery.com/jquery-3.4.1.js"></script> 
   <script type="text/javascript" src="{{ asset('datatables/datatables.js') }}"></script>
   <script type="text/javascript">
-
+        var Prod_code = [];
+        var Prod_codeF = [];
     $(document).ready(function () {
-
         $('.tabs').tabs();
 
         $('#add_site_code').change(function () {
@@ -894,31 +910,48 @@
               var AppendString = "";
               var i, j = "";
               var data = response.data;
-              var product = data.product;
+              var quot_code = $('#f_quotation_code').val();
+              var product = data.products;
+              var uoms = data.uoms;
+              var uom_name = uoms.uom_name;
+              var uom_code = uoms.uom_code;
+              var uom = uom_code + ' - ' + uom_name;
+              
+              var curr = data.currency;
+              var curr_code = curr.currency_code;
+              var curr_sym = curr.symbol;
+              var currency = curr_sym + ' - ' + curr_code;
 
-              $('#f_site_code option[value="'+data.site_code+'"]').prop('selected', true);
-              $('#f_site_code').formSelect();
-              $('#f_prod_code option[value="'+data.prod_code+'"]').prop('selected', true);
-              $('#f_prod_code').formSelect();
-              $('#f_uom_code option[value="'+data.uom_code+'"]').prop('selected', true);
-              $('#f_uom_code').formSelect();
-              $('#f_currency_code option[value="'+data.currency_code+'"]').prop('selected', true);
-              $('#f_currency_code').formSelect();      
-              $('#f_unit_price').val(data.unit_price);
-              $('#f_quantity').val(data.quantity);
-              $('#f_total_price').val(data.total_price);
+              var prod_code = data.prod_code;
+
+              Prod_codeF.push(prod_code);
+
+              // $('#f_uom_code option[value="'+data.uom_code+'"]').prop('selected', true);
+              // $('#f_uom_code').formSelect();
+              // $('#f_currency_code option[value="'+data.currency_code+'"]').prop('selected', true);
+              // $('#f_currency_code').formSelect();      
+              // $('#f_unit_price').val(data.unit_price);
+              // $('#f_quantity').val(data.quantity);
+              // $('#f_total_price').val(data.total_price);
 
               var forecastx = 'f';
               var AppendString =  "<tr>"+
-                                    "<td>" + data.prod_code + "</td>" +
+                                    "<td>" + prod_code + "</td>" +
                                     "<td>" + product.prod_name + "</td>" +
-                                    "<td>" + data.uom_code + "</td>" +
-                                    "<td>" + data.currency_code + "</td>" +
+                                    "<td>" + uom + "</td>" +
+                                    "<td>" + curr_code  + "</td>" +
                                     "<td>" + data.unit_price + "</td>" +
                                     "<td>" + data.quantity + "</td>" +
                                     "<td>" + data.total_price + "</td>" +
-                                    "<td>" + '<a href="#" class="btn-small red waves-effect waves-light" onclick="deleteRow(this,\''+ forecastx +'\');" ><i class="material-icons small icon-demo">delete_sweep</i></a>' + "</td>"
-                                  "</tr>";
+                                    "<td>" + '<a href="#" class="btn-small red waves-effect waves-light" onclick="deleteRow(this,\''+ forecastx +'\')" ><i class="material-icons small icon-demo">delete_sweep</i></a>' + 
+                                    '</td><input type="hidden" name="f_quot_code[]" value="'+ quot_code +'"/>' +
+                                          '<input type="hidden" name="f_prod_code[]" value="'+ prod_code +'"/>' +
+                                          '<input type="hidden" name="f_prod_name[]" value="'+ product.prod_name +'"/>' +
+                                          '<input type="hidden" name="f_uom[]" value="'+ uom +'"/>' +
+                                          '<input type="hidden" name="f_currency_code[]" value="'+ curr_code +'"/>' +
+                                          '<input type="hidden" name="f_unit_price[]" value="'+ data.unit_price +'"/>' +
+                                          '<input type="hidden" name="f_quantity[]" value="'+ data.quantity +'"/>' +
+                                          '<input type="hidden" name="f_total_price[]" value="'+ data.total_price +'"/></tr>';
 
               $('#product-dt-f').find('tbody').append(AppendString);
 
@@ -933,7 +966,12 @@
     function callModal(checker)
     {
       var check = checker;
+      var x = document.getElementById("details");
+      x.style.display = "none";
       $('#checker').val(check);
+      $('#f_forecast_code option[value="0"]').prop('selected', true);
+      $('#f_forecast_code').formSelect();
+    
     }
 
     function getStatus(status)
@@ -1087,11 +1125,18 @@
         var currency = e.options[e.selectedIndex].text;
         currency = currency.substr(currency, 1);
 
-      } else {
+      } else if (loc=='edit') {
         var unit_price = $('#edit_unit_price').val();
         var quantity = $('#edit_quantity').val();
 
         var e = document.getElementById('edit_currency_code');
+        var currency = e.options[e.selectedIndex].text;
+        currency = currency.substr(currency, 1);
+      } else if (loc=='f') {
+        var unit_price = $('#f_unit_price').val();
+        var quantity = $('#f_quantity').val();
+
+        var e = document.getElementById('f_currency_code');
         var currency = e.options[e.selectedIndex].text;
         currency = currency.substr(currency, 1);
       }
@@ -1122,8 +1167,10 @@
       if(loc=='add')
       {
         $('#add_total_price').val(total_w_currency);
-      } else {
+      } else if(loc=='edit'){
         $('#edit_total_price').val(total_w_currency);
+      } else if(loc=='f'){
+        $('#f_total_price').val(total_w_currency);
       }
     }
 
@@ -1195,6 +1242,7 @@
 
         if(locx=='f')
         {
+          var quot_code_f = $('#f_quot_code').val(); // quot code
           var prod_code_f = $('#f_prod_code').val(); // product code
           var pc_f = document.getElementById('f_prod_code');
           var prod_name_f = pc_f.options[pc_f.selectedIndex].text; // product name
@@ -1205,21 +1253,107 @@
 
           var cf = document.getElementById('f_currency_code');
           var currency_f = cf.options[cf.selectedIndex].text;
-          currency_f = currency_f.substr(currency_f, 1); // currency
+              currency_f = currency_f.substr(currency_f, 1); // currency
 
           var forecastx = 'f';
-          var AppendString_f =  "<tr>"+
-                                // "<td>" + rowCount + "</td>" +
-                                "<td>" + prod_code_f + "</td>" +
-                                "<td>" + prod_name_f + "</td>" +
-                                "<td>" + uom_f + "</td>" +
-                                "<td>" + currency_f + "</td>" +
-                                "<td>" + unit_price_f + "</td>" +
-                                "<td>" + quantity_f + "</td>" +
-                                "<td>" + total_price_f + "</td>" +
-                                "<td>" + '<a href="#" class="btn-small red waves-effect waves-light" onclick="deleteRow(this,\''+ forecastx +'\')" ><i class="material-icons small icon-demo">delete_sweep</i></a>' + "</td>"
-                              "</tr>";
-          $('#product-dt-f').find('tbody').append(AppendString_f);
+
+          var myTable = document.getElementById('product-dt-f');
+          var rowCount = myTable.rows.length;
+          var quantity = 0;
+          var result = 0;
+          var found = false;
+
+          if($.inArray(prod_code_f,Prod_codeF) > -1){
+            found = true;
+          } else {
+            found = false;
+          }
+
+          if(!found) // hindi nakita
+            {
+              if (prod_code_f!='Choose Product' && unit_price_f != '' && quantity_f != '' && total_price_f != '')
+              {
+                Prod_codeF.push(prod_code_f);
+
+                $('#product-dt-f').find('tbody').append("<tr>"+
+                                    "<td>" + prod_code_f + "</td>" +
+                                    "<td>" + prod_name_f + "</td>" +
+                                    "<td>" + uom_f + "</td>" +
+                                    "<td>" + currency_f  + "</td>" +
+                                    "<td>" + unit_price_f + "</td>" +
+                                    "<td>" + quantity_f + "</td>" +
+                                    "<td>" + total_price_f + "</td>" +
+                                    "<td>" + '<a href="#" class="btn-small red waves-effect waves-light" onclick="deleteRow(this,\''+ forecastx +'\')" ><i class="material-icons small icon-demo">delete_sweep</i></a>' + 
+                                    '</td><input type="hidden" name="f_quot_code[]" value="'+ quot_code_f +'"/>' +
+                                          '<input type="hidden" name="f_prod_code[]" value="'+ prod_code_f +'"/>' +
+                                          '<input type="hidden" name="f_prod_name[]" value="'+ prod_name_f +'"/>' +
+                                          '<input type="hidden" name="f_uom[]" value="'+ uom_f +'"/>' +
+                                          '<input type="hidden" name="f_currency_code[]" value="'+ currency_f +'"/>' +
+                                          '<input type="hidden" name="f_unit_price[]" value="'+ unit_price_f +'"/>' +
+                                          '<input type="hidden" name="f_quantity[]" value="'+ quantity_f +'"/>' +
+                                          '<input type="hidden" name="f_total_price[]" value="'+ total_price_f +'"/></tr>');
+              }
+            } 
+          else // nakita
+            {  
+              for(var i = 1; i < rowCount; i++)
+              {
+                if(prod_code_f == myTable.rows[i].cells[0].innerHTML)
+                {
+                  var row_q = parseFloat(myTable.rows[i].cells[5].innerHTML);
+                  var row_up = parseInt(myTable.rows[i].cells[4].innerHTML);
+                  var currency = myTable.rows[i].cells[3].innerHTML;
+                  
+                  var adtl_q = parseFloat(quantity_f);
+                  var curr_q = adtl_q + row_q;
+                  var curr_tp = curr_q * row_up;
+                  var curr_tp_w_crnc = currency + ' ' + curr_tp;
+                                  
+                  $('#product-dt-f').find('tbody').append("<tr>" +
+                                                    "<td>" + prod_code_f + "</td>" +
+                                                    "<td>" + prod_name_f + "</td>" +
+                                                    "<td>" + uom_f + "</td>" +
+                                                    "<td>" + currency_f  + "</td>" +
+                                                    "<td>" + unit_price_f + "</td>" +
+                                                    "<td>" + curr_q + "</td>" +
+                                                    "<td>" + curr_tp_w_crnc + "</td>" +
+                                                    "<td>" + '<a href="#" class="btn-small red waves-effect waves-light" onclick="deleteRow(this,\''+ forecastx +'\')" ><i class="material-icons small icon-demo">delete_sweep</i></a>' + 
+                                                    '</td><input type="hidden" name="f_quot_code[]" value="'+ quot_code_f +'"/>' +
+                                                          '<input type="hidden" name="f_prod_code[]" value="'+ prod_code_f +'"/>' +
+                                                          '<input type="hidden" name="f_prod_name[]" value="'+ prod_name_f +'"/>' +
+                                                          '<input type="hidden" name="f_uom[]" value="'+ uom_f +'"/>' +
+                                                          '<input type="hidden" name="f_currency_code[]" value="'+ currency_f +'"/>' +
+                                                          '<input type="hidden" name="f_unit_price[]" value="'+ unit_price_f +'"/>' +
+                                                          '<input type="hidden" name="f_quantity[]" value="'+ curr_q +'"/>' +
+                                                          '<input type="hidden" name="f_total_price[]" value="'+ curr_tp_w_crnc +'"/></tr>');
+                }
+                else
+                {
+                  $('#product-dt-f').find('tbody').append("<tr>" +
+                                                      "<td>" + myTable.rows[i].cells[0].innerHTML + "</td>" +
+                                                      "<td>" + myTable.rows[i].cells[1].innerHTML + "</td>" +
+                                                      "<td>" + myTable.rows[i].cells[2].innerHTML + "</td>" +
+                                                      "<td>" + myTable.rows[i].cells[3].innerHTML  + "</td>" +
+                                                      "<td>" + myTable.rows[i].cells[4].innerHTML + "</td>" +
+                                                      "<td>" + myTable.rows[i].cells[5].innerHTML + "</td>" +
+                                                      "<td>" + myTable.rows[i].cells[6].innerHTML + "</td>" +
+                                                      "<td>" + '<a href="#" class="btn-small red waves-effect waves-light" onclick="deleteRow(this,\''+ forecastx +'\')" ><i class="material-icons small icon-demo">delete_sweep</i></a>' +
+                                                      '</td><input type="hidden" name="f_quot_code[]" value="'+ quot_code_f +'"/>' +
+                                                            '<input type="hidden" name="f_prod_code[]" value="'+ myTable.rows[i].cells[0].innerHTML +'"/>' +
+                                                            '<input type="hidden" name="f_prod_name[]" value="'+ myTable.rows[i].cells[1].innerHTML +'"/>' +
+                                                            '<input type="hidden" name="f_uom[]" value="'+ myTable.rows[i].cells[2].innerHTML +'"/>' +
+                                                            '<input type="hidden" name="f_currency_code[]" value="'+ myTable.rows[i].cells[3].innerHTML +'"/>' +
+                                                            '<input type="hidden" name="f_unit_price[]" value="'+ myTable.rows[i].cells[4].innerHTML +'"/>' +
+                                                            '<input type="hidden" name="f_quantity[]" value="'+ myTable.rows[i].cells[5].innerHTML +'"/>' +
+                                                            '<input type="hidden" name="f_total_price[]" value="'+ myTable.rows[i].cells[6].innerHTML +'"/></tr>');
+                }
+              }
+              for (var x = rowCount-1; x>0; x--) 
+                {
+                  myTable.deleteRow(x); 
+                }
+            }
+
           computeGrandTotal(locx);  
         }
         else
@@ -1256,6 +1390,35 @@
     }
 
     function editItem(id)
+    {
+        $.get('forecast/'+id, function(response){
+            var data = response.data;
+            $('#edit_id').val(data.id);
+            $('#edit_forecast_code').val(data.forecast_code);
+
+            $('#edit_forecast_year option[value="'+data.forecast_year+'"]').prop('selected', true);
+            $('#edit_forecast_year').formSelect();
+            $('#edit_forecast_month option[value="'+data.forecast_month+'"]').prop('selected', true);
+            $('#edit_forecast_month').formSelect();
+            $('#edit_site_code option[value="'+data.site_code+'"]').prop('selected', true);
+            $('#edit_site_code').formSelect();
+            $('#edit_prod_code option[value="'+data.prod_code+'"]').prop('selected', true);
+            $('#edit_prod_code').formSelect();
+            $('#edit_uom_code option[value="'+data.uom_code+'"]').prop('selected', true);
+            $('#edit_uom_code').formSelect();
+            $('#edit_currency_code option[value="'+data.currency_code+'"]').prop('selected', true);
+            $('#edit_currency_code').formSelect();
+    
+            $('#edit_unit_price').val(data.unit_price);
+            $('#edit_quantity').val(data.quantity);
+            $('#edit_total_price').val(data.total_price);
+
+            $('#editModal').modal('open');
+            
+        });
+    }
+
+    function viewItem(id)
     {
         $.get('forecast/'+id, function(response){
             var data = response.data;
@@ -1341,12 +1504,18 @@
       if(locx=='f')
       {
         var i = r.parentNode.parentNode.rowIndex;
+        var x = r.parentNode.parentNode.cells.item(0).innerHTML;
+        var index = Prod_codeF.indexOf(x)
+        Prod_codeF.splice(index)
         document.getElementById("product-dt-f").deleteRow(i);
         computeGrandTotal('f');
       }
       else
       {
         var i = r.parentNode.parentNode.rowIndex;
+        var x = r.parentNode.parentNode.cells.item(0).innerHTML;
+        var index = Prod_codeF.indexOf(x)
+        Prod_codeF.splice(index)
         document.getElementById("product-dt").deleteRow(i);
         computeGrandTotal('m');
       }
@@ -1360,9 +1529,22 @@
         "ajax": "/api/rgc_entsys/quotation/all",
         "columns": [
             {  "data": "id" },
-            {  "data": "site_code" },
-            {  "data": "prod_code" },
-            {  "data": "quotation_code" },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.sites.site_desc;
+                }
+            },
+            {
+                "data": "id",
+                "render": function ( data, type, row, meta ) {
+                    return  '<a href="#" onclick="viewItem('+row.id+')">'+row.quot_code+'</a>';
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.customers.cust_name;
+                }
+            },
             {  "data": "status" },
             {
                 "data": "id",
@@ -1373,27 +1555,27 @@
         ]
     });
 
-    var approvaldt = $('#approval-dt').DataTable({
-        "lengthChange": false,
-        "pageLength": 15,
-        "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
-        "pagingType": "full",
-        "ajax": "/api/rgc_entsys/forecast/all_approval",
-        "columns": [
-          {  "data": "id" },
-            {  "data": "site_code" },
-            {  "data": "prod_code" },
-            {  "data": "forecast_code" },
-            {  "data": "created_by" },
-            {  "data": "status" },
-            {
-                "data": "id",
-                "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="appItem('+row.id+'), getApproverMatrix('+row.id+')"><i class="material-icons">rate_review</i></a>';
-                }
-            }
-        ]
-    });
+    // var approvaldt = $('#approval-dt').DataTable({
+    //     "lengthChange": false,
+    //     "pageLength": 15,
+    //     "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+    //     "pagingType": "full",
+    //     "ajax": "/api/rgc_entsys/quotation/all_approval",
+    //     "columns": [
+    //       {  "data": "id" },
+    //         {  "data": "site_code" },
+    //         {  "data": "prod_code" },
+    //         {  "data": "quotation_code" },
+    //         {  "data": "created_by" },
+    //         {  "data": "status" },
+    //         {
+    //             "data": "id",
+    //             "render": function ( data, type, row, meta ) {
+    //                 return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="appItem('+row.id+'), getApproverMatrix('+row.id+')"><i class="material-icons">rate_review</i></a>';
+    //             }
+    //         }
+    //     ]
+    // });
 
 
   </script>

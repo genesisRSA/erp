@@ -36,7 +36,7 @@ class ApproverMatrixController extends Controller
     {
         return response()
             ->json([
-                "data" => ApproverMatrix::with('employee_details:emp_no,emp_fname')
+                "data" => ApproverMatrix::with('employee_details:emp_no,emp_fname,emp_lname')
                                     ->get()
             ]);
     }

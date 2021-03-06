@@ -61,7 +61,9 @@ class SalesQuotationController extends Controller
     {
         return response()
         ->json([
-            "data" => SalesQuotation::all()
+            "data" => SalesQuotation::with('sites:site_code,site_desc')
+                                    ->with('customers:cust_code,cust_name')
+                                    ->get()
         ]); 
     }
 
@@ -69,7 +71,7 @@ class SalesQuotationController extends Controller
     {
         return response()
         ->json([
-            "data" => SalesForecast::where('status','=','Pending')
+            "data" => SalesQuotation::where('status','=','Pending')
                                     ->get()
         ]); 
     }
@@ -91,7 +93,10 @@ class SalesQuotationController extends Controller
     public function getForecast($id)
     {   
         $data = SalesForecast::where('forecast_code','=',$id)
-                                ->with('product:prod_code,prod_name')
+                                ->with('products:prod_code,prod_name')
+                                ->with('currency:currency_code,currency_name,symbol')
+                                ->with('sites:site_code,site_desc')
+                                ->with('uoms:uom_code,uom_name')
                                 ->first();
         return response()->json(['data' => $data]);
     }
@@ -138,30 +143,27 @@ class SalesQuotationController extends Controller
         $validator = Validator::make($request->all(), $field);
          
         if ($validator->fails()) {
-            return redirect()->route('forecast.index')
+            return redirect()->route('quotation.index')
                         ->withInput()
                         ->withErrors($validator);
         }else{
 
-            $check = $request->input('f_forecast_code','');
-
-            if($check)
+            $check = $request->input('forecast_code','x');
+           
+            if($check!='x')
             {
-
                 $quotation = new SalesQuotation();
-                $quotation->site_code = $request->input('f_site_code','');
-                $quotation->quot_code = $request->input('f_quotation_code','');
-                $quotation->cust_code = $request->input('4024','');
-                $quotation->forecast_code = $request->input('f_forecast_code','');
-                $quotation->payment_term_id = $request->input('f_payment_term','');
+                $quotation->site_code = $request->input('site_code','');
+                $quotation->quot_code = $request->input('quotation_code','');
+                $quotation->cust_code = '4024';
+                $quotation->forecast_code = $request->input('forecast_code','');
+                $quotation->payment_term_id = $request->input('payment_term','');
                 $quotation->status = 'Pending';
-                $quotation->created_by = '0204-2021';
-                $quotation->current_sequence = $request->input('','');
-                $quotation->current_approver = $request->input('','');
-                
+                $quotation->created_by = '0204-2021';  
                 if($request->input('app_seq'))
                 {
                     $approvers = array();
+                    $productlist = array();
 
                         for( $i = 0 ; $i < count($request->input('app_seq')) ; $i++ )
                         {
@@ -178,33 +180,47 @@ class SalesQuotationController extends Controller
                             }
                         }
 
+                        $products = new SalesProductList;
+                        for( $q = 0 ; $q < count($request->input('f_quot_code')) ; $q++ )
+                        {
+                            
+                                $products->quot_code = $request->input('quotation_code','');
+                                $products->prod_code = $request->input('f_prod_code.'.$q);
+                                $products->prod_name = $request->input('f_prod_name.'.$q);
+                                $products->uom_code = $request->input('f_uom.'.$q);
+                                $products->currency_code = $request->input('f_currency_code.'.$q);
+                                $products->unit_price = $request->input('f_unit_price.'.$q);
+                                $products->quantity = $request->input('f_quantity.'.$q);
+                                $products->total_price = $request->input('f_total_price.'.$q);
+
+                                $products->save();
+                    
+                        }
+
                         $approvers = json_encode($approvers);            
+                        // $productlist = json_encode($productlist);
+
                         $quotation->matrix = $approvers;
                 }
 
                 if($quotation->save()){
                     return redirect()->route('quotation.index')->withSuccess('Sales Quotation Details Successfully Added');
                 }
-
             }
             else
             {
-                
-                
                 $quotation = new SalesQuotation();
-                $quotation->site_code = $request->input('f_site_code','');
-                $quotation->quot_code = $request->input('f_quotation_code','');
-                $quotation->cust_code = $request->input('4024','');
-                $quotation->forecast_code = $request->input('f_forecast_code','');
-                $quotation->payment_term_id = $request->input('f_payment_term','');
+                $quotation->site_code = $request->input('site_code','');
+                $quotation->quot_code = $request->input('quotation_code','');
+                $quotation->cust_code = '4024';
+                $quotation->forecast_code = $request->input('forecast_code','');
+                $quotation->payment_term_id = $request->input('payment_term','');
                 $quotation->status = 'Pending';
-                $quotation->created_by = '0204-2021';
-                $quotation->current_sequence = $request->input('','');
-                $quotation->current_approver = $request->input('','');
-                
+                $quotation->created_by = '0204-2021';  
                 if($request->input('app_seq'))
                 {
                     $approvers = array();
+                    $productlist = array();
 
                         for( $i = 0 ; $i < count($request->input('app_seq')) ; $i++ )
                         {
@@ -221,6 +237,24 @@ class SalesQuotationController extends Controller
                             }
                         }
 
+                        $products = new SalesProductList;
+
+                        for( $q = 0 ; $q < count($request->input('f_quot_code')) ; $q++ )
+                        {
+                            
+                                $products->quot_code = $request->input('quotation_code','');
+                                $products->prod_code = $request->input('f_prod_code.'.$q);
+                                $products->prod_name = $request->input('f_prod_name.'.$q);
+                                $products->uom_code = $request->input('f_uom.'.$q);
+                                $products->currency_code = $request->input('f_currency_code.'.$q);
+                                $products->unit_price = $request->input('f_unit_price.'.$q);
+                                $products->quantity = $request->input('f_quantity.'.$q);
+                                $products->total_price = $request->input('f_total_price.'.$q);
+
+                                $products->save();
+                    
+                        }
+
                         $approvers = json_encode($approvers);            
                         $quotation->matrix = $approvers;
                 }
@@ -228,8 +262,6 @@ class SalesQuotationController extends Controller
                 if($quotation->save()){
                     return redirect()->route('quotation.index')->withSuccess('Sales Quotation Details Successfully Added');
                 }
-
-
             }
 
         }
@@ -279,5 +311,13 @@ class SalesQuotationController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function delete(Request $request)
+    {
+        //
+        if(SalesQuotation::destroy($request->input('id',''))){
+            return redirect()->route('quotation.index')->withSuccess('Sales Quotation Details Successfully Deleted');
+        }
     }
 }
