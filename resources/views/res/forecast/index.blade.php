@@ -374,7 +374,7 @@
   <div id="viewModal" class="modal">
     <form>
     @csrf
-      <div class="modal-content">
+      <div class="modal-content" style="padding-bottom: 0px">
         <h4>Sales Forecast Details</h4>
 
         <ul id="tabs-swipe-demo" class="tabs">
@@ -466,11 +466,33 @@
               </div>
             </div>
           </div>
+
+          <div class="row">
+            <div class="col s12 m12 l12">
+              <div class="card">
+                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Approval History</b></h6><hr style="margin: 0px">
+                <div class="card-content" style="padding: 10px; padding-top: 0px">
+                  <table class="highlight" id="matrix-dt-view">
+                    <thead>
+                      <tr>
+                          <th>Sequence</th> 
+                          <th>Approver Name</th> 
+                          <th>Status</th> 
+                          <th>Remarks</th>
+                          <th>Action Date</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
           
         </div>
      
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer" style="padding-right: 30px;">
         <a href="#!" class="modal-close green waves-effect waves-light btn"><i class="material-icons left">keyboard_return</i>Return</a>
       </div>
     </form>
@@ -777,7 +799,8 @@
                   {
                     myTable.deleteRow(x); 
                   }
-
+                
+                console.log(matrix);
                
                 for(i in matrix)
                   {
@@ -1090,7 +1113,15 @@
             {
                 "data": "id",
                 "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem('+row.id+')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem('+row.id+')"><i class="material-icons">delete</i></a>';
+                    if(row.status=='Pending')
+                    {
+                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem('+row.id+')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem('+row.id+')"><i class="material-icons">delete</i></a>';
+                    }
+                    else
+                    {
+                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem('+row.id+')" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem('+row.id+')" disabled><i class="material-icons">delete</i></a>';
+                    }
+
                 }
             }
         ]
@@ -1104,15 +1135,46 @@
         "ajax": "/api/rgc_entsys/forecast/all_approval",
         "columns": [
           {  "data": "id" },
-            {  "data": "site_code" },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.sites.site_desc;
+                }
+            },
             {  "data": "prod_code" },
-            {  "data": "forecast_code" },
+            {
+                "data": "id",
+                "render": function ( data, type, row, meta ) {
+                    return  '<a href="#" onclick="viewItem('+row.id+')">'+row.forecast_code+'</a>';
+                }
+            },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
                   return row.employee_details.full_name;
                 }
             },
-            {  "data": "status" },
+            {
+                "data": "status",
+                "render": function ( data, type, row, meta ) {
+                  switch(data){
+                    case 'Approved':
+                      return  '<span class="badge green white-text">Approved</span>';
+                    break;
+                    case 'Pending':
+                      return  '<span class="badge blue white-text">Pending</span>';
+                    break;
+                    case 'Rejected':
+                      return  '<span class="badge red white-text">Rejected</span>';
+                    break;
+                    case 'For Approval':
+                      return  '<span class="badge yellow white-text">For Approval</span>';
+                    break;
+                    case 'For Review':
+                      return  '<span class="badge yellow white-text">For Review</span>';
+                    break;
+                  }
+                   
+                }
+            },
             {
                 "data": "id",
                 "render": function ( data, type, row, meta ) {

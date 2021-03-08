@@ -188,6 +188,7 @@ Route::get('/rgc_entsys/quotation/getApprover/{id}/{module}', 'SalesQuotationCon
 Route::get('/rgc_entsys/quotation/getApproverMatrix/{id}', 'SalesQuotationController@getApproverMatrix');
 Route::get('/rgc_entsys/quotation/getForecast/{id}', 'SalesQuotationController@getForecast');
 Route::get('/rgc_entsys/quotation/getProducts/{id}', 'SalesQuotationController@getProducts');
+Route::get('/rgc_entsys/quotation/getAllEdit/{id}', 'SalesQuotationController@getAllEdit');
 
 
 // end -> jp task

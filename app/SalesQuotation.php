@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SalesQuotation extends Model
 {
+
     public function currency()
     {
         return $this->hasOne('App\Currency', 'currency_code', 'currency_code');
@@ -27,11 +28,21 @@ class SalesQuotation extends Model
     
     public function employee_details()
     {
-      return $this->hasOne('App\Employee', 'emp_no', 'created_by');
+        return $this->hasOne('App\Employee', 'emp_no', 'created_by');
     }
 
     public function customers()
     {
-      return $this->hasOne('App\Customer', 'cust_code', 'cust_code');
+        return $this->hasOne('App\Customer', 'cust_code', 'cust_code');
+    }
+
+    public function sales_products()
+    {
+        return $this->hasMany('App\SalesProductList', 'quot_code', 'quot_code');
+    }
+
+    public function payment()
+    {
+        return $this->hasOne('App\PaymentTerm', 'id', 'payment_term_id');
     }
 }

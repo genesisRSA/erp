@@ -60,6 +60,7 @@ class SalesForecastController extends Controller
         return response()
         ->json([
             "data" => SalesForecast::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
+                                  ->with('sites:site_code,site_desc')
                                   ->where('status','=','Pending')
                                   ->get()
         ]); 

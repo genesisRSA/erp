@@ -44,7 +44,6 @@
                 <tr>
                     <th>ID</th> 
                     <th>Site Code</th>
-                    <th>Product Code</th>
                     <th>Quotation Code</th>
                     <th>Filed By</th>
                     <th>Status</th>
@@ -324,7 +323,7 @@
 
               <div class="input-field col s12 m4 l4">
                 <select id="f_site_code" name="site_code" required>
-                  <option value="0" disabled selected>Choose Site</option>
+                  <option value="" disabled selected>Choose Site</option>
                   @foreach ($sites as $site)
                     <option value="{{$site->site_code}}">{{$site->site_desc}}</option>
                   @endforeach
@@ -341,7 +340,7 @@
 
               <div class="input-field col s12 m4 l3">
                 <select id="f_uom_code" name="uom_code" required>
-                  <option value="0" disabled selected>Choose Unit of Measure</option>
+                  <option value="" disabled selected>Choose Unit of Measure</option>
                   @foreach ($uoms as $uom)
                     <option value="{{$uom->uom_code}}">{{$uom->uom_name}}</option>
                   @endforeach
@@ -448,67 +447,73 @@
   </div>
 
   <div id="editModal" class="modal">
-    {{-- <form method="POST" action="{{route('quotation.patch')}}"> --}}
-    <form>
+    <form method="POST" action="{{route('quotation.store')}}">
+      {{-- <form> --}}
     @csrf
       <div class="modal-content">
-        <h4>Edit Sales Forecast Details</h4>
-
+        <h4>Edit Sales Quotation</h4>
         <ul id="tabs-swipe-demo" class="tabs">
-          <li class="tab col s12 m4 l4"><a class="active" href="#edit-forecast">Forecast Details</a></li>
-          <li class="tab col s12 m4 l4"><a href="#edit-signatories" onclick="getApprover(1,'edit','Sales Forecast');">Signatories</a></li>
+          <li class="tab col s12 m4 l4"><a class="active" href="#edit-quotation">Quotation Details</a></li>
+          {{-- need auth ID and module for getApprover()  --}}
+          <li class="tab col s12 m4 l4"><a href="#edit-signatories">Signatories</a></li>
         </ul><br>
 
-        <div id="edit-forecast" name="edit-forecast">
-          <input type="hidden" name="id" id="edit_id">
-          <div class="row">
-            <div class="input-field col s12 m4 l6">
-              <input type="text" id="edit_forecast_code" name="forecast_code" placeholder="FORECAST" readonly/>
+        <div id="edit-quotation" name="quotation">
+
+          <div class="row" style="display: none" id="efcode">
+            <div class="input-field col s12 m6 l6">
+              <input type="text" id="edit_forecast_code" name="forecast_code" placeholder="0" readonly/>
               <label for="forecast_code">Forecast Code<sup class="red-text">*</sup></label>
             </div>
-
-            <div class="input-field col s12 m2 l3">
-              <select id="edit_forecast_year" name="forecast_year" required>
-                <option value="" disabled selected>Choose your option</option>
-                <option value="2021">2021</option>
-                <option value="2022">2022</option>
-                <option value="2023">2023</option>
-                <option value="2024">2024</option>
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
-                <option value="2027">2027</option>
-                <option value="2028">2028</option>
-                <option value="2029">2029</option>
-                <option value="2030">2030</option>
-              </select>
-              <label for="forecast_year">Forecast Year<sup class="red-text">*</sup></label>
-            </div>
-
-            <div class="input-field col s12 m2 l3">
-              <select id="edit_forecast_month" name="forecast_month" required>
-                <option value="" disabled selected>Choose your option</option>
-                <option value="January">January</option>
-                <option value="February">February</option>
-                <option value="March">March</option>
-                <option value="April">April</option>
-                <option value="May">May</option>
-                <option value="June">June</option>
-                <option value="July">July</option>
-                <option value="August">August</option>
-                <option value="September">September</option>
-                <option value="October">October</option>
-                <option value="November">November</option>
-                <option value="December">December</option>
-              </select>
-            {{-- <input type="text" name="edit_forecast_month" id="forecast_month" class="datepicker"> --}}
-              <label for="forecast_month">Forecast Month<sup class="red-text">*</sup></label>
-            </div> 
           </div>
 
           <div class="row">
-            <div class="input-field col s12 m3 l4">
+
+            <div class="input-field col s12 m6 l6">
+              <input type="text" id="edit_quotation_code" name="quotation_code" placeholder="0" readonly/>
+              <label for="quotation_code">Quotation Code<sup class="red-text">*</sup></label>
+            </div>
+        
+            <div class="input-field col s12 m6 l6">
+              <select id="edit_customer_code" name="customer_code">
+                <option value="" disabled selected>Choose Customer</option>
+                @foreach ($customers as $customer)
+                  <option value="{{$customer->cust_code}}">{{$customer->cust_name}}</option>
+                @endforeach
+              </select>
+              <label for="customer_code">Customer<sup class="red-text">*</sup></label>
+            </div>
+
+          </div>
+          
+          <div class="row">
+            <div class="input-field col s12 m6 l6">
+              <select id="edit_payment_term" name="payment_term" required>
+                <option value="0" disabled selected>Choose Payment Term</option>
+                @foreach ($payment as $payments)
+                  <option value="{{$payments->id}}">{{$payments->term_name}}</option>
+                @endforeach
+              </select>
+              <label for="payment_term">Payment Term<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m6 l6">
+              <select id="edit_currency_code" name="currency_code" onchange="computeTotal('add');" required>
+                <option value="0" disabled selected>Choose Currency</option>
+                @foreach ($currencies as $curr)
+                  <option value="{{$curr->currency_code}}">{{$curr->symbol}} - {{$curr->currency_name}}</option>
+                @endforeach
+              </select>
+              <label for="currency_code">Currency<sup class="red-text">*</sup></label>
+            </div>
+          </div>
+
+          <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 1em; background-color:#0d47a1" class="white-text"><b>Product Details</b></h6>
+          
+          <div class="row">
+            <div class="input-field col s12 m4 l4">
               <select id="edit_site_code" name="site_code" required>
-                <option value="" disabled selected>Choose your option</option>
+                <option value="" disabled selected>Choose Site</option>
                 @foreach ($sites as $site)
                   <option value="{{$site->site_code}}">{{$site->site_desc}}</option>
                 @endforeach
@@ -516,70 +521,93 @@
               <label for="site_code">Site<sup class="red-text">*</sup></label>
             </div>
 
-          
-
-            <div class="input-field col s12 m3 l5">
+            <div class="input-field col s12 m4 l5">
               <select id="edit_prod_code" name="prod_code" required>
-                <option value="" disabled selected>Choose your option</option>
-                @foreach ($products as $prod)
-                  <option value="{{$prod->prod_code}}">{{$prod->prod_name}}</option>
-                @endforeach
+                <option value="" disabled selected>Choose Product</option>
               </select>
               <label for="prod_code">Product<sup class="red-text">*</sup></label>
             </div>
 
-            <div class="input-field col s12 m3 l3">
+            <div class="input-field col s12 m4 l3">
               <select id="edit_uom_code" name="uom_code" required>
-                <option value="0" disabled selected>Choose your option</option>       
-                  @foreach ($uoms as $i)
-                    <option value="{{$i->uom_code}}">{{$i->uom_name}}</option>
-                  @endforeach
+                <option value="0" disabled selected>Choose Unit of Measure</option>
+                @foreach ($uoms as $uom)
+                  <option value="{{$uom->uom_code}}">{{$uom->uom_name}}</option>
+                @endforeach
               </select>
               <label for="uom_code">Unit of Measure<sup class="red-text">*</sup></label>
             </div>
 
           </div>
 
-          <div class="row">
-            <div class="input-field col s12 m3 l3">
-              <select id="edit_currency_code" name="currency_code" onchange="computeTotal('edit');" required>
-                <option value="0" disabled selected>Choose your option</option>
-                @foreach ($currencies as $curr)
-                  <option value="{{$curr->currency_code}}">{{$curr->symbol}} - {{$curr->currency_name}}</option>
-                @endforeach
-              </select>
-              <label for="currency_code">Currency<sup class="red-text">*</sup></label>
-            </div>
-
-            <div class="input-field col s12 m3 l3">
-              <input placeholder="0.00" id="edit_unit_price" name="unit_price" type="number" step="0.0001" style="text-align: right" class="number validate" onkeyup="computeTotal('edit');" required>
+          <div class="row" style="margin-bottom: 0px">
+            <div class="input-field col s12 m4 l4">
+              <input placeholder="0.00" id="edit_unit_price" name="unit_price" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('add');" required>
               <label for="unit_price">Unit Price<sup class="red-text">*</sup></label>
             </div>
 
-            <div class="input-field col s12 m3 l3">
-              {{--  pattern="^[\d,]+$" --}}
-              <input placeholder="0" id="edit_quantity" name="quantity" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('edit');" required>
+            <div class="input-field col s12 m4 l4">
+              <input placeholder="0" id="edit_quantity" name="quantity" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('add');" required>
               <label for="quantity">Quantity<sup class="red-text">*</sup></label>
             </div>
 
-            <div class="input-field col s12 m3 l3">
-              <input placeholder="0" id="edit_total_price" name="total_price" type="text" step="0.0001" style="text-align: right" class="number validate" required readonly>
+            <div class="input-field col s12 m4 l4">
+              <input placeholder="0" id="edit_total_price" name="total_price" type="text" style="text-align: right" class="number" required readonly>
               <label for="total_price">Total Price<sup class="red-text">*</sup></label>
+            </div>
+            
+            <div class="input-field col s12 m12 l12">
+              <a class="blue waves-effect waves-light btn right-align" id="btnAdd" onclick="addProduct('m');"><i class="material-icons left">add_circle</i>Add Product</a>
             </div>
 
           </div>
+           
+          <div class="row">
+            <div class="col s12 m12 l12">
+              <div class="card">
+                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Product List</b></h6><hr style="margin: 0px">
+                <div class="card-content" style="padding: 10px; padding-top: 0px">
+                  <table class="highlight responsive-table" id="product-dt-e">
+                    <thead>
+                      <tr>
+                          {{-- <th></th> --}}
+                          <th class="left-align">Product Code</th> 
+                          <th class="left-align">Product Name</th> 
+                          <th class="left-align">Unit of Measure</th>
+                          <th class="left-align">Currency</th>
+                          <th class="left-align">Unit Price</th>
+                          <th class="left-align">Quantity</th>
+                          <th class="left-align">Total Price</th>
+                          <th class="left-align">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
 
+          <div class="row col s12 m12 l12">
+              <div class="col s12 m8 l8"></div>
+              <div class="col s12 m4 l4 right-align">
+              <input placeholder="0" id="add_grand_total" name="grand_total" type="text" style="text-align: right; left: 75%; font-size: 25px" class="number" required readonly>
+              <label for="grand_total" style="left: 75%; font-size:20px;"><b>Grand Total Price</b><sup class="red-text"></sup></label>
+            </div>
+          </div>
+          
         </div>
- 
-        <div id="edit-signatories" name="edit-signatories">
+
+        <div id="edit-signatories" name="signatories">
 
           {{-- current signatories --}}
           <div class="row">
             <div class="col s12 m12 l12">
               <div class="card">
+ 
                 <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Current Signatories</b></h6><hr style="margin: 0px">
                 <div class="card-content" style="padding: 10px; padding-top: 0px">
-                  <table class="highlight" id="matrix-dt-edit">
+                  <table class="highlight" id="matrix-dt">
                     <thead>
                       <tr>
                           <th>Sequence</th> 
@@ -595,11 +623,150 @@
           </div>
           
         </div>
-     
+
       </div>
       <div class="modal-footer">
         <button class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Update</button>
         <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Cancel</a>
+      </div>
+    </form>
+  </div>
+
+  <div id="viewModal" class="modal">
+    <form method="POST" action="{{route('quotation.store')}}">
+      <form>
+    @csrf
+      <div class="modal-content" style="padding-bottom: 0px">
+        <h4>Sales Quotation</h4>
+        <ul id="tabs-swipe-demo" class="tabs">
+          <li class="tab col s12 m4 l4"><a class="active" href="#view_details">Quotation Details</a></li>
+          {{-- need auth ID and module for getApprover()  --}}
+          <li class="tab col s12 m4 l4"><a href="#view_signatory" onclick="getApprover(2,'view','Sales Quotation');">Signatories</a></li>
+        </ul><br>
+
+        <div id="view_details" name="view_details">
+
+          <div class="row" style="display:none" id="fcode">
+            <div class="input-field col s12 m6 l6">
+              <input type="text" id="v_forecast_code" name="forecast_code" placeholder="0" readonly/>
+              <label for="forecast_code">Forecast<sup class="red-text">*</sup></label>
+            </div>
+          </div>  
+
+          <div class="row">
+            <div class="input-field col s12 m6 l6">
+              <input type="text" id="v_quotation_code" name="quotation_code" placeholder="0" readonly/>
+              <label for="quotation_code">Quotation Code<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m6 l6">
+              <input type="text" id="v_customer_code" name="customer_code" placeholder="0" readonly/>
+              <label for="customer_code">Customer<sup class="red-text">*</sup></label>
+            </div>
+          </div>
+
+          <div class="row">
+
+            <div class="input-field col s12 m6 l6">
+              <input type="text" id="v_payment_term" name="payment_term" placeholder="0" readonly/>
+              <label for="payment_term">Payment Term<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m6 l6">
+              <input type="text" id="v_currency_code" name="currency_code" placeholder="0" readonly/>
+              <label for="currency_code">Currency<sup class="red-text">*</sup></label>
+            </div>
+
+          </div>
+            
+          <div class="row">
+            <div class="col s12 m12 l12">
+              <div class="card">
+                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Product List</b></h6><hr style="margin: 0px">
+                <div class="card-content" style="padding: 10px; padding-top: 0px">
+                  <table class="highlight responsive-table" id="product-dt-v">
+                    <thead>
+                      <tr>
+                          {{-- <th></th> --}}
+                          <th class="left-align">Product Code</th> 
+                          <th class="left-align">Product Name</th> 
+                          <th class="left-align">Unit of Measure</th>
+                          <th class="left-align">Currency</th>
+                          <th class="left-align">Unit Price</th>
+                          <th class="left-align">Quantity</th>
+                          <th class="left-align">Total Price</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row col s12 m12 l12">
+              <div class="col s12 m8 l8"></div>
+              <div class="col s12 m4 l4 right-align">
+                <input placeholder="0" id="v_grand_total" name="grand_total" type="text" style="text-align: right; left: 75%; font-size: 25px" class="number" required readonly>
+                <label for="grand_total" style="left: 75%; font-size:20px;"><b>Grand Total Price</b><sup class="red-text"></sup></label>
+              </div>
+          </div>
+            
+        </div>
+
+        <div id="view_signatory" name="view_signatory">
+
+          {{-- current signatories --}}
+          <div class="row">
+            <div class="col s12 m12 l12">
+              <div class="card">
+ 
+                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Current Signatories</b></h6><hr style="margin: 0px">
+                <div class="card-content" style="padding: 10px; padding-top: 0px">
+                  <table class="highlight" id="matrix-dt-v">
+                    <thead>
+                      <tr>
+                          <th>Sequence</th> 
+                          <th>Approver ID</th> 
+                          <th>Approver Name</th> 
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col s12 m12 l12">
+              <div class="card">
+ 
+                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Approval History</b></h6><hr style="margin: 0px">
+                <div class="card-content" style="padding: 10px; padding-top: 0px">
+                  <table class="highlight" id="matrix-dt-v-h">
+                    <thead>
+                      <tr>
+                          <th>Sequence</th> 
+                          <th>Approver Name</th> 
+                          <th>Status</th> 
+                          <th>Remarks</th> 
+                          <th>Action Date</th> 
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+
+      </div>
+      <div class="modal-footer" style="padding-right: 30px;">
+      
+        <a href="#!" class="modal-close green waves-effect waves-light btn"><i class="material-icons left">keyboard_return</i>Okay</a>
+
       </div>
     </form>
   </div>
@@ -770,6 +937,7 @@
             <div class="row">
                 <div class="col s12 m6">
                     <input type="hidden" name="id" id="del_id">
+                    <input type="hidden" name="quot" id="del_quot">
                     <p>Are you sure you want to delete this <strong>Sales Quotation Details</strong>?</p>
                 </div>
             </div>
@@ -922,17 +1090,12 @@
               var curr_sym = curr.symbol;
               var currency = curr_sym + ' - ' + curr_code;
 
+              var myTable = document.getElementById('product-dt-f');
+              var rowCount = myTable.rows.length;
+              
               var prod_code = data.prod_code;
 
               Prod_codeF.push(prod_code);
-
-              // $('#f_uom_code option[value="'+data.uom_code+'"]').prop('selected', true);
-              // $('#f_uom_code').formSelect();
-              // $('#f_currency_code option[value="'+data.currency_code+'"]').prop('selected', true);
-              // $('#f_currency_code').formSelect();      
-              // $('#f_unit_price').val(data.unit_price);
-              // $('#f_quantity').val(data.quantity);
-              // $('#f_total_price').val(data.total_price);
 
               var forecastx = 'f';
               var AppendString =  "<tr>"+
@@ -944,7 +1107,8 @@
                                     "<td>" + data.quantity + "</td>" +
                                     "<td>" + data.total_price + "</td>" +
                                     "<td>" + '<a href="#" class="btn-small red waves-effect waves-light" onclick="deleteRow(this,\''+ forecastx +'\')" ><i class="material-icons small icon-demo">delete_sweep</i></a>' + 
-                                    '</td><input type="hidden" name="f_quot_code[]" value="'+ quot_code +'"/>' +
+                                    '</td><input type="hidden" name="f_seq_code[]" value="'+ rowCount +'"/>' +
+                                          '<input type="hidden" name="f_quot_code[]" value="'+ quot_code +'"/>' +
                                           '<input type="hidden" name="f_prod_code[]" value="'+ prod_code +'"/>' +
                                           '<input type="hidden" name="f_prod_name[]" value="'+ product.prod_name +'"/>' +
                                           '<input type="hidden" name="f_uom[]" value="'+ uom +'"/>' +
@@ -952,15 +1116,20 @@
                                           '<input type="hidden" name="f_unit_price[]" value="'+ data.unit_price +'"/>' +
                                           '<input type="hidden" name="f_quantity[]" value="'+ data.quantity +'"/>' +
                                           '<input type="hidden" name="f_total_price[]" value="'+ data.total_price +'"/></tr>';
+                                          
+             
+              for (var x = rowCount-1; x>0; x--) 
+              {
+                myTable.deleteRow(x); 
+              }
 
               $('#product-dt-f').find('tbody').append(AppendString);
+              $('#f_grand_total').val(myTable.rows[1].cells[6].innerHTML);
 
-              computeGrandTotal('f');     
+              //computeGrandTotal('f');     
 
             });
         })
-
-
     });
 
     function callModal(checker)
@@ -996,6 +1165,9 @@
                 } 
                 else if(loc=='forecast') {
                   var myTable = document.getElementById("matrix-dt-f");
+                }
+                else if(loc=='view') {
+                  var myTable = document.getElementById("matrix-dt-v");
                 } 
                 else if(loc=='edit') {
                   var myTable = document.getElementById("matrix-dt-edit");
@@ -1026,9 +1198,12 @@
                   }
                 if(loc=='add'){
                   $('#matrix-dt').find('tbody').append(AppendString);
-                } 
+                }  
                 else if(loc=='forecast') {
                   $('#matrix-dt-f').find('tbody').append(AppendString);
+                }
+                else if(loc=='view') {
+                  $('#matrix-dt-v').find('tbody').append(AppendString);
                 }
                 else if(loc=='edit') {
                   $('#matrix-dt-edit').find('tbody').append(AppendString);
@@ -1183,6 +1358,10 @@
           });
         if(locx=='f')
         {
+          var cf = document.getElementById('f_currency_code');
+          var currency_f = cf.options[cf.selectedIndex].text;
+              currency_f = currency_f.substr(currency_f, 1); // currency
+
           var myTableF =  document.getElementById("product-dt-f");
           var rowCountF = myTableF.rows.length;
           if(rowCountF>1){
@@ -1199,13 +1378,44 @@
             var gt_w_curr_f = '';
           } else {
             var grand_total_f = formatter.format(resultF);
-            var gt_w_curr_f = currencyF + ' ' + grand_total_f;
+            var gt_w_curr_f = currency_f + ' ' + grand_total_f;
           }
           $('#f_grand_total').val(gt_w_curr_f); 
+
+        } 
+        else if(locx=='v')
+        {
+          var cf = $('#v_currency_code').val();
+ 
+          var currency_f = cf.substr(cf, 1); // currency
+
+          var myTableF =  document.getElementById("product-dt-v");
+          var rowCountF = myTableF.rows.length;
+          if(rowCountF>1){
+            var currencyF = myTableF.rows[1].cells[3].innerHTML;
+          }  
+          var resultF = 0;
+          
+          for (var f=1; f < rowCountF; f++)
+          {
+            resultF = resultF + (parseFloat(myTableF.rows[f].cells[4].innerHTML) * parseFloat(myTableF.rows[f].cells[5].innerHTML));
+          }
+
+          if(resultF<=0){
+            var gt_w_curr_f = '';
+          } else {
+            var grand_total_f = formatter.format(resultF);
+            var gt_w_curr_f = currency_f + ' ' + grand_total_f;
+          }
+          $('#v_grand_total').val(gt_w_curr_f); 
 
         }
         else
         {
+          var cf = document.getElementById('add_currency_code');
+          var currency_f = cf.options[cf.selectedIndex].text;
+              currency_f = currency_f.substr(currency_f, 1); // currency
+
           var myTable =  document.getElementById("product-dt");
           var rowCount = myTable.rows.length;
           if(rowCount>1){
@@ -1222,7 +1432,7 @@
             var gt_w_curr = '';
           } else {
             var grand_total = formatter.format(result);
-            var gt_w_curr = currency + ' ' + grand_total;
+            var gt_w_curr = currency_f + ' ' + grand_total;
           }
           $('#add_grand_total').val(gt_w_curr);
          
@@ -1238,15 +1448,21 @@
 
     function addProduct(loc)
     {
+        const formatter = new Intl.NumberFormat('en-US', {
+              minimumFractionDigits: 4,      
+              maximumFractionDigits: 4,
+            });
+            
         var locx = loc;
 
         if(locx=='f')
         {
+          
           var quot_code_f = $('#f_quot_code').val(); // quot code
           var prod_code_f = $('#f_prod_code').val(); // product code
           var pc_f = document.getElementById('f_prod_code');
           var prod_name_f = pc_f.options[pc_f.selectedIndex].text; // product name
-          var uom_f = $('#f_uom_code').val(); //uom
+         
           var unit_price_f = $('#f_unit_price').val(); //unit price
           var quantity_f = $('#f_quantity').val(); //quantity
           var total_price_f = $('#f_total_price').val(); //total price
@@ -1254,11 +1470,19 @@
           var cf = document.getElementById('f_currency_code');
           var currency_f = cf.options[cf.selectedIndex].text;
               currency_f = currency_f.substr(currency_f, 1); // currency
+          
+          var currency_codex = $('#f_currency_code').val(); // currency code
+
+          var uomx = document.getElementById('f_uom_code');
+          var uomx_name = uomx.options[uomx.selectedIndex].text; // uom name
+          var uom_f = $('#f_uom_code').val(); //uom
+          var uom = uom_f + ' - ' + uomx_name;
 
           var forecastx = 'f';
 
           var myTable = document.getElementById('product-dt-f');
           var rowCount = myTable.rows.length;
+   
           var quantity = 0;
           var result = 0;
           var found = false;
@@ -1274,61 +1498,74 @@
               if (prod_code_f!='Choose Product' && unit_price_f != '' && quantity_f != '' && total_price_f != '')
               {
                 Prod_codeF.push(prod_code_f);
-
+         
                 $('#product-dt-f').find('tbody').append("<tr>"+
                                     "<td>" + prod_code_f + "</td>" +
                                     "<td>" + prod_name_f + "</td>" +
-                                    "<td>" + uom_f + "</td>" +
-                                    "<td>" + currency_f  + "</td>" +
+                                    "<td>" + uom + "</td>" +
+                                    "<td>" + currency_codex  + "</td>" +
                                     "<td>" + unit_price_f + "</td>" +
                                     "<td>" + quantity_f + "</td>" +
                                     "<td>" + total_price_f + "</td>" +
                                     "<td>" + '<a href="#" class="btn-small red waves-effect waves-light" onclick="deleteRow(this,\''+ forecastx +'\')" ><i class="material-icons small icon-demo">delete_sweep</i></a>' + 
-                                    '</td><input type="hidden" name="f_quot_code[]" value="'+ quot_code_f +'"/>' +
+                                      '</td><input type="hidden" name="f_seq_code[]" value="'+ rowCount  +'"/>' +
+                                          '<input type="hidden" name="f_quot_code[]" value="'+ quot_code_f +'"/>' +
                                           '<input type="hidden" name="f_prod_code[]" value="'+ prod_code_f +'"/>' +
                                           '<input type="hidden" name="f_prod_name[]" value="'+ prod_name_f +'"/>' +
-                                          '<input type="hidden" name="f_uom[]" value="'+ uom_f +'"/>' +
-                                          '<input type="hidden" name="f_currency_code[]" value="'+ currency_f +'"/>' +
+                                          '<input type="hidden" name="f_uom[]" value="'+ uom +'"/>' +
+                                          '<input type="hidden" name="f_currency_code[]" value="'+ currency_codex +'"/>' +
                                           '<input type="hidden" name="f_unit_price[]" value="'+ unit_price_f +'"/>' +
                                           '<input type="hidden" name="f_quantity[]" value="'+ quantity_f +'"/>' +
                                           '<input type="hidden" name="f_total_price[]" value="'+ total_price_f +'"/></tr>');
               }
             } 
           else // nakita
-            {  
+            { 
+              const formatter = new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: 4,      
+                maximumFractionDigits: 4,
+              });
+
               for(var i = 1; i < rowCount; i++)
               {
                 if(prod_code_f == myTable.rows[i].cells[0].innerHTML)
                 {
+ 
                   var row_q = parseFloat(myTable.rows[i].cells[5].innerHTML);
                   var row_up = parseInt(myTable.rows[i].cells[4].innerHTML);
-                  var currency = myTable.rows[i].cells[3].innerHTML;
+
+                  var cf = document.getElementById('f_currency_code');
+                  var currency_f = cf.options[cf.selectedIndex].text;
+                      currency_f = currency_f.substr(currency_f, 1); // currency
                   
                   var adtl_q = parseFloat(quantity_f);
                   var curr_q = adtl_q + row_q;
                   var curr_tp = curr_q * row_up;
-                  var curr_tp_w_crnc = currency + ' ' + curr_tp;
+                      curr_tp = formatter.format(curr_tp);
+                  var curr_tp_w_crnc = currency_f + ' ' + curr_tp;
                                   
                   $('#product-dt-f').find('tbody').append("<tr>" +
                                                     "<td>" + prod_code_f + "</td>" +
                                                     "<td>" + prod_name_f + "</td>" +
-                                                    "<td>" + uom_f + "</td>" +
-                                                    "<td>" + currency_f  + "</td>" +
+                                                    "<td>" + uom + "</td>" +
+                                                    "<td>" + currency_codex  + "</td>" +
                                                     "<td>" + unit_price_f + "</td>" +
                                                     "<td>" + curr_q + "</td>" +
                                                     "<td>" + curr_tp_w_crnc + "</td>" +
                                                     "<td>" + '<a href="#" class="btn-small red waves-effect waves-light" onclick="deleteRow(this,\''+ forecastx +'\')" ><i class="material-icons small icon-demo">delete_sweep</i></a>' + 
-                                                    '</td><input type="hidden" name="f_quot_code[]" value="'+ quot_code_f +'"/>' +
+                                                    '</td><input type="hidden" name="f_seq_code[]" value="'+ rowCount +'"/>' +
+                                                          '<input type="hidden" name="f_quot_code[]" value="'+ quot_code_f +'"/>' +
                                                           '<input type="hidden" name="f_prod_code[]" value="'+ prod_code_f +'"/>' +
                                                           '<input type="hidden" name="f_prod_name[]" value="'+ prod_name_f +'"/>' +
-                                                          '<input type="hidden" name="f_uom[]" value="'+ uom_f +'"/>' +
-                                                          '<input type="hidden" name="f_currency_code[]" value="'+ currency_f +'"/>' +
+                                                          '<input type="hidden" name="f_uom[]" value="'+ uom +'"/>' +
+                                                          '<input type="hidden" name="f_currency_code[]" value="'+ currency_codex +'"/>' +
                                                           '<input type="hidden" name="f_unit_price[]" value="'+ unit_price_f +'"/>' +
                                                           '<input type="hidden" name="f_quantity[]" value="'+ curr_q +'"/>' +
                                                           '<input type="hidden" name="f_total_price[]" value="'+ curr_tp_w_crnc +'"/></tr>');
                 }
                 else
                 {
+             
                   $('#product-dt-f').find('tbody').append("<tr>" +
                                                       "<td>" + myTable.rows[i].cells[0].innerHTML + "</td>" +
                                                       "<td>" + myTable.rows[i].cells[1].innerHTML + "</td>" +
@@ -1338,7 +1575,8 @@
                                                       "<td>" + myTable.rows[i].cells[5].innerHTML + "</td>" +
                                                       "<td>" + myTable.rows[i].cells[6].innerHTML + "</td>" +
                                                       "<td>" + '<a href="#" class="btn-small red waves-effect waves-light" onclick="deleteRow(this,\''+ forecastx +'\')" ><i class="material-icons small icon-demo">delete_sweep</i></a>' +
-                                                      '</td><input type="hidden" name="f_quot_code[]" value="'+ quot_code_f +'"/>' +
+                                                      '</td><input type="hidden" name="f_seq_code[]" value="'+ rowCount +'"/>' +
+                                                            '<input type="hidden" name="f_quot_code[]" value="'+ quot_code_f +'"/>' +
                                                             '<input type="hidden" name="f_prod_code[]" value="'+ myTable.rows[i].cells[0].innerHTML +'"/>' +
                                                             '<input type="hidden" name="f_prod_name[]" value="'+ myTable.rows[i].cells[1].innerHTML +'"/>' +
                                                             '<input type="hidden" name="f_uom[]" value="'+ myTable.rows[i].cells[2].innerHTML +'"/>' +
@@ -1358,10 +1596,11 @@
         }
         else
         {
+          var quot_code = $('#add_quot_code').val(); // quot code
           var product_code = $('#add_prod_code').val(); // product code
           var pc = document.getElementById('add_prod_code');
           var product_name = pc.options[pc.selectedIndex].text; // product name
-          var uom = $('#add_uom_code').val(); //uom
+ 
           var unit_price = $('#add_unit_price').val(); //unit price
           var quantity = $('#add_quantity').val(); //quantity
           var total_price = $('#add_total_price').val(); //total price
@@ -1370,80 +1609,295 @@
           var currency = c.options[c.selectedIndex].text;
           currency = currency.substr(currency, 1); // currency
 
+          var currency_codex = $('#add_currency_code').val(); // currency code
+
+          var uomx = document.getElementById('add_uom_code');
+          var uomx_name = uomx.options[uomx.selectedIndex].text; // uom name
+          var uom_f = $('#add_uom_code').val(); //uom
+          var uom = uom_f + ' - ' + uomx_name;
+
+
           var forecastx = 'm';
-          var AppendString =  "<tr>"+
-                                // "<td>" + rowCount + "</td>" +
-                                "<td>" + product_code + "</td>" +
-                                "<td>" + product_name + "</td>" +
-                                "<td>" + uom + "</td>" +
-                                "<td>" + currency + "</td>" +
-                                "<td>" + unit_price + "</td>" +
-                                "<td>" + quantity + "</td>" +
-                                "<td>" + total_price + "</td>" +
-                                "<td>" + '<a href="#" class="btn-small red waves-effect waves-light" onclick="deleteRow(this,\''+ forecastx +'\');" ><i class="material-icons small icon-demo">delete_sweep</i></a>' + "</td>"
-                              "</tr>";
-                              
-          $('#product-dt').find('tbody').append(AppendString);
-          computeGrandTotal(locx);     
+
+          var myTable = document.getElementById('product-dt');
+          var rowCount = myTable.rows.length;
+          var quantity_m = 0;
+          var result_m = 0;
+          var found = false;
+
+          if($.inArray(product_code,Prod_code) > -1){
+            found = true;
+          } else {
+            found = false;
+          }
+
+          if(!found) // hindi nakita
+            {
+              if (product_code!='Choose Product' && unit_price != '' && quantity != '' && total_price != '')
+              {
+                Prod_code.push(product_code);
+
+                $('#product-dt').find('tbody').append("<tr>"+
+                                    "<td>" + product_code + "</td>" +
+                                    "<td>" + product_name + "</td>" +
+                                    "<td>" + uom + "</td>" +
+                                    "<td>" + currency  + "</td>" +
+                                    "<td>" + unit_price + "</td>" +
+                                    "<td>" + quantity + "</td>" +
+                                    "<td>" + total_price + "</td>" +
+                                    "<td>" + '<a href="#" class="btn-small red waves-effect waves-light" onclick="deleteRow(this,\''+ forecastx +'\')" ><i class="material-icons small icon-demo">delete_sweep</i></a>' + 
+                                    '</td><input type="hidden" name="seq_code[]" value="'+ rowCount +'"/>' +
+                                          '<input type="hidden" name="quot_code[]" value="'+ quot_code +'"/>' +
+                                          '<input type="hidden" name="prod_code[]" value="'+ product_code +'"/>' +
+                                          '<input type="hidden" name="prod_name[]" value="'+ product_name +'"/>' +
+                                          '<input type="hidden" name="uom[]" value="'+ uom +'"/>' +
+                                          '<input type="hidden" name="curr_code[]" value="'+ currency_codex +'"/>' +
+                                          '<input type="hidden" name="unit_price[]" value="'+ unit_price +'"/>' +
+                                          '<input type="hidden" name="quantity[]" value="'+ quantity +'"/>' +
+                                          '<input type="hidden" name="total_price[]" value="'+ total_price +'"/></tr>');
+              }
+            } 
+          else // nakita
+            {  
+              const formatter = new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: 4,      
+                maximumFractionDigits: 4,
+              });
+
+              for(var i = 1; i < rowCount; i++)
+              {
+                if(product_code == myTable.rows[i].cells[0].innerHTML)
+                {
+                  var row_q = parseFloat(myTable.rows[i].cells[5].innerHTML);
+                  var row_up = parseInt(myTable.rows[i].cells[4].innerHTML);
+                  var currency = myTable.rows[i].cells[3].innerHTML;
+                  
+                  var adtl_q = parseFloat(quantity);
+                  var curr_q = adtl_q + row_q;
+                  var curr_tp = curr_q * row_up;
+                      curr_tp = formatter.format(curr_tp);
+                      
+                  var curr_tp_w_crnc = currency + ' ' + curr_tp;
+                                  
+                  $('#product-dt').find('tbody').append("<tr>" +
+                                                    "<td>" + product_code + "</td>" +
+                                                    "<td>" + product_name + "</td>" +
+                                                    "<td>" + uom + "</td>" +
+                                                    "<td>" + currency  + "</td>" +
+                                                    "<td>" + unit_price + "</td>" +
+                                                    "<td>" + curr_q + "</td>" +
+                                                    "<td>" + curr_tp_w_crnc + "</td>" +
+                                                    "<td>" + '<a href="#" class="btn-small red waves-effect waves-light" onclick="deleteRow(this,\''+ forecastx +'\')" ><i class="material-icons small icon-demo">delete_sweep</i></a>' + 
+                                                    '</td><input type="hidden" name="seq_code[]" value="'+ rowCount +'"/>' +
+                                                          '<input type="hidden" name="quot_code[]" value="'+ quot_code +'"/>' +
+                                                          '<input type="hidden" name="prod_code[]" value="'+ product_code +'"/>' +
+                                                          '<input type="hidden" name="prod_name[]" value="'+ product_name +'"/>' +
+                                                          '<input type="hidden" name="uom[]" value="'+ uom +'"/>' +
+                                                          '<input type="hidden" name="curr_code[]" value="'+ currency_codex +'"/>' +
+                                                          '<input type="hidden" name="unit_price[]" value="'+ unit_price +'"/>' +
+                                                          '<input type="hidden" name="quantity[]" value="'+ curr_q +'"/>' +
+                                                          '<input type="hidden" name="total_price[]" value="'+ curr_tp_w_crnc +'"/></tr>');
+                }
+                else
+                {
+                  $('#product-dt').find('tbody').append("<tr>" +
+                                                      "<td>" + myTable.rows[i].cells[0].innerHTML + "</td>" +
+                                                      "<td>" + myTable.rows[i].cells[1].innerHTML + "</td>" +
+                                                      "<td>" + myTable.rows[i].cells[2].innerHTML + "</td>" +
+                                                      "<td>" + myTable.rows[i].cells[3].innerHTML  + "</td>" +
+                                                      "<td>" + myTable.rows[i].cells[4].innerHTML + "</td>" +
+                                                      "<td>" + myTable.rows[i].cells[5].innerHTML + "</td>" +
+                                                      "<td>" + myTable.rows[i].cells[6].innerHTML + "</td>" +
+                                                      "<td>" + '<a href="#" class="btn-small red waves-effect waves-light" onclick="deleteRow(this,\''+ forecastx +'\')" ><i class="material-icons small icon-demo">delete_sweep</i></a>' +
+                                                      '</td><input type="hidden" name="seq_code[]" value="'+ rowCount +'"/>' +
+                                                            '<input type="hidden" name="quot_code[]" value="'+ quot_code +'"/>' +
+                                                            '<input type="hidden" name="prod_code[]" value="'+ myTable.rows[i].cells[0].innerHTML +'"/>' +
+                                                            '<input type="hidden" name="prod_name[]" value="'+ myTable.rows[i].cells[1].innerHTML +'"/>' +
+                                                            '<input type="hidden" name="uom[]" value="'+ myTable.rows[i].cells[2].innerHTML +'"/>' +
+                                                            '<input type="hidden" name="curr_code[]" value="'+ myTable.rows[i].cells[3].innerHTML +'"/>' +
+                                                            '<input type="hidden" name="unit_price[]" value="'+ myTable.rows[i].cells[4].innerHTML +'"/>' +
+                                                            '<input type="hidden" name="quantity[]" value="'+ myTable.rows[i].cells[5].innerHTML +'"/>' +
+                                                            '<input type="hidden" name="total_price[]" value="'+ myTable.rows[i].cells[6].innerHTML +'"/></tr>');
+                }
+              }
+              for (var x = rowCount-1; x>0; x--) 
+                {
+                  myTable.deleteRow(x); 
+                }
+            }
+
+          computeGrandTotal(locx);  
         }
         
     }
 
     function editItem(id)
     {
-        $.get('forecast/'+id, function(response){
-            var data = response.data;
-            $('#edit_id').val(data.id);
-            $('#edit_forecast_code').val(data.forecast_code);
+        $.get('quotation/getAllEdit/'+id, function(response){
+                var AppendString = "";
+                var i, j = "";
+                var data = response.data;
 
-            $('#edit_forecast_year option[value="'+data.forecast_year+'"]').prop('selected', true);
-            $('#edit_forecast_year').formSelect();
-            $('#edit_forecast_month option[value="'+data.forecast_month+'"]').prop('selected', true);
-            $('#edit_forecast_month').formSelect();
-            $('#edit_site_code option[value="'+data.site_code+'"]').prop('selected', true);
-            $('#edit_site_code').formSelect();
-            $('#edit_prod_code option[value="'+data.prod_code+'"]').prop('selected', true);
-            $('#edit_prod_code').formSelect();
-            $('#edit_uom_code option[value="'+data.uom_code+'"]').prop('selected', true);
-            $('#edit_uom_code').formSelect();
-            $('#edit_currency_code option[value="'+data.currency_code+'"]').prop('selected', true);
-            $('#edit_currency_code').formSelect();
+                console.log(data);
     
-            $('#edit_unit_price').val(data.unit_price);
-            $('#edit_quantity').val(data.quantity);
-            $('#edit_total_price').val(data.total_price);
+                var cust = data.customers;
+                var curr = data.currency;
+                var paym = data.payment;
 
-            $('#editModal').modal('open');
+                var forecast = data.forecast_code;
+                var quot_code = data.quot_code;
+                var customer = cust.cust_code;
+                var payment = paym.id;
+                var currency = curr.currency_code;
+
+                var currencyx = curr.currency_name;
+                var symbol = curr.symbol;
+
+                var curr_w_sym = symbol + ' - ' + currencyx;
+
+                var productsMatrix = data.products;
+                var products = JSON.parse(productsMatrix);
+
+                var myTablex = document.getElementById("product-dt-e");
+
+                var rowCount = myTablex.rows.length;
+                for (var x=rowCount-1; x>0; x--) 
+                  {
+                    myTablex.deleteRow(x); 
+                  }
+                
+                var forecastx = 'e';
+                
+                for(i in products)
+                  {
+                    for(j in products[i].seq)
+                    {
+                      AppendString += 
+                          "<tr><td>" + products[i].prod_code + 
+                          "</td><td>" + products[i].prod_name + 
+                          "</td><td>" + products[i].uom_code + 
+                          "</td><td>" + products[i].currency_code  + 
+                          "</td><td>" + products[i].unit_price  + 
+                          "</td><td>" + products[i].quantity   + 
+                          "</td><td>" + products[i].total_price  + 
+                          "</td><td>" + '<a href="#" class="btn-small red waves-effect waves-light" onclick="deleteRow(this,\''+ forecastx +'\')" ><i class="material-icons small icon-demo">delete_sweep</i></a>' + 
+                                          '</td><input type="hidden" name="e_seq_code[]" value="'+ rowCount +'"/>' +
+                                          '<input type="hidden" name="e_quot_code[]" value="'+ quot_code +'"/>' +
+                                          '<input type="hidden" name="e_prod_code[]" value="'+ products[i].prod_code +'"/>' +
+                                          '<input type="hidden" name="e_prod_name[]" value="'+ products[i].prod_name +'"/>' +
+                                          '<input type="hidden" name="e_uom[]" value="'+ products[i].uom_code +'"/>' +
+                                          '<input type="hidden" name="e_currency_code[]" value="'+  products[i].currency_code +'"/>' +
+                                          '<input type="hidden" name="e_unit_price[]" value="'+ products[i].unit_price +'"/>' +
+                                          '<input type="hidden" name="e_quantity[]" value="'+ products[i].quantity +'"/>' +
+                                          '<input type="hidden" name="e_total_price[]" value="'+ products[i].total_price +'"/></tr>';
+                    }
+                  }
+
+      
+                $('#product-dt-e').find('tbody').append(AppendString);
+
+                if(forecast!='')
+                {
+                  $('#edit_forecast_code').val(forecast);
+                  var x = document.getElementById("efcode");
+                  x.style.display = "block";
+                } else 
+                {
+                  var x = document.getElementById("efcode");
+                  x.style.display = "none";
+                }
+
+                $('#edit_quotation_code').val(quot_code);
+                $('#edit_forecast_code').val(forecast);
+                $('#edit_customer_code option[value="'+customer+'"]').prop('selected', true);
+                $('#edit_customer_code').formSelect();
+                $('#edit_payment_term option[value="'+payment+'"]').prop('selected', true);
+                $('#edit_payment_term').formSelect();
+                $('#edit_currency_code option[value="'+currency+'"]').prop('selected', true);
+                $('#edit_currency_code').formSelect();
+
+                computeGrandTotal('e');
+                $('#editModal').modal('open');
             
         });
     }
 
     function viewItem(id)
     {
-        $.get('forecast/'+id, function(response){
-            var data = response.data;
-            $('#edit_id').val(data.id);
-            $('#edit_forecast_code').val(data.forecast_code);
+        $.get('quotation/'+id, function(response){
+                var AppendString = "";
+                var i, j = "";
+                var data = response.data;
 
-            $('#edit_forecast_year option[value="'+data.forecast_year+'"]').prop('selected', true);
-            $('#edit_forecast_year').formSelect();
-            $('#edit_forecast_month option[value="'+data.forecast_month+'"]').prop('selected', true);
-            $('#edit_forecast_month').formSelect();
-            $('#edit_site_code option[value="'+data.site_code+'"]').prop('selected', true);
-            $('#edit_site_code').formSelect();
-            $('#edit_prod_code option[value="'+data.prod_code+'"]').prop('selected', true);
-            $('#edit_prod_code').formSelect();
-            $('#edit_uom_code option[value="'+data.uom_code+'"]').prop('selected', true);
-            $('#edit_uom_code').formSelect();
-            $('#edit_currency_code option[value="'+data.currency_code+'"]').prop('selected', true);
-            $('#edit_currency_code').formSelect();
-    
-            $('#edit_unit_price').val(data.unit_price);
-            $('#edit_quantity').val(data.quantity);
-            $('#edit_total_price').val(data.total_price);
+                console.log(data);
+      
+                var cust = data.customers;
+                var curr = data.currency;
+                var paym = data.payment;
 
-            $('#editModal').modal('open');
-            
+                var quot_code = data.quot_code;
+                var forecast = data.forecast_code;
+                var customer = cust.cust_name;
+                var payment = paym.term_name;
+
+                var currency = curr.currency_name;
+                var symbol = curr.symbol;
+
+                var curr_w_sym = symbol + ' - ' + currency;
+
+                var productsMatrix = data.products;
+                var products = JSON.parse(productsMatrix);
+
+
+
+                var myTablex = document.getElementById("product-dt-v");
+
+                var rowCount = myTablex.rows.length;
+                for (var x=rowCount-1; x>0; x--) 
+                  {
+                    myTablex.deleteRow(x); 
+                  }
+                  
+                
+                for(i in products)
+                  {
+                    for(j in products[i].seq)
+                    {
+                      AppendString += 
+                          "<tr><td>" + products[i].prod_code + 
+                          "</td><td>" + products[i].prod_name + 
+                          "</td><td>" + products[i].uom_code + 
+                          "</td><td>" + products[i].currency_code  + 
+                          "</td><td>" + products[i].unit_price  + 
+                          "</td><td>" + products[i].quantity   + 
+                          "</td><td>" + products[i].total_price  + 
+                            "</td></tr>";
+                    }
+                  }
+
+                $('#product-dt-v').find('tbody').append(AppendString);
+
+                $('#v_quotation_code').val(quot_code);
+                $('#v_customer_code').val(customer);
+                $('#v_payment_term').val(payment);
+                $('#v_currency_code').val(curr_w_sym);
+
+                if(forecast!='')
+                {
+                  $('#v_forecast_code').val(forecast);
+                  var x = document.getElementById("fcode");
+                  x.style.display = "block";
+                } else 
+                {
+                  var x = document.getElementById("fcode");
+                  x.style.display = "none";
+                }
+
+
+           
+
+            $('#viewModal').modal('open');
+            computeGrandTotal('v');
         });
     }
 
@@ -1492,9 +1946,10 @@
         });
     }
 
-    function deleteItem(id)
+    function deleteItem(id,quot)
     {
         $('#del_id').val(id);
+        $('#del_quot').val(quot);
         $('#deleteModal').modal('open');
     }
 
@@ -1514,13 +1969,14 @@
       {
         var i = r.parentNode.parentNode.rowIndex;
         var x = r.parentNode.parentNode.cells.item(0).innerHTML;
-        var index = Prod_codeF.indexOf(x)
-        Prod_codeF.splice(index)
+        var index = Prod_code.indexOf(x)
+        Prod_code.splice(index)
         document.getElementById("product-dt").deleteRow(i);
         computeGrandTotal('m');
       }
     }
 
+    // (this,\''+ forecastx +'\')
     var quotation = $('#quotation-dt').DataTable({
         "lengthChange": false,
         "pageLength": 15,
@@ -1537,7 +1993,7 @@
             {
                 "data": "id",
                 "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" onclick="viewItem('+row.id+')">'+row.quot_code+'</a>';
+                    return  '<a href="#" onclick="viewItem('+data+')">'+row.quot_code+'</a>';
                 }
             },
             {   "data": "id",
@@ -1545,37 +2001,93 @@
                   return row.customers.cust_name;
                 }
             },
-            {  "data": "status" },
+            {
+                "data": "status",
+                "render": function ( data, type, row, meta ) {
+                  switch(data){
+                    case 'Approved':
+                      return  '<span class="badge green white-text">Approved</span>';
+                    break;
+                    case 'Pending':
+                      return  '<span class="badge blue white-text">Pending</span>';
+                    break;
+                    case 'Rejected':
+                      return  '<span class="badge red white-text">Rejected</span>';
+                    break;
+                    case 'For Approval':
+                      return  '<span class="badge yellow white-text">For Approval</span>';
+                    break;
+                    case 'For Review':
+                      return  '<span class="badge yellow white-text">For Review</span>';
+                    break;
+                  }
+                   
+                }
+            },
             {
                 "data": "id",
                 "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem('+row.id+')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem('+row.id+')"><i class="material-icons">delete</i></a>';
+                    return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem(\''+(row.quot_code)+'\')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem('+row.id+',\''+(row.quot_code)+'\')"><i class="material-icons">delete</i></a>';
                 }
             }
         ]
     });
 
-    // var approvaldt = $('#approval-dt').DataTable({
-    //     "lengthChange": false,
-    //     "pageLength": 15,
-    //     "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
-    //     "pagingType": "full",
-    //     "ajax": "/api/rgc_entsys/quotation/all_approval",
-    //     "columns": [
-    //       {  "data": "id" },
-    //         {  "data": "site_code" },
-    //         {  "data": "prod_code" },
-    //         {  "data": "quotation_code" },
-    //         {  "data": "created_by" },
-    //         {  "data": "status" },
-    //         {
-    //             "data": "id",
-    //             "render": function ( data, type, row, meta ) {
-    //                 return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="appItem('+row.id+'), getApproverMatrix('+row.id+')"><i class="material-icons">rate_review</i></a>';
-    //             }
-    //         }
-    //     ]
-    // });
+    var quotapproval = $('#approval-dt').DataTable({
+        "lengthChange": false,
+        "pageLength": 15,
+        "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+        "pagingType": "full",
+        "ajax": "/api/rgc_entsys/quotation/all_approval",
+        "columns": [
+          {  "data": "id" },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.sites.site_desc;
+                }
+            },
+            {
+                "data": "id",
+                "render": function ( data, type, row, meta ) {
+                    return  '<a href="#" onclick="viewItem('+data+')">'+row.quot_code+'</a>';
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.customers.cust_name;
+                }
+            },
+            {
+                "data": "status",
+                "render": function ( data, type, row, meta ) {
+                  switch(data){
+                    case 'Approved':
+                      return  '<span class="badge green white-text">Approved</span>';
+                    break;
+                    case 'Pending':
+                      return  '<span class="badge blue white-text">Pending</span>';
+                    break;
+                    case 'Rejected':
+                      return  '<span class="badge red white-text">Rejected</span>';
+                    break;
+                    case 'For Approval':
+                      return  '<span class="badge yellow white-text">For Approval</span>';
+                    break;
+                    case 'For Review':
+                      return  '<span class="badge yellow white-text">For Review</span>';
+                    break;
+                  }
+                   
+                }
+            },
+            {
+                "data": "id",
+                "render": function ( data, type, row, meta ) {
+                    return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="appItem('+row.id+'), getApproverMatrix('+row.id+')"><i class="material-icons">rate_review</i></a>';
+                }
+            }
+        ]
+    });
 
 
   </script>
