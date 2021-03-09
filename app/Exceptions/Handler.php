@@ -70,5 +70,9 @@ class Handler extends ExceptionHandler
         if ($request->is('dcs') || $request->is('dcs/*')) {
             return redirect()->guest('/dcs');
         }
+
+        if ($request->is('reiss') || $request->is('reiss/*')) {
+            return redirect()->guest('/reiss');
+        }
     }
 }

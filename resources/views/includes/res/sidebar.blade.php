@@ -7,7 +7,7 @@
             <span class="card-title flow-text">Franz Delomen</span>
         </div>
     </div>
-    <li @if($page=='home')class="active"@endif><a href="#" class="waves-effect waves-light"><i class="material-icons">dashboard</i>Dashboard</a></li>
+    <li @if($page=='home')class="active"@endif><a href="{{route('res.home')}}" class="waves-effect waves-light"><i class="material-icons">dashboard</i>Dashboard</a></li>
     <li><div class="divider"></div></li>
     <li><a class="subheader">ERP Process</a></li>
     <li>

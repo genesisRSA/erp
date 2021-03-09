@@ -121,82 +121,88 @@ Route::group(['middleware' => ['auth.dcs']], function() {
 
 Route::get('/phpinfo', 'PagesController@phpinfo')->name('php.info');
 Route::get('/jolist', 'SignagesController@jolist')->name('jo.list');
+Route::get('/reiss','ERPPageController@index')->name('res.index');
+
+Route::post('/reiss/login', 'Auth\DCSLoginController@login')->name('reiss.login');
+    Route::get('/reiss/home','ERPPageController@home')->name('res.home');   
+Route::group(['middleware' => ['auth.dcs']], function() {
+
+    // ERP
+
+    Route::resource('/reiss/uom', 'UOMController');
+    Route::post('/reiss/uom/patch', 'UOMController@patch')->name('uom.patch');
+    Route::post('/reiss/uom/delete', 'UOMController@delete')->name('uom.delete');
+
+    Route::resource('/reiss/currency', 'CurrenciesController');
+    Route::post('/reiss/currency/patch', 'CurrenciesController@patch')->name('currency.patch');
+    Route::post('/reiss/currency/delete', 'CurrenciesController@delete')->name('currency.delete');
+
+    Route::resource('/reiss/payment_term', 'PaymentTermsController');
+    Route::post('/reiss/payment_term/patch', 'PaymentTermsController@patch')->name('payment_term.patch');
+    Route::post('/reiss/payment_term/delete', 'PaymentTermsController@delete')->name('payment_term.delete');
+
+    Route::resource('/reiss/customer', 'CustomersController');
+    Route::post('/reiss/customer/patch', 'CustomersController@patch')->name('customer.patch');
+    Route::post('/reiss/customer/delete', 'CustomersController@delete')->name('customer.delete');
+
+    // start -> jp task
+    Route::resource('/reiss/vendor', 'VendorController');
+    Route::post('/reiss/vendor/patch', 'VendorController@patch')->name('vendor.patch');
+    Route::post('/reiss/vendor/delete', 'VendorController@delete')->name('vendor.delete');
+
+    Route::resource('/reiss/item_category', 'ItemCategoryController');
+    Route::post('/reiss/item_category/patch', 'ItemCategoryController@patch')->name('item_category.patch');
+    Route::post('/reiss/item_category/delete', 'ItemCategoryController@delete')->name('item_category.delete');
+
+    Route::resource('/reiss/item_subcategory', 'ItemSubCategoryController');
+    Route::post('/reiss/item_subcategory/patch', 'ItemSubCategoryController@patch')->name('item_subcategory.patch');
+    Route::post('/reiss/item_subcategory/delete', 'ItemSubCategoryController@delete')->name('item_subcategory.delete');
+
+    Route::resource('/reiss/assembly','AssemblyController');
+    Route::post('/reiss/assembly/patch', 'AssemblyController@patch')->name('assembly.patch');
+    Route::post('/reiss/assembly/delete', 'AssemblyController@delete')->name('assembly.delete');
+
+    Route::resource('/reiss/fabrication','FabricationController');
+    Route::post('/reiss/fabrication/patch', 'FabricationController@patch')->name('fabrication.patch');
+    Route::post('/reiss/fabrication/delete', 'FabricationController@delete')->name('fabrication.delete');
+
+    Route::resource('/reiss/item_master','ItemMasterController');
+    Route::post('/reiss/item_master/patch', 'ItemMasterController@patch')->name('item_master.patch');
+    Route::post('/reiss/item_master/delete', 'ItemMasterController@delete')->name('item_master.delete');
+    Route::get('/reiss/item_master/getSubCategory/{id}', 'ItemMasterController@getSubCategory');
+
+    Route::resource('/reiss/approver','ApproverMatrixController');
+    Route::post('/reiss/approver/delete','ApproverMatrixController@delete')->name('approver.delete');
+    Route::post('/reiss/approver/patch','ApproverMatrixController@patch')->name('approver.patch');
+
+    Route::resource('/reiss/forecast','SalesForecastController');
+    Route::post('/reiss/forecast/delete', 'SalesForecastController@delete')->name('forecast.delete');
+    Route::post('/reiss/forecast/patch', 'SalesForecastController@patch')->name('forecast.patch');
+    Route::post('/reiss/forecast/approve', 'SalesForecastController@approve')->name('forecast.approve');
+    Route::get('/reiss/forecast/getApprover/{id}/{module}', 'SalesForecastController@getApprover');
+    Route::get('/reiss/forecast/getApproverMatrix/{id}', 'SalesForecastController@getApproverMatrix');
+    Route::get('/reiss/forecast/getProducts/{id}', 'SalesForecastController@getProducts');
+
+    Route::resource('/reiss/quotation','SalesQuotationController');
+    Route::post('/reiss/quotation/delete', 'SalesQuotationController@delete')->name('quotation.delete');
+    Route::post('/reiss/quotation/patch', 'SalesQuotationController@patch')->name('quotation.patch');
+    Route::post('/reiss/quotation/approve', 'SalesQuotationController@approve')->name('quotation.approve');
+    Route::get('/reiss/quotation/getApprover/{id}/{module}', 'SalesQuotationController@getApprover');
+    Route::get('/reiss/quotation/getApproverMatrix/{id}', 'SalesQuotationController@getApproverMatrix');
+    Route::get('/reiss/quotation/getForecast/{id}', 'SalesQuotationController@getForecast');
+    Route::get('/reiss/quotation/getProducts/{id}', 'SalesQuotationController@getProducts');
+    Route::get('/reiss/quotation/getAllEdit/{id}', 'SalesQuotationController@getAllEdit');
 
 
-Route::get('/rgc_entsys/home','ERPPageController@home')->name('res.home');
+    // end -> jp task
 
-// ERP
-Route::resource('/rgc_entsys/uom', 'UOMController');
-Route::post('/rgc_entsys/uom/patch', 'UOMController@patch')->name('uom.patch');
-Route::post('/rgc_entsys/uom/delete', 'UOMController@delete')->name('uom.delete');
+    Route::resource('/reiss/product_category', 'ProductCategoriesController');
+    Route::post('/reiss/product_category/patch', 'ProductCategoriesController@patch')->name('product_category.patch');
+    Route::post('/reiss/product_category/delete', 'ProductCategoriesController@delete')->name('product_category.delete');
 
-Route::resource('/rgc_entsys/currency', 'CurrenciesController');
-Route::post('/rgc_entsys/currency/patch', 'CurrenciesController@patch')->name('currency.patch');
-Route::post('/rgc_entsys/currency/delete', 'CurrenciesController@delete')->name('currency.delete');
-
-Route::resource('/rgc_entsys/payment_term', 'PaymentTermsController');
-Route::post('/rgc_entsys/payment_term/patch', 'PaymentTermsController@patch')->name('payment_term.patch');
-Route::post('/rgc_entsys/payment_term/delete', 'PaymentTermsController@delete')->name('payment_term.delete');
-
-Route::resource('/rgc_entsys/customer', 'CustomersController');
-Route::post('/rgc_entsys/customer/patch', 'CustomersController@patch')->name('customer.patch');
-Route::post('/rgc_entsys/customer/delete', 'CustomersController@delete')->name('customer.delete');
-
-// start -> jp task
-Route::resource('/rgc_entsys/vendor', 'VendorController');
-Route::post('/rgc_entsys/vendor/patch', 'VendorController@patch')->name('vendor.patch');
-Route::post('/rgc_entsys/vendor/delete', 'VendorController@delete')->name('vendor.delete');
-
-Route::resource('/rgc_entsys/item_category', 'ItemCategoryController');
-Route::post('/rgc_entsys/item_category/patch', 'ItemCategoryController@patch')->name('item_category.patch');
-Route::post('/rgc_entsys/item_category/delete', 'ItemCategoryController@delete')->name('item_category.delete');
-
-Route::resource('/rgc_entsys/item_subcategory', 'ItemSubCategoryController');
-Route::post('/rgc_entsys/item_subcategory/patch', 'ItemSubCategoryController@patch')->name('item_subcategory.patch');
-Route::post('/rgc_entsys/item_subcategory/delete', 'ItemSubCategoryController@delete')->name('item_subcategory.delete');
-
-Route::resource('/rgc_entsys/assembly','AssemblyController');
-Route::post('/rgc_entsys/assembly/patch', 'AssemblyController@patch')->name('assembly.patch');
-Route::post('/rgc_entsys/assembly/delete', 'AssemblyController@delete')->name('assembly.delete');
-
-Route::resource('/rgc_entsys/fabrication','FabricationController');
-Route::post('/rgc_entsys/fabrication/patch', 'FabricationController@patch')->name('fabrication.patch');
-Route::post('/rgc_entsys/fabrication/delete', 'FabricationController@delete')->name('fabrication.delete');
-
-Route::resource('/rgc_entsys/item_master','ItemMasterController');
-Route::post('/rgc_entsys/item_master/patch', 'ItemMasterController@patch')->name('item_master.patch');
-Route::post('/rgc_entsys/item_master/delete', 'ItemMasterController@delete')->name('item_master.delete');
-Route::get('/rgc_entsys/item_master/getSubCategory/{id}', 'ItemMasterController@getSubCategory');
-
-Route::resource('/rgc_entsys/approver','ApproverMatrixController');
-Route::post('/rgc_entsys/approver/delete','ApproverMatrixController@delete')->name('approver.delete');
-Route::post('/rgc_entsys/approver/patch','ApproverMatrixController@patch')->name('approver.patch');
-
-Route::resource('/rgc_entsys/forecast','SalesForecastController');
-Route::post('/rgc_entsys/forecast/delete', 'SalesForecastController@delete')->name('forecast.delete');
-Route::post('/rgc_entsys/forecast/patch', 'SalesForecastController@patch')->name('forecast.patch');
-Route::post('/rgc_entsys/forecast/approve', 'SalesForecastController@approve')->name('forecast.approve');
-Route::get('/rgc_entsys/forecast/getApprover/{id}/{module}', 'SalesForecastController@getApprover');
-Route::get('/rgc_entsys/forecast/getApproverMatrix/{id}', 'SalesForecastController@getApproverMatrix');
-Route::get('/rgc_entsys/forecast/getProducts/{id}', 'SalesForecastController@getProducts');
-
-Route::resource('/rgc_entsys/quotation','SalesQuotationController');
-Route::post('/rgc_entsys/quotation/delete', 'SalesQuotationController@delete')->name('quotation.delete');
-Route::post('/rgc_entsys/quotation/patch', 'SalesQuotationController@patch')->name('quotation.patch');
-Route::post('/rgc_entsys/quotation/approve', 'SalesQuotationController@approve')->name('quotation.approve');
-Route::get('/rgc_entsys/quotation/getApprover/{id}/{module}', 'SalesQuotationController@getApprover');
-Route::get('/rgc_entsys/quotation/getApproverMatrix/{id}', 'SalesQuotationController@getApproverMatrix');
-Route::get('/rgc_entsys/quotation/getForecast/{id}', 'SalesQuotationController@getForecast');
-Route::get('/rgc_entsys/quotation/getProducts/{id}', 'SalesQuotationController@getProducts');
-Route::get('/rgc_entsys/quotation/getAllEdit/{id}', 'SalesQuotationController@getAllEdit');
+    Route::resource('/reiss/product', 'ProductsController');
+    Route::post('/reiss/product/patch', 'ProductsController@patch')->name('product.patch');
+    Route::post('/reiss/product/delete', 'ProductsController@delete')->name('product.delete');
 
 
-// end -> jp task
-
-Route::resource('/rgc_entsys/product_category', 'ProductCategoriesController');
-Route::post('/rgc_entsys/product_category/patch', 'ProductCategoriesController@patch')->name('product_category.patch');
-Route::post('/rgc_entsys/product_category/delete', 'ProductCategoriesController@delete')->name('product_category.delete');
-
-Route::resource('/rgc_entsys/product', 'ProductsController');
-Route::post('/rgc_entsys/product/patch', 'ProductsController@patch')->name('product.patch');
-Route::post('/rgc_entsys/product/delete', 'ProductsController@delete')->name('product.delete');
+});

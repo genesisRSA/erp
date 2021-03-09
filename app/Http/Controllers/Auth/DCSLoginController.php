@@ -28,8 +28,8 @@ class DCSLoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/dcs/home';
-    protected $redirectAfterLogout = '/dcs';
+    protected $redirectTo = '/reiss/home';
+    protected $redirectAfterLogout = '/reiss';
     protected $username;
 
     /**
@@ -86,11 +86,11 @@ class DCSLoginController extends Controller
     protected function authenticated(Request $request, $user){
         $user->api_token = Str::random(60);
         $user->save();
-        return redirect('/dcs/home');
+        return redirect('/reiss/home');
     }
 
     public function logout(Request $request) {
         Auth::logout();
-        return redirect('/dcs');
+        return redirect('/reiss');
     }
 }

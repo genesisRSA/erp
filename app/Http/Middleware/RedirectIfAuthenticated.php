@@ -26,9 +26,11 @@ class RedirectIfAuthenticated
             if ($guard == 'ics') {
                 return redirect('/ics/home');
             }else if ($guard == 'dcs') {
-                return redirect('/dcs/home');
+                return redirect('/reiss/home');
             }else if ($guard == 'web') {
                 return redirect('/hris/home');
+            }else if ($guard == 'reiss') {
+                return redirect('/reiss/home');
             }
         }
 

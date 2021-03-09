@@ -36,7 +36,7 @@ class Employee extends Model
     }
 
     public function getFullNameAttribute(){
-        $middle = $this->mname ? " ".ucfirst($this->mname)[0]+"." : '';
+        $middle = $this->mname ? " ".ucfirst($this->mname)[0]."." : '';
         return  ucfirst($this->emp_lname).", ".ucfirst($this->emp_fname).$middle;
     }
 }

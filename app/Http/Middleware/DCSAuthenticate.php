@@ -16,9 +16,9 @@ class DCSAuthenticate extends Middleware
     protected function redirectTo($request)
     {
         if (!$request->expectsJson()) {
-            return redirect('/dcs/home');
+            return redirect('/reiss/home');
         }else{
-            return redirect('/dcs')->with('error', 'You dont have permission to access this site.');
+            return redirect('/reiss')->with('error', 'You dont have permission to access this site.');
         }
     }
 }
