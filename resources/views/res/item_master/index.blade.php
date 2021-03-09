@@ -341,7 +341,7 @@
           $('#add_item_subcat_code').find('option').remove();
 
             $.ajax({
-              url:'/rgc_entsys/item_master/getSubCategory/'+id,
+              url:'/reiss/item_master/getSubCategory/'+id,
               type:'get',
               dataType:'json',
               success:function (response) {
@@ -371,7 +371,7 @@
           $('#edit_item_subcat_code').find('option').remove();
 
             $.ajax({
-              url:'/rgc_entsys/item_master/getSubCategory/'+id,
+              url:'/reiss/item_master/getSubCategory/'+id,
               type:'get',
               dataType:'json',
               success:function (response) {
@@ -543,7 +543,7 @@
         "pageLength": 15,
         //"aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/rgc_entsys/item_master/all",
+        "ajax": "/api/reiss/item_master/all",
         "columns": [
             {  "data": "id" },
             {  "data": "cat_code" },

@@ -306,7 +306,7 @@
         "pageLength": 15,
         //"aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/rgc_entsys/customer/all",
+        "ajax": "/api/reiss/customer/all",
         "columns": [
             {  "data": "id" },
             {  "data": "cust_name" },

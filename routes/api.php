@@ -65,23 +65,23 @@ Route::post('/ics/items/search', 'ICSController@search');
 Route::post('/ics/items/createstock', 'ICSController@create_stock');
 
 //RGC ENT SYS
-Route::get('/rgc_entsys/uom/all', 'UOMController@all');
-Route::get('/rgc_entsys/currency/all', 'CurrenciesController@all');
-Route::get('/rgc_entsys/payment_term/all', 'PaymentTermsController@all');
-Route::get('/rgc_entsys/customer/all', 'CustomersController@all');
+Route::get('/reiss/uom/all', 'UOMController@all');
+Route::get('/reiss/currency/all', 'CurrenciesController@all');
+Route::get('/reiss/payment_term/all', 'PaymentTermsController@all');
+Route::get('/reiss/customer/all', 'CustomersController@all');
 
-Route::get('/rgc_entsys/vendor/all', 'VendorController@all');
-Route::get('/rgc_entsys/item_category/all','ItemCategoryController@all');
-Route::get('/rgc_entsys/item_subcategory/all','ItemSubCategoryController@all');
-Route::get('/rgc_entsys/assembly/all','AssemblyController@all');
-Route::get('/rgc_entsys/fabrication/all','FabricationController@all');
-Route::get('/rgc_entsys/item_master/all','ItemMasterController@all');
-Route::get('/rgc_entsys/approver/all','ApproverMatrixController@all');
-Route::get('/rgc_entsys/forecast/all','SalesForecastController@all');
-Route::get('/rgc_entsys/forecast/all_approval','SalesForecastController@all_approval');
+Route::get('/reiss/vendor/all', 'VendorController@all');
+Route::get('/reiss/item_category/all','ItemCategoryController@all');
+Route::get('/reiss/item_subcategory/all','ItemSubCategoryController@all');
+Route::get('/reiss/assembly/all','AssemblyController@all');
+Route::get('/reiss/fabrication/all','FabricationController@all');
+Route::get('/reiss/item_master/all','ItemMasterController@all');
+Route::get('/reiss/approver/all','ApproverMatrixController@all');
+Route::get('/reiss/forecast/all','SalesForecastController@all');
+Route::get('/reiss/forecast/all_approval','SalesForecastController@all_approval');
 
-Route::get('/rgc_entsys/quotation/all','SalesQuotationController@all');
-Route::get('/rgc_entsys/quotation/all_approval','SalesQuotationController@all_approval');
+Route::get('/reiss/quotation/all','SalesQuotationController@all');
+Route::get('/reiss/quotation/all_approval','SalesQuotationController@all_approval');
 
-Route::get('/rgc_entsys/product_category/all', 'ProductCategoriesController@all');
-Route::get('/rgc_entsys/product/all', 'ProductsController@all');
+Route::get('/reiss/product_category/all', 'ProductCategoriesController@all');
+Route::get('/reiss/product/all', 'ProductsController@all');

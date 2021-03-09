@@ -443,7 +443,7 @@
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/rgc_entsys/approver/all",
+        "ajax": "/api/reiss/approver/all",
         "columns": [
             {  "data": "id" },
             {  "data": "module" },

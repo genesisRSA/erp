@@ -171,7 +171,7 @@ class SalesQuotationController extends Controller
                 $quotation = new SalesQuotation();
                 $quotation->site_code = $request->input('site_code','');
                 $quotation->quot_code = $request->input('quotation_code','');
-                $quotation->cust_code = '4024';
+                $quotation->cust_code = $request->input('customer_code','');
                 $quotation->forecast_code = $request->input('forecast_code','');
                 $quotation->payment_term_id = $request->input('payment_term','');
                 $quotation->currency_code = $request->input('currency_code','');
@@ -232,7 +232,7 @@ class SalesQuotationController extends Controller
                 $quotationx = new SalesQuotation();
                 $quotationx->site_code = $request->input('site_code','');
                 $quotationx->quot_code = $request->input('quotation_code','');
-                $quotationx->cust_code = '4024';
+                $quotationx->cust_code = $request->input('customer_code','');
                 $quotationx->forecast_code = $request->input('forecast_code','');
                 $quotationx->payment_term_id = $request->input('payment_term','');
                 $quotationx->currency_code = $request->input('currency_code','');
@@ -336,11 +336,12 @@ class SalesQuotationController extends Controller
 
     public function patch(Request $request)
     {
+        $today = date('Ymd');
         $field = [
-            'currency_code' => 'required',
-            'unit_price' => 'required',
-            'quantity' => 'required',
-            'total_price' => 'required',
+            'site_code' => 'required',
+            // 'unit_price' => 'required',
+            // 'quantity' => 'required',
+            // 'total_price' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $field);
@@ -349,22 +350,197 @@ class SalesQuotationController extends Controller
             return back()->withInput()
             ->withErrors($validator);
         }else{
-            $quotx = SalesForecast::find($request->input('id',''));
-            $quotx->forecast_code = $request->input('forecast_code','');
-            $quotx->forecast_month = $request->input('forecast_month','');
-            $quotx->forecast_year = $request->input('forecast_year','');
-            $quotx->site_code =  Str::upper($request->input('site_code',''));
-            $quotx->prod_code = Str::upper($request->input('prod_code',''));
-            $quotx->currency_code = Str::upper($request->input('currency_code',''));
-            $quotx->uom_code = $request->input('uom_code','');
-            $quotx->unit_price= $request->input('unit_price','');
-            $quotx->quantity = $request->input('quantity','');
-            $quotx->total_price = $request->input('total_price','');
-            $quotx->status = 'Pending';
-            $quotx->created_by = '0204-2021';
+            $quotex = SalesQuotation::find($request->input('id',''));
 
-            if($quotx->save()){
-                return redirect()->route('quotation.index')->withSuccess('Sales Forecast Details Successfully Updated');
+            //return $request->input('idx','');;
+
+            $quotex->site_code = $request->input('site_code','');
+            $quotex->quot_code = $request->input('quotation_code','');
+            $quotex->cust_code = $request->input('customer_code','');
+            $quotex->forecast_code = $request->input('forecast_code','');
+            $quotex->payment_term_id = $request->input('payment_term','');
+            $quotex->currency_code = $request->input('currency_code','');
+            $quotex->status = 'Pending';
+            $quotex->created_by = '0204-2021';  
+            if($request->input('app_seq'))
+            {
+       
+                $approver_e = array();
+                $productlist_e = array();
+
+                    for( $i = 0 ; $i < count($request->input('app_seq')) ; $i++ )
+                    {
+                        array_push($approver_e, [
+                                                'sequence' => $request->input('app_seq.'.$i),
+                                                'approver_emp_no' => $request->input('app_id.'.$i),
+                                                'approver_name' => $request->input('app_fname.'.$i),
+                                                'next_status' => $request->input('app_nstatus.'.$i),
+                                                'is_gate' => $request->input('app_gate.'.$i)
+                                                ]);
+                        if($request->input('app_seq.'.$i)==0) {
+                            $quotex->current_sequence = $request->input('app_seq.'.$i);
+                            $quotex->current_approver = $request->input('app_id.'.$i);
+                        }
+                    }
+
+                    $approver_e = json_encode($approver_e);     
+                    $quotex->matrix = $approver_e;     
+
+       
+                    for( $i = 0 ; $i < count($request->input('e_prod_code')) ; $i++ )
+                    {
+                         array_push($productlist_e, [
+                                    'seq'           => $request->input('e_seq_code.'.$i),
+                                    'quot_code'     => $request->input('quotation_code',''),
+                                    'prod_code'     => $request->input('e_prod_code.'.$i),
+                                    'prod_name'     => $request->input('e_prod_name.'.$i),
+                                    'uom_code'      => $request->input('e_uom.'.$i),
+                                    'currency_code' => $request->input('e_curr_code.'.$i),
+                                    'unit_price'    => $request->input('e_unit_price.'.$i),
+                                    'quantity'      => $request->input('e_quantity.'.$i),
+                                    'total_price'   => $request->input('e_total_price.'.$i),
+                                    'created_at'    => $today,
+                                    'updated_at'    => $today,
+                        ]);
+                    }
+
+                    SalesProductList::destroy($request->input('quotation_code',''));
+                    SalesProductList::insert($productlist_e);
+                    $productlist_e = json_encode($productlist_e);
+                    $quotex->products = $productlist_e;     
+            }
+            if($quotex->save()){
+                return redirect()->route('quotation.index')->withSuccess('Sales Quotation Details Successfully Updated');
+            }
+        }
+    }
+
+    public function approve(Request $request)
+    {
+        $field = [
+            //'edit_app_module' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $field);
+                              
+        if ($validator->fails()) {
+            return  back()->withInput()
+                            ->withErrors($validator);
+        }else{
+
+            $forecast_app = SalesQuotation::find($request->input('id', ''));
+    
+            $curr_id = $request->input('id','');
+            $curr_seq = $request->input('seq','');
+            $curr_app = $request->input('appid','');
+            $curr_status = $forecast_app->status;
+            $status = $request->input('status','');
+            $remarks = $request->input('remarks','');
+            
+            $date = date('Y-m-d H:i:s');
+            $curr_seq_db = $forecast_app->current_sequence;
+            $matrix = json_decode($forecast_app->matrix, true);
+            $matrixh = json_decode($forecast_app->matrix_h) ? json_decode($forecast_app->matrix_h) : array();
+
+            $gate = $matrix[0]['is_gate'];
+            $next_status = $matrix[0]['next_status'];
+            
+            if($status=='Approved')
+            {
+                if($gate=='true')
+                { 
+                    for($i=0; $i < count($matrix); $i++)
+                    {
+                        if($curr_seq==$curr_seq_db)
+                        {
+                            array_push($matrixh, [
+                                'sequence' => $matrix[$i]['sequence'],
+                                'approver_emp_no' => $matrix[$i]['approver_emp_no'],
+                                'approver_name' => $matrix[$i]['approver_name'],
+                                'status' => $status,
+                                'remarks' => $remarks,
+                                'action_date' => $date,
+                            ]);
+                            $curr_seq += 1;
+                        }
+                        else
+                        {
+                            array_push($matrixh, [
+                                'sequence' => $matrix[$i]['sequence'],
+                                'approver_emp_no' => $matrix[$i]['approver_emp_no'],
+                                'approver_name' => $matrix[$i]['approver_name'],
+                                'status' => 'Bypassed',
+                                'remarks' => 'Bypassed',
+                                'action_date' => $date,
+                            ]);
+                        }
+                    }
+                    $forecast_app->status = 'Approved';
+                    $forecast_app->approved_by = $curr_app;
+                    $forecast_app->updated_by = $curr_app;
+                    $matrix = [];
+                }
+                else 
+                {
+                    array_push($matrixh,[
+                        'sequence' => $curr_seq,
+                        'approver_emp_no' => $curr_app,
+                        'approver_name' => $matrix[0]['approver_name'],
+                        'status' => $curr_status,
+                        'remarks' => $remarks,
+                        'action_date' => $date,
+                    ]);
+                    $curr_seq += 1;
+                    array_splice($matrix,0,1);
+                    $forecast_app->status = $next_status;
+                    $forecast_app->approved_by = $curr_app;
+                    $forecast_app->updated_by = $curr_app;
+                }
+            }
+            else
+            {
+                 for($i=0; $i < count($matrix); $i++)
+                    {
+                        if($curr_seq==$curr_seq_db)
+                        {
+                            array_push($matrixh, [
+                                'sequence' => $matrix[$i]['sequence'],
+                                'approver_emp_no' => $matrix[$i]['approver_emp_no'],
+                                'approver_name' => $matrix[$i]['approver_name'],
+                                'status' => $curr_status,
+                                'remarks' => $remarks,
+                                'action_date' => $date,
+                            ]);
+                            $curr_seq += 1;
+                        }
+                        else
+                        {
+                            array_push($matrixh, [
+                                'sequence' => $matrix[$i]['sequence'],
+                                'approver_emp_no' => $matrix[$i]['approver_emp_no'],
+                                'approver_name' => $matrix[$i]['approver_name'],
+                                'status' => 'Bypassed',
+                                'remarks' => 'Bypassed',
+                                'action_date' => $date,
+                            ]);
+                        }
+                    }
+                $forecast_app->status = 'Rejected';
+                $forecast_app->approved_by = 'N/A';
+                $forecast_app->updated_by = $curr_app;
+                $matrix = [];
+            }
+            
+            $forecast_app->current_sequence = $curr_seq;
+            $forecast_app->matrix = json_encode($matrix);
+            $forecast_app->matrix_h = json_encode($matrixh);
+
+            if($forecast_app->save()){
+                if($status=='Approve'){
+                    return redirect()->route('forecast.index')->withSuccess('Sales Forecast Successfully Approved');
+                } else {
+                    return redirect()->route('forecast.index')->withSuccess('Sales Forecast Successfully Rejected');
+                }
             }
         }
     }

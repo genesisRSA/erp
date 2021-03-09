@@ -447,19 +447,18 @@
   </div>
 
   <div id="editModal" class="modal">
-    <form method="POST" action="{{route('quotation.store')}}">
-      {{-- <form> --}}
+    <form method="POST" action="{{route('quotation.patch')}}">
     @csrf
       <div class="modal-content">
         <h4>Edit Sales Quotation</h4>
         <ul id="tabs-swipe-demo" class="tabs">
           <li class="tab col s12 m4 l4"><a class="active" href="#edit-quotation">Quotation Details</a></li>
           {{-- need auth ID and module for getApprover()  --}}
-          <li class="tab col s12 m4 l4"><a href="#edit-signatories">Signatories</a></li>
+          <li class="tab col s12 m4 l4"><a href="#edit-signatories" onclick="getApprover(2,'edit','Sales Quotation');">Signatories</a></li>
         </ul><br>
 
         <div id="edit-quotation" name="quotation">
-
+            <input type="hidden" id="edit_id" name="id">
           <div class="row" style="display: none" id="efcode">
             <div class="input-field col s12 m6 l6">
               <input type="text" id="edit_forecast_code" name="forecast_code" placeholder="0" readonly/>
@@ -498,7 +497,7 @@
             </div>
 
             <div class="input-field col s12 m6 l6">
-              <select id="edit_currency_code" name="currency_code" onchange="computeTotal('add');" required>
+              <select id="edit_currency_code" name="currency_code" onchange="computeTotal('edit');" required>
                 <option value="0" disabled selected>Choose Currency</option>
                 @foreach ($currencies as $curr)
                   <option value="{{$curr->currency_code}}">{{$curr->symbol}} - {{$curr->currency_name}}</option>
@@ -542,12 +541,12 @@
 
           <div class="row" style="margin-bottom: 0px">
             <div class="input-field col s12 m4 l4">
-              <input placeholder="0.00" id="edit_unit_price" name="unit_price" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('add');" required>
+              <input placeholder="0.00" id="edit_unit_price" name="unit_price" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('edit');" required>
               <label for="unit_price">Unit Price<sup class="red-text">*</sup></label>
             </div>
 
             <div class="input-field col s12 m4 l4">
-              <input placeholder="0" id="edit_quantity" name="quantity" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('add');" required>
+              <input placeholder="0" id="edit_quantity" name="quantity" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('edit');" required>
               <label for="quantity">Quantity<sup class="red-text">*</sup></label>
             </div>
 
@@ -557,7 +556,7 @@
             </div>
             
             <div class="input-field col s12 m12 l12">
-              <a class="blue waves-effect waves-light btn right-align" id="btnAdd" onclick="addProduct('m');"><i class="material-icons left">add_circle</i>Add Product</a>
+              <a class="blue waves-effect waves-light btn right-align" id="btnAdd" onclick="addProduct('e');"><i class="material-icons left">add_circle</i>Add Product</a>
             </div>
 
           </div>
@@ -591,7 +590,7 @@
           <div class="row col s12 m12 l12">
               <div class="col s12 m8 l8"></div>
               <div class="col s12 m4 l4 right-align">
-              <input placeholder="0" id="add_grand_total" name="grand_total" type="text" style="text-align: right; left: 75%; font-size: 25px" class="number" required readonly>
+              <input placeholder="0" id="edit_grand_total" name="grand_total" type="text" style="text-align: right; left: 75%; font-size: 25px" class="number" required readonly>
               <label for="grand_total" style="left: 75%; font-size:20px;"><b>Grand Total Price</b><sup class="red-text"></sup></label>
             </div>
           </div>
@@ -607,7 +606,7 @@
  
                 <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Current Signatories</b></h6><hr style="margin: 0px">
                 <div class="card-content" style="padding: 10px; padding-top: 0px">
-                  <table class="highlight" id="matrix-dt">
+                  <table class="highlight" id="matrix-dt-e">
                     <thead>
                       <tr>
                           <th>Sequence</th> 
@@ -633,7 +632,6 @@
   </div>
 
   <div id="viewModal" class="modal">
-    <form method="POST" action="{{route('quotation.store')}}">
       <form>
     @csrf
       <div class="modal-content" style="padding-bottom: 0px">
@@ -772,15 +770,16 @@
   </div>
 
   <div id="appModal" class="modal">
-    <form method="POST" action="{{route('forecast.approve')}}">
-    {{-- <form> --}}
+    {{-- <form method="POST" action="{{route('quotation.approve')}}"> --}}
+      <form>
     @csrf
-      <div class="modal-content">
-        <h4>Sales Forecast Details Approval</h4>
-
+      <div class="modal-content" style="padding-bottom: 0px">
+        <h4>Sales Quotation Approval</h4>
         <ul id="tabs-swipe-demo" class="tabs">
-          <li class="tab col s12 m4 l4"><a class="active" href="#app-forecast">Forecast Details</a></li>
-          <li class="tab col s12 m4 l4"><a href="#app-signatories" id="app_signatories">Signatories</a></li>
+          <li class="tab col s12 m4 l4"><a class="active" href="#app_details">Quotation Details</a></li>
+          {{-- need auth ID and module for getApprover()  --}}
+          {{-- onclick="getApprover(2,'view','Sales Quotation');" --}}
+          <li class="tab col s12 m4 l4"><a href="#app_signatory" >Signatories</a></li>
         </ul><br>
 
         {{-- hidden items --}}
@@ -790,75 +789,84 @@
         <input type="hidden" name="appname" id="appname_app">
         {{-- hidden items --}}
 
-        <div id="app-forecast" name="app-forecast">
+        <div id="app_details" name="app_details">
+
+          <div class="row" style="display:none" id="facode">
+            <div class="input-field col s12 m6 l6">
+              <input type="text" id="app_forecast_code" name="forecast_code" placeholder="0" readonly/>
+              <label for="forecast_code">Forecast<sup class="red-text">*</sup></label>
+            </div>
+          </div>  
+
           <div class="row">
-            <div class="input-field col s12 m4 l6">
-              <input placeholder="0" type="text" id="app_forecast_code" name="forecast_code" readonly>
-              <label for="forecast_code">Forecast Code<sup class="red-text">*</sup></label>
+            <div class="input-field col s12 m6 l6">
+              <input type="text" id="app_quotation_code" name="quotation_code" placeholder="0" readonly/>
+              <label for="quotation_code">Quotation Code<sup class="red-text">*</sup></label>
             </div>
 
-            <div class="input-field col s12 m2 l3">
-              <input placeholder="0" type="text" id="app_forecast_year" name="forecast_year" readonly>
-              <label for="forecast_year">Forecast Year<sup class="red-text">*</sup></label>
+            <div class="input-field col s12 m6 l6">
+              <input type="text" id="app_customer_code" name="customer_code" placeholder="0" readonly/>
+              <label for="customer_code">Customer<sup class="red-text">*</sup></label>
             </div>
-
-            <div class="input-field col s12 m2 l3">
-              <input placeholder="0" type="text" id="app_forecast_month" name="forecast_month" readonly>
-              <label for="forecast_month">Forecast Month<sup class="red-text">*</sup></label>
-            </div> 
           </div>
 
           <div class="row">
-            <div class="input-field col s12 m3 l4">
-              <input placeholder="0" type="text" id="app_site_code" name="site_code" readonly>
-              <label for="site_code">Site<sup class="red-text">*</sup></label>
+
+            <div class="input-field col s12 m6 l6">
+              <input type="text" id="app_payment_term" name="payment_term" placeholder="0" readonly/>
+              <label for="payment_term">Payment Term<sup class="red-text">*</sup></label>
             </div>
 
-            <div class="input-field col s12 m3 l5">
-              <input placeholder="0" type="text" id="app_prod_code" name="prod_code" readonly>
-              <label for="prod_code">Product<sup class="red-text">*</sup></label>
-            </div>
-
-            <div class="input-field col s12 m3 l3">
-              <input placeholder="0" type="text" id="app_uom_code" name="uom_code" readonly>
-              <label for="uom_code">Unit of Measure<sup class="red-text">*</sup></label>
-            </div>
-
-          </div>
-
-          <div class="row">
-            <div class="input-field col s12 m3 l3">
-              <input placeholder="0" type="text" id="app_currency_code" name="currency_code" readonly>
+            <div class="input-field col s12 m6 l6">
+              <input type="text" id="app_currency_code" name="currency_code" placeholder="0" readonly/>
               <label for="currency_code">Currency<sup class="red-text">*</sup></label>
             </div>
 
-            <div class="input-field col s12 m3 l3">
-              <input placeholder="0" id="app_unit_price" name="unit_price" type="text" style="text-align: right" class="number validate" readonly>
-              <label for="unit_price">Unit Price<sup class="red-text">*</sup></label>
-            </div>
-
-            <div class="input-field col s12 m3 l3">
-              <input placeholder="0" id="app_quantity" name="quantity" type="number" style="text-align: right" class="number validate" readonly>
-              <label for="quantity">Quantity<sup class="red-text">*</sup></label>
-            </div>
-
-            <div class="input-field col s12 m3 l3">
-              <input placeholder="0" id="app_total_price" name="total_price" type="text" style="text-align: right" class="number validate" readonly>
-              <label for="total_price">Total Price<sup class="red-text">*</sup></label>
-            </div>
- 
-
           </div>
-          <hr style="padding:1px;color:blue;background-color:blue">
+            
+          <div class="row">
+            <div class="col s12 m12 l12">
+              <div class="card">
+                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Product List</b></h6><hr style="margin: 0px">
+                <div class="card-content" style="padding: 10px; padding-top: 0px">
+                  <table class="highlight responsive-table" id="product-dt-app">
+                    <thead>
+                      <tr>
+                          {{-- <th></th> --}}
+                          <th class="left-align">Product Code</th> 
+                          <th class="left-align">Product Name</th> 
+                          <th class="left-align">Unit of Measure</th>
+                          <th class="left-align">Currency</th>
+                          <th class="left-align">Unit Price</th>
+                          <th class="left-align">Quantity</th>
+                          <th class="left-align">Total Price</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
 
+          <div class="row col s12 m12 l12">
+              <div class="col s12 m8 l8"></div>
+              <div class="col s12 m4 l4 right-align">
+                <input placeholder="0" id="app_grand_total" name="grand_total" type="text" style="text-align: right; left: 75%; font-size: 25px" class="number" required readonly>
+                <label for="grand_total" style="left: 75%; font-size:20px;"><b>Grand Total Price</b><sup class="red-text"></sup></label>
+              </div>
+          </div>
+            
         </div>
- 
-        <div id="app-signatories" name="app-signatories">
+        <hr style="padding:1px;color:blue;background-color:blue">
+
+        <div id="app_signatory" name="app_signatory">
 
           {{-- current signatories --}}
           <div class="row">
             <div class="col s12 m12 l12">
               <div class="card">
+ 
                 <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Current Signatories</b></h6><hr style="margin: 0px">
                 <div class="card-content" style="padding: 10px; padding-top: 0px">
                   <table class="highlight" id="matrix-dt-app">
@@ -876,10 +884,11 @@
             </div>
           </div>
 
-          {{-- history signatories --}}
+          {{-- approval history --}}
           <div class="row">
             <div class="col s12 m12 l12">
               <div class="card">
+ 
                 <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Approval History</b></h6><hr style="margin: 0px">
                 <div class="card-content" style="padding: 10px; padding-top: 0px">
                   <table class="highlight" id="matrix-dt-app-h">
@@ -887,9 +896,9 @@
                       <tr>
                           <th>Sequence</th> 
                           <th>Approver Name</th> 
-                          <th>Status</th>
-                          <th>Remarks</th>
-                          <th>Action Date</th>
+                          <th>Status</th> 
+                          <th>Remarks</th> 
+                          <th>Action Date</th> 
                       </tr>
                     </thead>
                     <tbody></tbody>
@@ -898,33 +907,31 @@
               </div>
             </div>
           </div>
-          <hr style="padding:1px;color:blue;background-color:blue">
+          
         </div>
-        
+
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer" style="padding-right: 30px;">
+      
+        <div class="row" style="padding: 10px">
+          <div class="input-field col s12 m9 l9">
 
-     
-        <div class="row">
+            <textarea class="materialize-textarea" type="text" id="app_remarks" name="remarks" placeholder="Please input remarks here.." style="height: 150px; border-left: 10px; border-color: black; padding-left:20px;" required/></textarea>
+            <label for="icon_prefix2">Remarks</label>
 
-          <div class="input-field col s12 m8 l8">
-
-            <i class="material-icons prefix">mode_edit</i>
-            <textarea class="materialize-textare" type="text" id="app_remarks" name="remarks" placeholder="Please input remarks here.." style="height: 150px;" required/></textarea>
-            
           </div>
           
-          <div class="input-field col s12 m4 l4">
+          <div class="input-field col s12 m3 l3">
             <input type="hidden" id="status" name="status">
 
-            <button id="btnApp" name="approve" value="Approve" onclick="getStatus('Approve');" class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Approve</button>
+            <button id="btnApp" name="approve" value="Approve" onclick="getStatus('Approved');" class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Approve</button>
             
-            <button id="btnRej" name="reject" value="Reject" onclick="getStatus('Reject');" class="red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Reject</button>
+            <button id="btnRej" name="reject" value="Reject" onclick="getStatus('Reject');" class="red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Reject&nbsp;&nbsp;&nbsp;</button>
 
-            <a href="#!" class="modal-close orange waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Cancel</a>
+            <a href="#!" class="modal-close orange waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Cancel&nbsp;&nbsp;</a>
           </div>
+        </div>
 
-      </div>
       </div>
     </form>
   </div>
@@ -959,6 +966,7 @@
   <script type="text/javascript">
         var Prod_code = [];
         var Prod_codeF = [];
+        var Prod_codeE = [];
     $(document).ready(function () {
         $('.tabs').tabs();
 
@@ -968,7 +976,7 @@
           $('#add_prod_code').find('option').remove();
 
             $.ajax({
-              url:'/rgc_entsys/forecast/getProducts/'+id,
+              url:'/reiss/forecast/getProducts/'+id,
               type:'get',
               dataType:'json',
               success:function (response) {
@@ -999,7 +1007,7 @@
           $('#f_prod_code').find('option').remove();
 
             $.ajax({
-              url:'/rgc_entsys/forecast/getProducts/'+id,
+              url:'/reiss/forecast/getProducts/'+id,
               type:'get',
               dataType:'json',
               success:function (response) {
@@ -1030,7 +1038,7 @@
           $('#edit_prod_code').find('option').remove();
 
             $.ajax({
-              url:'/rgc_entsys/forecast/getProducts/'+id,
+              url:'/reiss/forecast/getProducts/'+id,
               type:'get',
               dataType:'json',
               success:function (response) {
@@ -1170,7 +1178,7 @@
                   var myTable = document.getElementById("matrix-dt-v");
                 } 
                 else if(loc=='edit') {
-                  var myTable = document.getElementById("matrix-dt-edit");
+                  var myTable = document.getElementById("matrix-dt-e");
                 } 
               
                 var rowCount = myTable.rows.length;
@@ -1206,14 +1214,14 @@
                   $('#matrix-dt-v').find('tbody').append(AppendString);
                 }
                 else if(loc=='edit') {
-                  $('#matrix-dt-edit').find('tbody').append(AppendString);
+                  $('#matrix-dt-e').find('tbody').append(AppendString);
                 }
           });
     } 
 
     function getApproverMatrix(id)
     {
-          $.get('forecast/getApproverMatrix/'+id, function(response){
+          $.get('quotation/getApproverMatrix/'+id, function(response){
 
                 var AppendString = "";
                 var AppendStringH = "";
@@ -1410,6 +1418,58 @@
           $('#v_grand_total').val(gt_w_curr_f); 
 
         }
+        else if(locx=='a')
+        {
+          var cf = $('#app_currency_code').val();
+ 
+          var currency_f = cf.substr(cf, 1); // currency
+
+          var myTableF =  document.getElementById("product-dt-app");
+          var rowCountF = myTableF.rows.length;
+          if(rowCountF>1){
+            var currencyF = myTableF.rows[1].cells[3].innerHTML;
+          }  
+          var resultF = 0;
+          
+          for (var f=1; f < rowCountF; f++)
+          {
+            resultF = resultF + (parseFloat(myTableF.rows[f].cells[4].innerHTML) * parseFloat(myTableF.rows[f].cells[5].innerHTML));
+          }
+
+          if(resultF<=0){
+            var gt_w_curr_f = '';
+          } else {
+            var grand_total_f = formatter.format(resultF);
+            var gt_w_curr_f = currency_f + ' ' + grand_total_f;
+          }
+          $('#app_grand_total').val(gt_w_curr_f); 
+
+        }
+        else if(locx=='e')
+        {
+          
+          var cf = document.getElementById('edit_currency_code');
+          var currency_f = cf.options[cf.selectedIndex].text;
+          var currency_f = currency_f.substr(currency_f, 1); // currency
+
+          var myTableF =  document.getElementById("product-dt-e");
+          var rowCountF = myTableF.rows.length;
+          var resultF = 0;
+          
+          for (var f=1; f < rowCountF; f++)
+          {
+            resultF = resultF + (parseFloat(myTableF.rows[f].cells[4].innerHTML) * parseFloat(myTableF.rows[f].cells[5].innerHTML));
+          }
+
+          if(resultF<=0){
+            var gt_w_curr_f = '';
+          } else {
+            var grand_total_f = formatter.format(resultF);
+            var gt_w_curr_f = currency_f + ' ' + grand_total_f;
+          }
+          $('#edit_grand_total').val(gt_w_curr_f); 
+
+        }
         else
         {
           var cf = document.getElementById('add_currency_code');
@@ -1594,6 +1654,145 @@
 
           computeGrandTotal(locx);  
         }
+        else if(locx=='e')
+        {
+          
+          var quot_code_e = $('#edit_quotation_code').val(); // quot code
+          var prod_code_e = $('#edit_prod_code').val(); // product code
+          var pc_e = document.getElementById('edit_prod_code');
+          var prod_name_e = pc_e.options[pc_e.selectedIndex].text; // product name
+         
+          var unit_price_e = $('#edit_unit_price').val(); //unit price
+          var quantity_e = $('#edit_quantity').val(); //quantity
+          var total_price_e = $('#edit_total_price').val(); //total price
+
+          var cf = document.getElementById('edit_currency_code');
+          var currency_e = cf.options[cf.selectedIndex].text;
+              currency_e = currency_e.substr(currency_e, 1); // currency
+          
+          var currency_codex = $('#edit_currency_code').val(); // currency code
+
+          var uomx = document.getElementById('edit_uom_code');
+          var uomx_name = uomx.options[uomx.selectedIndex].text; // uom name
+          var uom_e = $('#edit_uom_code').val(); //uom
+          var uom = uom_e + ' - ' + uomx_name;
+
+          var forecastx = 'e';
+
+          var myTable = document.getElementById('product-dt-e');
+          var rowCount = myTable.rows.length;
+   
+          var quantity = 0;
+          var result = 0;
+          var found = false;
+
+          if($.inArray(prod_code_e,Prod_codeE) > -1){
+            found = true;
+          } else {
+            found = false;
+          }
+
+          if(!found) // hindi nakita
+            {
+              if (prod_code_e!='Choose Product' && unit_price_e != '' && quantity_e != '' && total_price_e != '')
+              {
+                Prod_codeE.push(prod_code_e);
+         
+                $('#product-dt-e').find('tbody').append("<tr>"+
+                                    "<td>" + prod_code_e + "</td>" +
+                                    "<td>" + prod_name_e + "</td>" +
+                                    "<td>" + uom + "</td>" +
+                                    "<td>" + currency_codex  + "</td>" +
+                                    "<td>" + unit_price_e + "</td>" +
+                                    "<td>" + quantity_e + "</td>" +
+                                    "<td>" + total_price_e + "</td>" +
+                                    "<td>" + '<a href="#" class="btn-small red waves-effect waves-light" onclick="deleteRow(this,\''+ forecastx +'\')" ><i class="material-icons small icon-demo">delete_sweep</i></a>' + 
+                                      '</td><input type="hidden" name="e_seq_code[]" value="'+ rowCount  +'"/>' +
+                                          '<input type="hidden" name="e_quot_code[]" value="'+ quot_code_e +'"/>' +
+                                          '<input type="hidden" name="e_prod_code[]" value="'+ prod_code_e +'"/>' +
+                                          '<input type="hidden" name="e_prod_name[]" value="'+ prod_name_e +'"/>' +
+                                          '<input type="hidden" name="e_uom[]" value="'+ uom +'"/>' +
+                                          '<input type="hidden" name="e_curr_code[]" value="'+ currency_codex +'"/>' +
+                                          '<input type="hidden" name="e_unit_price[]" value="'+ unit_price_e +'"/>' +
+                                          '<input type="hidden" name="e_quantity[]" value="'+ quantity_e +'"/>' +
+                                          '<input type="hidden" name="e_total_price[]" value="'+ total_price_e +'"/></tr>');
+              }
+            } 
+          else // nakita
+            { 
+              const formatter = new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: 4,      
+                maximumFractionDigits: 4,
+              });
+
+              for(var i = 1; i < rowCount; i++)
+              {
+                if(prod_code_e == myTable.rows[i].cells[0].innerHTML)
+                {
+ 
+                  var row_q = parseFloat(myTable.rows[i].cells[5].innerHTML);
+                  var row_up = parseInt(myTable.rows[i].cells[4].innerHTML);
+
+                  var cf = document.getElementById('edit_currency_code');
+                  var currency_e = cf.options[cf.selectedIndex].text;
+                      currency_e = currency_e.substr(currency_e, 1); // currency
+                  
+                  var adtl_q = parseFloat(quantity_e);
+                  var curr_q = adtl_q + row_q;
+                  var curr_tp = curr_q * row_up;
+                      curr_tp = formatter.format(curr_tp);
+                  var curr_tp_w_crnc = currency_e + ' ' + curr_tp;
+                                  
+                  $('#product-dt-e').find('tbody').append("<tr>" +
+                                                    "<td>" + prod_code_e + "</td>" +
+                                                    "<td>" + prod_name_e + "</td>" +
+                                                    "<td>" + uom + "</td>" +
+                                                    "<td>" + currency_codex  + "</td>" +
+                                                    "<td>" + unit_price_e + "</td>" +
+                                                    "<td>" + curr_q + "</td>" +
+                                                    "<td>" + curr_tp_w_crnc + "</td>" +
+                                                    "<td>" + '<a href="#" class="btn-small red waves-effect waves-light" onclick="deleteRow(this,\''+ forecastx +'\')" ><i class="material-icons small icon-demo">delete_sweep</i></a>' + 
+                                                    '</td><input type="hidden" name="e_seq_code[]" value="'+ rowCount +'"/>' +
+                                                          '<input type="hidden" name="e_quot_code[]" value="'+ quot_code_e +'"/>' +
+                                                          '<input type="hidden" name="e_prod_code[]" value="'+ prod_code_e +'"/>' +
+                                                          '<input type="hidden" name="e_prod_name[]" value="'+ prod_name_e +'"/>' +
+                                                          '<input type="hidden" name="e_uom[]" value="'+ uom +'"/>' +
+                                                          '<input type="hidden" name="e_curr_code[]" value="'+ currency_codex +'"/>' +
+                                                          '<input type="hidden" name="e_unit_price[]" value="'+ unit_price_e +'"/>' +
+                                                          '<input type="hidden" name="e_quantity[]" value="'+ curr_q +'"/>' +
+                                                          '<input type="hidden" name="e_total_price[]" value="'+ curr_tp_w_crnc +'"/></tr>');
+                }
+                else
+                {
+             
+                  $('#product-dt-e').find('tbody').append("<tr>" +
+                                                      "<td>" + myTable.rows[i].cells[0].innerHTML + "</td>" +
+                                                      "<td>" + myTable.rows[i].cells[1].innerHTML + "</td>" +
+                                                      "<td>" + myTable.rows[i].cells[2].innerHTML + "</td>" +
+                                                      "<td>" + myTable.rows[i].cells[3].innerHTML  + "</td>" +
+                                                      "<td>" + myTable.rows[i].cells[4].innerHTML + "</td>" +
+                                                      "<td>" + myTable.rows[i].cells[5].innerHTML + "</td>" +
+                                                      "<td>" + myTable.rows[i].cells[6].innerHTML + "</td>" +
+                                                      "<td>" + '<a href="#" class="btn-small red waves-effect waves-light" onclick="deleteRow(this,\''+ forecastx +'\')" ><i class="material-icons small icon-demo">delete_sweep</i></a>' +
+                                                      '</td><input type="hidden" name="e_seq_code[]" value="'+ rowCount +'"/>' +
+                                                            '<input type="hidden" name="e_quot_code[]" value="'+ quot_code_e +'"/>' +
+                                                            '<input type="hidden" name="e_prod_code[]" value="'+ myTable.rows[i].cells[0].innerHTML +'"/>' +
+                                                            '<input type="hidden" name="e_prod_name[]" value="'+ myTable.rows[i].cells[1].innerHTML +'"/>' +
+                                                            '<input type="hidden" name="e_uom[]" value="'+ myTable.rows[i].cells[2].innerHTML +'"/>' +
+                                                            '<input type="hidden" name="e_curr_code[]" value="'+ myTable.rows[i].cells[3].innerHTML +'"/>' +
+                                                            '<input type="hidden" name="e_unit_price[]" value="'+ myTable.rows[i].cells[4].innerHTML +'"/>' +
+                                                            '<input type="hidden" name="e_quantity[]" value="'+ myTable.rows[i].cells[5].innerHTML +'"/>' +
+                                                            '<input type="hidden" name="e_total_price[]" value="'+ myTable.rows[i].cells[6].innerHTML +'"/></tr>');
+                }
+              }
+              for (var x = rowCount-1; x>0; x--) 
+                {
+                  myTable.deleteRow(x); 
+                }
+            }
+
+          computeGrandTotal(locx);  
+        }
         else
         {
           var quot_code = $('#add_quot_code').val(); // quot code
@@ -1745,6 +1944,7 @@
                 var paym = data.payment;
 
                 var forecast = data.forecast_code;
+                  console.log(forecast);
                 var quot_code = data.quot_code;
                 var customer = cust.cust_code;
                 var payment = paym.id;
@@ -1772,6 +1972,8 @@
                   {
                     for(j in products[i].seq)
                     {
+                      Prod_codeE.push(products[i].prod_code);
+
                       AppendString += 
                           "<tr><td>" + products[i].prod_code + 
                           "</td><td>" + products[i].prod_name + 
@@ -1786,29 +1988,31 @@
                                           '<input type="hidden" name="e_prod_code[]" value="'+ products[i].prod_code +'"/>' +
                                           '<input type="hidden" name="e_prod_name[]" value="'+ products[i].prod_name +'"/>' +
                                           '<input type="hidden" name="e_uom[]" value="'+ products[i].uom_code +'"/>' +
-                                          '<input type="hidden" name="e_currency_code[]" value="'+  products[i].currency_code +'"/>' +
+                                          '<input type="hidden" name="e_curr_code[]" value="'+  products[i].currency_code +'"/>' +
                                           '<input type="hidden" name="e_unit_price[]" value="'+ products[i].unit_price +'"/>' +
                                           '<input type="hidden" name="e_quantity[]" value="'+ products[i].quantity +'"/>' +
-                                          '<input type="hidden" name="e_total_price[]" value="'+ products[i].total_price +'"/></tr>';
+                                          '<input type="hidden" name="e_total_price[]" value="'+ products[i].total_price +'"/></td></tr>';
                     }
                   }
 
       
                 $('#product-dt-e').find('tbody').append(AppendString);
 
-                if(forecast!='')
+                if(forecast=='' || forecast==null)
+                {
+                  var x = document.getElementById("efcode");
+                  x.style.display = "none";
+                } 
+                else 
                 {
                   $('#edit_forecast_code').val(forecast);
                   var x = document.getElementById("efcode");
                   x.style.display = "block";
-                } else 
-                {
-                  var x = document.getElementById("efcode");
-                  x.style.display = "none";
                 }
 
+                $('#edit_id').val(data.id);
                 $('#edit_quotation_code').val(quot_code);
-                $('#edit_forecast_code').val(forecast);
+               
                 $('#edit_customer_code option[value="'+customer+'"]').prop('selected', true);
                 $('#edit_customer_code').formSelect();
                 $('#edit_payment_term option[value="'+payment+'"]').prop('selected', true);
@@ -1816,6 +2020,7 @@
                 $('#edit_currency_code option[value="'+currency+'"]').prop('selected', true);
                 $('#edit_currency_code').formSelect();
 
+                computeTotal('edit');
                 computeGrandTotal('e');
                 $('#editModal').modal('open');
             
@@ -1882,19 +2087,17 @@
                 $('#v_payment_term').val(payment);
                 $('#v_currency_code').val(curr_w_sym);
 
-                if(forecast!='')
+                if(forecast=='' || forecast==null)
+                {
+                  var x = document.getElementById("facode");
+                  x.style.display = "none";
+                } 
+                else 
                 {
                   $('#v_forecast_code').val(forecast);
-                  var x = document.getElementById("fcode");
+                  var x = document.getElementById("facode");
                   x.style.display = "block";
-                } else 
-                {
-                  var x = document.getElementById("fcode");
-                  x.style.display = "none";
                 }
-
-
-           
 
             $('#viewModal').modal('open');
             computeGrandTotal('v');
@@ -1903,46 +2106,84 @@
 
     function appItem(id)
     {
-        $.get('forecast/'+id, function(response){
+        $.get('quotation/'+id, function(response){
 
-            const formatter = new Intl.NumberFormat('en-US', {
-              minimumFractionDigits: 4,      
-              maximumFractionDigits: 4,
-            });
+          var AppendString = "";
+                var i, j = "";
+                var data = response.data;
 
-            var data = response.data;
-            var dataUP = data.unit_price;
-            var dataTP = data.total_price;
-            var curr_x = data.currency;
-            var curr_name = curr_x.currency_name;
-            var curr = dataTP.substr(dataTP, 1);
-            
-            dataTP = dataTP.substr(2);
-            dataTP = dataTP.replace(/,/g, "");
+                console.log(data);
+      
+                var cust = data.customers;
+                var curr = data.currency;
+                var paym = data.payment;
 
-            var dataUPx = formatter.format(dataUP);
-            var dataTPx = formatter.format(dataTP);
-            var unitPrice = addCommas(dataUPx);
-            var totalPrice = addCommas(dataTPx)
-            totalPrice = curr + " " + totalPrice;
+                var quot_code = data.quot_code;
+                var forecast = data.forecast_code;
+                var customer = cust.cust_name;
+                var payment = paym.term_name;
 
-            $('#id_app').val(data.id);
-            $('#seq_app').val(data.current_sequence);
-            $('#appid_app').val(data.current_approver);
-            
-            $('#app_forecast_code').val(data.forecast_code);
-            $('#app_forecast_year').val(data.forecast_year);
-            $('#app_forecast_month').val(data.forecast_month);
-            $('#app_site_code').val(data.site_code);
-            $('#app_prod_code').val(data.prod_code);
-            $('#app_uom_code').val(data.uom_code);
-            $('#app_currency_code').val(curr_name);
-            $('#app_unit_price').val(unitPrice);
-            $('#app_quantity').val(data.quantity);
-            $('#app_total_price').val(totalPrice);
+                var currency = curr.currency_name;
+                var symbol = curr.symbol;
 
-            $('#appModal').modal('open');
-            
+                var curr_w_sym = symbol + ' - ' + currency;
+
+                var productsMatrix = data.products;
+                var products = JSON.parse(productsMatrix);
+
+
+
+                var myTablex = document.getElementById("product-dt-app");
+
+                var rowCount = myTablex.rows.length;
+                for (var x=rowCount-1; x>0; x--) 
+                  {
+                    myTablex.deleteRow(x); 
+                  }
+                  
+                
+                for(i in products)
+                  {
+                    for(j in products[i].seq)
+                    {
+                      AppendString += 
+                          "<tr><td>" + products[i].prod_code + 
+                          "</td><td>" + products[i].prod_name + 
+                          "</td><td>" + products[i].uom_code + 
+                          "</td><td>" + products[i].currency_code  + 
+                          "</td><td>" + products[i].unit_price  + 
+                          "</td><td>" + products[i].quantity   + 
+                          "</td><td>" + products[i].total_price  + 
+                            "</td></tr>";
+                    }
+                  }
+
+                $('#product-dt-app').find('tbody').append(AppendString);
+
+                $('#id_app').val(data.id);
+                $('#seq_app').val(data.current_sequence);
+                $('#appid_app').val(data.current_approver);
+
+                $('#app_quotation_code').val(quot_code);
+                $('#app_customer_code').val(customer);
+                $('#app_payment_term').val(payment);
+                $('#app_currency_code').val(curr_w_sym);
+
+                if(forecast=='' || forecast==null)
+                {
+                  var x = document.getElementById("fcode");
+                  x.style.display = "none";
+                } 
+                else 
+                {
+                  $('#app_forecast_code').val(forecast);
+                  var x = document.getElementById("fcode");
+                  x.style.display = "block";
+                }
+
+                computeGrandTotal('a');
+                $('#appModal').modal('open'); 
+        
         });
     }
 
@@ -1964,6 +2205,15 @@
         Prod_codeF.splice(index)
         document.getElementById("product-dt-f").deleteRow(i);
         computeGrandTotal('f');
+      } 
+      else if(locx=='e')
+      {
+        var i = r.parentNode.parentNode.rowIndex;
+        var x = r.parentNode.parentNode.cells.item(0).innerHTML;
+        var index = Prod_codeE.indexOf(x)
+        Prod_codeE.splice(index)
+        document.getElementById("product-dt-e").deleteRow(i);
+        computeGrandTotal('e');
       }
       else
       {
@@ -1982,7 +2232,7 @@
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/rgc_entsys/quotation/all",
+        "ajax": "/api/reiss/quotation/all",
         "columns": [
             {  "data": "id" },
             {   "data": "id",
@@ -2027,7 +2277,15 @@
             {
                 "data": "id",
                 "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem(\''+(row.quot_code)+'\')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem('+row.id+',\''+(row.quot_code)+'\')"><i class="material-icons">delete</i></a>';
+                    if(row.status=='Pending')
+                    {
+                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="getApprover(2,\'edit\',\'Sales Quotation\'), editItem(\''+(row.quot_code)+'\')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem('+row.id+',\''+(row.quot_code)+'\')"><i class="material-icons">delete</i></a>';
+                    }
+                    else
+                    {
+                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem(\''+(row.quot_code)+'\')" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem('+row.id+',\''+(row.quot_code)+'\')" disabled><i class="material-icons">delete</i></a>';
+                    }
+
                 }
             }
         ]
@@ -2038,7 +2296,7 @@
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/rgc_entsys/quotation/all_approval",
+        "ajax": "/api/reiss/quotation/all_approval",
         "columns": [
           {  "data": "id" },
             {   "data": "id",

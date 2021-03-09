@@ -651,8 +651,8 @@
 
             <a href="#!" class="modal-close orange waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Cancel&nbsp;&nbsp;</a>
           </div>
+        </div>
 
-      </div>
       </div>
     </form>
   </div>
@@ -695,7 +695,7 @@
           $('#add_prod_code').find('option').remove();
 
             $.ajax({
-              url:'/rgc_entsys/forecast/getProducts/'+id,
+              url:'/reiss/forecast/getProducts/'+id,
               type:'get',
               dataType:'json',
               success:function (response) {
@@ -726,7 +726,7 @@
           $('#edit_prod_code').find('option').remove();
 
             $.ajax({
-              url:'/rgc_entsys/forecast/getProducts/'+id,
+              url:'/reiss/forecast/getProducts/'+id,
               type:'get',
               dataType:'json',
               success:function (response) {
@@ -1068,7 +1068,7 @@
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/rgc_entsys/forecast/all",
+        "ajax": "/api/reiss/forecast/all",
         "columns": [
             {  "data": "id" },
             {   "data": "id",
@@ -1132,7 +1132,7 @@
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/rgc_entsys/forecast/all_approval",
+        "ajax": "/api/reiss/forecast/all_approval",
         "columns": [
           {  "data": "id" },
             {   "data": "id",

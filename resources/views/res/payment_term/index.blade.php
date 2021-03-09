@@ -138,7 +138,7 @@
         "pageLength": 15,
         //"aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/rgc_entsys/payment_term/all",
+        "ajax": "/api/reiss/payment_term/all",
         "columns": [
             {  "data": "id" },
             {  "data": "term_name" },

@@ -146,7 +146,7 @@
         "pageLength": 15,
         //"aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/rgc_entsys/currency/all",
+        "ajax": "/api/reiss/currency/all",
         "columns": [
             {  "data": "id" },
             {  "data": "currency_name" },

@@ -122,7 +122,7 @@
         "pageLength": 15,
         //"aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/rgc_entsys/product_category/all",
+        "ajax": "/api/reiss/product_category/all",
         "columns": [
             {  "data": "id" },
             {  "data": "prodcat_name" },
