@@ -373,7 +373,7 @@ class OBController extends Controller
                                         $request->input('remarks'));
 
             if($request->submit == 'approve'){
-                if($ob->status == "For Approval"){
+                if($ob->status == "For Approval" && Auth::user()->emp_no != '0219-2007B' && Auth::user()->emp_no != '0219-2007A'){
                     if(Employee::where('emp_no','=', Auth::user()->emp_no)->first()->reports_to){
                         $status = 'For Manager Approval';
                         $ob->next_approver = Employee::where('emp_no','=',Auth::user()->emp_no)->first()->reports_to;

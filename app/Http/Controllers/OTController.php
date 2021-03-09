@@ -378,7 +378,7 @@ class OTController extends Controller
                                         $request->input('remarks'));
                     
                  
-                }else if($ot->status == "For Approval"){
+                }else if($ot->status == "For Approval" && Auth::user()->emp_no != '0219-2007C' && Auth::user()->emp_no != '0219-2007B' && Auth::user()->emp_no != '0219-2007A'){
                     if(Employee::where('emp_no','=', Auth::user()->emp_no)->first()->reports_to){
                         $status = 'For Manager Approval';
                         $ot->next_approver = Employee::where('emp_no','=',Auth::user()->emp_no)->first()->reports_to;

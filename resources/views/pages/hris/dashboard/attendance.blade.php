@@ -26,6 +26,13 @@
                     <div class="container-fluid pt-3 mb-3">
                         <div class="row mb-3">
                             <div class="col-md-2">
+                                <label>Site</label>
+                                <select id="psite_code" class="form-control">
+                                    <option value="RTI" selected>Richetec Inc.</option>
+                                    <option value="RSA">RTI System Automation Inc.</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
                                 <label>Date From</label>
                                 <input type="date" id="date_from" value="{{date('d')>=9&&date('d')<=23?date('Y-m-09'):date('Y-m-24',strtotime( '-1 month', strtotime( date('Y-m-d') ) ))}}" class="form-control">
                             </div>
@@ -43,30 +50,46 @@
                                 <tr>
                                     <th>ID No.</th>
                                     <th>Employee Name</th>
-                                    <th>Date</th>
+                                    <th>Shift</th>
+                                    <th>Shift Date</th>
+                                    <th>Shift In</th>
+                                    <th>Shift Out</th>
                                     <th>Time In</th>
-                                    <th>Temp</th>
-                                    <th>Lunch In</th>
-                                    <th>Temp</th>
-                                    <th>Lunch Out</th>
-                                    <th>Temp</th>
                                     <th>Time Out</th>
-                                    <th>Temp</th>
+                                    <th>SL w/ Pay</th>
+                                    <th>VL w/ Pay</th>
+                                    <th>VL w/o Pay</th>
+                                    <th>Late</th>
+                                    <th>Rendered Hours Work</th>
+                                    <th>Regular OT</th>
+                                    <th>Sunday OT</th>
+                                    <th>Legal OT</th>
+                                    <th>Special OT</th>
+                                    <th>Rendered OT</th>
+                                    <th>Night Diff</th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
                                     <th>ID No.</th>
                                     <th>Employee Name</th>
-                                    <th>Date</th>
+                                    <th>Shift</th>
+                                    <th>Shift Date</th>
+                                    <th>Shift In</th>
+                                    <th>Shift Out</th>
                                     <th>Time In</th>
-                                    <th>Temp</th>
-                                    <th>Lunch In</th>
-                                    <th>Temp</th>
-                                    <th>Lunch Out</th>
-                                    <th>Temp</th>
                                     <th>Time Out</th>
-                                    <th>Temp</th>
+                                    <th>SL w/ Pay</th>
+                                    <th>VL w/ Pay</th>
+                                    <th>VL w/o Pay</th>
+                                    <th>Late</th>
+                                    <th>Rendered Hours Work</th>
+                                    <th>Regular OT</th>
+                                    <th>Sunday OT</th>
+                                    <th>Legal OT</th>
+                                    <th>Special OT</th>
+                                    <th>Rendered OT</th>
+                                    <th>Night Diff</th>
                                 </tr>
                             </tfoot>
                         </table>
@@ -78,13 +101,20 @@
                     <div class="container-fluid pt-3 mb-3">
                         <div class="row mb-3">
                             <div class="col-md-2">
+                                <label>Site</label>
+                                <select id="calcpsite_code" class="form-control">
+                                    <option value="RTI" selected>Richetec Inc.</option>
+                                    <option value="RSA">RTI System Automation Inc.</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
                                 <label>Date From</label>
-                                <input type="date" id="date_from" value="{{date('d')>=9&&date('d')<=23?date('Y-m-09'):date('Y-m-24',strtotime( '-1 month', strtotime( date('Y-m-d') ) ))}}" class="form-control">
+                                <input type="date" id="calcdate_from" value="{{date('d')>=9&&date('d')<=23?date('Y-m-09'):date('Y-m-24',strtotime( '-1 month', strtotime( date('Y-m-d') ) ))}}" class="form-control">
                             </div>
                             <div class="col-md-4">
                                 <label>Date To</label><br>
                                 <div class="btn-group">
-                                    <input type="date" id="date_to" value="{{date('d')>=9&&date('d')<=23?date('Y-m-23'):date('Y-m-08')}}" class="form-control">
+                                    <input type="date" id="calcdate_to" value="{{date('d')>=9&&date('d')<=23?date('Y-m-23'):date('Y-m-08')}}" class="form-control">
                                     <button type="button" id="run_calcattendance" class="btn btn-success">View</button>
                                 </div>
                             </div>
@@ -93,23 +123,37 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th>Employee Name</th>
-                                    <th>Hours Work</th>
-                                    <th>Overtime</th>
-                                    <th>OB</th>
-                                    <th>Leave</th>
-                                    <th>Deduction</th>
-                                    <th>Total Hourks Work</th>
+                                    <th>SL w/ Pay</th>
+                                    <th>SL w/o Pay</th>
+                                    <th>VL w/ Pay</th>
+                                    <th>VL w/o Pay</th>
+                                    <th>Days Worked</th>
+                                    <th>Total Paid Days</th>
+                                    <th>Requred Days</th>
+                                    <th>Late in Minutes</th>
+                                    <th>Regular OT</th>
+                                    <th>Sunday OT</th>
+                                    <th>Regular Holiday OT</th>
+                                    <th>Special Holiday OT</th>
+                                    <th>Night Differential</th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
                                     <th>Employee Name</th>
-                                    <th>Hours Work</th>
-                                    <th>Overtime</th>
-                                    <th>OB</th>
-                                    <th>Leave</th>
-                                    <th>Deduction</th>
-                                    <th>Total Hourks Work</th>
+                                    <th>SL w/ Pay</th>
+                                    <th>SL w/o Pay</th>
+                                    <th>VL w/ Pay</th>
+                                    <th>VL w/o Pay</th>
+                                    <th>Days Worked</th>
+                                    <th>Total Paid Days</th>
+                                    <th>Requred Days</th>
+                                    <th>Late in Minutes</th>
+                                    <th>Regular OT</th>
+                                    <th>Sunday OT</th>
+                                    <th>Regular Holiday OT</th>
+                                    <th>Special Holiday OT</th>
+                                    <th>Night Differential</th>
                                 </tr>
                             </tfoot>
                         </table>

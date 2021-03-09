@@ -20,7 +20,7 @@
                         </div>
                     @else
                         <div class="carousel-item">
-                            <video src="/{{$sign->source_url}}" muted></video>
+                            <video src="/{{$sign->source_url}}" muted autoplay></video>
                         </div>
                     @endif
                 @endforeach
@@ -67,10 +67,10 @@
                     setTimeout(function(){ location.reload(); },5000);
                 }
 
-
                 $('video').on('play', function (e) {
                     $("#carousel").carousel('pause');
                 });
+
                 $('video').on('ended', function (e) {
                     if(currentIndex == totalItems){
                         location.reload();

@@ -44,11 +44,23 @@
                                     <table id="my-attendance-td" class="table table-striped table-bordered">
                                         <thead class="thead-dark">
                                             <tr>
-                                                <th>Date</th>
+                                                <th>Shift Date</th>
+                                                <th>Shift</th>
+                                                <th>Shift In</th>
+                                                <th>Shift Out</th>
                                                 <th>Time In</th>
                                                 <th>Time Out</th>
-                                                <th>Hours Work</th>
+                                                <th>SL w/ Pay</th>
+                                                <th>VL w/ Pay</th>
+                                                <th>VL w/o Pay</th>
                                                 <th>Late</th>
+                                                <th>Rendered Hours Work</th>
+                                                <th>Regular OT</th>
+                                                <th>Sunday OT</th>
+                                                <th>Legal OT</th>
+                                                <th>Special OT</th>
+                                                <th>Rendered OT</th>
+                                                <th>Night Diff</th>
                                             </tr>
                                         </thead>
                                     </table>
