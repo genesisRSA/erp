@@ -14,7 +14,7 @@
             <thead>
               <tr>
                   <th>ID</th> 
-                  <th>Item Category Code</th>
+                  <th>Item Category</th>
                   <th>Sub-Category Code</th>
                   <th>Description</th>
                   <th>Action</th>
@@ -146,7 +146,7 @@
         "ajax": "/api/reiss/item_subcategory/all",
         "columns": [
             {  "data": "id" },
-            {  "data": "cat_code" },
+            {  "data": "item_cat.cat_desc" },
             {  "data": "subcat_code" },
             {  "data": "subcat_desc" },
             

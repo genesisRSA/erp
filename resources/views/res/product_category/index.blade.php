@@ -64,7 +64,7 @@
             <label for="prodcat_name">Name <sup class="red-text">*</sup></label>
           </div>
           <div class="input-field col s12 m6">
-            <input placeholder="3RDOP" name="prodcat_code" id="edit_prodcat_code" type="text" class="validate" required>
+            <input placeholder="3RDOP" name="prodcat_code" id="edit_prodcat_code" type="text" class="validate grey lighten-3" readonly>
             <label for="prodcat_code">Code <sup class="red-text">*</sup></label>
           </div>
         </div>

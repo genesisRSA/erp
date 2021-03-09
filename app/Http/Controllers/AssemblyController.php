@@ -33,7 +33,7 @@ class AssemblyController extends Controller
     {
         return response()
             ->json([
-                "data" => Assembly::all()
+                "data" => Assembly::with('prod:prod_code,prod_name')->get()
             ]);
     }
     /**
@@ -89,9 +89,11 @@ class AssemblyController extends Controller
     {
         //
         $data = Assembly::find($id);
+        $parent_select = Assembly::where("id","<>",$id)->get();;
         return response()
             ->json([
-                "data" => $data
+                "data" => $data,
+                "parent_selection" => $parent_select
             ]);
     }
 
@@ -122,7 +124,6 @@ class AssemblyController extends Controller
     {
         $field = [
             'prod_code' => 'required',
-            'assy_code' => 'required|unique:assemblies',
             'assy_desc' => 'required',
             'parent_assy_code' => 'required',
         ];

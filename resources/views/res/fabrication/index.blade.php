@@ -14,7 +14,7 @@
             <thead>
               <tr>
                   <th>ID</th> 
-                  <th>Assembly Code</th>
+                  <th>Assembly</th>
                   <th>Fabrication Code</th>
                   <th>Fabrication Description</th>
                   <th>Action</th>
@@ -43,7 +43,7 @@
                 <option value="{{$i->assy_code}}">{{$i->assy_desc}}</option>
               @endforeach
             </select>
-            <label for="assy_code">Assembly Code<sup class="red-text">*</sup></label>
+            <label for="assy_code">Assembly<sup class="red-text">*</sup></label>
           </div>
           <div class="input-field col s12 m4">
             <input placeholder="" name="fab_code" type="text" class="validate" required>
@@ -94,11 +94,11 @@
                 <option value="{{$i->assy_code}}">{{$i->assy_desc}}</option>
               @endforeach
             </select>
-            <label for="assy_code">Assembly Code<sup class="red-text">*</sup></label>
+            <label for="assy_code">Assembly<sup class="red-text">*</sup></label>
           </div>
           <div class="input-field col s12 m3">
-            <input placeholder="" name="fab_code" id="edit_fab_code" type="text" class="validate" required>
-            <label for="fab_code">Fabrication Code<sup class="red-text">*</sup></label>
+            <input placeholder="" name="fab_code" id="edit_fab_code" type="text" class="validate grey lighten-3" readonly>
+            <label for="fab_code">Fabrication Code</label>
           </div>
           <div class="input-field col s12 m3">
             <input placeholder="" name="fab_desc" id="edit_fab_desc" type="text" class="validate" required>
@@ -195,7 +195,7 @@
         "ajax": "/api/reiss/fabrication/all",
         "columns": [
             {  "data": "id" },
-            {  "data": "assy_code" },
+            {  "data": "assy.assy_desc" },
             {  "data": "fab_code" },
             {  "data": "fab_desc" },
             {

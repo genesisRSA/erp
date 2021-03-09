@@ -32,7 +32,7 @@ class FabricationController extends Controller
     {
         return response()
             ->json([
-                "data" => Fabrication::all()
+                "data" => Fabrication::with('assy:assy_code,assy_desc')->get()
             ]);
     }
 
@@ -125,7 +125,6 @@ class FabricationController extends Controller
     {
         $field = [
             'assy_code' => 'required',
-            'fab_code' => 'required|unique:fabrications',
             'fab_desc' => 'required',
         ];
 

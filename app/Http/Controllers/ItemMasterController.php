@@ -40,7 +40,9 @@ class ItemMasterController extends Controller
     {
         return response()
             ->json([
-                "data" => ItemMaster::all()
+                "data" => ItemMaster::with('item_cat:cat_code,cat_desc')
+                                     ->with('item_subcat:subcat_code,subcat_desc')
+                                     ->get()
             ]);
     }
 
