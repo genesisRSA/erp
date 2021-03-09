@@ -122,8 +122,8 @@
                 <label for="prod_name">Name <sup class="red-text">*</sup></label>
             </div>
             <div class="input-field col s12 m2">
-                <input placeholder="e.g PBIX-80-LM" name="prod_code" id="edit_prod_code" type="text" class="validate" required>
-                <label for="prod_code">Code <sup class="red-text">*</sup></label>
+                <input placeholder="e.g PBIX-80-LM" name="prod_code" id="edit_prod_code" type="text" class="validate grey lighten-3" readonly>
+                <label for="prod_code">Code</label>
             </div>
         </div>
         <div class="row">

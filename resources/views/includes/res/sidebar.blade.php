@@ -3,7 +3,7 @@
     <div class="card" style="margin:0;">
         <div class="card-image">
             <img src="{{ asset('images/resbanner.png') }}" style="filter: blur(2px);">
-            <a class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">power_settings_new</i></a>
+            <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();" class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">power_settings_new</i></a>
             <span class="card-title flow-text">Franz Delomen</span>
         </div>
     </div>
@@ -148,3 +148,6 @@
       </ul>
     </li>
   </ul>
+    <form id="logout-form" action="{{ route('reiss.logout') }}" method="POST" style="display: none;">
+        @csrf
+    </form>

@@ -124,11 +124,12 @@ Route::get('/jolist', 'SignagesController@jolist')->name('jo.list');
 Route::get('/reiss','ERPPageController@index')->name('res.index');
 
 Route::post('/reiss/login', 'Auth\DCSLoginController@login')->name('reiss.login');
-    Route::get('/reiss/home','ERPPageController@home')->name('res.home');   
 Route::group(['middleware' => ['auth.dcs']], function() {
 
     // ERP
 
+    Route::get('/reiss/home','ERPPageController@home')->name('res.home');   
+    Route::post('/reiss/logout', 'Auth\DCSLoginController@logout')->name('reiss.logout');
     Route::resource('/reiss/uom', 'UOMController');
     Route::post('/reiss/uom/patch', 'UOMController@patch')->name('uom.patch');
     Route::post('/reiss/uom/delete', 'UOMController@delete')->name('uom.delete');

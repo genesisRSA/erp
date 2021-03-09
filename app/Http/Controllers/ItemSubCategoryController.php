@@ -30,7 +30,7 @@ class ItemSubCategoryController extends Controller
     {
         return response()
             ->json([
-                "data" => ItemSubCategory::all()
+                "data" => ItemSubCategory::with('item_cat:cat_code,cat_desc')->get()
             ]);
     }
 
