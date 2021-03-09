@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use App\User;
 
 class RedirectIfAuthenticated
 {
