@@ -379,7 +379,7 @@
 
         <ul id="tabs-swipe-demo" class="tabs">
           <li class="tab col s12 m4 l4"><a class="active" href="#view-forecast">Forecast Details</a></li>
-          <li class="tab col s12 m4 l4"><a href="#view-signatories" onclick="getApprover(1,'view','Sales Forecast');">Signatories</a></li>
+          <li class="tab col s12 m4 l4"><a href="#view-signatories">Signatories</a></li>
         </ul><br>
 
         <div id="view-forecast" name="view-forecast">
@@ -472,7 +472,7 @@
               <div class="card">
                 <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Approval History</b></h6><hr style="margin: 0px">
                 <div class="card-content" style="padding: 10px; padding-top: 0px">
-                  <table class="highlight" id="matrix-dt-view">
+                  <table class="highlight" id="matrix-dt-view-h">
                     <thead>
                       <tr>
                           <th>Sequence</th> 
@@ -774,7 +774,8 @@
     }
 
     function getApprover(id, loc, modules)
-    {
+    {     
+          $('.tabs').tabs('select','forecast');
           $.get('forecast/getApprover/'+id+'/'+modules, function(response){
 
                 var AppendString = "";
@@ -830,10 +831,11 @@
           });
     } 
 
-    function getApproverMatrix(id)
+    function getApproverMatrix(id, loc)
     {
           $.get('forecast/getApproverMatrix/'+id, function(response){
 
+                var locx = loc;
                 var AppendString = "";
                 var AppendStringH = "";
 
@@ -845,8 +847,16 @@
                 var matrix = JSON.parse(dataMatrix);
                 var matrixh = JSON.parse(dataMatrixH);
                
+                if(locx=='v')
+                {
+                var myTable = document.getElementById("matrix-dt-view");
+                var myTableH = document.getElementById("matrix-dt-view-h");
+                }
+                else
+                {
                 var myTable = document.getElementById("matrix-dt-app");
                 var myTableH = document.getElementById("matrix-dt-app-h");
+                }
     
     
                 var rowCount = myTable.rows.length;
@@ -892,8 +902,16 @@
                     }
                   }
 
+                  if(locx=='v')
+                  {
+                  $('#matrix-dt-view').find('tbody').append(AppendString);
+                  $('#matrix-dt-view-h').find('tbody').append(AppendStringH);
+                  }
+                  else
+                  {
                   $('#matrix-dt-app').find('tbody').append(AppendString);
                   $('#matrix-dt-app-h').find('tbody').append(AppendStringH);
+                  }
 
           });
     } 
@@ -959,6 +977,7 @@
 
     function editItem(id)
     {
+        $('.tabs').tabs('select','edit-forecast');
         $.get('forecast/'+id, function(response){
             var data = response.data;
             $('#edit_id').val(data.id);
@@ -988,6 +1007,7 @@
 
     function viewItem(id)
     {
+        $('.tabs').tabs('select','view-forecast');
         $.get('forecast/'+id, function(response){
             var data = response.data;
             var curr_symbol = data.currency.symbol;
@@ -1014,6 +1034,7 @@
 
     function appItem(id)
     {
+        $('.tabs').tabs('select','app-forecast');
         $.get('forecast/'+id, function(response){
 
             const formatter = new Intl.NumberFormat('en-US', {
@@ -1079,7 +1100,7 @@
             {
                 "data": "id",
                 "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" onclick="viewItem('+row.id+')">'+row.forecast_code+'</a>';
+                    return  '<a href="#" onclick="viewItem('+row.id+'), getApproverMatrix('+row.id+',\'v\')">'+row.forecast_code+'</a>';
                 }
             },
             {   "data": "id",
@@ -1144,7 +1165,7 @@
             {
                 "data": "id",
                 "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" onclick="viewItem('+row.id+')">'+row.forecast_code+'</a>';
+                    return  '<a href="#" onclick="viewItem('+row.id+'), getApproverMatrix('+row.id+',\'v\')">'+row.forecast_code+'</a>';
                 }
             },
             {   "data": "id",
@@ -1178,7 +1199,7 @@
             {
                 "data": "id",
                 "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="appItem('+row.id+'), getApproverMatrix('+row.id+')"><i class="material-icons">rate_review</i></a>';
+                    return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="appItem('+row.id+'), getApproverMatrix('+row.id+',\'x\')"><i class="material-icons">rate_review</i></a>';
                 }
             }
         ]

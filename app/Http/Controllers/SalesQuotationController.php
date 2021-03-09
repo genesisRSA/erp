@@ -428,19 +428,19 @@ class SalesQuotationController extends Controller
                             ->withErrors($validator);
         }else{
 
-            $forecast_app = SalesQuotation::find($request->input('id', ''));
+            $quotation_app = SalesQuotation::find($request->input('id', ''));
     
             $curr_id = $request->input('id','');
             $curr_seq = $request->input('seq','');
             $curr_app = $request->input('appid','');
-            $curr_status = $forecast_app->status;
+            $curr_status = $quotation_app->status;
             $status = $request->input('status','');
             $remarks = $request->input('remarks','');
             
             $date = date('Y-m-d H:i:s');
-            $curr_seq_db = $forecast_app->current_sequence;
-            $matrix = json_decode($forecast_app->matrix, true);
-            $matrixh = json_decode($forecast_app->matrix_h) ? json_decode($forecast_app->matrix_h) : array();
+            $curr_seq_db = $quotation_app->current_sequence;
+            $matrix = json_decode($quotation_app->matrix, true);
+            $matrixh = json_decode($quotation_app->matrix_h) ? json_decode($quotation_app->matrix_h) : array();
 
             $gate = $matrix[0]['is_gate'];
             $next_status = $matrix[0]['next_status'];
@@ -475,9 +475,9 @@ class SalesQuotationController extends Controller
                             ]);
                         }
                     }
-                    $forecast_app->status = 'Approved';
-                    $forecast_app->approved_by = $curr_app;
-                    $forecast_app->updated_by = $curr_app;
+                    $quotation_app->status = 'Approved';
+                    $quotation_app->approved_by = $curr_app;
+                    $quotation_app->updated_by = $curr_app;
                     $matrix = [];
                 }
                 else 
@@ -492,9 +492,9 @@ class SalesQuotationController extends Controller
                     ]);
                     $curr_seq += 1;
                     array_splice($matrix,0,1);
-                    $forecast_app->status = $next_status;
-                    $forecast_app->approved_by = $curr_app;
-                    $forecast_app->updated_by = $curr_app;
+                    $quotation_app->status = $next_status;
+                    $quotation_app->approved_by = $curr_app;
+                    $quotation_app->updated_by = $curr_app;
                 }
             }
             else
@@ -525,21 +525,21 @@ class SalesQuotationController extends Controller
                             ]);
                         }
                     }
-                $forecast_app->status = 'Rejected';
-                $forecast_app->approved_by = 'N/A';
-                $forecast_app->updated_by = $curr_app;
+                $quotation_app->status = 'Rejected';
+                $quotation_app->approved_by = 'N/A';
+                $quotation_app->updated_by = $curr_app;
                 $matrix = [];
             }
             
-            $forecast_app->current_sequence = $curr_seq;
-            $forecast_app->matrix = json_encode($matrix);
-            $forecast_app->matrix_h = json_encode($matrixh);
+            $quotation_app->current_sequence = $curr_seq;
+            $quotation_app->matrix = json_encode($matrix);
+            $quotation_app->matrix_h = json_encode($matrixh);
 
-            if($forecast_app->save()){
-                if($status=='Approve'){
-                    return redirect()->route('forecast.index')->withSuccess('Sales Forecast Successfully Approved');
+            if($quotation_app->save()){
+                if($status=='Approved'){
+                    return redirect()->route('quotation.index')->withSuccess('Sales Quotation Successfully Approved');
                 } else {
-                    return redirect()->route('forecast.index')->withSuccess('Sales Forecast Successfully Rejected');
+                    return redirect()->route('quotation.index')->withSuccess('Sales Quotation Successfully Rejected');
                 }
             }
         }
