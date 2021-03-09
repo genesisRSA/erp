@@ -370,7 +370,7 @@ class SalesForecastController extends Controller
             $forecast_app->matrix_h = json_encode($matrixh);
 
             if($forecast_app->save()){
-                if($status=='Approve'){
+                if($status=='Approved'){
                     return redirect()->route('forecast.index')->withSuccess('Sales Forecast Successfully Approved');
                 } else {
                     return redirect()->route('forecast.index')->withSuccess('Sales Forecast Successfully Rejected');

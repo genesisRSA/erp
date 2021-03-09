@@ -636,10 +636,11 @@
     @csrf
       <div class="modal-content" style="padding-bottom: 0px">
         <h4>Sales Quotation</h4>
-        <ul id="tabs-swipe-demo" class="tabs">
+        <ul id="tabs tabs-fixed-width tab-demo z-depth-1" class="tabs">
           <li class="tab col s12 m4 l4"><a class="active" href="#view_details">Quotation Details</a></li>
           {{-- need auth ID and module for getApprover()  --}}
-          <li class="tab col s12 m4 l4"><a href="#view_signatory" onclick="getApprover(2,'view','Sales Quotation');">Signatories</a></li>
+          {{-- onclick="getApprover(2,'view','Sales Quotation');" --}}
+          <li class="tab col s12 m4 l4"><a href="#view_signatory" >Signatories</a></li>
         </ul><br>
 
         <div id="view_details" name="view_details">
@@ -770,8 +771,8 @@
   </div>
 
   <div id="appModal" class="modal">
-    {{-- <form method="POST" action="{{route('quotation.approve')}}"> --}}
-      <form>
+    <form method="POST" action="{{route('quotation.approve')}}">
+      {{-- <form> --}}
     @csrf
       <div class="modal-content" style="padding-bottom: 0px">
         <h4>Sales Quotation Approval</h4>
@@ -968,8 +969,6 @@
         var Prod_codeF = [];
         var Prod_codeE = [];
     $(document).ready(function () {
-        $('.tabs').tabs();
-
         $('#add_site_code').change(function () {
              var id = $(this).val();
 
@@ -1148,7 +1147,15 @@
       $('#checker').val(check);
       $('#f_forecast_code option[value="0"]').prop('selected', true);
       $('#f_forecast_code').formSelect();
-    
+      if(check=='yes')
+      {
+        $('.tabs').tabs('select','forecast');
+      }
+      else
+      {
+        $('.tabs').tabs('select','quotation');
+      }
+
     }
 
     function getStatus(status)
@@ -1219,10 +1226,11 @@
           });
     } 
 
-    function getApproverMatrix(id)
+    function getApproverMatrix(id, loc)
     {
           $.get('quotation/getApproverMatrix/'+id, function(response){
 
+                var locx = loc;
                 var AppendString = "";
                 var AppendStringH = "";
 
@@ -1233,10 +1241,18 @@
                 
                 var matrix = JSON.parse(dataMatrix);
                 var matrixh = JSON.parse(dataMatrixH);
-               
+
+
+                if(locx=='v')
+                {
+                var myTable = document.getElementById("matrix-dt-v");
+                var myTableH = document.getElementById("matrix-dt-v-h");
+                }
+                else
+                {
                 var myTable = document.getElementById("matrix-dt-app");
                 var myTableH = document.getElementById("matrix-dt-app-h");
-    
+                }
     
                 var rowCount = myTable.rows.length;
                 for (var x=rowCount-1; x>0; x--) 
@@ -1281,9 +1297,16 @@
                     }
                   }
 
+                  if(locx=='v')
+                  {
+                  $('#matrix-dt-v').find('tbody').append(AppendString);
+                  $('#matrix-dt-v-h').find('tbody').append(AppendStringH);
+                  }
+                  else
+                  {
                   $('#matrix-dt-app').find('tbody').append(AppendString);
                   $('#matrix-dt-app-h').find('tbody').append(AppendStringH);
-
+                  }
           });
     }
 
@@ -1932,6 +1955,7 @@
 
     function editItem(id)
     {
+        $('.tabs').tabs('select','edit-quotation');
         $.get('quotation/getAllEdit/'+id, function(response){
                 var AppendString = "";
                 var i, j = "";
@@ -2029,7 +2053,9 @@
 
     function viewItem(id)
     {
+        $('.tabs').tabs('select','view_details');
         $.get('quotation/'+id, function(response){
+               
                 var AppendString = "";
                 var i, j = "";
                 var data = response.data;
@@ -2106,6 +2132,7 @@
 
     function appItem(id)
     {
+        $('.tabs').tabs('select','app_details');
         $.get('quotation/'+id, function(response){
 
           var AppendString = "";
@@ -2243,7 +2270,7 @@
             {
                 "data": "id",
                 "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" onclick="viewItem('+data+')">'+row.quot_code+'</a>';
+                    return  '<a href="#" onclick="viewItem('+data+'), getApproverMatrix('+row.id+',\'v\')">'+row.quot_code+'</a>';
                 }
             },
             {   "data": "id",
@@ -2307,7 +2334,7 @@
             {
                 "data": "id",
                 "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" onclick="viewItem('+data+')">'+row.quot_code+'</a>';
+                    return  '<a href="#" onclick="viewItem('+data+'), getApproverMatrix('+row.id+',\'v\')">'+row.quot_code+'</a>';
                 }
             },
             {   "data": "id",
@@ -2341,7 +2368,7 @@
             {
                 "data": "id",
                 "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="appItem('+row.id+'), getApproverMatrix('+row.id+')"><i class="material-icons">rate_review</i></a>';
+                    return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="appItem('+row.id+'), getApproverMatrix('+row.id+',\'x\')"><i class="material-icons">rate_review</i></a>';
                 }
             }
         ]
