@@ -140,6 +140,20 @@
             left: 25px;
           }
         }
+
+        #map{
+          height: 600px;
+          width: 90%;
+          margin: 0 auto;
+        }
+        .marker {
+            background-image: url('/images/marker.png');
+            background-repeat:no-repeat;
+            background-size:100%;
+            width: 100px;
+            height: 100px;
+            cursor: pointer; 
+        }
         
       </style> 
     </head>
