@@ -194,6 +194,7 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::get('/reiss/quotation/getProducts/{id}', 'SalesQuotationController@getProducts');
     Route::get('/reiss/quotation/getAllEdit/{id}', 'SalesQuotationController@getAllEdit');
 
+    Route::get('/reiss/dashboard/{parent}', 'ReissDashboardController@index');
 
     // end -> jp task
 
