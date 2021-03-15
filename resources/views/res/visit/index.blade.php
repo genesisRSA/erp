@@ -632,8 +632,8 @@
   </div>
 
   <div id="deleteModal" class="modal bottom-sheet">
-    {{-- <form method="POST" action="{{route('forecast.delete')}}"> --}}
-      <form>
+    <form method="POST" action="{{route('visit.delete')}}">
+      {{-- <form> --}}
         @csrf
         <div class="modal-content">
             <h4>Delete Sales Forecast Details</h4><br><br>
