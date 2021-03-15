@@ -35,7 +35,7 @@
                 </div>
 
                 <div class="input-field col s12 m12 l12">
-                  <textarea id="add_loc_name" name="loc_name" class="materialize-textarea" placeholder="Amkor P3/P4" required/></textarea>
+                  <textarea id="add_loc_name" name="loc_name" class="materialize-textarea" placeholder="Amkor P3/P4" required readonly/></textarea>
                   <label for="loc_name">Location<sup class="red-text">*</sup></label>
                 </div>
 
