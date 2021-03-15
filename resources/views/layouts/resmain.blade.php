@@ -142,8 +142,8 @@
         }
 
         #map{
-          height: 600px;
-          width: 90%;
+          height: 800px;
+          width: 100%;
           margin: 0 auto;
         }
         .marker {

@@ -6,13 +6,67 @@
         <h4 class="title"><span class="grey-text darken-4">Sales<i class="material-icons">arrow_forward_ios</i></span><span class="grey-text darken-4">Sales Visit<i class="material-icons">arrow_forward_ios</i></span>New Visit</h4>
     </div>
   </div>
-  <div class="card">  
-    <div class="card-content">
-    
+  <div class="d-flex flex-row">
+    <div class="m-3 main-content">  
+      <div class="row">
+        <div class="card mb-3 col s12 m4 l4">
+          <div class="card-body" style="height: 789px">
+            <form method="POST" action="" enctype="multipart/form-data">
+              <h6 style="padding: 10px; padding-top: 10px; padding-left: 10px; padding-right: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Visit Details</b></h6> <hr style="margin: 0px">
+              <div class="row">
+                <br>
+                
+                <div class="input-field col s12 m12 l12">
+                  <input type="text" id="add_visit_code" name="visit_code" value="VISIT20210315" readonly/>
+                  <label for="visit_code">Visit Code<sup class="red-text"></sup></label>
+                </div>
+                
+                <div class="input-field col s12 m12 l12">
+                  <select id="add_site_code" name="visit_site" required>
+                    <option value="" disabled selected>Choose your option</option>
+                    @foreach ($sites as $site)
+                      <option value="{{$site->site_code}}">{{$site->site_desc}}</option>
+                    @endforeach
+                  </select>
+                  <label for="visit_site">Site<sup class="red-text">*</sup></label>
+                </div>
 
-      <div id="map">
+                <div class="input-field col s12 m12 l12">
+                  <input type="text" id="add_visit_loc" name="visit_loc" value="" placeholder="Amkor P3/P4" required/>
+                  <label for="visit_loc">Location<sup class="red-text">*</sup></label>
+                </div>
 
-      </div> 
+                <div class="input-field col s12 m12 l12">
+   
+                  <textarea placeholder="On-site Visit" name="visit_purpose" class="materialize-textarea" required></textarea>
+                  <label for="visit_purpose">Purpose<sup class="red-text">*</sup></label>
+                </div>
+
+
+              </div>
+
+              <br>
+              
+              
+
+              <div class="row col s12 m12 l12" style="padding-right: 0px">
+                <div class="col s12 m3 l3"></div>
+                <div class="col s12 m9 l9 right-align" style="padding-right: 0px">
+                <button class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Save</button>
+                <button class="red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Cancel</button>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+
+        <div class="card mb-3 col s12 m8 l8">
+          <div class="card-body">
+            <div id="map"></div> 
+          </div>
+        </div>
+      </div>  
     </div>
   </div>
   <!-- SCRIPTS -->
@@ -48,6 +102,8 @@
 
       function success(position){
         console.log(position);
+        var infoWindow = new google.maps.InfoWindow;
+        console.log(infoWindow);
         var latval = position.coords.latitude;
         var lngval = position.coords.longitude;
       }

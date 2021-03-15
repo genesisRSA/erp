@@ -61,10 +61,12 @@ class SalesVisitController extends Controller
      */
     public function create()
     {
+        $site = Site::all();
         return view('res.visit.new')
                 ->with('site','res')
                 ->with('page','sales')
-                ->with('subpage','visit');
+                ->with('subpage','visit')
+                ->with('sites',$site);
     }
 
     /**
@@ -121,5 +123,13 @@ class SalesVisitController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function delete(Request $request)
+    {
+        //
+        if(SalesVisit::destroy($request->input('id',''))){
+            return redirect()->route('visit.index')->withSuccess('Sales Visit Details Successfully Deleted');
+        }
     }
 }

@@ -9,7 +9,7 @@
   <div class="row main-content">
   
     {{-- <ul id="tabs-swipe-demo" class="tabs"> --}}
-    <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
+    <ul id="forecast_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
       <li class="tab col s12 m4 l4"><a class="active" href="#ongoing">Sales Forecasts</a></li>
       <li class="tab col s12 m4 l4"><a href="#approval">For Approval</a></li>
     </ul>
@@ -679,11 +679,17 @@
   <!-- End of MODALS -->
 
   <!-- SCRIPTS -->
-  
+
+      {{-- @if($id)
+        {{ $data }}
+      @endif 
+   --}}
+
   <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
   <script type="text/javascript" src="http://code.jquery.com/jquery-3.4.1.js"></script> 
   <script type="text/javascript" src="{{ asset('datatables/datatables.js') }}"></script>
   <script type="text/javascript">
+   
 
     $(document).ready(function () {
 
@@ -764,6 +770,14 @@
           getApproverMatrix(id);
         })
 
+        @if(isset($_GET['forecastID']))
+          @if($_GET['loc']=='approval')
+            appItem({{Illuminate\Support\Facades\Crypt::decrypt($_GET['forecastID'])}});
+          @else
+            viewItem({{Illuminate\Support\Facades\Crypt::decrypt($_GET['forecastID'])}});
+            getApproverMatrix({{Illuminate\Support\Facades\Crypt::decrypt($_GET['forecastID'])}},"v");
+          @endif
+        @endif
 
     });
 
@@ -1006,7 +1020,8 @@
     }
 
     function viewItem(id)
-    {
+    {  
+      $('#forecast_tab').tabs('select','ongoing');
         $('.tabs').tabs('select','view-forecast');
         $.get('forecast/'+id, function(response){
             var data = response.data;
@@ -1033,7 +1048,8 @@
     }
 
     function appItem(id)
-    {
+    {   
+      $('#forecast_tab').tabs('select','approval');
         $('.tabs').tabs('select','app-forecast');
         $.get('forecast/'+id, function(response){
 
@@ -1041,7 +1057,7 @@
               minimumFractionDigits: 4,      
               maximumFractionDigits: 4,
             });
-
+            var i, j = "";
             var data = response.data;
             var dataUP = data.unit_price;
             var dataTP = data.total_price;
@@ -1140,7 +1156,7 @@
                     }
                     else
                     {
-                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem('+row.id+')" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem('+row.id+')" disabled><i class="material-icons">delete</i></a>';
+                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem()" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem()" disabled><i class="material-icons">delete</i></a>';
                     }
 
                 }

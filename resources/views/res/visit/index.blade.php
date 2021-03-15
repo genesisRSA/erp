@@ -640,7 +640,7 @@
             <div class="row">
                 <div class="col s12 m6">
                     <input type="hidden" name="id" id="del_id">
-                    <p>Are you sure you want to delete this <strong>Sales Forecast Details</strong>?</p>
+                    <p>Are you sure you want to delete this <strong>Sales Visit Details</strong>?</p>
                 </div>
             </div>
         </div>

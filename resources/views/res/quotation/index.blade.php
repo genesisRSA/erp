@@ -9,7 +9,7 @@
   <div class="row main-content">
   
     {{-- <ul id="tabs-swipe-demo" class="tabs"> --}}
-    <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
+    <ul id="quotation_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
       <li class="tab col s12 m4 l4"><a class="active" href="#ongoing">Sales Quotation</a></li>
       <li class="tab col s12 m4 l4"><a href="#approval">For Approval</a></li>
     </ul>
@@ -764,7 +764,7 @@
       </div>
       <div class="modal-footer" style="padding-right: 30px;">
       
-        <a href="#!" class="modal-close green waves-effect waves-light btn"><i class="material-icons left">keyboard_return</i>Okay</a>
+        <a href="#!" class="modal-close green waves-effect waves-light btn"><i class="material-icons left">keyboard_return</i>Return</a>
 
       </div>
     </form>
@@ -1150,6 +1150,23 @@
 
             });
         })
+
+    });
+
+    $(document).ready(function(){
+            
+      $('.tabs').tabs();
+
+      @if(isset($_GET['quot_code']))
+          @if($_GET['loc']=='approval')
+            appItem({{Illuminate\Support\Facades\Crypt::decrypt($_GET['quot_code'])}});
+            getApproverMatrix({{Illuminate\Support\Facades\Crypt::decrypt($_GET['quot_code'])}},"x");
+          @else
+            viewItem({{Illuminate\Support\Facades\Crypt::decrypt($_GET['quot_code'])}});
+            getApproverMatrix({{Illuminate\Support\Facades\Crypt::decrypt($_GET['quot_code'])}},"v");
+          @endif
+        @endif
+
     });
 
     function callModal(checker)
@@ -2154,6 +2171,7 @@
 
     function appItem(id)
     {
+        $('#quotation_tab').tabs('select','approval');
         $('.tabs').tabs('select','app_details');
         $.get('quotation/'+id, function(response){
 

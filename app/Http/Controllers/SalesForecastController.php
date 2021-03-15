@@ -5,14 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
+use App\Mail\SalesMailable;
 use App\SalesForecast;
 use App\ApproverMatrix;
 use App\Product;
 use App\Site;
 use App\Currency;
 use App\UnitOfMeasure;
+use App\Employee;
 use Validator;
+use Auth;
+
 
 class SalesForecastController extends Controller
 {
@@ -61,7 +67,8 @@ class SalesForecastController extends Controller
         ->json([
             "data" => SalesForecast::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
                                   ->with('sites:site_code,site_desc')
-                                  ->where('status','=','Pending')
+                                  ->where('status','<>','Approved')
+                                  ->where('status','!=','Rejected')
                                   ->get()
         ]); 
     }
@@ -137,7 +144,7 @@ class SalesForecastController extends Controller
             $forecast->quantity = $request->input('quantity','');
             $forecast->total_price = $request->input('total_price','');
             $forecast->status = 'Pending';
-            $forecast->created_by = '0204-2021';
+            $forecast->created_by = Auth::user()->employee->emp_no;
 
             if($request->input('app_seq'))
             {
@@ -155,6 +162,7 @@ class SalesForecastController extends Controller
                         if($request->input('app_seq.'.$i)==0) {
                             $forecast->current_sequence = $request->input('app_seq.'.$i);
                             $forecast->current_approver = $request->input('app_id.'.$i);
+                            $approverID = $request->input('app_id.'.$i);
                         }
                     }
 
@@ -162,7 +170,30 @@ class SalesForecastController extends Controller
                     $forecast->matrix = $approvers;
             }
 
+            // $forecast_details = $forecast;
+            $lastid = DB::table('sales_forecasts')->latest('id')->first();
+
+            if($lastid){
+                $lastid = $lastid->id + 1;
+            }else{
+                $lastid = 0;
+            }
+            $approver = Employee::where('emp_no','=',$approverID)->first();
+
+            $maildetails = new SalesMailable('REISS - Sales Forecast Approval',
+                                            'forecast',
+                                            'Pending',
+                                            'approver',
+                                            $approver->emp_fname,
+                                            $request->input('forecast_code',''),
+                                            Auth::user()->employee->full_name, // full_name
+                                            '',
+                                            $lastid); // remarks here
+
             if($forecast->save()){
+                Mail::to('johnpaul.sarinas@rsa.com.ph', 'John Paul Sarinas')->send($maildetails);
+                // Mail::to($approver->work_email, $approver->full_name)
+
                 return redirect()->route('forecast.index')->withSuccess('Sales Forecast Details Successfully Added');
             }
         }
@@ -176,9 +207,6 @@ class SalesForecastController extends Controller
      */
     public function show($id)
     {
-        //$data = SalesForecast::find($id);
-        // ->with('currency:currency_code,currency_name');
-                      
         return response()
         ->json([
             "data" => SalesForecast::where('id','=',$id)
@@ -191,6 +219,14 @@ class SalesForecastController extends Controller
         ]);
     }
 
+    public function check($id,$loc)
+    {
+        $locx = $loc;
+        $forecast = SalesForecast::where('forecast_code','=',$id)->first();
+        $forecastID = $forecast->id;
+        return redirect()->route('forecast.index', ['forecastID' => Crypt::encrypt($forecastID), 'loc' => $locx]);
+    }
+   
     /**
      * Show the form for editing the specified resource.
      *
@@ -278,7 +314,33 @@ class SalesForecastController extends Controller
 
             $gate = $matrix[0]['is_gate'];
             $next_status = $matrix[0]['next_status'];
-            
+
+            $lastid = DB::table('sales_forecasts')->latest('id')->first();
+            if($lastid){
+                $lastid = $lastid->id + 1;
+            }else{
+                $lastid = 0;
+            }
+           
+            $next_seq = $curr_seq + 1;
+            $matlen = count($matrix);
+
+            $empID = "";
+
+            if($matlen!=1)
+            {
+                foreach ($matrix as $matrx) {
+                    if($matrx['sequence']==$next_seq)
+                    {
+                        $empID = $matrx['approver_emp_no'];
+                    }
+                }
+            }
+            else 
+            {
+              $empID = $matrix[0]['approver_emp_no'];
+            }
+
             if($status=='Approved')
             {
                 if($gate=='true')
@@ -313,6 +375,16 @@ class SalesForecastController extends Controller
                     $forecast_app->approved_by = $curr_app;
                     $forecast_app->updated_by = $curr_app;
                     $matrix = [];
+                    $approver = Employee::where('emp_no','=',$empID)->first();
+                    $maildetails = new SalesMailable('REISS - Sales Forecast Approval', // subject
+                                                    'forecast', // location
+                                                    'Approved', // next status val
+                                                    'filer', // who to receive
+                                                    $approver->emp_fname, // approver name
+                                                    $forecast_app->forecast_code, // forecast code
+                                                    Auth::user()->employee->full_name, // full_name
+                                                    $remarks, // remarks
+                                                    $lastid); // last id + 1
                 }
                 else 
                 {
@@ -329,6 +401,17 @@ class SalesForecastController extends Controller
                     $forecast_app->status = $next_status;
                     $forecast_app->approved_by = $curr_app;
                     $forecast_app->updated_by = $curr_app;
+                    
+                    $approver = Employee::where('emp_no','=',$empID)->first();
+                    $maildetails = new SalesMailable('REISS - Sales Forecast Approval', // subject
+                                                    'forecast', // location
+                                                    $next_status, // next status val
+                                                    'approver', // who to receive
+                                                    $approver->emp_fname, // approver name
+                                                    $forecast_app->forecast_code, // forecast code
+                                                    Auth::user()->employee->full_name, // full_name
+                                                    $remarks, // remarks
+                                                    $lastid); // last id + 1
                 }
             }
             else
@@ -363,6 +446,17 @@ class SalesForecastController extends Controller
                 $forecast_app->approved_by = 'N/A';
                 $forecast_app->updated_by = $curr_app;
                 $matrix = [];
+                
+                $approver = Employee::where('emp_no','=',$empID)->first();
+                $maildetails = new SalesMailable('REISS - Sales Forecast Approval', // subject
+                                                'forecast', // location
+                                                'Rejected', // next status val
+                                                'filer', // who to receive
+                                                $approver->emp_fname, // approver name
+                                                $forecast_app->forecast_code, // forecast code
+                                                Auth::user()->employee->full_name, // full_name
+                                                $remarks, // remarks
+                                                $lastid); // last id + 1
             }
             
             $forecast_app->current_sequence = $curr_seq;
@@ -371,8 +465,10 @@ class SalesForecastController extends Controller
 
             if($forecast_app->save()){
                 if($status=='Approved'){
+                    Mail::to('johnpaul.sarinas@rsa.com.ph', 'John Paul Sarinas')->send($maildetails);
                     return redirect()->route('forecast.index')->withSuccess('Sales Forecast Successfully Approved');
                 } else {
+                    Mail::to('johnpaul.sarinas@rsa.com.ph', 'John Paul Sarinas')->send($maildetails);
                     return redirect()->route('forecast.index')->withSuccess('Sales Forecast Successfully Rejected');
                 }
             }
