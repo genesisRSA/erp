@@ -2,9 +2,9 @@
 <ul id="slide-out" class="sidenav sidenav-fixed">
     <div class="card" style="margin:0;">
         <div class="card-image">
-            <img src="{{ asset('images/resbanner.png') }}" style="filter: blur(2px);">
+            <img src="{{ asset('images/resbanner.png') }}">
             <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();" class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">power_settings_new</i></a>
-            <span class="card-title flow-text">Franz Delomen</span>
+            <span class="card-title flow-text" style="background-color: rgba(0,0,0,0.3);">{{Auth::user()->name}}</span>
         </div>
     </div>
     <li @if($page=='home')class="active"@endif><a href="{{route('res.home')}}" class="waves-effect waves-light"><i class="material-icons">dashboard</i>Dashboard</a></li>
