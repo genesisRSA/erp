@@ -3,7 +3,7 @@
 @section('content')
   <div class="row blue-text text-darken-4 white" style="border-bottom: 1px solid rgba(0,0,0,0.14);">
     <div class="col s12 m12">
-        <h4 class="title"><span class="grey-text darken-4">Sales<i class="material-icons">arrow_forward_ios</i></span> Sales Forecast</h4>
+        <h4 class="title"><span class="grey-text darken-4">Sales <i class="material-icons">arrow_forward_ios</i></span> Sales Forecast</h4>
     </div>
   </div>
   <div class="row main-content">
@@ -33,7 +33,7 @@
           </div>
       </div>
       
-      <a href="#addModal" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped modal-trigger" id="add-button"  onclick="getApprover(1,'add','Sales Forecast');" data-position="left" data-tooltip="Add Sales Forecast Details"><i class="material-icons">add</i></a>
+      <a href="#addModal" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped modal-trigger" id="add-button"  onclick="getApprover('{{Auth::user()->emp_no}}','add','Sales Forecast');" data-position="left" data-tooltip="Add Sales Forecast Details"><i class="material-icons">add</i></a>
     </div>
 
     <div id="approval" name="approval">
@@ -223,7 +223,7 @@
 
         <ul id="tabs-swipe-demo" class="tabs">
           <li class="tab col s12 m4 l4"><a class="active" href="#edit-forecast">Forecast Details</a></li>
-          <li class="tab col s12 m4 l4"><a href="#edit-signatories" onclick="getApprover(1,'edit','Sales Forecast');">Signatories</a></li>
+          <li class="tab col s12 m4 l4"><a href="#edit-signatories" onclick="getApprover('{{Auth::user()->emp_no}}','edit','Sales Forecast');">Signatories</a></li>
         </ul><br>
 
         <div id="edit-forecast" name="edit-forecast">
@@ -1021,7 +1021,6 @@
 
     function viewItem(id)
     {  
-
         $('.tabs').tabs('select','view-forecast');
         $.get('forecast/'+id, function(response){
             var data = response.data;
@@ -1041,9 +1040,7 @@
             $('#view_unit_price').val(data.unit_price);
             $('#view_quantity').val(data.quantity);
             $('#view_total_price').val(data.total_price);
-
             $('#viewModal').modal('open');
-            
         });
     }
 
@@ -1129,19 +1126,19 @@
                 "render": function ( data, type, row, meta ) {
                   switch(data){
                     case 'Approved':
-                      return  '<span class="badge green white-text">Approved</span>';
+                      return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
                     break;
                     case 'Pending':
-                      return  '<span class="badge blue white-text">Pending</span>';
+                      return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
                     break;
                     case 'Rejected':
-                      return  '<span class="badge red white-text">Rejected</span>';
+                      return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
                     break;
                     case 'For Approval':
-                      return  '<span class="badge yellow white-text">For Approval</span>';
+                      return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
                     break;
                     case 'For Review':
-                      return  '<span class="badge yellow white-text">For Review</span>';
+                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
                     break;
                   }
                    
@@ -1194,19 +1191,19 @@
                 "render": function ( data, type, row, meta ) {
                   switch(data){
                     case 'Approved':
-                      return  '<span class="badge green white-text">Approved</span>';
+                      return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
                     break;
                     case 'Pending':
-                      return  '<span class="badge blue white-text">Pending</span>';
+                      return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
                     break;
                     case 'Rejected':
-                      return  '<span class="badge red white-text">Rejected</span>';
+                      return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
                     break;
                     case 'For Approval':
-                      return  '<span class="badge yellow white-text">For Approval</span>';
+                      return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
                     break;
                     case 'For Review':
-                      return  '<span class="badge yellow white-text">For Review</span>';
+                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
                     break;
                   }
                    

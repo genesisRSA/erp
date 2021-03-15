@@ -69,50 +69,24 @@
                     }
                 ],
                 "responsive": true,
-                "ajax": "/api/hris/attendances/av_attendance/"+$('#date_from').val()+"/"+$('#date_to').val(),
+                "ajax": "/api/hris/attendances/raw_attendance/"+$('#psite_code').val()+"/"+$('#date_from').val()+"/"+$('#date_to').val(),
                 "columns": [
-                    { "data": "emp_code" },
-                    { "data": "emp_name" },
-                    { "data": "date_log" },
-                    { "data": "time_in" },
-                    { "data": "temp_time_in" },
-                    { "data": "lunch_in",
+                    { "data": "emp_no" },
+                    { "data": "name" },
+                    { "data": "shift_code" },
+                    { "data": "shift_date" },
+                    { "data": "shift_time_in" },
+                    { "data": "shift_time_out" },
+                    { "data": "att_time_in",
                         "render": function( data, type, row, meta ){
                             if(data){
                                 return data;
                             }else{
-                                return '<span class="bg-danger text-white p-2">NO LUNCH IN</span>';
+                                return '<span class="bg-danger text-white p-2">NO TIME IN</span>';
                             }
                         }
                     },
-                    { "data": "temp_lunch_in",
-                        "render": function( data, type, row, meta ){
-                            if(data){
-                                return data;
-                            }else{
-                                return '<span class="bg-danger text-white p-2">NO TEMP</span>';
-                            }
-                        }
-                    },
-                    { "data": "lunch_out",
-                        "render": function( data, type, row, meta ){
-                            if(data){
-                                return data;
-                            }else{
-                                return '<span class="bg-danger text-white p-2">NO LUNCH OUT</span>';
-                            }
-                        }
-                    },
-                    { "data": "temp_lunch_out",
-                        "render": function( data, type, row, meta ){
-                            if(data){
-                                return data;
-                            }else{
-                                return '<span class="bg-danger text-white p-2">NO TEMP</span>';
-                            }
-                        }
-                    },
-                    { "data": "time_out",
+                    { "data": "att_time_out",
                         "render": function( data, type, row, meta ){
                             if(data){
                                 return data;
@@ -121,21 +95,62 @@
                             }
                         }
                     },
-                    { "data": "temp_time_out",
-                        "render": function( data, type, row, meta ){
-                            if(data){
-                                return data;
-                            }else{
-                                return '<span class="bg-danger text-white p-2">NO TEMP</span>';
-                            }
-                        }
-                    },
+                    { "data": "slvs" },
+                    { "data": "lvs" },
+                    { "data": "lvwp" },
+                    { "data": "late" },
+                    { "data": "rendered_hours_work" },
+                    { "data": "filed_ot" },
+                    { "data": "filed_rdot" },
+                    { "data": "filed_legal_ot" },
+                    { "data": "filed_special_ot" },
+                    { "data": "rendered_ot" },
+                    { "data": "night_diff" },
                 ]
             });
             
             buildSelect( attendance_dt );
             attendance_dt.on( 'draw', function () {
                 buildSelect( attendance_dt );
+            } );
+        });
+        $('body').on('click','#run_calcattendance',function(){
+                $("#calcattendance-dt").dataTable().fnDestroy()
+
+                var calcattendance_dt = $('#calcattendance-dt').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'pageLength',
+                    { extend: 'excel',
+                    title: 'HRIS - Calculated Attendance'
+                    },
+                    { extend: 'print',
+                    title: 'HRIS - Calculated Attendance'
+                    }
+                ],
+                "responsive": true,
+                "ajax": "/api/hris/attendances/calc_attendance/"+$('#calcpsite_code').val()+"/"+$('#calcdate_from').val()+"/"+$('#calcdate_to').val(),
+                "columns": [
+                    { "data": "name" },
+                    { "data": "sl_wp" },
+                    { "data": "sl_wop" },
+                    { "data": "vl_wp" },
+                    { "data": "vl_wop" },
+                    { "data": "days_worked" },
+                    { "data": "total_paid_days" },
+                    { "data": "required_days" },
+                    { "data": "late_in_minutes" },
+                    { "data": "reg_ot" },
+                    { "data": "sunday_ot" },
+                    { "data": "regular_holiday_ot" },
+                    { "data": "special_holiday_ot" },
+                    { "data": "night_diff" },
+                ]
+            });
+            
+            buildSelect( calcattendance_dt );
+            calcattendance_dt.on( 'draw', function () {
+                buildSelect( calcattendance_dt );
             } );
         });
         
@@ -232,21 +247,39 @@
                 "aaSorting": [],
                 "ajax": "/api/hris/attendances/my_attendance/{{Auth::user()->employee->emp_no}}",
                 "columns": [
-                    { "data": "date_log" },
-                    { "data": "time_in" },
-                    { "data": "time_out" },
-                    { "data": "hours_work" },
-                    {
-                        "targets": 0,
-                        "data": "late",
-                        "render": function ( data, type, row, meta ) {
-                            if((data+"").indexOf('-') != '-1'){
-                                return "N/A";
-                            }else{
+                    { "data": "shift_date" },
+                    { "data": "shift_code" },
+                    { "data": "shift_time_in" },
+                    { "data": "shift_time_out" },
+                    { "data": "att_time_in",
+                        "render": function( data, type, row, meta ){
+                            if(data){
                                 return data;
+                            }else{
+                                return '<span class="bg-danger text-white p-2">NO TIME IN</span>';
                             }
                         }
-                    } 
+                    },
+                    { "data": "att_time_out",
+                        "render": function( data, type, row, meta ){
+                            if(data){
+                                return data;
+                            }else{
+                                return '<span class="bg-danger text-white p-2">NO TIME OUT</span>';
+                            }
+                        }
+                    },
+                    { "data": "slvs" },
+                    { "data": "lvs" },
+                    { "data": "lvwp" },
+                    { "data": "late" },
+                    { "data": "rendered_hours_work" },
+                    { "data": "filed_ot" },
+                    { "data": "filed_rdot" },
+                    { "data": "filed_legal_ot" },
+                    { "data": "filed_special_ot" },
+                    { "data": "rendered_ot" },
+                    { "data": "night_diff" },
                 ]
             });
 
@@ -295,21 +328,39 @@
                 "aaSorting": [],
                 "ajax": "/api/hris/attendances/my_attendance/{{$access_id}}",
                 "columns": [
-                    { "data": "date_log" },
-                    { "data": "time_in" },
-                    { "data": "time_out" },
-                    { "data": "hours_work" },
-                    {
-                        "targets": 0,
-                        "data": "late",
-                        "render": function ( data, type, row, meta ) {
-                            if((data+"").indexOf('-') != '-1'){
-                                return "N/A";
-                            }else{
+                    { "data": "shift_date" },
+                    { "data": "shift_code" },
+                    { "data": "shift_time_in" },
+                    { "data": "shift_time_out" },
+                    { "data": "att_time_in",
+                        "render": function( data, type, row, meta ){
+                            if(data){
                                 return data;
+                            }else{
+                                return '<span class="bg-danger text-white p-2">NO TIME IN</span>';
                             }
                         }
-                    } 
+                    },
+                    { "data": "att_time_out",
+                        "render": function( data, type, row, meta ){
+                            if(data){
+                                return data;
+                            }else{
+                                return '<span class="bg-danger text-white p-2">NO TIME OUT</span>';
+                            }
+                        }
+                    },
+                    { "data": "slvs" },
+                    { "data": "lvs" },
+                    { "data": "lvwp" },
+                    { "data": "late" },
+                    { "data": "rendered_hours_work" },
+                    { "data": "filed_ot" },
+                    { "data": "filed_rdot" },
+                    { "data": "filed_legal_ot" },
+                    { "data": "filed_special_ot" },
+                    { "data": "rendered_ot" },
+                    { "data": "night_diff" },
                 ]
             });
         @endif

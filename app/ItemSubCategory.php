@@ -8,6 +8,6 @@ class ItemSubCategory extends Model
 {
     public function item_cat()
     {
-        return $this->hasOne('App\ItemCategory','cat_code');
+        return $this->hasOne('App\ItemCategory','cat_code','cat_code');
     }
 }

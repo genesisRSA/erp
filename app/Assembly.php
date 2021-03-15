@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Assembly extends Model
 {
-    public function item_cat()
+    public function prod()
     {
-        return $this->hasOne('App\Product','id','prod_code');
+        return $this->hasOne('App\Product','prod_code','prod_code');
     }
 }

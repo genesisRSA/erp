@@ -14,7 +14,7 @@
             <thead>
               <tr>
                   <th>ID</th> 
-                  <th>Product Code</th>
+                  <th>Product</th>
                   <th>Assembly Code</th>
                   <th>Assembly Description</th>
                   <th>Parent Assembly Code</th>
@@ -37,7 +37,7 @@
       <div class="modal-content">
         <h4>Add Assembly Details</h4><br><br>
         <div class="row">
-          <div class="input-field col s12 m3">
+          <div class="input-field col s12 m6">
             <select id="add_prod_code" name="prod_code" required>
               <option value="" disabled selected>Choose your option</option>
               @foreach ($products as $i)
@@ -46,15 +46,17 @@
             </select>
             <label for="prod_code">Product<sup class="red-text">*</sup></label>
           </div>
-          <div class="input-field col s12 m3">
+          <div class="input-field col s12 m6">
             <input placeholder="" name="assy_code" type="text" class="validate" required>
             <label for="assy_code">Assembly Code<sup class="red-text">*</sup></label>
           </div>
-          <div class="input-field col s12 m3">
+        </div>
+        <div class="row">
+          <div class="input-field col s12 m6">
             <input placeholder="" name="assy_desc" type="text" class="validate" required>
             <label for="assy_desc">Assembly Description<sup class="red-text">*</sup></label>
           </div>
-          <div class="input-field col s12 m3">
+          <div class="input-field col s12 m6">
             <select name="parent_assy_code">
               <option value="" disabled selected>Choose your option</option>
               @foreach ($assycode as $i)
@@ -78,7 +80,7 @@
       <div class="modal-content">
         <h4>Edit Assembly Details</h4><br><br>
         <div class="row">
-          <div class="input-field col s12 m3">
+          <div class="input-field col s12 m6">
             <input type="hidden" name="id" id="edit_id">
             <select id="edit_prod_code" name="prod_code" required>
               <option value="" disabled selected>Choose your option</option>
@@ -86,24 +88,26 @@
                 <option value="{{$i->prod_code}}">{{$i->prod_name}}</option>
               @endforeach
             </select>
-            <label for="prod_code">Product Code<sup class="red-text">*</sup></label>
+            <label for="prod_code">Product<sup class="red-text">*</sup></label>
           </div>
-          <div class="input-field col s12 m3">
-            <input placeholder="" name="assy_code" id="edit_assy_code" type="text" class="validate" required>
+          <div class="input-field col s12 m6">
+            <input placeholder="" name="assy_code" id="edit_assy_code" type="text" class="validate grey lighten-3" readonly>
             <label for="assy_code">Assembly Code<sup class="red-text">*</sup></label>
           </div>
-          <div class="input-field col s12 m3">
+        </div>
+        <div class="row">
+          <div class="input-field col s12 m6">
             <input placeholder="" name="assy_desc" id="edit_assy_desc" type="text" class="validate" required>
             <label for="assy_desc">Assembly Description<sup class="red-text">*</sup></label>
           </div>
-          <div class="input-field col s12 m3">
+          <div class="input-field col s12 m6">
             <select name="parent_assy_code" id="edit_parent_assy_code">
               <option value="" disabled selected>Choose your option</option>
               @foreach ($assycode as $i)
                 <option value="{{$i->assy_code}}">{{$i->assy_desc}}</option>
               @endforeach
             </select>
-            <label for="parent_assy_code">Parent Assembly Code<sup class="red-text"></sup></label>
+            <label for="parent_assy_code">Parent Assembly<sup class="red-text"></sup></label>
           </div>
         </div>
       </div>
@@ -145,11 +149,21 @@
     function editItem(id){
         $.get('assembly/'+id, function(response){
             var data = response.data;
+            var parent_select = response.parent_selection;
+            console.log(JSON.stringify(parent_select));
             $('#edit_id').val(data.id);
             $('#edit_prod_code option[value="'+data.prod_code+'"]').prop('selected', true);
             $('#edit_prod_code').formSelect();
             $('#edit_assy_code').val(data.assy_code);
             $('#edit_assy_desc').val(data.assy_desc);
+
+            $('#edit_parent_assy_code').html("");
+
+            $('#edit_parent_assy_code').append('<option value="" disabled selected>Choose your option</option>');
+            $.each(parent_select,function(i,row){
+              console.log(row.assy_code);
+              $('#edit_parent_assy_code').append('<option value="'+row.assy_code+'">'+row.assy_desc+'</option>');
+            });
 
             $('#edit_parent_assy_code option[value="'+data.parent_assy_code+'"]').prop('selected', true);
 
@@ -175,7 +189,7 @@
         "ajax": "/api/reiss/assembly/all",
         "columns": [
             {  "data": "id" },
-            {  "data": "prod_code" },
+            {  "data": "prod.prod_name" },
             {  "data": "assy_code" },
             {  "data": "assy_desc" },
             {  "data": "parent_assy_code" },

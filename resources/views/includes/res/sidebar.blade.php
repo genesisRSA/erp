@@ -2,9 +2,9 @@
 <ul id="slide-out" class="sidenav sidenav-fixed">
     <div class="card" style="margin:0;">
         <div class="card-image">
-            <img src="{{ asset('images/resbanner.png') }}" style="filter: blur(2px);">
-            <a class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">power_settings_new</i></a>
-            <span class="card-title flow-text">Franz Delomen</span>
+            <img src="{{ asset('images/resbanner.png') }}">
+            <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();" class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">power_settings_new</i></a>
+            <span class="card-title flow-text" style="background-color: rgba(0,0,0,0.3);">{{Auth::user()->name}}</span>
         </div>
     </div>
     <li @if($page=='home')class="active"@endif><a href="{{route('res.home')}}" class="waves-effect waves-light"><i class="material-icons">dashboard</i>Dashboard</a></li>
@@ -47,6 +47,7 @@
           <a class="collapsible-header waves-effect waves-light" style="padding-left:32px;"><i class="material-icons">request_page</i>Sales</a>
           <div class="collapsible-body">
             <ul>
+              <li @if($subpage=='salesdashboard') class="active" @endif><a href="/reiss/dashboard/sales">Sales Dashboard</a></li>
               <li @if($subpage=='visit') class="active" @endif><a href="{{ route('visit.index') }}">Sales Visit</a></li>
               <li @if($subpage=='forecast') class="active" @endif><a href="{{ route('forecast.index') }}">Sales Forecast</a></li>
               <li @if($subpage=='quotation') class="active" @endif><a href="{{ route('quotation.index') }}">Sales Quotation</a></li>
@@ -148,3 +149,6 @@
       </ul>
     </li>
   </ul>
+    <form id="logout-form" action="{{ route('reiss.logout') }}" method="POST" style="display: none;">
+        @csrf
+    </form>

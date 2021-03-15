@@ -79,7 +79,7 @@ class SalesForecastController extends Controller
         ->json([
             "data" => DB::table('approver_matrices')
                             ->where([ 
-                                ['id','=',$id],
+                                ['requestor','=',$id],
                                 ['module','=',$module],
                                 ])
                             ->first()
@@ -265,21 +265,45 @@ class SalesForecastController extends Controller
             return back()->withInput()
             ->withErrors($validator);
         }else{
-            $forcas = SalesForecast::find($request->input('id',''));
-            $forcas->forecast_code = $request->input('forecast_code','');
-            $forcas->forecast_month = $request->input('forecast_month','');
-            $forcas->forecast_year = $request->input('forecast_year','');
-            $forcas->site_code =  Str::upper($request->input('site_code',''));
-            $forcas->prod_code = Str::upper($request->input('prod_code',''));
-            $forcas->currency_code = Str::upper($request->input('currency_code',''));
-            $forcas->uom_code = $request->input('uom_code','');
-            $forcas->unit_price= $request->input('unit_price','');
-            $forcas->quantity = $request->input('quantity','');
-            $forcas->total_price = $request->input('total_price','');
-            $forcas->status = 'Pending';
-            $forcas->created_by = '0204-2021';
+            $forecast = SalesForecast::find($request->input('id',''));
+            $forecast->forecast_code = $request->input('forecast_code','');
+            $forecast->forecast_month = $request->input('forecast_month','');
+            $forecast->forecast_year = $request->input('forecast_year','');
+            $forecast->site_code =  Str::upper($request->input('site_code',''));
+            $forecast->prod_code = Str::upper($request->input('prod_code',''));
+            $forecast->currency_code = Str::upper($request->input('currency_code',''));
+            $forecast->uom_code = $request->input('uom_code','');
+            $forecast->unit_price= $request->input('unit_price','');
+            $forecast->quantity = $request->input('quantity','');
+            $forecast->total_price = $request->input('total_price','');
+            $forecast->status = 'Pending';
+            $forecast->created_by = '0204-2021';
 
-            if($forcas->save()){
+            if($request->input('app_seq'))
+            {
+                $approvers = array();
+
+                    for( $i = 0 ; $i < count($request->input('app_seq')) ; $i++ )
+                    {
+                        array_push($approvers, [
+                                                'sequence' => $request->input('app_seq.'.$i),
+                                                'approver_emp_no' => $request->input('app_id.'.$i),
+                                                'approver_name' => $request->input('app_fname.'.$i),
+                                                'next_status' => $request->input('app_nstatus.'.$i),
+                                                'is_gate' => $request->input('app_gate.'.$i)
+                                                ]);
+                        if($request->input('app_seq.'.$i)==0) {
+                            $forecast->current_sequence = $request->input('app_seq.'.$i);
+                            $forecast->current_approver = $request->input('app_id.'.$i);
+                            $approverID = $request->input('app_id.'.$i);
+                        }
+                    }
+
+                    $approvers = json_encode($approvers);            
+                    $forecast->matrix = $approvers;
+            }
+
+            if($forecast->save()){
                 return redirect()->route('forecast.index')->withSuccess('Sales Forecast Details Successfully Updated');
             }
         }
