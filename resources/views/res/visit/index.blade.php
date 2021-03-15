@@ -3,65 +3,38 @@
 @section('content')
   <div class="row blue-text text-darken-4 white" style="border-bottom: 1px solid rgba(0,0,0,0.14);">
     <div class="col s12 m12">
-        <h4 class="title"><span class="grey-text darken-4">Sales<i class="material-icons">arrow_forward_ios</i></span> Sales Forecast</h4>
+        <h4 class="title"><span class="grey-text darken-4">Sales<i class="material-icons">arrow_forward_ios</i></span> Sales Visit</h4>
     </div>
   </div>
   <div class="row main-content">
-  
-    {{-- <ul id="tabs-swipe-demo" class="tabs"> --}}
-    <ul id="forecast_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
-      <li class="tab col s12 m4 l4"><a class="active" href="#ongoing">Sales Forecasts</a></li>
-      <li class="tab col s12 m4 l4"><a href="#approval">For Approval</a></li>
-    </ul>
 
-    <div id="ongoing" name="ongoing">
+    <div class="col s12 m12 l12">
+      <div class="card" style="margin-top: 0px">
+        <div class="card-content">
+          <table class="responsive-table highlight" id="visit-dt" style="width: 100%">
+            <thead>
+              <tr>
+                  <th>ID</th> 
+                  <th>Site</th>
+                  <th>Visit Code</th>
+                  <th>Location Name</th>
+                  <th>Date Visit</th>
 
-        <div class="card" style="margin-top: 0px">
-          <div class="card-content">
-            <table class="responsive-table highlight" id="forecast-dt" style="width: 100%">
-              <thead>
-                <tr>
-                    <th>ID</th> 
-                    <th>Site Code</th>
-                    <th>Forecast Code</th>
-                    <th>Product Code</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-              </thead>
-            </table>
-          </div>
-      </div>
-      
-      <a href="#addModal" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped modal-trigger" id="add-button"  onclick="getApprover('{{Auth::user()->emp_no}}','add','Sales Forecast');" data-position="left" data-tooltip="Add Sales Forecast Details"><i class="material-icons">add</i></a>
-    </div>
-
-    <div id="approval" name="approval">
-        <div class="card" style="margin-top: 0px">
-          <div class="card-content">
-            <table class="responsive-table highlight" id="approval-dt" style="width: 100%">
-              <thead>
-                <tr>
-                    <th>ID</th> 
-                    <th>Site Code</th>
-                    <th>Product Code</th>
-                    <th>Forecast Code</th>
-                    <th>Filed By</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-              </thead>
-            </table>
-          </div>
+              </tr>
+            </thead>
+          </table>
         </div>
+      </div>
     </div>
+
+    <a href="{{ route('visit.create') }}" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button"  data-position="left" data-tooltip="Add Sales Visit Details"><i class="material-icons">add</i></a>
 
   </div>
 
   <!-- MODALS -->
 
   <div id="addModal" class="modal">
-    <form method="POST" action="{{route('forecast.store')}}">
+    {{-- <form method="POST" action="{{route('forecast.store')}}"> --}}
       <form>
     @csrf
       <div class="modal-content">
@@ -77,7 +50,7 @@
 
           <div class="row">
             <div class="input-field col s12 m4 l6">
-              <input type="text" id="add_forecast_code" name="forecast_code" value="{{$forecast}}{{$today}}-{{$lastforecast}}" readonly/>
+              {{-- <input type="text" id="add_forecast_code" name="forecast_code" value="{{$forecast}}{{$today}}-{{$lastforecast}}" readonly/> --}}
               <label for="forecast_code">Forecast Code<sup class="red-text">*</sup></label>
             </div>
 
@@ -142,9 +115,9 @@
             <div class="input-field col s12 m4 l3">
               <select id="add_uom_code" name="uom_code" required>
                 <option value="0" disabled selected>Choose your option</option>
-                @foreach ($uoms as $uom)
+                {{-- @foreach ($uoms as $uom)
                   <option value="{{$uom->uom_code}}">{{$uom->uom_name}}</option>
-                @endforeach
+                @endforeach --}}
               </select>
               <label for="uom_code">Unit of Measure<sup class="red-text">*</sup></label>
             </div>
@@ -155,9 +128,9 @@
             <div class="input-field col s12 m3 l3">
               <select id="add_currency_code" name="currency_code" onchange="computeTotal('add');" required>
                 <option value="0" disabled selected>Choose your option</option>
-                @foreach ($currencies as $curr)
+                {{-- @foreach ($currencies as $curr)
                   <option value="{{$curr->currency_code}}">{{$curr->symbol}} - {{$curr->currency_name}}</option>
-                @endforeach
+                @endforeach --}}
               </select>
               <label for="currency_code">Currency<sup class="red-text">*</sup></label>
             </div>
@@ -216,14 +189,15 @@
   </div>
 
   <div id="editModal" class="modal">
-    <form method="POST" action="{{route('forecast.patch')}}">
+    {{-- <form method="POST" action="{{route('forecast.patch')}}"> --}}
+      <form>
     @csrf
       <div class="modal-content">
         <h4>Edit Sales Forecast Details</h4>
 
         <ul id="tabs-swipe-demo" class="tabs">
           <li class="tab col s12 m4 l4"><a class="active" href="#edit-forecast">Forecast Details</a></li>
-          <li class="tab col s12 m4 l4"><a href="#edit-signatories" onclick="getApprover('{{Auth::user()->emp_no}}','edit','Sales Forecast');">Signatories</a></li>
+          <li class="tab col s12 m4 l4"><a href="#edit-signatories" onclick="getApprover(1,'edit','Sales Forecast');">Signatories</a></li>
         </ul><br>
 
         <div id="edit-forecast" name="edit-forecast">
@@ -276,9 +250,9 @@
             <div class="input-field col s12 m4 l4">
               <select id="edit_site_code" name="site_code" required>
                 <option value="" disabled selected>Choose your option</option>
-                @foreach ($sites as $site)
+                {{-- @foreach ($sites as $site)
                   <option value="{{$site->site_code}}">{{$site->site_desc}}</option>
-                @endforeach
+                @endforeach --}}
               </select>
               <label for="site_code">Site<sup class="red-text">*</sup></label>
             </div>
@@ -288,9 +262,9 @@
             <div class="input-field col s12 m4 l5">
               <select id="edit_prod_code" name="prod_code" required>
                 <option value="" disabled selected>Choose your option</option>
-                @foreach ($products as $prod)
+                {{-- @foreach ($products as $prod)
                   <option value="{{$prod->prod_code}}">{{$prod->prod_name}}</option>
-                @endforeach
+                @endforeach --}}
               </select>
               <label for="prod_code">Product<sup class="red-text">*</sup></label>
             </div>
@@ -298,9 +272,9 @@
             <div class="input-field col s12 m4 l3">
               <select id="edit_uom_code" name="uom_code" required>
                 <option value="0" disabled selected>Choose your option</option>       
-                  @foreach ($uoms as $i)
+                  {{-- @foreach ($uoms as $i)
                     <option value="{{$i->uom_code}}">{{$i->uom_name}}</option>
-                  @endforeach
+                  @endforeach --}}
               </select>
               <label for="uom_code">Unit of Measure<sup class="red-text">*</sup></label>
             </div>
@@ -311,9 +285,9 @@
             <div class="input-field col s12 m3 l3">
               <select id="edit_currency_code" name="currency_code" onchange="computeTotal('edit');" required>
                 <option value="0" disabled selected>Choose your option</option>
-                @foreach ($currencies as $curr)
+                {{-- @foreach ($currencies as $curr)
                   <option value="{{$curr->currency_code}}">{{$curr->symbol}} - {{$curr->currency_name}}</option>
-                @endforeach
+                @endforeach --}}
               </select>
               <label for="currency_code">Currency<sup class="red-text">*</sup></label>
             </div>
@@ -499,8 +473,8 @@
   </div>
 
   <div id="appModal" class="modal">
-    <form method="POST" action="{{route('forecast.approve')}}">
-    {{-- <form> --}}
+    {{-- <form method="POST" action="{{route('forecast.approve')}}"> --}}
+    <form>
     @csrf
       <div class="modal-content">
         <h4>Sales Forecast Details Approval</h4>
@@ -658,14 +632,15 @@
   </div>
 
   <div id="deleteModal" class="modal bottom-sheet">
-    <form method="POST" action="{{route('forecast.delete')}}">
+    {{-- <form method="POST" action="{{route('forecast.delete')}}"> --}}
+      <form>
         @csrf
         <div class="modal-content">
             <h4>Delete Sales Forecast Details</h4><br><br>
             <div class="row">
                 <div class="col s12 m6">
                     <input type="hidden" name="id" id="del_id">
-                    <p>Are you sure you want to delete this <strong>Sales Forecast Details</strong>?</p>
+                    <p>Are you sure you want to delete this <strong>Sales Visit Details</strong>?</p>
                 </div>
             </div>
         </div>
@@ -679,22 +654,17 @@
   <!-- End of MODALS -->
 
   <!-- SCRIPTS -->
-
-      {{-- @if($id)
-        {{ $data }}
-      @endif 
-   --}}
+  {{-- AIzaSyB_d6VrUMGRuMiQcBEfqwOvhrlJv86AyOA --}}
+  {{-- <script src="https://maps.googleapis.com/maps/api/js?key={{config('googlemap')['map_apikey']}}&callback=initMaps" async defer></script> --}}
 
   <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
+  {{-- <script type="text/javascript" src="{{ asset('js/googlemap.js') }}"></script> --}}
   <script type="text/javascript" src="http://code.jquery.com/jquery-3.4.1.js"></script> 
   <script type="text/javascript" src="{{ asset('datatables/datatables.js') }}"></script>
   <script type="text/javascript">
-   
 
     $(document).ready(function () {
-
-        $('.tabs').tabs();
-
+    
         $('#add_site_code').change(function () {
              var id = $(this).val();
 
@@ -770,14 +740,6 @@
           getApproverMatrix(id);
         })
 
-        @if(isset($_GET['forecastID']))
-          @if($_GET['loc']=='approval')
-            appItem({{Illuminate\Support\Facades\Crypt::decrypt($_GET['forecastID'])}});
-          @else
-            viewItem({{Illuminate\Support\Facades\Crypt::decrypt($_GET['forecastID'])}});
-            getApproverMatrix({{Illuminate\Support\Facades\Crypt::decrypt($_GET['forecastID'])}},"v");
-          @endif
-        @endif
 
     });
 
@@ -1020,8 +982,7 @@
     }
 
     function viewItem(id)
-    {  
-      $('#forecast_tab').tabs('select','ongoing');
+    {
         $('.tabs').tabs('select','view-forecast');
         $.get('forecast/'+id, function(response){
             var data = response.data;
@@ -1043,16 +1004,12 @@
             $('#view_total_price').val(data.total_price);
 
             $('#viewModal').modal('open');
-
-            
-            getApproverMatrix(id);
             
         });
     }
 
     function appItem(id)
-    {   
-      $('#forecast_tab').tabs('select','approval');
+    {
         $('.tabs').tabs('select','app-forecast');
         $.get('forecast/'+id, function(response){
 
@@ -1060,7 +1017,7 @@
               minimumFractionDigits: 4,      
               maximumFractionDigits: 4,
             });
-            var i, j = "";
+
             var data = response.data;
             var dataUP = data.unit_price;
             var dataTP = data.total_price;
@@ -1103,12 +1060,12 @@
         $('#deleteModal').modal('open');
     }
 
-    var forecast = $('#forecast-dt').DataTable({
+    var visits = $('#visit-dt').DataTable({
         "lengthChange": false,
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/reiss/forecast/all",
+        "ajax": "/api/reiss/visit/all",
         "columns": [
             {  "data": "id" },
             {   "data": "id",
@@ -1116,113 +1073,73 @@
                   return row.sites.site_desc;
                 }
             },
+            {  "data": "visit_code" },
+            {  "data": "loc_name" },
             {
                 "data": "id",
                 "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" onclick="viewItem('+row.id+'), getApproverMatrix('+row.id+',\'v\')">'+row.forecast_code+'</a>';
-                }
-            },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return row.products.prod_name;
-                }
-            },
-            {
-                "data": "status",
-                "render": function ( data, type, row, meta ) {
-                  switch(data){
-                    case 'Approved':
-                      return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
-                    break;
-                    case 'Pending':
-                      return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
-                    break;
-                    case 'Rejected':
-                      return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
-                    break;
-                    case 'For Approval':
-                      return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
-                    break;
-                    case 'For Review':
-                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
-                    break;
-                  }
-                   
-                }
-            },
-            {
-                "data": "id",
-                "render": function ( data, type, row, meta ) {
-                    if(row.status=='Pending')
-                    {
-                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem('+row.id+')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem('+row.id+')"><i class="material-icons">delete</i></a>';
-                    }
-                    else
-                    {
-                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem()" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem()" disabled><i class="material-icons">delete</i></a>';
-                    }
-
+                    return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem('+row.id+')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem('+row.id+')"><i class="material-icons">delete</i></a>';
                 }
             }
         ]
     });
 
-    var approvaldt = $('#approval-dt').DataTable({
-        "lengthChange": false,
-        "pageLength": 15,
-        "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
-        "pagingType": "full",
-        "ajax": "/api/reiss/forecast/all_approval",
-        "columns": [
-          {  "data": "id" },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return row.sites.site_desc;
-                }
-            },
-            {  "data": "prod_code" },
-            {
-                "data": "id",
-                "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" onclick="viewItem('+row.id+'), getApproverMatrix('+row.id+',\'v\')">'+row.forecast_code+'</a>';
-                }
-            },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return row.employee_details.full_name;
-                }
-            },
-            {
-                "data": "status",
-                "render": function ( data, type, row, meta ) {
-                  switch(data){
-                    case 'Approved':
-                      return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
-                    break;
-                    case 'Pending':
-                      return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
-                    break;
-                    case 'Rejected':
-                      return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
-                    break;
-                    case 'For Approval':
-                      return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
-                    break;
-                    case 'For Review':
-                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
-                    break;
-                  }
+    // var approvaldt = $('#approval-dt').DataTable({
+    //     "lengthChange": false,
+    //     "pageLength": 15,
+    //     "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+    //     "pagingType": "full",
+    //     "ajax": "/api/reiss/forecast/all_approval",
+    //     "columns": [
+    //       {  "data": "id" },
+    //         {   "data": "id",
+    //             "render": function ( data, type, row, meta ) {
+    //               return row.sites.site_desc;
+    //             }
+    //         },
+    //         {  "data": "prod_code" },
+    //         {
+    //             "data": "id",
+    //             "render": function ( data, type, row, meta ) {
+    //                 return  '<a href="#" onclick="viewItem('+row.id+'), getApproverMatrix('+row.id+',\'v\')">'+row.forecast_code+'</a>';
+    //             }
+    //         },
+    //         {   "data": "id",
+    //             "render": function ( data, type, row, meta ) {
+    //               return row.employee_details.full_name;
+    //             }
+    //         },
+    //         {
+    //             "data": "status",
+    //             "render": function ( data, type, row, meta ) {
+    //               switch(data){
+    //                 case 'Approved':
+    //                   return  '<span class="badge green white-text">Approved</span>';
+    //                 break;
+    //                 case 'Pending':
+    //                   return  '<span class="badge blue white-text">Pending</span>';
+    //                 break;
+    //                 case 'Rejected':
+    //                   return  '<span class="badge red white-text">Rejected</span>';
+    //                 break;
+    //                 case 'For Approval':
+    //                   return  '<span class="badge yellow white-text">For Approval</span>';
+    //                 break;
+    //                 case 'For Review':
+    //                   return  '<span class="badge yellow white-text">For Review</span>';
+    //                 break;
+    //               }
                    
-                }
-            },
-            {
-                "data": "id",
-                "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="appItem('+row.id+'), getApproverMatrix('+row.id+',\'x\')"><i class="material-icons">rate_review</i></a>';
-                }
-            }
-        ]
-    });
+    //             }
+    //         },
+    //         {
+    //             "data": "id",
+    //             "render": function ( data, type, row, meta ) {
+    //                 return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="appItem('+row.id+'), getApproverMatrix('+row.id+',\'x\')"><i class="material-icons">rate_review</i></a>';
+    //             }
+    //         }
+    //     ]
+    // });
 
 
   </script>

@@ -9,7 +9,7 @@
   <div class="row main-content">
   
     {{-- <ul id="tabs-swipe-demo" class="tabs"> --}}
-    <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
+    <ul id="quotation_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
       <li class="tab col s12 m4 l4"><a class="active" href="#ongoing">Sales Quotation</a></li>
       <li class="tab col s12 m4 l4"><a href="#approval">For Approval</a></li>
     </ul>
@@ -764,7 +764,7 @@
       </div>
       <div class="modal-footer" style="padding-right: 30px;">
       
-        <a href="#!" class="modal-close green waves-effect waves-light btn"><i class="material-icons left">keyboard_return</i>Okay</a>
+        <a href="#!" class="modal-close green waves-effect waves-light btn"><i class="material-icons left">keyboard_return</i>Return</a>
 
       </div>
     </form>
@@ -1077,6 +1077,11 @@
 
         $("select[name='forecast_code']").on('change', function()
         {
+            const formatter = new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: 4,      
+                maximumFractionDigits: 4,
+              });
+
             var id = $(this).val();
             var x = document.getElementById("details");
             x.style.display = "block";
@@ -1096,6 +1101,14 @@
               var curr_code = curr.currency_code;
               var curr_sym = curr.symbol;
               var currency = curr_sym + ' - ' + curr_code;
+
+              var qty = data.quantity;
+              var up = data.unit_price;
+              var totprice = qty * up;
+
+              var total_price = formatter.format(totprice);
+
+
 
               var myTable = document.getElementById('product-dt-f');
               var rowCount = myTable.rows.length;
@@ -1122,7 +1135,7 @@
                                           '<input type="hidden" name="f_currency_code[]" value="'+ curr_code +'"/>' +
                                           '<input type="hidden" name="f_unit_price[]" value="'+ data.unit_price +'"/>' +
                                           '<input type="hidden" name="f_quantity[]" value="'+ data.quantity +'"/>' +
-                                          '<input type="hidden" name="f_total_price[]" value="'+ data.total_price +'"/></tr>';
+                                          '<input type="hidden" name="f_total_price[]" value="'+ total_price +'"/></tr>';
                                           
              
               for (var x = rowCount-1; x>0; x--) 
@@ -1137,6 +1150,23 @@
 
             });
         })
+
+    });
+
+    $(document).ready(function(){
+            
+      $('.tabs').tabs();
+
+      @if(isset($_GET['quot_code']))
+          @if($_GET['loc']=='approval')
+            appItem({{Illuminate\Support\Facades\Crypt::decrypt($_GET['quot_code'])}});
+            getApproverMatrix({{Illuminate\Support\Facades\Crypt::decrypt($_GET['quot_code'])}},"x");
+          @else
+            viewItem({{Illuminate\Support\Facades\Crypt::decrypt($_GET['quot_code'])}});
+            getApproverMatrix({{Illuminate\Support\Facades\Crypt::decrypt($_GET['quot_code'])}},"v");
+          @endif
+        @endif
+
     });
 
     function callModal(checker)
@@ -1565,6 +1595,9 @@
 
           var myTable = document.getElementById('product-dt-f');
           var rowCount = myTable.rows.length;
+
+          var totprice = unit_price_f * quantity_f;
+          var total_price = formatter.format(totprice);
    
           var quantity = 0;
           var result = 0;
@@ -1599,7 +1632,7 @@
                                           '<input type="hidden" name="f_currency_code[]" value="'+ currency_codex +'"/>' +
                                           '<input type="hidden" name="f_unit_price[]" value="'+ unit_price_f +'"/>' +
                                           '<input type="hidden" name="f_quantity[]" value="'+ quantity_f +'"/>' +
-                                          '<input type="hidden" name="f_total_price[]" value="'+ total_price_f +'"/></tr>');
+                                          '<input type="hidden" name="f_total_price[]" value="'+ total_price +'"/></tr>');
               }
             } 
           else // nakita
@@ -1644,7 +1677,7 @@
                                                           '<input type="hidden" name="f_currency_code[]" value="'+ currency_codex +'"/>' +
                                                           '<input type="hidden" name="f_unit_price[]" value="'+ unit_price_f +'"/>' +
                                                           '<input type="hidden" name="f_quantity[]" value="'+ curr_q +'"/>' +
-                                                          '<input type="hidden" name="f_total_price[]" value="'+ curr_tp_w_crnc +'"/></tr>');
+                                                          '<input type="hidden" name="f_total_price[]" value="'+ curr_tp +'"/></tr>');
                 }
                 else
                 {
@@ -1702,6 +1735,9 @@
 
           var forecastx = 'e';
 
+          var totprice = unit_price_e * quantity_e;
+          var total_price = formatter.format(totprice);
+
           var myTable = document.getElementById('product-dt-e');
           var rowCount = myTable.rows.length;
    
@@ -1738,7 +1774,7 @@
                                           '<input type="hidden" name="e_curr_code[]" value="'+ currency_codex +'"/>' +
                                           '<input type="hidden" name="e_unit_price[]" value="'+ unit_price_e +'"/>' +
                                           '<input type="hidden" name="e_quantity[]" value="'+ quantity_e +'"/>' +
-                                          '<input type="hidden" name="e_total_price[]" value="'+ total_price_e +'"/></tr>');
+                                          '<input type="hidden" name="e_total_price[]" value="'+ total_price +'"/></tr>');
               }
             } 
           else // nakita
@@ -1783,7 +1819,7 @@
                                                           '<input type="hidden" name="e_curr_code[]" value="'+ currency_codex +'"/>' +
                                                           '<input type="hidden" name="e_unit_price[]" value="'+ unit_price_e +'"/>' +
                                                           '<input type="hidden" name="e_quantity[]" value="'+ curr_q +'"/>' +
-                                                          '<input type="hidden" name="e_total_price[]" value="'+ curr_tp_w_crnc +'"/></tr>');
+                                                          '<input type="hidden" name="e_total_price[]" value="'+ curr_tp +'"/></tr>');
                 }
                 else
                 {
@@ -1838,6 +1874,9 @@
           var uom_f = $('#add_uom_code').val(); //uom
           var uom = uom_f + ' - ' + uomx_name;
 
+          var totprice = unit_price * quantity;
+          var total_price_x = formatter.format(totprice);
+
 
           var forecastx = 'm';
 
@@ -1876,7 +1915,7 @@
                                           '<input type="hidden" name="curr_code[]" value="'+ currency_codex +'"/>' +
                                           '<input type="hidden" name="unit_price[]" value="'+ unit_price +'"/>' +
                                           '<input type="hidden" name="quantity[]" value="'+ quantity +'"/>' +
-                                          '<input type="hidden" name="total_price[]" value="'+ total_price +'"/></tr>');
+                                          '<input type="hidden" name="total_price[]" value="'+ total_price_x +'"/></tr>');
               }
             } 
           else // nakita
@@ -1918,7 +1957,7 @@
                                                           '<input type="hidden" name="curr_code[]" value="'+ currency_codex +'"/>' +
                                                           '<input type="hidden" name="unit_price[]" value="'+ unit_price +'"/>' +
                                                           '<input type="hidden" name="quantity[]" value="'+ curr_q +'"/>' +
-                                                          '<input type="hidden" name="total_price[]" value="'+ curr_tp_w_crnc +'"/></tr>');
+                                                          '<input type="hidden" name="total_price[]" value="'+ curr_tp +'"/></tr>');
                 }
                 else
                 {
@@ -2132,6 +2171,7 @@
 
     function appItem(id)
     {
+        $('#quotation_tab').tabs('select','approval');
         $('.tabs').tabs('select','app_details');
         $.get('quotation/'+id, function(response){
 

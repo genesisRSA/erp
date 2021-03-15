@@ -1,4 +1,3 @@
-
 <?php
 
 namespace App\Mail;
@@ -8,7 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class LeaveMailable extends Mailable
+class SalesMailable extends Mailable
 {
     use Queueable, SerializesModels;
     public $subject;
@@ -17,16 +16,17 @@ class LeaveMailable extends Mailable
     public $receiver;
     public $approver;
     public $ref_no;
-    public $leave_type;
+   // public $details;
     public $requestor;
     public $remarks;
+    public $id;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($subject,$page,$status,$receiver,$approver,$ref_no,$leave_type,$requestor,$remarks = '')
+    public function __construct($subject,$page,$status,$receiver,$approver,$ref_no,$requestor,$remarks = '',$id)
     {
         $this->subject = $subject;
         $this->page = $page;
@@ -34,9 +34,10 @@ class LeaveMailable extends Mailable
         $this->receiver = $receiver;
         $this->approver = $approver;
         $this->ref_no = $ref_no;
-        $this->leave_type = $leave_type;
+        // $this->details = $details;
         $this->requestor = $requestor;
         $this->remarks = $remarks;
+        $this->id = $id;
     }
 
     /**
@@ -46,7 +47,7 @@ class LeaveMailable extends Mailable
      */
     public function build()
     {
-        return $this->view('mail')
+        return $this->view('salesmail')
                     ->subject($this->subject)
                     ->with(array(
                         'page' => $this->page,
@@ -54,9 +55,10 @@ class LeaveMailable extends Mailable
                         'receiver' => $this->receiver,
                         'approver' => $this->approver,
                         'ref_no' => $this->ref_no,
-                        'leave_type' => $this->leave_type,
+                        // 'details' => $this->details,
                         'requestor' => $this->requestor,
-                        'remarks' => $this->remarks
+                        'remarks' => $this->remarks,
+                        'id' => $this->id,
                     ));
     }
 }

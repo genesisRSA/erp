@@ -28,6 +28,6 @@ class SalesForecast extends Model
     
     public function employee_details()
     {
-      return $this->hasOne('App\Employee', 'emp_no', 'created_by');
+        return $this->hasOne('App\Employee', 'emp_no', 'created_by');
     }
 }

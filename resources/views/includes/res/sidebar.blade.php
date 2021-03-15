@@ -48,7 +48,7 @@
           <div class="collapsible-body">
             <ul>
               <li @if($subpage=='salesdashboard') class="active" @endif><a href="/reiss/dashboard/sales">Sales Dashboard</a></li>
-              <li @if($subpage=='visit') class="active" @endif><a href="#">Sales Visit</a></li>
+              <li @if($subpage=='visit') class="active" @endif><a href="{{ route('visit.index') }}">Sales Visit</a></li>
               <li @if($subpage=='forecast') class="active" @endif><a href="{{ route('forecast.index') }}">Sales Forecast</a></li>
               <li @if($subpage=='quotation') class="active" @endif><a href="{{ route('quotation.index') }}">Sales Quotation</a></li>
               <li @if($subpage=='order') class="active" @endif><a href="#!">Sales Order</a></li>

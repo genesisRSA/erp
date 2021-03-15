@@ -140,6 +140,20 @@
             left: 25px;
           }
         }
+
+        #map{
+          height: 800px;
+          width: 100%;
+          margin: 0 auto;
+        }
+        .marker {
+            background-image: url('/images/marker.png');
+            background-repeat:no-repeat;
+            background-size:100%;
+            width: 100px;
+            height: 100px;
+            cursor: pointer; 
+        }
         
       </style> 
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.css" />

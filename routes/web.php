@@ -183,6 +183,7 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::get('/reiss/forecast/getApprover/{id}/{module}', 'SalesForecastController@getApprover');
     Route::get('/reiss/forecast/getApproverMatrix/{id}', 'SalesForecastController@getApproverMatrix');
     Route::get('/reiss/forecast/getProducts/{id}', 'SalesForecastController@getProducts');
+    Route::get('/reiss/forecast/check/{id}/{loc}', 'SalesForecastController@check');
 
     Route::resource('/reiss/quotation','SalesQuotationController');
     Route::post('/reiss/quotation/delete', 'SalesQuotationController@delete')->name('quotation.delete');
@@ -193,6 +194,12 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::get('/reiss/quotation/getForecast/{id}', 'SalesQuotationController@getForecast');
     Route::get('/reiss/quotation/getProducts/{id}', 'SalesQuotationController@getProducts');
     Route::get('/reiss/quotation/getAllEdit/{id}', 'SalesQuotationController@getAllEdit');
+    Route::get('/reiss/quotation/check/{id}/{loc}', 'SalesQuotationController@check');
+
+    Route::resource('/reiss/visit', 'SalesVisitController');
+    Route::post('/reiss/visit/delete', 'SalesVisitController@delete')->name('visit.delete');
+
+    Route::get('/reiss/visit/new', 'SalesVisitController@new')->name('visit.new');
 
     Route::get('/reiss/dashboard/{parent}', 'ReissDashboardController@index');
 
