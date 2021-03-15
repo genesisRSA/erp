@@ -2283,19 +2283,19 @@
                 "render": function ( data, type, row, meta ) {
                   switch(data){
                     case 'Approved':
-                      return  '<span class="badge green white-text">Approved</span>';
+                      return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
                     break;
                     case 'Pending':
-                      return  '<span class="badge blue white-text">Pending</span>';
+                      return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
                     break;
                     case 'Rejected':
-                      return  '<span class="badge red white-text">Rejected</span>';
+                      return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
                     break;
                     case 'For Approval':
-                      return  '<span class="badge yellow white-text">For Approval</span>';
+                      return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
                     break;
                     case 'For Review':
-                      return  '<span class="badge yellow white-text">For Review</span>';
+                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
                     break;
                   }
                    
@@ -2347,19 +2347,19 @@
                 "render": function ( data, type, row, meta ) {
                   switch(data){
                     case 'Approved':
-                      return  '<span class="badge green white-text">Approved</span>';
+                      return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
                     break;
                     case 'Pending':
-                      return  '<span class="badge blue white-text">Pending</span>';
+                      return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
                     break;
                     case 'Rejected':
-                      return  '<span class="badge red white-text">Rejected</span>';
+                      return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
                     break;
                     case 'For Approval':
-                      return  '<span class="badge yellow white-text">For Approval</span>';
+                      return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
                     break;
                     case 'For Review':
-                      return  '<span class="badge yellow white-text">For Review</span>';
+                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
                     break;
                   }
                    

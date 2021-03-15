@@ -72,7 +72,7 @@ class SalesForecastController extends Controller
         ->json([
             "data" => DB::table('approver_matrices')
                             ->where([ 
-                                ['id','=',$id],
+                                ['requestor','=',$id],
                                 ['module','=',$module],
                                 ])
                             ->first()

@@ -142,6 +142,8 @@
         }
         
       </style> 
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.css" />
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js" ></script>
     </head>
     <body class="blue darken-4">
       
@@ -179,6 +181,7 @@
 
       </script>
       <script type="text/javascript" src="{{ asset('js/materialize.min.js') }}"></script>
+      
     </body>
   </html>
         
