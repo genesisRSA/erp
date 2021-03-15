@@ -1021,7 +1021,7 @@
 
     function viewItem(id)
     {  
-      $('#forecast_tab').tabs('select','ongoing');
+
         $('.tabs').tabs('select','view-forecast');
         $.get('forecast/'+id, function(response){
             var data = response.data;
