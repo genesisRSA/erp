@@ -3,7 +3,7 @@
 @section('content')
   <div class="row blue-text text-darken-4 white" style="border-bottom: 1px solid rgba(0,0,0,0.14);">
     <div class="col s12 m12">
-        <h4 class="title"><span class="grey-text darken-4">Sales<i class="material-icons">arrow_forward_ios</i></span> Sales Forecast</h4>
+        <h4 class="title"><span class="grey-text darken-4">Sales <i class="material-icons">arrow_forward_ios</i></span> Sales Forecast</h4>
     </div>
   </div>
   <div class="row main-content">
@@ -1040,12 +1040,7 @@
             $('#view_unit_price').val(data.unit_price);
             $('#view_quantity').val(data.quantity);
             $('#view_total_price').val(data.total_price);
-
             $('#viewModal').modal('open');
-
-            
-            getApproverMatrix(id);
-            
         });
     }
 
