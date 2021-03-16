@@ -33,7 +33,7 @@
           </div>
       </div>
       
-      <a href="#addModal" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped modal-trigger" id="add-button"  onclick="getApprover('{{Auth::user()->emp_no}}','add','Sales Forecast');" data-position="left" data-tooltip="Add Sales Forecast Details"><i class="material-icons">add</i></a>
+      <a href="#addModal" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped modal-trigger" id="add-button"  onclick="getApprover('{{Auth::user()->emp_no}}','add','Sales Forecast');" data-position="left" data-tooltip="Add Sales Forecast"><i class="material-icons">add</i></a>
     </div>
 
     <div id="approval" name="approval">
@@ -661,11 +661,11 @@
     <form method="POST" action="{{route('forecast.delete')}}">
         @csrf
         <div class="modal-content">
-            <h4>Delete Sales Forecast Details</h4><br><br>
+            <h4>Delete Sales Forecast</h4><br><br>
             <div class="row">
                 <div class="col s12 m6">
                     <input type="hidden" name="id" id="del_id">
-                    <p>Are you sure you want to delete this <strong>Sales Forecast Details</strong>?</p>
+                    <p>Are you sure you want to delete this <strong>Sales Forecast</strong>?</p>
                 </div>
             </div>
         </div>

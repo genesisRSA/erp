@@ -4,7 +4,7 @@
         <div class="card-image">
             <img src="{{ asset('images/resbanner.png') }}">
             <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();" class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">power_settings_new</i></a>
-            <span class="card-title flow-text" style="background-color: rgba(0,0,0,0.3);">{{Auth::user()->name}}</span>
+            <span class="card-title flow-text">{{Auth::user()->name}}</span>
         </div>
     </div>
     <li @if($page=='home')class="active"@endif><a href="{{route('res.home')}}" class="waves-effect waves-light"><i class="material-icons">dashboard</i>Dashboard</a></li>
@@ -51,7 +51,7 @@
               <li @if($subpage=='visit') class="active" @endif><a href="{{ route('visit.index') }}">Sales Visit</a></li>
               <li @if($subpage=='forecast') class="active" @endif><a href="{{ route('forecast.index') }}">Sales Forecast</a></li>
               <li @if($subpage=='quotation') class="active" @endif><a href="{{ route('quotation.index') }}">Sales Quotation</a></li>
-              <li @if($subpage=='order') class="active" @endif><a href="#!">Sales Order</a></li>
+              <li @if($subpage=='order') class="active" @endif><a href="{{ route('order.index') }}">Sales Order</a></li>
             </ul>
           </div>
         </li>

@@ -28,7 +28,7 @@
     </div>
   </div>
 
-  <a href="#addModal" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped modal-trigger" id="add-button" data-position="left" data-tooltip="Add Item Master Details"><i class="material-icons">add</i></a>
+  <a href="#addModal" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped modal-trigger" id="add-button" data-position="left" data-tooltip="Add Item"><i class="material-icons">add</i></a>
  
   <!-- MODALS -->
 
@@ -297,11 +297,11 @@
     <form method="POST" action="{{route('item_master.delete')}}">
         @csrf
         <div class="modal-content">
-            <h4>Delete Item Master Details</h4><br><br>
+            <h4>Delete Item</h4><br><br>
             <div class="row">
                 <div class="col s12 m6">
                     <input type="hidden" name="id" id="del_id">
-                    <p>Are you sure you want to delete this <strong>Item Master Details</strong>?</p>
+                    <p>Are you sure you want to delete this <strong>Item</strong>?</p>
                 </div>
             </div>
         </div>

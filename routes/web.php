@@ -175,6 +175,7 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::resource('/reiss/approver','ApproverMatrixController');
     Route::post('/reiss/approver/delete','ApproverMatrixController@delete')->name('approver.delete');
     Route::post('/reiss/approver/patch','ApproverMatrixController@patch')->name('approver.patch');
+    Route::get('/reiss/approver/{requestor}/{module}/my_matrix','ApproverMatrixController@my_matrix')->name('approver.my_matrix');
 
     Route::resource('/reiss/forecast','SalesForecastController');
     Route::post('/reiss/forecast/delete', 'SalesForecastController@delete')->name('forecast.delete');
@@ -203,6 +204,10 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::get('/reiss/dashboard/{parent}', 'ReissDashboardController@index');
 
     // end -> jp task
+    
+    Route::resource('/reiss/order','SalesOrderController');
+    Route::post('/reiss/order/delete', 'SalesOrderController@delete')->name('order.delete');
+    Route::post('/reiss/order/patch', 'SalesOrderController@patch')->name('order.patch');
 
     Route::resource('/reiss/product_category', 'ProductCategoriesController');
     Route::post('/reiss/product_category/patch', 'ProductCategoriesController@patch')->name('product_category.patch');

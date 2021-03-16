@@ -22,9 +22,9 @@
               <thead>
                 <tr>
                     <th>ID</th> 
-                    <th>Site Code</th>
+                    <th>Site</th>
                     <th>Quotation Code</th>
-                    <th>Customer Code</th>
+                    <th>Customer</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -33,7 +33,7 @@
           </div>
       </div>
       {{--  onclick="getApprover(2,'add','Sales Quotation');" --}}
-      <a href="#askModal" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped modal-trigger" id="add-button"  data-position="left" data-tooltip="Add Sales Quotation Details"><i class="material-icons">add</i></a>
+      <a href="#askModal" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped modal-trigger" id="add-button"  data-position="left" data-tooltip="Add Sales Quotation"><i class="material-icons">add</i></a>
     </div>
 
     <div id="approval" name="approval">
@@ -43,7 +43,7 @@
               <thead>
                 <tr>
                     <th>ID</th> 
-                    <th>Site Code</th>
+                    <th>Site</th>
                     <th>Quotation Code</th>
                     <th>Filed By</th>
                     <th>Status</th>
@@ -58,7 +58,7 @@
   </div>
 
   <!-- MODALS -->
-  <div id="askModal" class="modal">
+  <div id="askModal" class="modal dismissable">
     <div class="modal-content">
       <h4>Sales Quotation</h4><i class="material-icons left">assignment</i>
       <p>Do you want to create a quotation based on your sales forecast?</p>
@@ -941,12 +941,12 @@
     <form method="POST" action="{{route('quotation.delete')}}">
         @csrf
         <div class="modal-content">
-            <h4>Delete Sales Quotation Details</h4><br><br>
+            <h4>Delete Sales Quotation</h4><br><br>
             <div class="row">
                 <div class="col s12 m6">
                     <input type="hidden" name="id" id="del_id">
                     <input type="hidden" name="quot" id="del_quot">
-                    <p>Are you sure you want to delete this <strong>Sales Quotation Details</strong>?</p>
+                    <p>Are you sure you want to delete this <strong>Sales Quotation</strong>?</p>
                 </div>
             </div>
         </div>

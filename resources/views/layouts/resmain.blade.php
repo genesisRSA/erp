@@ -189,6 +189,10 @@
             "dismissible":false
           });
 
+          $('.modal.dismissable').modal({
+            "dismissible":true
+          });
+
           @if ($message = Session::get('success'))
               var html = '<i class="material-icons left">info</i><span>{{$message}}</span>';
               M.toast({html: html+'<button class="btn-flat red-text toast-action" onclick="M.Toast.dismissAll()">DISMISS</button>'});

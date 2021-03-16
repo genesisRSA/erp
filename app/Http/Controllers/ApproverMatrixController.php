@@ -106,11 +106,20 @@ class ApproverMatrixController extends Controller
      */
     public function show($id)
     {
-        
-        
         return response()
             ->json([
                 "data" => ApproverMatrix::where('id','=',$id)
+                            ->with('employee_details:emp_no,emp_fname')
+                            ->first()
+            ]);
+    }
+
+    public function my_matrix($requestor, $module)
+    {
+        return response()
+            ->json([
+                "data" => ApproverMatrix::where('requestor','=',$requestor)
+                            ->where('module','=',$module)
                             ->with('employee_details:emp_no,emp_fname')
                             ->first()
             ]);
