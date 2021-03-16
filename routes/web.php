@@ -198,8 +198,7 @@ Route::group(['middleware' => ['auth.dcs']], function() {
 
     Route::resource('/reiss/visit', 'SalesVisitController');
     Route::post('/reiss/visit/delete', 'SalesVisitController@delete')->name('visit.delete');
-
-    Route::get('/reiss/visit/new', 'SalesVisitController@new')->name('visit.new');
+    Route::post('/reiss/visit/patch', 'SalesVisitController@patch')->name('visit.patch');
 
     Route::get('/reiss/dashboard/{parent}', 'ReissDashboardController@index');
 

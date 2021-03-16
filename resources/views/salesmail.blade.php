@@ -5,7 +5,7 @@
                 <h1>Good day, {{$approver}}</h1>
                          <p>Please see below sales forecast details for your approval:<br><br>
                     <strong>Ref. No: </strong>{{$ref_no}}<br>
-                    <strong>Requested By: </strong>{{$requestor}}<br><br><br>
+                    <strong>Filed By: </strong>{{$requestor}}<br><br><br>
                 </p>
                 <i>For more details you can click below: <br>
                     <a href="http://127.0.0.1:8000/reiss/forecast/check/{{$ref_no}}/approval">Office Access</a>
@@ -16,7 +16,7 @@
                 <h1>Good day, {{$approver}}</h1>
                          <p>Please see below sales forecast details for your approval:<br><br>
                     <strong>Ref. No: </strong>{{$ref_no}}<br>
-                    <strong>Requested By: </strong>{{$requestor}}<br><br><br>
+                    <strong>Filed By: </strong>{{$requestor}}<br><br><br>
                 </p>
                 <i>For more details you can click below: <br>
                     <a href="http://127.0.0.1:8000/reiss/forecast/check/{{$ref_no}}/approval">Office Access</a>
@@ -27,7 +27,7 @@
                 <h1>Good day, {{$approver}}</h1>
                          <p>Please see below sales forecast details for your approval:<br><br>
                     <strong>Ref. No: </strong>{{$ref_no}}<br>
-                    <strong>Requested By: </strong>{{$requestor}}<br><br><br>
+                    <strong>Filed By: </strong>{{$requestor}}<br><br><br>
                 </p>
                 <i>For more details you can click below: <br>
                     <a href="http://127.0.0.1:8000/reiss/forecast/check/{{$ref_no}}/approval">Office Access</a>
@@ -70,7 +70,7 @@
             <h1>Good day, {{$approver}}</h1>
                     <p>Please see below sales quotation details for your approval:<br><br>
                 <strong>Ref. No: </strong>{{$ref_no}}<br>
-                <strong>Requested By: </strong>{{$requestor}}<br><br><br>
+                <strong>Filed By: </strong>{{$requestor}}<br><br><br>
             </p>
             <i>For more details you can click below: <br>
                 <a href="http://127.0.0.1:8000/reiss/quotation/check/{{$ref_no}}/approval">Office Access</a>
@@ -81,7 +81,7 @@
             <h1>Good day, {{$approver}}</h1>
                     <p>Please see below sales quotation details for your approval:<br><br>
                 <strong>Ref. No: </strong>{{$ref_no}}<br>
-                <strong>Requested By: </strong>{{$requestor}}<br><br><br>
+                <strong>Filed By: </strong>{{$requestor}}<br><br><br>
             </p>
             <i>For more details you can click below: <br>
                 <a href="http://127.0.0.1:8000/reiss/quotation/check/{{$ref_no}}/approval">Office Access</a>
@@ -92,7 +92,7 @@
             <h1>Good day, {{$approver}}</h1>
                     <p>Please see below sales quotation details for your approval:<br><br>
                 <strong>Ref. No: </strong>{{$ref_no}}<br>
-                <strong>Requested By: </strong>{{$requestor}}<br><br><br>
+                <strong>Filed By: </strong>{{$requestor}}<br><br><br>
             </p>
             <i>For more details you can click below: <br>
                 <a href="http://127.0.0.1:8000/reiss/quotation/check/{{$ref_no}}/approval">Office Access</a>

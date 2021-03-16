@@ -154,6 +154,14 @@
             height: 100px;
             cursor: pointer; 
         }
+        .center {
+          display: block;
+          padding-top: 100px;
+          margin-left: auto;
+          margin-right: auto;
+          width: 50%;
+          height: 50%;
+        }
         
       </style> 
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.css" />

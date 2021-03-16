@@ -83,10 +83,10 @@ class SalesVisitController extends Controller
     {
         //
         $field = [
-            // 'visit_code' => 'required',
-            // 'site_code' => 'required',
-            // 'loc_name' => 'required',
-            // 'visit_purpose' => 'required',
+            'visit_code' => 'required',
+            'site_code' => 'required',
+            'complete_address' => 'required',
+            'visit_purpose' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $field);
@@ -100,9 +100,10 @@ class SalesVisitController extends Controller
             $visit = new SalesVisit();
             $visit->site_code =         $request->input('site_code','');
             $visit->visit_code =        $request->input('visit_code','');
-            $visit->loc_name =          $request->input('loc_name','');
+            $visit->complete_address =  $request->input('complete_address','');
             $visit->visit_purpose =     $request->input('visit_purpose','');
-            $visit->visit_purpose =     Auth::user()->employee->emp_no;
+            $visit->created_by =        Auth::user()->employee->emp_no;
+            $visit->current_location =  $request->input('current_loc','');
             $visit->loc_longhitude =    $request->input('long','');
             $visit->loc_latitude =      $request->input('lat','');
             $visit->date_visit   =      $today;
@@ -111,12 +112,6 @@ class SalesVisitController extends Controller
 
             if($visit->save()){
                 return redirect()->route('visit.index')->withSuccess('Sales Visit Details Successfully Added');
-
-                // return view('res.visit.index')
-                //             ->with('site','res')
-                //             ->with('page','sales')
-                //             ->with('subpage','visit')
-                //             ->withSuccess('Sales Visit Details Successfully Added');
             }
         }
     }
@@ -129,7 +124,11 @@ class SalesVisitController extends Controller
      */
     public function show($id)
     {
-        //
+        return response()
+        ->json([
+            "data" => SalesVisit::where('id','=',$id)
+                        ->first()
+        ]);
     }
 
     /**
@@ -140,7 +139,14 @@ class SalesVisitController extends Controller
      */
     public function edit($id)
     {
-        //
+        $visit = SalesVisit::where('id','=',$id)->first();
+        $site = Site::all();
+        return view('res.visit.edit')
+                ->with('site','res')
+                ->with('page','sales')
+                ->with('subpage','visit')
+                ->with('sites',$site)
+                ->with('visits',$visit);
     }
 
     /**
@@ -153,6 +159,35 @@ class SalesVisitController extends Controller
     public function update(Request $request, $id)
     {
         //
+    }
+
+    public function patch(Request $request)
+    {
+        //
+        $field = [
+            // 'site_code' => 'required',
+            // 'complete_address' => 'required',
+            // 'visit_purpose' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $field);
+         
+        if ($validator->fails()) {
+            return back()->withInput()
+            ->withErrors($validator);
+        }else{
+            // return $request->input('visit_code');
+
+            
+            $e_visit =   SalesVisit::where('visit_code','=',$request->input('visit_code',''))->first();
+            $e_visit->site_code =         $request->input('site_code','');
+            $e_visit->complete_address =  $request->input('complete_address','');
+            $e_visit->visit_purpose =     $request->input('visit_purpose','');
+          
+            if($e_visit->save()){
+                return redirect()->route('visit.index')->withSuccess('Sales Visit Details Successfully Updated');
+            }
+        }
     }
 
     /**
