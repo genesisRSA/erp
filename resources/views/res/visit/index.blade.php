@@ -189,7 +189,7 @@
     </form>
   </div>
 
-  <div id="viewModal" class="modal">
+  <div id="viewModal" class="modal dismissable">
     <form>
     @csrf
       <div class="modal-content" style="padding-bottom: 0px">

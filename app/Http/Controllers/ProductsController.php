@@ -36,6 +36,17 @@ class ProductsController extends Controller
                                     ->get()
             ]);
     }
+
+    public function allbysite($site_code)
+    {
+        return response()
+            ->json([
+                "data" => Product::where('site_code',$site_code)
+                                    ->with('prod_cat:id,prodcat_name')
+                                    ->with('site:site_code,site_desc')
+                                    ->get()
+            ]);
+    }
     /**
      * Show the form for creating a new resource.
      *

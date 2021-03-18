@@ -89,25 +89,27 @@
             </div>
         
             <div class="input-field col s12 m6 l6">
-              <select id="add_customer_code" name="customer_code">
+              <select id="add_customer_code">
                 <option value="" disabled selected>Choose Customer</option>
                 @foreach ($customers as $customer)
                   <option value="{{$customer->cust_code}}">{{$customer->cust_name}}</option>
                 @endforeach
               </select>
-              <label for="customer_code">Customer<sup class="red-text">*</sup></label>
+              <input type="hidden" name="customer_code"/>
+              <label class="active">Customer<sup class="red-text">*</sup></label>
             </div>
           </div>
           
           <div class="row">
             <div class="input-field col s12 m6 l6">
-              <select id="add_payment_term" name="payment_term" required>
+              <select id="add_payment_term">
                 <option value="0" disabled selected>Choose Payment Term</option>
                 @foreach ($payment as $payments)
                   <option value="{{$payments->id}}">{{$payments->term_name}}</option>
                 @endforeach
               </select>
-              <label for="payment_term">Payment Term<sup class="red-text">*</sup></label>
+              <input type="hidden" name="payment_term" required/>
+              <label class="active">Payment Term<sup class="red-text">*</sup></label>
             </div>
 
             <div class="input-field col s12 m6 l6">
@@ -123,7 +125,7 @@
           
           <div class="row">
             <div class="input-field file-field col s12 m6 l6">
-            <label class="active">Customer PO Specsgit <sup class="red-text">*</sup></label><br>
+            <label class="active">Customer PO Specs <sup class="red-text">*</sup></label><br>
                 <div class="btn">
                     <span>Upload file</span>
                     <input type="file">
@@ -134,8 +136,14 @@
             </div>
 
             <div class="input-field col s12 m6 l6">
-              <input type="text" name="customer_po_no" required/>
-              <label for="customer_po_no">Customer PO No.<sup class="red-text">*</sup></label>
+              <input type="text" name="customer_po_no" placeholder="e.g. PO-1234" required/>
+              <label class="active">Customer PO No.<sup class="red-text">*</sup></label>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col s12 m12 l12 right-align">
+              <a class="orange waves-effect waves-light btn" id="btn_add_reset" onclick=""><i class="material-icons left">cached</i>Reset Details</a>
             </div>
           </div>
 
@@ -143,7 +151,7 @@
           
           <div class="row">
             <div class="input-field col s12 m4 l4">
-              <select id="add_site_code" name="site_code" required>
+              <select id="add_site_code" name="site_code">
                 <option value="" disabled selected>Choose Site</option>
                 @foreach ($sites as $site)
                   <option value="{{$site->site_code}}">{{$site->site_desc}}</option>
@@ -153,14 +161,14 @@
             </div>
 
             <div class="input-field col s12 m4 l5">
-              <select id="add_prod_code" name="prod_code" required>
+              <select id="add_prod_code" name="prod_code">
                 <option value="" disabled selected>Choose Product</option>
               </select>
               <label for="prod_code">Product<sup class="red-text">*</sup></label>
             </div>
 
             <div class="input-field col s12 m4 l3">
-              <select id="add_uom_code" name="uom_code" required>
+              <select id="add_uom_code" name="uom_code">
                 <option value="0" disabled selected>Choose Unit of Measure</option>
                 @foreach ($uoms as $uom)
                   <option value="{{$uom->uom_code}}">{{$uom->uom_name}}</option>
@@ -260,7 +268,7 @@
       </div>
     </form>
   </div>
-
+  <!--AddQuotation Modal-->
   <div id="addForecast" class="modal">
     <form method="POST" action="{{route('quotation.store')}}">
       <form>
@@ -460,6 +468,7 @@
     </form>
   </div>
 
+  <!--editModal-->
   <div id="editModal" class="modal">
     <form method="POST" action="{{route('quotation.patch')}}">
     @csrf
@@ -644,7 +653,8 @@
       </div>
     </form>
   </div>
-
+  
+  <!--viewModal-->
   <div id="viewModal" class="modal">
       <form>
     @csrf
@@ -784,6 +794,7 @@
     </form>
   </div>
 
+  <!--appModal-->
   <div id="appModal" class="modal">
     <form method="POST" action="{{route('quotation.approve')}}">
       {{-- <form> --}}
@@ -951,6 +962,7 @@
     </form>
   </div>
 
+  <!--deleteModal-->
   <div id="deleteModal" class="modal bottom-sheet">
     <form method="POST" action="{{route('order.delete')}}">
         @csrf
@@ -979,6 +991,21 @@
   <script type="text/javascript" src="http://code.jquery.com/jquery-3.4.1.js"></script> 
   <script type="text/javascript" src="{{ asset('datatables/datatables.js') }}"></script>
   <script type="text/javascript">
+    const add_products = [];
+    const edit_products = [];
+    
+
+    function FormatNumber(number) {
+        var n = number.toString().split(".");
+        n[0] = n[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return n.join(".");
+    }
+
+    function calculateTotal(symbol = '$', unit_price = 0, quantity = 0, field_total){
+      const total = unit_price * quantity;
+      field_total.val(symbol+" "+FormatNumber(total ? total : 0));
+    }
+
     $('body').on('click','#showaddModal',function(){
       $('.tabs.add').tabs('select','order');
       $.get('approver/{{Auth::user()->emp_no}}/Sales Order/my_matrix', function(response){
@@ -1000,6 +1027,43 @@
         $('#matrix-dt tbody').html(tabledata);
       });
     });
+
+    $('body').on('change','#add_currency_code',function(){
+      calculateTotal($('#add_currency_code option:selected').text().split(" - ")[0],parseFloat($('#add_unit_price').val()),parseFloat($('#add_quantity').val()),$('#add_total_price'));
+    });
+
+    $('body').on('change','#add_site_code',function(){
+      $.get('product/'+$(this).val()+'/allbysite', function(response){
+        var data = response.data;
+        var select = '<option value="" disabled selected>Choose Product</option>';
+        $.each(data, function(index, row){
+          select += '<option value="'+row.prod_code+'">'+row.prod_name+'</option>';
+        });
+        
+        $('#add_prod_code').html(select);
+        $('#add_prod_code').formSelect();
+      });
+    });
+
+    $('body').on('keyup','#add_unit_price',function(){
+      calculateTotal($('#add_currency_code option:selected').text().split(" - ")[0],parseFloat($(this).val()),parseFloat($('#add_quantity').val()),$('#add_total_price'));
+    });
+
+    $('body').on('keyup','#add_quantity',function(){
+      calculateTotal($('#add_currency_code option:selected').text().split(" - ")[0],parseFloat($('#add_unit_price').val()),parseFloat($(this).val()),$('#add_total_price'));
+    });
+
+    $('body').on('click','#btnAdd', function(){
+      var found = false;
+      var cindex = 0;
+      $.each(add_products,function(index,row){
+        if(row.prod_code == $('#add_prod_code').val()){
+          
+        }
+      });
+    });
+
+
   </script>
 
   <!-- End of SCRIPTS -->

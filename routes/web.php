@@ -214,6 +214,7 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::post('/reiss/product_category/delete', 'ProductCategoriesController@delete')->name('product_category.delete');
 
     Route::resource('/reiss/product', 'ProductsController');
+    Route::get('/reiss/product/{site_code}/allbysite', 'ProductsController@allbysite')->name('product.allbysite');
     Route::post('/reiss/product/patch', 'ProductsController@patch')->name('product.patch');
     Route::post('/reiss/product/delete', 'ProductsController@delete')->name('product.delete');
 
