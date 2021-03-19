@@ -1,4 +1,14 @@
 @extends('layouts.resmain')
+<style>
+   .center {
+          display: block;
+          padding-top: 100px;
+          margin-left: auto;
+          margin-right: auto;
+          width: 50%;
+          height: 50%;
+        }
+</style>
 
 @section('content')
   <div class="row blue-text text-darken-4 white" style="border-bottom: 1px solid rgba(0,0,0,0.14);">
@@ -71,12 +81,6 @@
               <img src="{{ asset('images/location_unavailable_2.png') }}" class="center" >
 
               <p id="message" class="center"></p>
-              {{-- <p class="center">
-                Unable to retrieve your current location, please check on the upper right portion of this browser if you already allowed the browser to access your location.
-                If not, kindly click allow and refresh the page by pressing CTRL + F5.
-                {{-- If nothing happens, feel free to file a Request Ticket in our IT Helpdesk System on the link below: 
-               <a href="http://124.105.224.123:8070/support/"> http://124.105.224.123:8070/support/ </a> 
-              </p> --}}
             </div> 
           </div>
         </div>

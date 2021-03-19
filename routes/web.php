@@ -178,6 +178,7 @@ Route::group(['middleware' => ['auth.dcs']], function() {
 
     Route::resource('/reiss/forecast','SalesForecastController');
     Route::post('/reiss/forecast/delete', 'SalesForecastController@delete')->name('forecast.delete');
+    Route::post('/reiss/forecast/void', 'SalesForecastController@void')->name('forecast.void');
     Route::post('/reiss/forecast/patch', 'SalesForecastController@patch')->name('forecast.patch');
     Route::post('/reiss/forecast/approve', 'SalesForecastController@approve')->name('forecast.approve');
     Route::get('/reiss/forecast/getApprover/{id}/{module}', 'SalesForecastController@getApprover');
@@ -187,6 +188,7 @@ Route::group(['middleware' => ['auth.dcs']], function() {
 
     Route::resource('/reiss/quotation','SalesQuotationController');
     Route::post('/reiss/quotation/delete', 'SalesQuotationController@delete')->name('quotation.delete');
+    Route::post('/reiss/quotation/void', 'SalesQuotationController@void')->name('quotation.void');
     Route::post('/reiss/quotation/patch', 'SalesQuotationController@patch')->name('quotation.patch');
     Route::post('/reiss/quotation/approve', 'SalesQuotationController@approve')->name('quotation.approve');
     Route::get('/reiss/quotation/getApprover/{id}/{module}', 'SalesQuotationController@getApprover');
@@ -199,6 +201,7 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::resource('/reiss/visit', 'SalesVisitController');
     Route::post('/reiss/visit/delete', 'SalesVisitController@delete')->name('visit.delete');
     Route::post('/reiss/visit/patch', 'SalesVisitController@patch')->name('visit.patch');
+    Route::get('/reiss/visit/view/{id}', 'SalesVisitController@view')->name('visit.view');
 
     Route::get('/reiss/dashboard/{parent}', 'ReissDashboardController@index');
 

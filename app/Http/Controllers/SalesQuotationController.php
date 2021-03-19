@@ -36,7 +36,10 @@ class SalesQuotationController extends Controller
         $forecast_code = SalesForecast::all()
                             ->where('status','=','Approved');
         $payment = PaymentTerm::all();
-        $site = Site::all();
+        $employee = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
+        $site = Site::where('site_code','=',$employee->site_code)->get();
+
+ 
         $customer = Customer::all();
         $product = Product::all();
         $uom = UnitOfMeasure::all();
@@ -79,7 +82,9 @@ class SalesQuotationController extends Controller
             "data" => SalesQuotation::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
                                     ->with('sites:site_code,site_desc')
                                     ->with('customers:cust_code,cust_name')
-                                    ->where('status','!=','Pending')
+                                    ->where('status','<>','Approved')
+                                    ->where('status','<>','Rejected')
+                                    ->where('status','<>','Voided')
                                     ->get()
         ]); 
     }
@@ -90,7 +95,7 @@ class SalesQuotationController extends Controller
         ->json([
             "data" => DB::table('approver_matrices')
                             ->where([ 
-                                ['id','=',$id],
+                                ['requestor','=',$id],
                                 ['module','=',$module],
                                 ])
                             ->first()
@@ -153,11 +158,9 @@ class SalesQuotationController extends Controller
     {
         $today = date('Ymd');
         $field = [
-            'site_code' => 'required',
-            'prod_code' => 'required',
-            'uom_code' => 'required',
-            'payment_term' => 'required',
-            'currency_code' => 'required',
+            'ct_code' => 'required',
+            'pt_code' => 'required',
+            'c_code' => 'required',
             'grand_total' => 'required',
         ];
 
@@ -169,17 +172,17 @@ class SalesQuotationController extends Controller
                         ->withErrors($validator);
         }else{
 
-            $check = $request->input('forecast_code','x');
+            $check = $request->input('fc_code','x');
 
             if($check!='x')
             {
                 $quotation = new SalesQuotation();
                 $quotation->site_code = $request->input('site_code','');
                 $quotation->quot_code = $request->input('quotation_code','');
-                $quotation->cust_code = $request->input('customer_code','');
-                $quotation->forecast_code = $request->input('forecast_code','');
-                $quotation->payment_term_id = $request->input('payment_term','');
-                $quotation->currency_code = $request->input('currency_code','');
+                $quotation->cust_code = $request->input('ct_code','');
+                $quotation->forecast_code = $request->input('fc_code','');
+                $quotation->payment_term_id = $request->input('pt_code','');
+                $quotation->currency_code = $request->input('c_code','');
                 $quotation->status = 'Pending';
                 $quotation->created_by = Auth::user()->employee->emp_no;
                 if($request->input('app_seq'))
@@ -199,6 +202,7 @@ class SalesQuotationController extends Controller
                             if($request->input('app_seq.'.$i)==0) {
                                 $quotation->current_sequence = $request->input('app_seq.'.$i);
                                 $quotation->current_approver = $request->input('app_id.'.$i);
+                                $approverID = $request->input('app_id.'.$i);
                             }
                         }
                         $approvers = json_encode($approvers);       
@@ -210,7 +214,7 @@ class SalesQuotationController extends Controller
                         {
                              array_push($productlist, [
                                         'seq'           => $request->input('f_seq_code.'.$q),
-                                        'quot_code'     => $request->input('quotation_code',''),
+                                        'code'          => $request->input('quotation_code',''),
                                         'prod_code'     => $request->input('f_prod_code.'.$q),
                                         'prod_name'     => $request->input('f_prod_name.'.$q),
                                         'uom_code'      => $request->input('f_uom.'.$q),
@@ -229,12 +233,17 @@ class SalesQuotationController extends Controller
                         $quotation->products = $productlist;     
                 }
                 $lastid = DB::table('sales_quotations')->latest('id')->first();
-
+                $approver = Employee::where('emp_no','=',$approverID)->first();
                 if($lastid){
                     $lastid = $lastid->id + 1;
                 }else{
                     $lastid = 0;
                 }
+
+                $forecast = SalesForecast::where('forecast_code','=',$request->input('fc_code'))->first();
+                $forecast->status = 'Quoted';
+                $forecast->save();
+                
                 $maildetails = new SalesMailable('REISS - Sales Quotation Approval',
                                             'quotation',
                                             'Pending',
@@ -245,6 +254,7 @@ class SalesQuotationController extends Controller
                                             '',
                                             $lastid); // remarks here
                 if($quotation->save()){
+                    Mail::to('johnpaul.sarinas@rsa.com.ph', 'John Paul Sarinas')->send($maildetails);
                     return redirect()->route('quotation.index')->withSuccess('Sales Quotation Details Successfully Added');
                 }
             }
@@ -253,10 +263,10 @@ class SalesQuotationController extends Controller
                 $quotationx = new SalesQuotation();
                 $quotationx->site_code = $request->input('site_code','');
                 $quotationx->quot_code = $request->input('quotation_code','');
-                $quotationx->cust_code = $request->input('customer_code','');
-                $quotationx->forecast_code = $request->input('forecast_code','');
-                $quotationx->payment_term_id = $request->input('payment_term','');
-                $quotationx->currency_code = $request->input('currency_code','');
+                $quotationx->cust_code = $request->input('ct_code','');
+                // $quotationx->forecast_code = $request->input('forecast_code','');
+                $quotationx->payment_term_id = $request->input('pt_code','');
+                $quotationx->currency_code = $request->input('c_code','');
                 $quotationx->status = 'Pending';
                 $quotationx->created_by = Auth::user()->employee->emp_no;
                 if($request->input('app_seq'))
@@ -276,6 +286,7 @@ class SalesQuotationController extends Controller
                             if($request->input('app_seq.'.$i)==0) {
                                 $quotationx->current_sequence = $request->input('app_seq.'.$i);
                                 $quotationx->current_approver = $request->input('app_id.'.$i);
+                                $approverID  = $request->input('app_id.'.$i);
                             }
                         }
                         $approverx = json_encode($approverx);       
@@ -286,7 +297,7 @@ class SalesQuotationController extends Controller
                         {
                              array_push($productlistx, [
                                         'seq'           => $request->input('seq_code.'.$i),
-                                        'quot_code'     => $request->input('quotation_code',''),
+                                        'code'          => $request->input('quotation_code',''),
                                         'prod_code'     => $request->input('prod_code.'.$i),
                                         'prod_name'     => $request->input('prod_name.'.$i),
                                         'uom_code'      => $request->input('uom.'.$i),
@@ -305,7 +316,7 @@ class SalesQuotationController extends Controller
                         $quotationx->products = $productlistx;     
                 }
                 $lastid = DB::table('sales_quotations')->latest('id')->first();
-
+                $approver = Employee::where('emp_no','=',$approverID)->first();
                 if($lastid){
                     $lastid = $lastid->id + 1;
                 }else{
@@ -322,6 +333,7 @@ class SalesQuotationController extends Controller
                                             '',
                                             $lastid); // remarks here
                 if($quotationx->save()){
+                    Mail::to('johnpaul.sarinas@rsa.com.ph', 'John Paul Sarinas')->send($maildetails);
                     return redirect()->route('quotation.index')->withSuccess('Sales Quotation Details Successfully Added');
                 }
             }
@@ -383,10 +395,9 @@ class SalesQuotationController extends Controller
     {
         $today = date('Ymd');
         $field = [
-            'site_code' => 'required',
-            // 'unit_price' => 'required',
-            // 'quantity' => 'required',
-            // 'total_price' => 'required',
+            'currency_code' => 'required',
+            'payment_term' => 'required',
+            'grand_total' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $field);
@@ -396,17 +407,12 @@ class SalesQuotationController extends Controller
             ->withErrors($validator);
         }else{
             $quotex = SalesQuotation::find($request->input('id',''));
-
-            //return $request->input('idx','');;
-
-            $quotex->site_code = $request->input('site_code','');
-            $quotex->quot_code = $request->input('quotation_code','');
+ 
             $quotex->cust_code = $request->input('customer_code','');
             $quotex->forecast_code = $request->input('forecast_code','');
             $quotex->payment_term_id = $request->input('payment_term','');
             $quotex->currency_code = $request->input('currency_code','');
-            $quotex->status = 'Pending';
-            $quotex->created_by = '0204-2021';  
+ 
             if($request->input('app_seq'))
             {
        
@@ -463,7 +469,7 @@ class SalesQuotationController extends Controller
     public function approve(Request $request)
     {
         $field = [
-            //'edit_app_module' => 'required',
+            'remarks' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $field);
@@ -499,6 +505,7 @@ class SalesQuotationController extends Controller
 
             $next_seq = $curr_seq + 1;
             $matlen = count($matrix);
+            $lastApproval = false;
 
             $empID = "";
 
@@ -508,13 +515,17 @@ class SalesQuotationController extends Controller
                     if($matrx['sequence']==$next_seq)
                     {
                         $empID = $matrx['approver_emp_no'];
+                        $lastApproval = false;
                     }
                 }
             }
             else 
             {
               $empID = $matrix[0]['approver_emp_no'];
+              $lastApproval = true;
             }
+
+            // return $lastApproval;
             
             if($status=='Approved')
             {
@@ -563,35 +574,65 @@ class SalesQuotationController extends Controller
                 }
                 else 
                 {
-                    array_push($matrixh,[
-                        'sequence' => $curr_seq,
-                        'approver_emp_no' => $curr_app,
-                        'approver_name' => $matrix[0]['approver_name'],
-                        'status' => $curr_status,
-                        'remarks' => $remarks,
-                        'action_date' => $date,
-                    ]);
-                    $curr_seq += 1;
-                    array_splice($matrix,0,1);
-                    $quotation_app->status = $next_status;
-                    $quotation_app->approved_by = $curr_app;
-                    $quotation_app->updated_by = $curr_app;
-
-                    $approver = Employee::where('emp_no','=',$empID)->first();
-                    $maildetails = new SalesMailable('REISS - Sales Quotation Approval', // subject
-                                                    'quotation', // location
-                                                    $next_status, // next status val
-                                                    'approver', // who to receive
-                                                    $approver->emp_fname, // approver name
-                                                    $quotation_app->quot_code, // quotation code
-                                                    Auth::user()->employee->full_name, // full_name
-                                                    $remarks, // remarks
-                                                    $lastid); // last id + 1
+                    if($lastApproval==true)
+                    {
+                        array_push($matrixh,[
+                            'sequence' => $curr_seq,
+                            'approver_emp_no' => $curr_app,
+                            'approver_name' => $matrix[0]['approver_name'],
+                            'status' => $curr_status,
+                            'remarks' => $remarks,
+                            'action_date' => $date,
+                        ]);
+                        $curr_seq += 1;
+                        array_splice($matrix,0,1);
+                        $quotation_app->status = $next_status;
+                        $quotation_app->approved_by = $curr_app;
+                        $quotation_app->updated_by = $curr_app;
+    
+                        $approver = Employee::where('emp_no','=',$empID)->first();
+                        $maildetails = new SalesMailable('REISS - Sales Quotation Approval', // subject
+                                                        'quotation', // location
+                                                        'Approved', // next status val
+                                                        'filer', // who to receive
+                                                        $approver->emp_fname, // approver name
+                                                        $quotation_app->quot_code, // quotation code
+                                                        Auth::user()->employee->full_name, // full_name
+                                                        $remarks, // remarks
+                                                        $lastid); // last id + 1
+                    }
+                    else
+                    {
+                        array_push($matrixh,[
+                            'sequence' => $curr_seq,
+                            'approver_emp_no' => $curr_app,
+                            'approver_name' => $matrix[0]['approver_name'],
+                            'status' => $curr_status,
+                            'remarks' => $remarks,
+                            'action_date' => $date,
+                        ]);
+                        $curr_seq += 1;
+                        array_splice($matrix,0,1);
+                        $quotation_app->status = $next_status;
+                        $quotation_app->approved_by = $curr_app;
+                        $quotation_app->updated_by = $curr_app;
+    
+                        $approver = Employee::where('emp_no','=',$empID)->first();
+                        $maildetails = new SalesMailable('REISS - Sales Quotation Approval', // subject
+                                                        'quotation', // location
+                                                        $next_status, // next status val
+                                                        'approver', // who to receive
+                                                        $approver->emp_fname, // approver name
+                                                        $quotation_app->quot_code, // quotation code
+                                                        Auth::user()->employee->full_name, // full_name
+                                                        $remarks, // remarks
+                                                        $lastid); // last id + 1
+                    }
                 }
             }
             else
             {
-                 for($i=0; $i < count($matrix); $i++)
+                for($i=0; $i < count($matrix); $i++)
                     {
                         if($curr_seq==$curr_seq_db)
                         {
@@ -670,4 +711,17 @@ class SalesQuotationController extends Controller
             }
         }
     }
+
+    public function void(Request $request)
+    {
+        $quotation = SalesQuotation::find($request->input('id'));
+        $quotation->status = 'Voided';
+        $quotation->updated_by = Auth::user()->emp_no;
+
+        if($quotation->save()){
+            return redirect()->route('quotation.index')->withSuccess('Sales Quotation Details Successfully Voided');
+        }
+    }
+
+    
 }

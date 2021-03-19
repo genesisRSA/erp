@@ -377,7 +377,7 @@
           addMarker(MarkerArray[i]);
         };
 
-      function addMarker(property)
+        function addMarker(property)
         {
             const marker = new google.maps.Marker({
             position:property.location,
@@ -401,7 +401,8 @@
          }
       }  
     
-      var visits = $('#visit-dt').DataTable({
+    
+    var visits = $('#visit-dt').DataTable({
         "lengthChange": false,
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
@@ -420,7 +421,8 @@
             {
                 "data": "id",
                 "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" class="btn-small blue waves-effect waves-light" onclick="viewMap('+row.id+')"><i class="material-icons">location_on</i></a> <a href="visit/'+row.id+'/edit" class="btn-small amber darken3 waves-effect waves-dark"><i class="material-icons">create</i></a>  <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem('+row.id+')"><i class="material-icons">delete</i></a>';
+                    return  '<a href="visit/view/'+row.visit_code+'" class="btn-small blue waves-effect waves-light"><i class="material-icons">location_on</i></a> <a href="visit/'+row.id+'/edit" class="btn-small amber darken3 waves-effect waves-dark"><i class="material-icons">create</i></a>';
+                    //  <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem('+row.id+')"><i class="material-icons">delete</i></a>
                 }
             }
         ]
