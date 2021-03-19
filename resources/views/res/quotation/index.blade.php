@@ -2552,7 +2552,7 @@
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/reiss/quotation/all",
+        "ajax": "/api/reiss/quotation/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
         "columns": [
             {  "data": "id" },
             {   "data": "id",
@@ -2625,7 +2625,7 @@
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/reiss/quotation/all_approval",
+        "ajax": "/api/reiss/quotation/all_approval/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
         "columns": [
           {  "data": "id" },
             {   "data": "id",
