@@ -65,18 +65,23 @@ class SalesQuotationController extends Controller
                 ->with('quotation', $Quotation);
     }
 
-    public function all()
+    public function all($id)
     {
+        $idx = Crypt::decrypt($id);
+
         return response()
         ->json([
-            "data" => SalesQuotation::with('sites:site_code,site_desc')
+            "data" => SalesQuotation::where('created_by','=',$idx)
+                                    ->with('sites:site_code,site_desc')
                                     ->with('customers:cust_code,cust_name')
                                     ->get()
         ]); 
     }
 
-    public function all_approval()
+    public function all_approval($id)
     {
+        $idx = Crypt::decrypt($id);
+
         return response()
         ->json([
             "data" => SalesQuotation::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
@@ -85,6 +90,7 @@ class SalesQuotationController extends Controller
                                     ->where('status','<>','Approved')
                                     ->where('status','<>','Rejected')
                                     ->where('status','<>','Voided')
+                                    ->where('current_approver','=', $idx)
                                     ->get()
         ]); 
     }
@@ -363,9 +369,19 @@ class SalesQuotationController extends Controller
     public function check($id,$loc)
     {
         $locx = $loc;
-        $quotationX = SalesQuotation::where('quot_code','=',$id)->first();
-        $quotationCode = $quotationX->id;
-        return redirect()->route('quotation.index', ['quot_code' => Crypt::encrypt($quotationCode), 'loc' => $locx]);
+        $quotationX = SalesQuotation::where('quot_code','=',$id)
+                                    ->where('current_approver','=',Auth::user()->emp_no)
+                                    ->first();
+        if($quotationX)
+        {
+            $quotationCode = $quotationX->id;
+            return redirect()->route('quotation.index', ['quot_code' => Crypt::encrypt($quotationCode), 'loc' => $locx]);
+        }
+        else
+        {
+            return redirect()->route('quotation.index');
+        }
+    
     }
 
     /**

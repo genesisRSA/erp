@@ -1130,7 +1130,7 @@
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/reiss/forecast/all",
+        "ajax": "/api/reiss/forecast/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
         "columns": [
             {  "data": "id" },
             {   "data": "id",
@@ -1208,7 +1208,7 @@
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/reiss/forecast/all_approval",
+        "ajax": "/api/reiss/forecast/all_approval/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
         "columns": [
           {  "data": "id" },
             {   "data": "id",

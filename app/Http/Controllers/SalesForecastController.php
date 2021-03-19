@@ -18,6 +18,7 @@ use App\UnitOfMeasure;
 use App\Employee;
 use Validator;
 use Auth;
+ 
 
 
 class SalesForecastController extends Controller
@@ -52,19 +53,29 @@ class SalesForecastController extends Controller
                 ->with('lastforecast', $lastForecastLeadZ);
     }
 
-    public function all()
+    public function all($id)
     {
+ 
+        $idx = Crypt::decrypt($id);
+ 
+        $data =  SalesForecast::where('created_by','=',$idx)
+                    ->with('products:prod_code,prod_name')
+                    ->with('sites:site_code,site_desc')
+                    ->with('quotation:quot_code,forecast_code')
+                    ->get();
+
+
         return response()
         ->json([
-            "data" => SalesForecast::with('products:prod_code,prod_name')
-                        ->with('sites:site_code,site_desc')
-                        ->with('quotation:quot_code,forecast_code')
-                        ->get()
+            "data" => $data
         ]); 
     }
 
-    public function all_approval()
+    public function all_approval($id)
     {
+        
+        $idx = Crypt::decrypt($id);
+
         return response()
         ->json([
             "data" => SalesForecast::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
@@ -73,6 +84,7 @@ class SalesForecastController extends Controller
                                   ->where('status','<>','Rejected')
                                   ->where('status','<>','Voided')
                                   ->where('status','<>','Quoted')
+                                  ->where('current_approver','=',$idx)
                                   ->get()
         ]); 
     }
@@ -226,9 +238,19 @@ class SalesForecastController extends Controller
     public function check($id,$loc)
     {
         $locx = $loc;
-        $forecast = SalesForecast::where('forecast_code','=',$id)->first();
-        $forecastID = $forecast->id;
-        return redirect()->route('forecast.index', ['forecastID' => Crypt::encrypt($forecastID), 'loc' => $locx]);
+        $forecast = SalesForecast::where('forecast_code','=',$id)
+                                ->where('current_approver','=',Auth::user()->emp_no)
+                                ->first();
+        if($forecast)
+        {   
+            $forecastID = $forecast->id;
+            return redirect()->route('forecast.index', ['forecastID' => Crypt::encrypt($forecastID), 'loc' => $locx]);
+        }
+        else
+        {
+            return redirect()->route('forecast.index');
+        }
+
     }
    
     /**
@@ -281,7 +303,7 @@ class SalesForecastController extends Controller
             $forecast->quantity = $request->input('quantity','');
             $forecast->total_price = $request->input('total_price','');
             $forecast->status = 'Pending';
-            $forecast->created_by = '0204-2021';
+            $forecast->created_by = Auth::user()->emp_no;
 
             if($request->input('app_seq'))
             {

@@ -34,12 +34,15 @@ class SalesVisitController extends Controller
                 ->with('sites',$site);
     }
 
-    public function all()
+    public function all($id)
     {
+        $idx = Crypt::decrypt($id);
+
         return response()
         ->json([
             "data" => SalesVisit::with('sites:site_code,site_desc')
-                                    ->get()
+                                ->where('created_by','=',$idx)
+                                ->get()
         ]); 
     }
 
