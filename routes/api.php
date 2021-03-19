@@ -85,7 +85,7 @@ Route::get('/reiss/forecast/all_approval/{id}','SalesForecastController@all_appr
 Route::get('/reiss/quotation/all/{id}','SalesQuotationController@all');
 Route::get('/reiss/quotation/all_approval/{id}','SalesQuotationController@all_approval');
 
-Route::get('/reiss/visit/all','SalesVisitController@all');
+Route::get('/reiss/visit/all/{id}','SalesVisitController@all');
 
 Route::get('/reiss/product_category/all', 'ProductCategoriesController@all');
 Route::get('/reiss/product/all', 'ProductsController@all');

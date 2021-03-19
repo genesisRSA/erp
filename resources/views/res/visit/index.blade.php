@@ -407,7 +407,7 @@
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/reiss/visit/all",
+        "ajax": "/api/reiss/visit/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
         "columns": [
             {  "data": "id" },
             {   "data": "id",
