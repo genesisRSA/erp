@@ -69,8 +69,7 @@
 
         <ul id="tabs-swipe-demo" class="tabs">
           <li class="tab col s12 m4 l4"><a class="active" href="#forecast">Forecast Details</a></li>
-          {{-- need ID and module for getApprover()  --}}
-          <li class="tab col s12 m4 l4"><a href="#signatories">Signatories</a></li>
+           <li class="tab col s12 m4 l4"><a href="#signatories">Signatories</a></li>
         </ul><br>
 
         <div id="forecast" name="forecast">
@@ -82,7 +81,7 @@
             </div>
 
             <div class="input-field col s12 m4 l3">
-              <select id="add_forecast_year" name="forecast_year" onchange="getApprover(1,'add','Sales Forecast');" required>
+              <select id="add_forecast_year" name="forecast_year" onchange="getApprover('{{Auth::user()->emp_no}}','add','Sales Forecast');" required>
                 <option value="" disabled selected>Choose your option</option>
                 <option value="2021">2021</option>
                 <option value="2022">2022</option>
@@ -163,13 +162,13 @@
             </div>
 
             <div class="input-field col s12 m3 l3">
-              <input placeholder="0.0000" id="add_unit_price" name="unit_price" type="number" step="0.0001" style="text-align: right" class="number validate" onkeyup="computeTotal('add');" required>
+              <input placeholder="0.0000" id="add_unit_price" name="unit_price" type="number" step="0.0001" style="text-align: right" class="number validate" onkeyup="computeTotal('add');" onchange="computeTotal('add');" required>
               <label for="unit_price">Unit Price<sup class="red-text">*</sup></label>
             </div>
 
             <div class="input-field col s12 m3 l3">
               {{--  pattern="^[\d,]+$" --}}
-              <input placeholder="0" id="add_quantity" name="quantity" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('add');" required>
+              <input placeholder="0" id="add_quantity" name="quantity" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('add');" onchange="computeTotal('add');" required>
               <label for="quantity">Quantity<sup class="red-text">*</sup></label>
             </div>
 
@@ -219,7 +218,7 @@
     <form method="POST" action="{{route('forecast.patch')}}">
     @csrf
       <div class="modal-content">
-        <h4>Edit Sales Forecast Details</h4>
+        <h4>Edit Sales Forecast</h4>
 
         <ul id="tabs-swipe-demo" class="tabs">
           <li class="tab col s12 m4 l4"><a class="active" href="#edit-forecast">Forecast Details</a></li>
@@ -319,13 +318,13 @@
             </div>
 
             <div class="input-field col s12 m3 l3">
-              <input placeholder="0.0000" id="edit_unit_price" name="unit_price" type="number" step="0.0001" style="text-align: right" class="number validate" onkeyup="computeTotal('edit');" required>
+              <input placeholder="0.0000" id="edit_unit_price" name="unit_price" type="number" step="0.0001" style="text-align: right" class="number validate" onkeyup="computeTotal('edit');" onchange="computeTotal('edit');" required>
               <label for="unit_price">Unit Price<sup class="red-text">*</sup></label>
             </div>
 
             <div class="input-field col s12 m3 l3">
               {{--  pattern="^[\d,]+$" --}}
-              <input placeholder="0" id="edit_quantity" name="quantity" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('edit');" required>
+              <input placeholder="0" id="edit_quantity" name="quantity" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('edit');" onchange="computeTotal('edit');" required>
               <label for="quantity">Quantity<sup class="red-text">*</sup></label>
             </div>
 
@@ -426,7 +425,7 @@
             </div>
 
             <div class="input-field col s12 m3 l3">
-              <input placeholder="0.0000" id="view_unit_price" name="unit_price" type="number" step="0.0001" style="text-align: right" class="number validate" readonly>
+              <input placeholder="0.0000" id="view_unit_price" name="unit_price" type="text" style="text-align: right" class="validate" readonly>
               <label for="unit_price">Unit Price<sup class="red-text">*</sup></label>
             </div>
 
@@ -676,14 +675,28 @@
     </form>
   </div>
 
+  <div id="voidModal" class="modal bottom-sheet">
+    <form method="POST" action="{{route('forecast.void')}}">
+        @csrf
+        <div class="modal-content">
+            <h4>Void Sales Forecast</h4><br><br>
+            <div class="row">
+                <div class="col s12 m6">
+                    <input type="hidden" name="id" id="void_id">
+                    <p>Are you sure you want to void this <strong>Sales Forecast</strong>?</p>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Yes</button>
+            <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>No</a>
+        </div>
+    </form>
+  </div>
+
   <!-- End of MODALS -->
 
   <!-- SCRIPTS -->
-
-      {{-- @if($id)
-        {{ $data }}
-      @endif 
-   --}}
 
   <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
   <script type="text/javascript" src="http://code.jquery.com/jquery-3.4.1.js"></script> 
@@ -939,7 +952,8 @@
 
         var e = document.getElementById('add_currency_code');
         var currency = e.options[e.selectedIndex].text;
-        currency = currency.substr(currency, 1);
+        // currency = currency.substr(currency, 1);
+        var curr = currency.split('-');
 
       } else {
         var unit_price = $('#edit_unit_price').val();
@@ -947,8 +961,11 @@
 
         var e = document.getElementById('edit_currency_code');
         var currency = e.options[e.selectedIndex].text;
-        currency = currency.substr(currency, 1);
+        // currency = currency.substr(currency, 1);
+        var curr = currency.split('-');
       }
+
+      var currx = curr[0].replace(" ", "");
 
       if(unit_price == ''){
         unit_price = 0;
@@ -958,8 +975,8 @@
         quantity = 0;
       }
 
-      if(currency == null){
-        currency = '';
+      if(curr == null){
+        curr = '';
       }
 
       const formatter = new Intl.NumberFormat('en-US', {
@@ -971,7 +988,7 @@
       var total_price = unit_price * quantity;
       var totalprice = formatter.format(total_price);
       var total_price_w_com = addCommas(totalprice);
-      var total_w_currency = currency + ' ' + total_price_w_com;
+      var total_w_currency = currx + ' ' + total_price_w_com;
       //var total_w_currency = total_price_w_com + ' ' + currency;
 
       if(loc=='add')
@@ -993,6 +1010,7 @@
     {
         $('.tabs').tabs('select','edit-forecast');
         $.get('forecast/'+id, function(response){
+          
             var data = response.data;
             $('#edit_id').val(data.id);
             $('#edit_forecast_code').val(data.forecast_code);
@@ -1023,10 +1041,20 @@
     {  
         $('.tabs').tabs('select','view-forecast');
         $.get('forecast/'+id, function(response){
+
+          const formatter = new Intl.NumberFormat('en-US', {
+              minimumFractionDigits: 4,      
+              maximumFractionDigits: 4,
+            });
+
             var data = response.data;
             var curr_symbol = data.currency.symbol;
             var curr_name = data.currency.currency_name;
             var currency =  curr_symbol + ' - ' + curr_name;
+
+            var unit_price = data.unit_price;
+            var unit_pricex = formatter.format(unit_price);
+                unit_pricex = curr_symbol + ' ' + unit_pricex;
             
             
             $('#view_id').val(data.id);
@@ -1037,7 +1065,7 @@
             $('#view_prod_code').val(data.products.prod_name);
             $('#view_uom_code').val(data.uoms.uom_name);
             $('#view_currency_code').val(currency);
-            $('#view_unit_price').val(data.unit_price);
+            $('#view_unit_price').val(unit_pricex);
             $('#view_quantity').val(data.quantity);
             $('#view_total_price').val(data.total_price);
             $('#viewModal').modal('open');
@@ -1054,22 +1082,16 @@
               minimumFractionDigits: 4,      
               maximumFractionDigits: 4,
             });
+
             var i, j = "";
             var data = response.data;
             var dataUP = data.unit_price;
             var dataTP = data.total_price;
             var curr_x = data.currency;
             var curr_name = curr_x.currency_name;
-            var curr = dataTP.substr(dataTP, 1);
             
-            dataTP = dataTP.substr(2);
-            dataTP = dataTP.replace(/,/g, "");
-
             var dataUPx = formatter.format(dataUP);
-            var dataTPx = formatter.format(dataTP);
-            var unitPrice = addCommas(dataUPx);
-            var totalPrice = addCommas(dataTPx)
-            totalPrice = curr + " " + totalPrice;
+                dataUpx = curr_x.symbol + ' ' + dataUPx;
 
             $('#id_app').val(data.id);
             $('#seq_app').val(data.current_sequence);
@@ -1082,9 +1104,9 @@
             $('#app_prod_code').val(data.prod_code);
             $('#app_uom_code').val(data.uom_code);
             $('#app_currency_code').val(curr_name);
-            $('#app_unit_price').val(unitPrice);
+            $('#app_unit_price').val(dataUpx);
             $('#app_quantity').val(data.quantity);
-            $('#app_total_price').val(totalPrice);
+            $('#app_total_price').val(data.total_price);
 
             $('#appModal').modal('open');
             
@@ -1095,6 +1117,12 @@
     {
         $('#del_id').val(id);
         $('#deleteModal').modal('open');
+    }
+
+    function voidItem(id)
+    {
+        $('#void_id').val(id);
+        $('#voidModal').modal('open');
     }
 
     var forecast = $('#forecast-dt').DataTable({
@@ -1140,24 +1168,38 @@
                     case 'For Review':
                       return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
                     break;
+                    case 'Voided':
+                      return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
+                    break;
+                    case 'Quoted':
+                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
+                    break;
+ 
                   }
                    
                 }
             },
             {
-                "data": "id",
-                "render": function ( data, type, row, meta ) {
-                    if(row.status=='Pending')
-                    {
-                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem('+row.id+')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem('+row.id+')"><i class="material-icons">delete</i></a>';
-                    }
-                    else
-                    {
-                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem()" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem()" disabled><i class="material-icons">delete</i></a>';
-                    }
-
+              "data": "id",
+              "render": function ( data, type, row, meta ) {
+                  if(row.status=='Pending')
+                  {
+                    return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem('+row.id+')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" onclick="voidItem('+row.id+')"><i class="material-icons">grid_off</i></a>';
+                  }
+                  else if(row.status=='Voided' || row.status=='Quoted')
+                  {
+                    return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" disabled><i class="material-icons">grid_off</i></a>';
+                  }
+                  else
+                  {
+                    return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem()" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" onclick="voidItem('+row.id+')"><i class="material-icons">grid_off</i></a>';
+                  }
                 }
             }
+           
+                
+              
+            
         ]
     });
 
@@ -1204,6 +1246,12 @@
                     break;
                     case 'For Review':
                       return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
+                    break;
+                    case 'Voided':
+                      return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
+                    break;
+                    case 'Quoted':
+                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
                     break;
                   }
                    

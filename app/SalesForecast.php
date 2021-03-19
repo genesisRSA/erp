@@ -30,4 +30,10 @@ class SalesForecast extends Model
     {
         return $this->hasOne('App\Employee', 'emp_no', 'created_by');
     }
+
+    public function quotation()
+    {
+        return $this->hasOne('App\SalesQuotation', 'forecast_code', 'forecast_code');
+    }
+    
 }

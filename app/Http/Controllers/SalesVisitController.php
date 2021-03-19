@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
 use Validator;
 use App\SalesVisit;
 use App\Site;
+use App\Employee;
 use Auth;
 
 
@@ -20,14 +22,9 @@ class SalesVisitController extends Controller
      */
     public function index()
     {
+        $employee = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
+        $site = Site::where('site_code','=',$employee->site_code)->get();
         $visit = SalesVisit::all();
-        $site = Site::all();
-
-        // $curr_ip = getHostByName(getHostName());
-        // $ip = trim(shell_exec("dig +short myip.opendns.com @resolver1.opendns.com"));
-        // $myIPx = \Request::ip();
-        // $myIP = getClientIPaddress(request::ip());
-        // $getip = $_SERVER['REMOTE_ADDR'];
 
         return view('res.visit.index')
                 ->with('site','res')
@@ -35,10 +32,6 @@ class SalesVisitController extends Controller
                 ->with('subpage','visit')
                 ->with('visits',$visit)
                 ->with('sites',$site);
-                // ->with('visit','VISIT')
-                // ->with('today',$today)
-                // ->with('lastVisit',$lastVisitx)
-                // ->with('myIP', $myIPx);
     }
 
     public function all()
@@ -63,8 +56,9 @@ class SalesVisitController extends Controller
         $lastVisit = DB::table('sales_visits')->count();
         $lastVisitx = str_pad($lastVisit+1,4,"0",STR_PAD_LEFT);
         $lastVisity = "VISIT".$today."-".$lastVisitx;
-
-        $site = Site::all();
+        
+        $employee = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
+        $site = Site::where('site_code','=',$employee->site_code)->get();
         return view('res.visit.new')
                 ->with('site','res')
                 ->with('page','sales')
@@ -137,6 +131,19 @@ class SalesVisitController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    public function view($id)
+    {
+        $visit = SalesVisit::where('visit_code','=',$id)->first();
+        $site = Site::all();
+        return view('res.visit.view')
+                ->with('site','res')
+                ->with('page','sales')
+                ->with('subpage','visit')
+                ->with('sites',$site)
+                ->with('visits',$visit);
+    }
+
+
     public function edit($id)
     {
         $visit = SalesVisit::where('id','=',$id)->first();
@@ -208,4 +215,7 @@ class SalesVisitController extends Controller
             return redirect()->route('visit.index')->withSuccess('Sales Visit Details Successfully Deleted');
         }
     }
+
+
+
 }

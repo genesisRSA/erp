@@ -34,7 +34,6 @@ class SalesMailable extends Mailable
         $this->receiver = $receiver;
         $this->approver = $approver;
         $this->ref_no = $ref_no;
-        // $this->details = $details;
         $this->requestor = $requestor;
         $this->remarks = $remarks;
         $this->id = $id;
@@ -55,7 +54,6 @@ class SalesMailable extends Mailable
                         'receiver' => $this->receiver,
                         'approver' => $this->approver,
                         'ref_no' => $this->ref_no,
-                        // 'details' => $this->details,
                         'requestor' => $this->requestor,
                         'remarks' => $this->remarks,
                         'id' => $this->id,
