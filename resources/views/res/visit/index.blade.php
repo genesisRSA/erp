@@ -26,14 +26,16 @@
       </div>
     </div>
 
-    <a href="{{ route('visit.create') }}" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button"  data-position="left" data-tooltip="Add Sales Visit Details"><i class="material-icons">add</i></a>
+    @if($permission[0]["add"]==true)
+        <a href="{{ route('visit.create') }}" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button"  data-position="left" data-tooltip="Add Sales Visit Details"><i class="material-icons">add</i></a>
+    @endif
+
 
   </div>
 
   <!-- MODALS -->
 
   <div id="editModal" class="modal">
-    {{-- <form method="POST" action="{{route('forecast.patch')}}"> --}}
       <form>
     @csrf
       <div class="modal-content">
@@ -85,7 +87,6 @@
                 <option value="November">November</option>
                 <option value="December">December</option>
               </select>
-            {{-- <input type="text" name="edit_forecast_month" id="forecast_month" class="datepicker"> --}}
               <label for="forecast_month">Forecast Month<sup class="red-text">*</sup></label>
             </div> 
           </div>
@@ -94,9 +95,6 @@
             <div class="input-field col s12 m4 l4">
               <select id="edit_site_code" name="site_code" required>
                 <option value="" disabled selected>Choose your option</option>
-                {{-- @foreach ($sites as $site)
-                  <option value="{{$site->site_code}}">{{$site->site_desc}}</option>
-                @endforeach --}}
               </select>
               <label for="site_code">Site<sup class="red-text">*</sup></label>
             </div>
@@ -106,9 +104,6 @@
             <div class="input-field col s12 m4 l5">
               <select id="edit_prod_code" name="prod_code" required>
                 <option value="" disabled selected>Choose your option</option>
-                {{-- @foreach ($products as $prod)
-                  <option value="{{$prod->prod_code}}">{{$prod->prod_name}}</option>
-                @endforeach --}}
               </select>
               <label for="prod_code">Product<sup class="red-text">*</sup></label>
             </div>
@@ -116,9 +111,6 @@
             <div class="input-field col s12 m4 l3">
               <select id="edit_uom_code" name="uom_code" required>
                 <option value="0" disabled selected>Choose your option</option>       
-                  {{-- @foreach ($uoms as $i)
-                    <option value="{{$i->uom_code}}">{{$i->uom_name}}</option>
-                  @endforeach --}}
               </select>
               <label for="uom_code">Unit of Measure<sup class="red-text">*</sup></label>
             </div>
@@ -129,9 +121,6 @@
             <div class="input-field col s12 m3 l3">
               <select id="edit_currency_code" name="currency_code" onchange="computeTotal('edit');" required>
                 <option value="0" disabled selected>Choose your option</option>
-                {{-- @foreach ($currencies as $curr)
-                  <option value="{{$curr->currency_code}}">{{$curr->symbol}} - {{$curr->currency_name}}</option>
-                @endforeach --}}
               </select>
               <label for="currency_code">Currency<sup class="red-text">*</sup></label>
             </div>
@@ -142,7 +131,6 @@
             </div>
 
             <div class="input-field col s12 m3 l3">
-              {{--  pattern="^[\d,]+$" --}}
               <input placeholder="0" id="edit_quantity" name="quantity" type="number" style="text-align: right" class="number validate" onkeyup="computeTotal('edit');" required>
               <label for="quantity">Quantity<sup class="red-text">*</sup></label>
             </div>
@@ -204,7 +192,6 @@
 
   <div id="deleteModal" class="modal bottom-sheet">
     <form method="POST" action="{{route('visit.delete')}}">
-      {{-- <form> --}}
         @csrf
         <div class="modal-content">
             <h4>Delete Sales Visit Details</h4><br><br>
@@ -306,7 +293,7 @@
           var id = $('#id_app').val();
           getApproverMatrix(id);
         })
-
+ 
 
     });
 
@@ -421,7 +408,10 @@
             {
                 "data": "id",
                 "render": function ( data, type, row, meta ) {
+             
                     return  '<a href="visit/view/'+row.visit_code+'" class="btn-small blue waves-effect waves-light"><i class="material-icons">location_on</i></a> <a href="visit/'+row.id+'/edit" class="btn-small amber darken3 waves-effect waves-dark"><i class="material-icons">create</i></a>';
+                    
+                  
                     //  <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem('+row.id+')"><i class="material-icons">delete</i></a>
                 }
             }

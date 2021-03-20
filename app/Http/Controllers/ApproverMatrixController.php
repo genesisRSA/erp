@@ -106,8 +106,6 @@ class ApproverMatrixController extends Controller
      */
     public function show($id)
     {
-        
-        
         return response()
             ->json([
                 "data" => ApproverMatrix::where('id','=',$id)

@@ -79,6 +79,9 @@ Route::get('/reiss/assembly/all','AssemblyController@all');
 Route::get('/reiss/fabrication/all','FabricationController@all');
 Route::get('/reiss/item_master/all','ItemMasterController@all');
 Route::get('/reiss/approver/all','ApproverMatrixController@all');
+Route::get('/reiss/permission/all','SitePermissionsController@all');
+
+
 Route::get('/reiss/forecast/all/{id}','SalesForecastController@all');
 Route::get('/reiss/forecast/all_approval/{id}','SalesForecastController@all_approval');
 
