@@ -419,9 +419,6 @@
                     return  '<a href="#!" class="btn-small blue waves-effect waves-light" disabled><i class="material-icons">location_on</i></a> <a href="#!" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a>';
                   @endif
 
-   
-                  
-                    //  <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem('+row.id+')"><i class="material-icons">delete</i></a>
                 }
             }
         ]

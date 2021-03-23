@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 use App\Mail\SalesMailable;
+use App\SitePermission;
 use App\SalesForecast;
 use App\ApproverMatrix;
 use App\Product;
@@ -40,6 +41,12 @@ class SalesForecastController extends Controller
         $foreCast = 'FORECAST';
         $lastForecastLeadZ = str_pad($lastForecast+1,4,"0",STR_PAD_LEFT);
 
+        $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
+        ->where('module','=','Sales Forecast')
+        ->first();
+
+        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"approval":false}]', true));
+
         return view('res.forecast.index')
                 ->with('site','res')
                 ->with('page','sales')
@@ -50,7 +57,8 @@ class SalesForecastController extends Controller
                 ->with('currencies', $currency)
                 ->with('forecast', $foreCast)
                 ->with('today', $today)
-                ->with('lastforecast', $lastForecastLeadZ);
+                ->with('lastforecast', $lastForecastLeadZ)
+                ->with('permission',$permissionx);
     }
 
     public function all($id)

@@ -30,7 +30,8 @@ class SalesVisitController extends Controller
                                     ->where('module','=','Sales Visit')
                                     ->first();
 
-        $permissionx =  json_decode($permission->permission, true);
+        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"approval":false}]', true));
+        
         
         return view('res.visit.index')
                 ->with('site','res')
