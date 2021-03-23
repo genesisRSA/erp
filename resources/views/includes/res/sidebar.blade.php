@@ -126,7 +126,7 @@
           <a class="collapsible-header waves-effect waves-light" style="padding-left:32px;"><i class="material-icons">admin_panel_settings</i>Admin Panel</a>
           <div class="collapsible-body">
             <ul>
-              <li @if($subpage=='permission') class="active" @endif><a href="#!">Site Permission</a></li>
+              <li @if($subpage=='permission') class="active" @endif><a href="{{ route('permission.index') }}">Site Permission</a></li>
               <li @if($subpage=='approver') class="active" @endif><a href="{{ route('approver.index') }}">Approver Matrix</a></li>
             </ul>
           </div>

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
 use Validator;
 use App\SalesVisit;
+use App\SitePermission;
 use App\Site;
 use App\Employee;
 use Auth;
@@ -25,13 +26,19 @@ class SalesVisitController extends Controller
         $employee = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
         $site = Site::where('site_code','=',$employee->site_code)->get();
         $visit = SalesVisit::all();
+        $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
+                                    ->where('module','=','Sales Visit')
+                                    ->first();
 
+        $permissionx =  json_decode($permission->permission, true);
+        
         return view('res.visit.index')
                 ->with('site','res')
                 ->with('page','sales')
                 ->with('subpage','visit')
                 ->with('visits',$visit)
-                ->with('sites',$site);
+                ->with('sites',$site)
+                ->with('permission',$permissionx);
     }
 
     public function all($id)
@@ -40,9 +47,10 @@ class SalesVisitController extends Controller
 
         return response()
         ->json([
-            "data" => SalesVisit::with('sites:site_code,site_desc')
-                                ->where('created_by','=',$idx)
+            "data" => SalesVisit::where('created_by','=',$idx)
+                                ->with('sites:site_code,site_desc')
                                 ->get()
+
         ]); 
     }
 

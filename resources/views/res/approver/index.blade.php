@@ -3,7 +3,7 @@
 @section('content')
   <div class="row blue-text text-darken-4 white" style="border-bottom: 1px solid rgba(0,0,0,0.14);">
     <div class="col s12 m12">
-        <h4 class="title"><span class="grey-text darken-4">Admin Panel<i class="material-icons">arrow_forward_ios</i></span> Approver Matrix</h4>
+        <h4 class="title"><span class="grey-text darken-4">Admin Panel<i class="material-icons">arrow_forward_ios</i></span>Approver Matrix</h4>
     </div>
   </div>
   <div class="row main-content">
@@ -219,11 +219,11 @@
     <form method="POST" action="{{route('approver.delete')}}">
         @csrf
         <div class="modal-content">
-            <h4>Delete Assembly Details</h4><br><br>
+            <h4>Delete Approver Matrix</h4><br><br>
             <div class="row">
                 <div class="col s12 m6">
                     <input type="hidden" name="id" id="del_id">
-                    <p>Are you sure you want to delete this <strong>Approver Matrix Details</strong>?</p>
+                    <p>Are you sure you want to delete this <strong>Approver Matrix</strong>?</p>
                 </div>
             </div>
         </div>
