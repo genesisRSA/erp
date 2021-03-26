@@ -72,7 +72,7 @@
     </li>
     <li class="no-padding">
       <ul class="collapsible collapsible-accordion">
-        <li>
+        <li @if($page=='dcc') class="active" @endif>
           <a class="collapsible-header waves-effect waves-light" style="padding-left:32px;"><i class="material-icons">grading</i>Document Control Centre</a>
           <div class="collapsible-body">
             <ul>
@@ -82,7 +82,7 @@
               <li><a href="#!">Drawings</a></li>
               <li><a href="#!">Software Documentation</a></li>
               <li><a href="#!">Manuals</a></li>
-              <li><a href="#!">Procedures</a></li>
+              <li @if($subpage=='procedures') class="active" @endif><a href="{{ route('procedure.index') }}">Procedures</a></li>
             </ul>
           </div>
         </li>

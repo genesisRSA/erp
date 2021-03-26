@@ -3,14 +3,14 @@
 @section('content')
   <div class="row blue-text text-darken-4 white" style="border-bottom: 1px solid rgba(0,0,0,0.14);">
     <div class="col s12 m12">
-        <h4 class="title"><span class="grey-text darken-4">Sales <i class="material-icons">arrow_forward_ios</i></span> Sales Forecast</h4>
+        <h4 class="title"><span class="grey-text darken-4">Document Control Centre<i class="material-icons">arrow_forward_ios</i></span>Procedures</h4>
     </div>
   </div>
   <div class="row main-content">
   
     {{-- <ul id="tabs-swipe-demo" class="tabs"> --}}
     <ul id="forecast_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
-      <li class="tab col s12 m4 l4"><a class="active" href="#ongoing">Sales Forecasts</a></li>
+      <li class="tab col s12 m4 l4"><a class="active" href="#ongoing">Procedures</a></li>
       @if($permission[0]["approval"]==true)
       <li class="tab col s12 m4 l4"><a href="#approval">For Approval</a></li>
       @endif
@@ -20,23 +20,24 @@
 
         <div class="card" style="margin-top: 0px">
           <div class="card-content">
-            <table class="responsive-table highlight" id="forecast-dt" style="width: 100%">
+            <table class="responsive-table highlight" id="procedures-dt" style="width: 100%">
               <thead>
                 <tr>
                     <th>ID</th> 
-                    <th>Site Code</th>
-                    <th>Forecast Code</th>
-                    <th>Product Code</th>
+                    <th>DPR No.</th>
+                    <th>Document Title</th>
+                    <th>Document No.</th>
+                    <th>Revision No.</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
               </thead>
             </table>
           </div>
-      </div>
+        </div>
       
     @if($permission[0]["add"]==true)
-      <a href="#addModal" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped modal-trigger" id="add-button"  onclick="getApprover('{{Auth::user()->emp_no}}','add','Sales Forecast');" data-position="left" data-tooltip="Add Sales Forecast"><i class="material-icons">add</i></a>
+      <a href="{{ route('procedure.create') }}" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button" data-position="left" data-tooltip="Add Procedures"><i class="material-icons">add</i></a>
     @endif
     </div>
 
@@ -48,10 +49,10 @@
               <thead>
                 <tr>
                     <th>ID</th> 
-                    <th>Site Code</th>
-                    <th>Product Code</th>
-                    <th>Forecast Code</th>
-                    <th>Filed By</th>
+                    <th>DPR No.</th>
+                    <th>Document Title</th>
+                    <th>Document No.</th>
+                    <th>Revision No.</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -68,7 +69,7 @@
 
   <div id="addModal" class="modal">
     <form method="POST" action="{{route('forecast.store')}}">
- 
+      <form>
     @csrf
       <div class="modal-content">
         <h4>Add Sales Forecast</h4>
@@ -82,7 +83,7 @@
 
           <div class="row">
             <div class="input-field col s12 m4 l6">
-              <input type="text" id="add_forecast_code" name="forecast_code" value="{{$forecast}}{{$today}}-{{$lastforecast}}" readonly/>
+              <input type="text" id="add_forecast_code" name="forecast_code" value=" " readonly/>
               <label for="forecast_code">Forecast Code<sup class="red-text">*</sup></label>
             </div>
 
@@ -127,9 +128,9 @@
             <div class="input-field col s12 m4 l4">
               <select id="add_site_code" name="site_code" required>
                 <option value="" disabled selected>Choose your option</option>
-                @foreach ($sites as $site)
+                {{-- @foreach ($sites as $site)
                   <option value="{{$site->site_code}}">{{$site->site_desc}}</option>
-                @endforeach
+                @endforeach --}}
               </select>
               <label for="site_code">Site<sup class="red-text">*</sup></label>
             </div>
@@ -147,9 +148,9 @@
             <div class="input-field col s12 m4 l3">
               <select id="add_uom_code" name="uom_code" required>
                 <option value="0" disabled selected>Choose your option</option>
-                @foreach ($uoms as $uom)
+                {{-- @foreach ($uoms as $uom)
                   <option value="{{$uom->uom_code}}">{{$uom->uom_name}}</option>
-                @endforeach
+                @endforeach --}}
               </select>
               <label for="uom_code">Unit of Measure<sup class="red-text">*</sup></label>
             </div>
@@ -160,9 +161,9 @@
             <div class="input-field col s12 m3 l3">
               <select id="add_currency_code" name="currency_code" onchange="computeTotal('add');" required>
                 <option value="0" disabled selected>Choose your option</option>
-                @foreach ($currencies as $curr)
+                {{-- @foreach ($currencies as $curr)
                   <option value="{{$curr->currency_code}}">{{$curr->symbol}} - {{$curr->currency_name}}</option>
-                @endforeach
+                @endforeach --}}
               </select>
               <label for="currency_code">Currency<sup class="red-text">*</sup></label>
             </div>
@@ -281,9 +282,9 @@
             <div class="input-field col s12 m4 l4">
               <select id="edit_site_code" name="site_code" required>
                 <option value="" disabled selected>Choose your option</option>
-                @foreach ($sites as $site)
+                {{-- @foreach ($sites as $site)
                   <option value="{{$site->site_code}}">{{$site->site_desc}}</option>
-                @endforeach
+                @endforeach --}}
               </select>
               <label for="site_code">Site<sup class="red-text">*</sup></label>
             </div>
@@ -293,9 +294,9 @@
             <div class="input-field col s12 m4 l5">
               <select id="edit_prod_code" name="prod_code" required>
                 <option value="" disabled selected>Choose your option</option>
-                @foreach ($products as $prod)
+                {{-- @foreach ($products as $prod)
                   <option value="{{$prod->prod_code}}">{{$prod->prod_name}}</option>
-                @endforeach
+                @endforeach --}}
               </select>
               <label for="prod_code">Product<sup class="red-text">*</sup></label>
             </div>
@@ -303,9 +304,9 @@
             <div class="input-field col s12 m4 l3">
               <select id="edit_uom_code" name="uom_code" required>
                 <option value="0" disabled selected>Choose your option</option>       
-                  @foreach ($uoms as $i)
+                  {{-- @foreach ($uoms as $i)
                     <option value="{{$i->uom_code}}">{{$i->uom_name}}</option>
-                  @endforeach
+                  @endforeach --}}
               </select>
               <label for="uom_code">Unit of Measure<sup class="red-text">*</sup></label>
             </div>
@@ -316,9 +317,9 @@
             <div class="input-field col s12 m3 l3">
               <select id="edit_currency_code" name="currency_code" onchange="computeTotal('edit');" required>
                 <option value="0" disabled selected>Choose your option</option>
-                @foreach ($currencies as $curr)
+                {{-- @foreach ($currencies as $curr)
                   <option value="{{$curr->currency_code}}">{{$curr->symbol}} - {{$curr->currency_name}}</option>
-                @endforeach
+                @endforeach --}}
               </select>
               <label for="currency_code">Currency<sup class="red-text">*</sup></label>
             </div>
@@ -800,218 +801,6 @@
 
     });
 
-    function getStatus(status)
-    {
-      var stat = status;
-      $('#status').val(stat);
-    }
-
-    function getApprover(id, loc, modules)
-    {     
-          $('.tabs').tabs('select','forecast');
-          $.get('forecast/getApprover/'+id+'/'+modules, function(response){
-
-                var AppendString = "";
-                var i, j = "";
-                var data = response.data;
-                var dataMatrix = data.matrix;
-                var matrix = JSON.parse(dataMatrix);
-               
-
-                if(loc=='add'){
-                  var myTable = document.getElementById("matrix-dt");
-                } 
-                else if(loc=='edit') {
-                  var myTable = document.getElementById("matrix-dt-edit");
-                } 
-                else if(loc=='view') {
-                  var myTable = document.getElementById("matrix-dt-view");
-                } 
-              
-                var rowCount = myTable.rows.length;
-                for (var x=rowCount-1; x>0; x--) 
-                  {
-                    myTable.deleteRow(x); 
-                  }
-                
-                console.log(matrix);
-               
-                for(i in matrix)
-                  {
-                    for(j in matrix[i].sequence)
-                    {
-                      AppendString += 
-                      "<tr><td>" + matrix[i].sequence + 
-                        "</td><td>" + matrix[i].approver_emp_no + 
-                          "</td><td>" + matrix[i].approver_name + 
-                            '<input type="hidden" name="app_seq[]" value="'+matrix[i].sequence+'"/>' + 
-                            '<input type="hidden" name="app_id[]" value="'+matrix[i].approver_emp_no+'"/>'+
-                            '<input type="hidden" name="app_fname[]" value="'+matrix[i].approver_name+'"/>'+
-                            '<input type="hidden" name="app_nstatus[]" value="'+matrix[i].next_status+'"/>'+
-                            '<input type="hidden" name="app_gate[]" value="'+matrix[i].is_gate+'"/>'+
-                            "</td></tr>";
-                    }
-                  }
-                if(loc=='add'){
-                  $('#matrix-dt').find('tbody').append(AppendString);
-                } 
-                else if(loc=='edit') {
-                  $('#matrix-dt-edit').find('tbody').append(AppendString);
-                }
-                else if(loc=='view') {
-                  $('#matrix-dt-view').find('tbody').append(AppendString);
-                }
-          });
-    } 
-
-    function getApproverMatrix(id, loc)
-    {
-          $.get('forecast/getApproverMatrix/'+id, function(response){
-
-                var locx = loc;
-                var AppendString = "";
-                var AppendStringH = "";
-
-                var i, j, k, l = "";
-                var data = response.data;
-                var dataMatrix = data.matrix;
-                var dataMatrixH = data.matrix_h;
-                
-                var matrix = JSON.parse(dataMatrix);
-                var matrixh = JSON.parse(dataMatrixH);
-               
-                if(locx=='v')
-                {
-                var myTable = document.getElementById("matrix-dt-view");
-                var myTableH = document.getElementById("matrix-dt-view-h");
-                }
-                else
-                {
-                var myTable = document.getElementById("matrix-dt-app");
-                var myTableH = document.getElementById("matrix-dt-app-h");
-                }
-    
-    
-                var rowCount = myTable.rows.length;
-                for (var x=rowCount-1; x>0; x--) 
-                  {
-                    myTable.deleteRow(x); 
-                  }
-
-                var rowCountH = myTableH.rows.length;
-                for (var h=rowCountH-1; h>0; h--) 
-                  {
-                    myTableH.deleteRow(h); 
-                  }
-
-                for(i in matrix)
-                  {
-                    for(j in matrix[i].sequence)
-                    {
-                      AppendString += 
-                      "<tr><td>" + matrix[i].sequence + 
-                      "</td><td>" + matrix[i].approver_emp_no + 
-                      "</td><td>" + matrix[i].approver_name + 
-                            '<input type="hidden" name="app_seq[]" value="'+matrix[i].sequence+'"/>' + 
-                            '<input type="hidden" name="app_id[]" value="'+matrix[i].approver_emp_no+'"/>'+
-                            '<input type="hidden" name="app_fname[]" value="'+matrix[i].approver_name+'"/>'+
-                            '<input type="hidden" name="app_nstatus[]" value="'+matrix[i].next_status+'"/>'+
-                            '<input type="hidden" name="app_gate[]" value="'+matrix[i].is_gate+'"/>'+
-                      "</td></tr>";
-                    }
-                  }
-
-                for(k in matrixh)
-                  {
-                    for(l in matrixh[k].sequence)
-                    {
-                      AppendStringH += 
-                      "<tr><td>" + matrixh[k].sequence + 
-                      "</td><td>" + matrixh[k].approver_name + 
-                      "</td><td>" + matrixh[k].status + 
-                      "</td><td>" + matrixh[k].remarks +
-                      "</td><td>" + matrixh[k].action_date +    
-                      "</td></tr>";
-                    }
-                  }
-
-                  if(locx=='v')
-                  {
-                  $('#matrix-dt-view').find('tbody').append(AppendString);
-                  $('#matrix-dt-view-h').find('tbody').append(AppendStringH);
-                  }
-                  else
-                  {
-                  $('#matrix-dt-app').find('tbody').append(AppendString);
-                  $('#matrix-dt-app-h').find('tbody').append(AppendStringH);
-                  }
-
-          });
-    } 
-
-    function computeTotal(loc)
-    {
-      if(loc=='add')
-      {
-        var unit_price = $('#add_unit_price').val();
-        var quantity = $('#add_quantity').val();
-
-        var e = document.getElementById('add_currency_code');
-        var currency = e.options[e.selectedIndex].text;
-        // currency = currency.substr(currency, 1);
-        var curr = currency.split('-');
-
-      } else {
-        var unit_price = $('#edit_unit_price').val();
-        var quantity = $('#edit_quantity').val();
-
-        var e = document.getElementById('edit_currency_code');
-        var currency = e.options[e.selectedIndex].text;
-        // currency = currency.substr(currency, 1);
-        var curr = currency.split('-');
-      }
-
-      var currx = curr[0].replace(" ", "");
-
-      if(unit_price == ''){
-        unit_price = 0;
-      }
-
-      if(quantity == ''){
-        quantity = 0;
-      }
-
-      if(curr == null){
-        curr = '';
-      }
-
-      const formatter = new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: 4,      
-        maximumFractionDigits: 4,
-      });
-
-      
-      var total_price = unit_price * quantity;
-      var totalprice = formatter.format(total_price);
-      var total_price_w_com = addCommas(totalprice);
-      var total_w_currency = currx + ' ' + total_price_w_com;
-      //var total_w_currency = total_price_w_com + ' ' + currency;
-
-      if(loc=='add')
-      {
-        $('#add_total_price').val(total_w_currency);
-      } else {
-        $('#edit_total_price').val(total_w_currency);
-      }
-    }
-
-    function addCommas(x) 
-    {
-      var parts = x.toString().split(".");
-      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      return parts.join(".");
-    }
-
     function editItem(id)
     {
         $('.tabs').tabs('select','edit-forecast');
@@ -1131,91 +920,81 @@
         $('#voidModal').modal('open');
     }
 
-    var forecast = $('#forecast-dt').DataTable({
+    var procedures = $('#procedures-dt').DataTable({
         "lengthChange": false,
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/reiss/forecast/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
+        "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
         "columns": [
             {  "data": "id" },
-            {   "data": "id",
+            {  "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return row.sites.site_desc;
-                }
-            },
-            {
-                "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  @if($permission[0]["view"]==true)
-                    return '<a href="#" onclick="viewItem('+row.id+'), getApproverMatrix('+row.id+',\'v\')">'+row.forecast_code+'</a>';
-                  @else
-                    return row.forecast_code;
-                  @endif
+                  return row.dpr_code;
                 }
             },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return row.products.prod_name;
+                  return '<a href="procedure/view/'+row.id+'">'+ row.document_title +'</a>';
                 }
             },
-            {
-                "data": "status",
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return '<a href="procedure/view/'+row.id+'">'+ row.document_no +'</a>';
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.revision_no;
+                }
+            },
+            {   "data": "status",
                 "render": function ( data, type, row, meta ) {
                   switch(data){
-                    case 'Approved':
-                      return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
+                    case 'For Review':
+                      return  '<span class="new badge green white-text" data-badge-caption="">For Review</span>';
                     break;
                     case 'Pending':
                       return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
                     break;
-                    case 'Rejected':
+                    case 'Approved':
                       return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
                     break;
-                    case 'For Approval':
-                      return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
-                    break;
-                    case 'For Review':
-                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
-                    break;
-                    case 'Voided':
-                      return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
-                    break;
-                    case 'Quoted':
-                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
-                    break;
- 
                   }
                    
                 }
             },
-            {
-              "data": "id",
-              "render": function ( data, type, row, meta ) {
-                  if(row.status=='Pending')
-                  {
-                    @if($permission[0]["void"]==true && $permission[0]["edit"]==true)
-                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem('+row.id+')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" onclick="voidItem('+row.id+')"><i class="material-icons">grid_off</i></a>';
-                    @elseif($permission[0]["void"]==false && $permission[0]["edit"]==false)
-                      return  '<a href="#!" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#!" class="btn-small red lighten-1 waves-effect waves-light" disabled><i class="material-icons">grid_off</i></a>';
-                    @elseif($permission[0]["void"]==false && $permission[0]["edit"]==true)
-                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem('+row.id+')"><i class="material-icons">create</i></a> <a href="#!" class="btn-small red lighten-1 waves-effect waves-light" disabled><i class="material-icons">grid_off</i></a>';
-                    @elseif($permission[0]["void"]==true && $permission[0]["edit"]==false)
-                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" onclick="voidItem('+row.id+')"><i class="material-icons">grid_off</i></a>';
-                    @endif
-                  }
-                  else if(row.status=='Voided' || row.status=='Quoted')
-                  {
-                    return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" disabled><i class="material-icons">grid_off</i></a>';
-                  }
-                  else
-                  {
-                    @if($permission[0]["void"]==true)
-                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" onclick="voidItem('+row.id+')"><i class="material-icons">grid_off</i></a>';
-                    @else
-                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" disabled><i class="material-icons">grid_off</i></a>';
-                    @endif
-                  }
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return  '<a href="procedure/revise/'+row.id+'" class="btn-small amber darken3 waves-effect waves-dark"><i class="material-icons">create</i></a>';
+
+
+                  // if(row.status=='Pending')
+                  // {
+                  //   @if($permission[0]["void"]==true && $permission[0]["edit"]==true)
+                  //     return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem('+row.id+')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" onclick="voidItem('+row.id+')"><i class="material-icons">grid_off</i></a>';
+                  //   @elseif($permission[0]["void"]==false && $permission[0]["edit"]==false)
+                  //     return  '<a href="#!" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#!" class="btn-small red lighten-1 waves-effect waves-light" disabled><i class="material-icons">grid_off</i></a>';
+                  //   @elseif($permission[0]["void"]==false && $permission[0]["edit"]==true)
+                  //     return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem('+row.id+')"><i class="material-icons">create</i></a> <a href="#!" class="btn-small red lighten-1 waves-effect waves-light" disabled><i class="material-icons">grid_off</i></a>';
+                  //   @elseif($permission[0]["void"]==true && $permission[0]["edit"]==false)
+                  //     return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" onclick="voidItem('+row.id+')"><i class="material-icons">grid_off</i></a>';
+                  //   @endif
+                  // }
+                  // else if(row.status=='Voided' || row.status=='Quoted')
+                  // {
+                  //   return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" disabled><i class="material-icons">grid_off</i></a>';
+                  // }
+                  // else
+                  // {
+                  //   @if($permission[0]["void"]==true)
+                  //     return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" onclick="voidItem('+row.id+')"><i class="material-icons">grid_off</i></a>';
+                  //   @else
+                  //     return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" disabled><i class="material-icons">grid_off</i></a>';
+                  //   @endif
+                  // }
+
+
                 }
             }
            
@@ -1226,70 +1005,70 @@
     });
 
     
-    @if($permission[0]["approval"]==true)
-    var approvaldt = $('#approval-dt').DataTable({
-        "lengthChange": false,
-        "pageLength": 15,
-        "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
-        "pagingType": "full",
-        "ajax": "/api/reiss/forecast/all_approval/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
-        "columns": [
-          {  "data": "id" },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return row.sites.site_desc;
-                }
-            },
-            {  "data": "prod_code" },
-            {
-                "data": "id",
-                "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" onclick="viewItem('+row.id+'), getApproverMatrix('+row.id+',\'v\')">'+row.forecast_code+'</a>';
-                }
-            },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return row.employee_details.full_name;
-                }
-            },
-            {
-                "data": "status",
-                "render": function ( data, type, row, meta ) {
-                  switch(data){
-                    case 'Approved':
-                      return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
-                    break;
-                    case 'Pending':
-                      return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
-                    break;
-                    case 'Rejected':
-                      return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
-                    break;
-                    case 'For Approval':
-                      return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
-                    break;
-                    case 'For Review':
-                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
-                    break;
-                    case 'Voided':
-                      return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
-                    break;
-                    case 'Quoted':
-                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
-                    break;
-                  }
+    // @if($permission[0]["approval"]==true)
+    // var approvaldt = $('#approval-dt').DataTable({
+    //     "lengthChange": false,
+    //     "pageLength": 15,
+    //     "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+    //     "pagingType": "full",
+    //     "ajax": "/api/reiss/forecast/all_approval/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
+    //     "columns": [
+    //       {  "data": "id" },
+    //         {   "data": "id",
+    //             "render": function ( data, type, row, meta ) {
+    //               return row.sites.site_desc;
+    //             }
+    //         },
+    //         {  "data": "prod_code" },
+    //         {
+    //             "data": "id",
+    //             "render": function ( data, type, row, meta ) {
+    //                 return  '<a href="#" onclick="viewItem('+row.id+'), getApproverMatrix('+row.id+',\'v\')">'+row.forecast_code+'</a>';
+    //             }
+    //         },
+    //         {   "data": "id",
+    //             "render": function ( data, type, row, meta ) {
+    //               return row.employee_details.full_name;
+    //             }
+    //         },
+    //         {
+    //             "data": "status",
+    //             "render": function ( data, type, row, meta ) {
+    //               switch(data){
+    //                 case 'Approved':
+    //                   return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
+    //                 break;
+    //                 case 'Pending':
+    //                   return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
+    //                 break;
+    //                 case 'Rejected':
+    //                   return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
+    //                 break;
+    //                 case 'For Approval':
+    //                   return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
+    //                 break;
+    //                 case 'For Review':
+    //                   return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
+    //                 break;
+    //                 case 'Voided':
+    //                   return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
+    //                 break;
+    //                 case 'Quoted':
+    //                   return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
+    //                 break;
+    //               }
                    
-                }
-            },
-            {
-                "data": "id",
-                "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="appItem('+row.id+'), getApproverMatrix('+row.id+',\'x\')"><i class="material-icons">rate_review</i></a>';
-                }
-            }
-        ]
-    });
-    @endif
+    //             }
+    //         },
+    //         {
+    //             "data": "id",
+    //             "render": function ( data, type, row, meta ) {
+    //                 return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="appItem('+row.id+'), getApproverMatrix('+row.id+',\'x\')"><i class="material-icons">rate_review</i></a>';
+    //             }
+    //         }
+    //     ]
+    // });
+    // @endif
 
 
   </script>
