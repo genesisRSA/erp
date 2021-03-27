@@ -21,7 +21,7 @@ class ApproverMatrixController extends Controller
     {   
      
         $matrix = ApproverMatrix::all();
-        $employee = Employee::all();
+        $employee = Employee::orderBy('emp_lname')->get();
         return view('res.approver.index')
                 ->with(array(
                     'site' => 'res',

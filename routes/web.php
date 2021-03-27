@@ -202,6 +202,7 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::get('/reiss/quotation/getProducts/{id}', 'SalesQuotationController@getProducts');
     Route::get('/reiss/quotation/getAllEdit/{id}', 'SalesQuotationController@getAllEdit');
     Route::get('/reiss/quotation/check/{id}/{loc}', 'SalesQuotationController@check');
+    Route::get('/reiss/quotation/{cust_code}/allbycustomer', 'SalesQuotationController@allbycustomer')->name('quotation.allbycustomer');
 
     Route::resource('/reiss/visit', 'SalesVisitController');
     Route::post('/reiss/visit/delete', 'SalesVisitController@delete')->name('visit.delete');
@@ -218,6 +219,7 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::resource('/reiss/order','SalesOrderController');
     Route::post('/reiss/order/delete', 'SalesOrderController@delete')->name('order.delete');
     Route::post('/reiss/order/patch', 'SalesOrderController@patch')->name('order.patch');
+    Route::post('/reiss/order/test', 'SalesOrderController@test')->name('order.test');
 
     Route::resource('/reiss/product_category', 'ProductCategoriesController');
     Route::post('/reiss/product_category/patch', 'ProductCategoriesController@patch')->name('product_category.patch');

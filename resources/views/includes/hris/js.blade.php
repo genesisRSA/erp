@@ -599,8 +599,8 @@
 
         $("body").on("click", "#del_dep", function (){
             if(confirm("Are you sure you want to delete this record?")){
-                $(this).parents("tr").remove();
                 existing_rel.splice($(this).parents("tr").index(),1);
+                $(this).parents("tr").remove();
             }
         });
 

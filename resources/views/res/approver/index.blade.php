@@ -40,6 +40,7 @@
             <select id="app_module" name="app_module" required>
               <option value="0" disabled selected>Choose your option</option>
               <option value="Sales Forecast">Sales Forecast</option>
+              <option value="Sales Order">Sales Order</option>
               <option value="Sales Quotation">Sales Quotation</option>
               <option value="Sales Visit">Sales Visit</option>
             </select>

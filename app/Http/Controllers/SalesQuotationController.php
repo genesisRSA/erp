@@ -78,6 +78,18 @@ class SalesQuotationController extends Controller
         ]); 
     }
 
+    public function allbycustomer($cust_code)
+    {
+        return response()
+        ->json([
+            "data" => SalesQuotation::where('created_by','=',Auth::user()->emp_no)
+                                    ->where('cust_code','=',$cust_code)
+                                    ->with('sites:site_code,site_desc')
+                                    ->with('customers:cust_code,cust_name')
+                                    ->get()
+        ]); 
+    }
+
     public function all_approval($id)
     {
         $idx = Crypt::decrypt($id);
