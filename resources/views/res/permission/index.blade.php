@@ -42,6 +42,7 @@
               <option value="Sales Forecast">Sales Forecast</option>
               <option value="Sales Quotation">Sales Quotation</option>
               <option value="Sales Visit">Sales Visit</option>
+              <option value="Procedures">Procedures</option>
             </select>
             <label for="add_module">Module<sup class="red-text">*</sup></label>
           </div>
@@ -101,7 +102,13 @@
         {{-- </div>
 
         <div class="row"> --}}
-          <div class="col s12 m8 l8"></div>
+          <div class="col s12 m4 l4"></div>
+          <div class="input-field col s12 m4 l4">
+            <label>
+              <input type="checkbox" class="filled-in" name="mas" id="add_mas"/>
+              <span>Master List</span>
+            </label>
+          </div>
           <div class="input-field col s12 m4 l4">
             <label>
               <input type="checkbox" class="filled-in" name="all" id="add_all"/>
@@ -131,6 +138,7 @@
               <option value="Sales Forecast">Sales Forecast</option>
               <option value="Sales Quotation">Sales Quotation</option>
               <option value="Sales Visit">Sales Visit</option>
+              <option value="Procedures">Procedures</option>
             </select>
             <label for="module">Module<sup class="red-text">*</sup></label>
           </div>
@@ -187,7 +195,13 @@
             </label>
           </div>
           
-          <div class="col s12 m8 l8"></div>
+          <div class="col s12 m4 l4"></div>
+          <div class="input-field col s12 m4 l4">
+            <label>
+              <input type="checkbox" class="filled-in" name="mas" id="edit_mas"/>
+              <span>Master List</span>
+            </label>
+          </div>
           <div class="input-field col s12 m4 l4">
             <label>
               <input type="checkbox" class="filled-in" name="all" id="edit_all"/>
@@ -244,6 +258,7 @@
             $('#add_dl').prop('checked', true);
             $('#add_vd').prop('checked', true);
             $('#add_ap').prop('checked', true);
+            $('#add_mas').prop('checked', true);
           }
           else
           {
@@ -253,6 +268,7 @@
             $('#add_dl').prop('checked', false);
             $('#add_vd').prop('checked', false);
             $('#add_ap').prop('checked', false);
+            $('#add_mas').prop('checked', false);
           }
       });
       
@@ -266,6 +282,7 @@
             $('#edit_dl').prop('checked', true);
             $('#edit_vd').prop('checked', true);
             $('#edit_ap').prop('checked', true);
+            $('#edit_mas').prop('checked', true);
           }
           else
           {
@@ -275,6 +292,7 @@
             $('#edit_dl').prop('checked', false);
             $('#edit_vd').prop('checked', false);
             $('#edit_ap').prop('checked', false);
+            $('#edit_mas').prop('checked', false);
           }
       });
       
@@ -301,6 +319,7 @@
             $('#edit_dl').prop('checked', permissionMatrix[0].delete);
             $('#edit_vd').prop('checked', permissionMatrix[0].void);
             $('#edit_ap').prop('checked', permissionMatrix[0].approval);
+            $('#edit_mas').prop('checked', permissionMatrix[0].masterlist);
           
  
             $('#editModal').modal('open');

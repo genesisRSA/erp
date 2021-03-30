@@ -2602,7 +2602,9 @@
                     case 'Voided':
                       return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
                     break;
- 
+                    case 'Ordered':
+                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Ordered</span>';
+                    break;
                   }
                    
                 }
@@ -2687,8 +2689,8 @@
                     case 'Voided':
                       return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
                     break;
-                    case 'Quoted':
-                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
+                    case 'Ordered':
+                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Ordered</span>';
                     break;
                   }
                    

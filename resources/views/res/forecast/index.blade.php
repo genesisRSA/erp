@@ -640,11 +640,8 @@
         <div class="row" style="padding: 10px">
 
           <div class="input-field col s12 m9 l9">
-
-            {{-- <i class="material-icons prefix">mode_edit</i> --}}
             <textarea class="materialize-textarea" type="text" id="app_remarks" name="remarks" placeholder="Please input remarks here.." style="height: 150px; border-left: 10px; border-color: black; padding-left:20px;" required/></textarea>
             <label for="icon_prefix2">Remarks</label>
-
           </div>
           
           <div class="input-field col s12 m3 l3">
@@ -656,6 +653,7 @@
 
             <a href="#!" class="modal-close orange waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Cancel&nbsp;&nbsp;</a>
           </div>
+          
         </div>
 
       </div>
@@ -1184,6 +1182,9 @@
                     case 'Quoted':
                       return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
                     break;
+                    case 'Ordered':
+                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Ordered</span>';
+                    break;
  
                   }
                    
@@ -1276,6 +1277,9 @@
                     break;
                     case 'Quoted':
                       return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
+                    break;
+                    case 'Ordered':
+                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Ordered</span>';
                     break;
                   }
                    

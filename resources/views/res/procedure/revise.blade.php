@@ -60,7 +60,7 @@
                     </div>
 
                     <div class="col s12 m12 l12">
-                        <div class="input-field col s12 m12 l12">
+                        <div class="input-field col s12 m6 l6">
                             <textarea id="rev_change_description" name="change_description" class="materialize-textarea" placeholder="Some text here.." style="padding-bottom: 0px; border-bottom-width: 2px; margin-bottom: 20px;" required ></textarea>
 
                             <input id="rev_change_description_h" name="change_description_h" type="hidden" value="{{$procedures->change_description}}" />
@@ -68,7 +68,7 @@
                             <label for="change_description">Description of Change(s)<sup class="red-text">*</sup></label>
                         </div>
 
-                        <div class="input-field col s12 m12 l12">
+                        <div class="input-field col s12 m6 l6">
                             <textarea id="rev_change_reason" name="change_reason" class="materialize-textarea"  placeholder="Some text here.." style="padding-bottom: 0px; border-bottom-width: 2px; margin-bottom: 30px;" required></textarea>
 
                             <input id="rev_change_reason_h" name="change_reason_h" type="hidden" value="{{$procedures->change_reason}}" />
@@ -82,7 +82,7 @@
                         <div class="file-field input-field col s12 m6 l6">
                             <div class="btn blue">
                                 <span>File</span>
-                                <input id="rev_file" name="file" type="file">
+                                <input id="rev_file" name="file" type="file" accept=".pdf">
                                 <input id="rev_file_h" name="file_h" type="hidden" value="{{$procedures->file_name}}">
                             </div>
                             <div class="file-path-wrapper">

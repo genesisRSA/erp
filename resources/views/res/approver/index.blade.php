@@ -42,6 +42,8 @@
               <option value="Sales Forecast">Sales Forecast</option>
               <option value="Sales Quotation">Sales Quotation</option>
               <option value="Sales Visit">Sales Visit</option>
+              <option value="Procedures">Procedures</option>
+              {{-- <option value=""></option> --}}
             </select>
             <label for="app_module">Module<sup class="red-text">*</sup></label>
           </div>

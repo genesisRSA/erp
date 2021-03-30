@@ -207,12 +207,7 @@
                   }
                    
                 }
-            },
-            // {   "data": "id",
-            //     "render": function ( data, type, row, meta ) {
-            //       return  '<a href="procedure/revise/'+row.id+'" class="btn-small amber darken3 waves-effect waves-dark"><i class="material-icons">create</i></a>';
-            //     }
-            //   }
+            } 
             ]
         });
 

@@ -86,6 +86,7 @@ class SitePermissionsController extends Controller
                     'delete' => true,
                     'void' => true,
                     'approval' => true,
+                    'masterlist' => true,
                 ]);
             }
             else 
@@ -97,6 +98,7 @@ class SitePermissionsController extends Controller
                     'delete' =>   $request->input('delete') ? true:false,
                     'void' =>     $request->input('void') ? true:false,
                     'approval' => $request->input('app') ? true:false,
+                    'masterlist' => $request->input('mas') ? true:false,
                 ]);
             }
 
@@ -177,6 +179,7 @@ class SitePermissionsController extends Controller
                     'delete' => true,
                     'void' => true,
                     'approval' => true,
+                    'masterlist' => true,
                 ]);
             }
             else 
@@ -188,6 +191,7 @@ class SitePermissionsController extends Controller
                     'delete' =>   $request->input('delete') ? true:false,
                     'void' =>     $request->input('void') ? true:false,
                     'approval' => $request->input('app') ? true:false,
+                    'masterlist' => $request->input('mas') ? true:false,
                 ]);
             }
 
