@@ -80,15 +80,16 @@ Route::get('/reiss/fabrication/all','FabricationController@all');
 Route::get('/reiss/item_master/all','ItemMasterController@all');
 Route::get('/reiss/approver/all','ApproverMatrixController@all');
 Route::get('/reiss/permission/all','SitePermissionsController@all');
-
-
 Route::get('/reiss/forecast/all/{id}','SalesForecastController@all');
 Route::get('/reiss/forecast/all_approval/{id}','SalesForecastController@all_approval');
-
 Route::get('/reiss/quotation/all/{id}','SalesQuotationController@all');
 Route::get('/reiss/quotation/all_approval/{id}','SalesQuotationController@all_approval');
-
 Route::get('/reiss/visit/all/{id}','SalesVisitController@all');
+Route::get('/reiss/procedure/all/{id}','ProceduresController@all');
+Route::get('/reiss/procedure/all_revision/{id}','ProceduresController@all_revision');
+Route::get('/reiss/procedure/all_approval/{id}','ProceduresController@all_approval');
+
+
 
 Route::get('/reiss/product_category/all', 'ProductCategoriesController@all');
 Route::get('/reiss/product/all', 'ProductsController@all');

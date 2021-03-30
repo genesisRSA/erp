@@ -10,7 +10,9 @@
 
     <ul id="quotation_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
       <li class="tab col s12 m4 l4"><a class="active" href="#ongoing">Sales Quotation</a></li>
+      @if($permission[0]["approval"]==true)
       <li class="tab col s12 m4 l4"><a href="#approval">For Approval</a></li>
+      @endif
     </ul>
 
     <div id="ongoing" name="ongoing">
@@ -31,10 +33,12 @@
             </table>
           </div>
       </div>
-      {{--  onclick="getApprover(2,'add','Sales Quotation');" --}}
+      @if($permission[0]["add"]==true)
       <a href="#askModal" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped modal-trigger" id="add-button"  data-position="left" data-tooltip="Add Sales Quotation"><i class="material-icons">add</i></a>
+      @endif
     </div>
 
+    @if($permission[0]["approval"]==true)
     <div id="approval" name="approval">
         <div class="card" style="margin-top: 0px">
           <div class="card-content">
@@ -53,6 +57,7 @@
           </div>
         </div>
     </div>
+    @endif
 
   </div>
 
@@ -2563,7 +2568,11 @@
             {
                 "data": "id",
                 "render": function ( data, type, row, meta ) {
+                  @if($permission[0]["view"]==true)
                     return  '<a href="#" onclick="viewItem('+data+'), getApproverMatrix('+row.id+',\'v\')">'+row.quot_code+'</a>';
+                  @else
+                    return row.quot_code;
+                  @endif
                 }
             },
             {   "data": "id",
@@ -2593,7 +2602,9 @@
                     case 'Voided':
                       return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
                     break;
- 
+                    case 'Ordered':
+                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Ordered</span>';
+                    break;
                   }
                    
                 }
@@ -2603,8 +2614,15 @@
                 "render": function ( data, type, row, meta ) {
                     if(row.status=='Pending')
                     {
-                      // onclick="deleteItem('+row.id+',\''+(row.quot_code)+'\')"
-                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="getApprover(\'{{Auth::user()->emp_no}}\',\'edit\',\'Sales Quotation\'), editItem(\''+(row.quot_code)+'\')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1  waves-effect waves-light" onclick="voidItem('+(data)+')"><i class="material-icons">grid_off</i></a>';
+                      @if($permission[0]["void"]==true && $permission[0]["edit"]==true)
+                        return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="getApprover(\'{{Auth::user()->emp_no}}\',\'edit\',\'Sales Quotation\'), editItem(\''+(row.quot_code)+'\')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1  waves-effect waves-light" onclick="voidItem('+(data)+')"><i class="material-icons">grid_off</i></a>';
+                      @elseif($permission[0]["void"]==false && $permission[0]["edit"]==false)
+                        return  '<a href="#!" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#!" class="btn-small red lighten-1  waves-effect waves-light" disabled><i class="material-icons">grid_off</i></a>';
+                      @elseif($permission[0]["void"]==false && $permission[0]["edit"]==true)
+                        return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="getApprover(\'{{Auth::user()->emp_no}}\',\'edit\',\'Sales Quotation\'), editItem(\''+(row.quot_code)+'\')"><i class="material-icons">create</i></a> <a href="#!" class="btn-small red lighten-1  waves-effect waves-light" disabled><i class="material-icons">grid_off</i></a>';
+                      @elseif($permission[0]["void"]==true && $permission[0]["edit"]==false)
+                        return  '<a href="#!" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1  waves-effect waves-light" onclick="voidItem('+(data)+')"><i class="material-icons">grid_off</i></a>';
+                      @endif
                     }
                     else if(row.status=='Voided')
                     {
@@ -2612,7 +2630,11 @@
                     }
                     else
                     {
-                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1  waves-effect waves-light" onclick="voidItem('+(data)+')"><i class="material-icons">grid_off</i></a>';
+                      @if($permission[0]["void"]==true)
+                        return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1  waves-effect waves-light" onclick="voidItem('+(data)+')"><i class="material-icons">grid_off</i></a>';
+                      @else
+                        return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1  waves-effect waves-light" disabled><i class="material-icons">grid_off</i></a>';
+                      @endif
                     }
 
                 }
@@ -2620,6 +2642,7 @@
         ]
     });
 
+    @if($permission[0]["approval"]==true)
     var quotapproval = $('#approval-dt').DataTable({
         "lengthChange": false,
         "pageLength": 15,
@@ -2666,8 +2689,8 @@
                     case 'Voided':
                       return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
                     break;
-                    case 'Quoted':
-                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
+                    case 'Ordered':
+                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Ordered</span>';
                     break;
                   }
                    
@@ -2681,6 +2704,7 @@
             }
         ]
     });
+    @endif
 
 
   </script>

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 use App\Mail\SalesMailable;
+use App\SitePermission;
 use App\SalesForecast;
 use App\SalesQuotation;
 use App\SalesProductList;
@@ -48,6 +49,13 @@ class SalesQuotationController extends Controller
         $today = date('Ymd');
         $lastQuotationleadZ = str_pad($lastQuotation+1,4,"0",STR_PAD_LEFT);
 
+        $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
+                                    ->where('module','=','Sales Quotation')
+                                    ->first();
+                                    
+        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"approval":false}]', true));
+
+
         return view('res.quotation.index')
                 ->with('site','res')
                 ->with('page','sales')
@@ -62,7 +70,8 @@ class SalesQuotationController extends Controller
                 ->with('quot','QUOT')
                 ->with('today', $today)
                 ->with('lastquotation', $lastQuotationleadZ)
-                ->with('quotation', $Quotation);
+                ->with('quotation', $Quotation)
+                ->with('permission',$permissionx);
     }
 
     public function all($id)

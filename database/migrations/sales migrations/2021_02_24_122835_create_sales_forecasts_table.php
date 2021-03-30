@@ -39,6 +39,7 @@ class CreateSalesForecastsTable extends Migration
             $table->string('currency_code');
             $table->integer('quantity');
             $table->string('uom_code');
+            // $table->double('total_price');
             $table->string('total_price');
             $table->string('status');
             $table->string('created_by');

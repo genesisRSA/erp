@@ -209,7 +209,18 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::post('/reiss/visit/patch', 'SalesVisitController@patch')->name('visit.patch');
     Route::get('/reiss/visit/view/{id}', 'SalesVisitController@view')->name('visit.view');
 
-    
+    Route::resource('/reiss/procedure', 'ProceduresController');
+    Route::post('/reiss/procedure/revision', 'ProceduresController@revision')->name('procedure.revision');
+    Route::post('/reiss/procedure/approve', 'ProceduresController@approve')->name('procedure.approve');
+    // Route::post('/reiss/procedure/view', 'ProceduresController@view')->name('procedure.view');
+    Route::get('/reiss/procedure/view/{id}', 'ProceduresController@view')->name('procedure.view');
+    Route::get('/reiss/procedure/view_revision/{id}', 'ProceduresController@view_revision')->name('procedure.view_revision');
+    Route::get('/reiss/procedure/revise/{id}', 'ProceduresController@revise')->name('procedure.revise');
+    Route::get('/reiss/procedure/getDocument/{id}', 'ProceduresController@getDocument')->name('procedure.getDocument');
+    Route::post('/reiss/procedure/getPostDocument', 'ProceduresController@getPostDocument')->name('procedure.getPostDocument');
+    Route::get('/reiss/procedure/getApprover/{id}', 'ProceduresController@getApprover');
+    Route::get('/reiss/procedure/approval/getApproverMatrix/{id}', 'ProceduresController@getApproverMatrix');
+    Route::get('/reiss/procedure/approval/{id}', 'ProceduresController@approval_view')->name('procedure.approval');
 
 
     Route::get('/reiss/dashboard/{parent}', 'ReissDashboardController@index');

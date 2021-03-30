@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Updateforecasts extends Migration
+class UpdateproceduresmatrixH extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class Updateforecasts extends Migration
      */
     public function up()
     {
-        Schema::table('sales_forecasts', function (Blueprint $table) {
-            $table->json('matrix')->after('created_by');
+        Schema::table('procedures', function (Blueprint $table) {
+            $table->dropColumn('matrix_h');
+            $table->json('matrix_h')->after('matrix')->nullable();
         });
     }
 
@@ -25,7 +26,7 @@ class Updateforecasts extends Migration
      */
     public function down()
     {
-        Schema::table('sales_forecasts', function (Blueprint $table) {
+        Schema::table('procedures', function (Blueprint $table) {
             //
         });
     }

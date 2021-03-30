@@ -11,7 +11,9 @@
     {{-- <ul id="tabs-swipe-demo" class="tabs"> --}}
     <ul id="forecast_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
       <li class="tab col s12 m4 l4"><a class="active" href="#ongoing">Sales Forecasts</a></li>
+      @if($permission[0]["approval"]==true)
       <li class="tab col s12 m4 l4"><a href="#approval">For Approval</a></li>
+      @endif
     </ul>
 
     <div id="ongoing" name="ongoing">
@@ -33,9 +35,12 @@
           </div>
       </div>
       
+    @if($permission[0]["add"]==true)
       <a href="#addModal" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped modal-trigger" id="add-button"  onclick="getApprover('{{Auth::user()->emp_no}}','add','Sales Forecast');" data-position="left" data-tooltip="Add Sales Forecast"><i class="material-icons">add</i></a>
+    @endif
     </div>
 
+    @if($permission[0]["approval"]==true)
     <div id="approval" name="approval">
         <div class="card" style="margin-top: 0px">
           <div class="card-content">
@@ -55,6 +60,7 @@
           </div>
         </div>
     </div>
+    @endif  
 
   </div>
 
@@ -62,7 +68,7 @@
 
   <div id="addModal" class="modal">
     <form method="POST" action="{{route('forecast.store')}}">
-      <form>
+ 
     @csrf
       <div class="modal-content">
         <h4>Add Sales Forecast</h4>
@@ -634,11 +640,8 @@
         <div class="row" style="padding: 10px">
 
           <div class="input-field col s12 m9 l9">
-
-            {{-- <i class="material-icons prefix">mode_edit</i> --}}
             <textarea class="materialize-textarea" type="text" id="app_remarks" name="remarks" placeholder="Please input remarks here.." style="height: 150px; border-left: 10px; border-color: black; padding-left:20px;" required/></textarea>
             <label for="icon_prefix2">Remarks</label>
-
           </div>
           
           <div class="input-field col s12 m3 l3">
@@ -650,6 +653,7 @@
 
             <a href="#!" class="modal-close orange waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Cancel&nbsp;&nbsp;</a>
           </div>
+          
         </div>
 
       </div>
@@ -1141,7 +1145,11 @@
             {
                 "data": "id",
                 "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" onclick="viewItem('+row.id+'), getApproverMatrix('+row.id+',\'v\')">'+row.forecast_code+'</a>';
+                  @if($permission[0]["view"]==true)
+                    return '<a href="#" onclick="viewItem('+row.id+'), getApproverMatrix('+row.id+',\'v\')">'+row.forecast_code+'</a>';
+                  @else
+                    return row.forecast_code;
+                  @endif
                 }
             },
             {   "data": "id",
@@ -1174,6 +1182,9 @@
                     case 'Quoted':
                       return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
                     break;
+                    case 'Ordered':
+                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Ordered</span>';
+                    break;
  
                   }
                    
@@ -1184,7 +1195,15 @@
               "render": function ( data, type, row, meta ) {
                   if(row.status=='Pending')
                   {
-                    return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem('+row.id+')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" onclick="voidItem('+row.id+')"><i class="material-icons">grid_off</i></a>';
+                    @if($permission[0]["void"]==true && $permission[0]["edit"]==true)
+                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem('+row.id+')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" onclick="voidItem('+row.id+')"><i class="material-icons">grid_off</i></a>';
+                    @elseif($permission[0]["void"]==false && $permission[0]["edit"]==false)
+                      return  '<a href="#!" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#!" class="btn-small red lighten-1 waves-effect waves-light" disabled><i class="material-icons">grid_off</i></a>';
+                    @elseif($permission[0]["void"]==false && $permission[0]["edit"]==true)
+                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem('+row.id+')"><i class="material-icons">create</i></a> <a href="#!" class="btn-small red lighten-1 waves-effect waves-light" disabled><i class="material-icons">grid_off</i></a>';
+                    @elseif($permission[0]["void"]==true && $permission[0]["edit"]==false)
+                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" onclick="voidItem('+row.id+')"><i class="material-icons">grid_off</i></a>';
+                    @endif
                   }
                   else if(row.status=='Voided' || row.status=='Quoted')
                   {
@@ -1192,7 +1211,11 @@
                   }
                   else
                   {
-                    return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem()" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" onclick="voidItem('+row.id+')"><i class="material-icons">grid_off</i></a>';
+                    @if($permission[0]["void"]==true)
+                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" onclick="voidItem('+row.id+')"><i class="material-icons">grid_off</i></a>';
+                    @else
+                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" disabled><i class="material-icons">grid_off</i></a>';
+                    @endif
                   }
                 }
             }
@@ -1203,6 +1226,8 @@
         ]
     });
 
+    
+    @if($permission[0]["approval"]==true)
     var approvaldt = $('#approval-dt').DataTable({
         "lengthChange": false,
         "pageLength": 15,
@@ -1253,6 +1278,9 @@
                     case 'Quoted':
                       return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
                     break;
+                    case 'Ordered':
+                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Ordered</span>';
+                    break;
                   }
                    
                 }
@@ -1265,6 +1293,7 @@
             }
         ]
     });
+    @endif
 
 
   </script>

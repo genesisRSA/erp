@@ -15,8 +15,4 @@ class SalesVisit extends Model
     {
         return $this->hasOne('App\SitePermission', 'requestor', 'created_by');
     }
-
-    // protected $casts = [
-    //     'permission' => 'array',
-    // ];
 }
