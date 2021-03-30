@@ -220,6 +220,8 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::post('/reiss/order/delete', 'SalesOrderController@delete')->name('order.delete');
     Route::post('/reiss/order/patch', 'SalesOrderController@patch')->name('order.patch');
     Route::post('/reiss/order/test', 'SalesOrderController@test')->name('order.test');
+    Route::post('/reiss/order/approve', 'SalesOrderController@approve')->name('order.approve');
+    Route::get('/reiss/order/pospecs/{filepath}', 'SalesOrderController@pospecs')->name('order.pospecs');
 
     Route::resource('/reiss/product_category', 'ProductCategoriesController');
     Route::post('/reiss/product_category/patch', 'ProductCategoriesController@patch')->name('product_category.patch');

@@ -83,6 +83,7 @@ class SalesQuotationController extends Controller
         return response()
         ->json([
             "data" => SalesQuotation::where('created_by','=',Auth::user()->emp_no)
+                                    ->where('status','Approved')
                                     ->where('cust_code','=',$cust_code)
                                     ->with('sites:site_code,site_desc')
                                     ->with('customers:cust_code,cust_name')

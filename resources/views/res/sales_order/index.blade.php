@@ -68,6 +68,7 @@
     </div>
   </div>
 
+  <!--addModal-->
   <div id="addModal" class="modal">
     <form method="POST" action="{{route('order.store')}}" enctype="multipart/form-data">
       {{-- <form> --}}
@@ -76,7 +77,6 @@
         <h4>Add Sales Order</h4>
         <ul id="tabs-swipe-demo" class="tabs add">
           <li class="tab col s12 m4 l4"><a class="active" href="#order">Order Details</a></li>
-          {{-- need auth ID and module for getApprover()  --}}
           <li class="tab col s12 m4 l4"><a href="#signatories">Signatories</a></li>
         </ul><br>
 
@@ -265,8 +265,6 @@
         </div>
 
         <div id="signatories" name="signatories">
-
-          {{-- current signatories --}}
           <div class="row">
             <div class="col s12 m12 l12">
               <div class="card">
@@ -300,71 +298,79 @@
 
   <!--editModal-->
   <div id="editModal" class="modal">
-    <form method="POST" action="{{route('quotation.patch')}}">
-    @csrf
+    <form method="POST" action="{{route('order.patch')}}" enctype="multipart/form-data">
+      {{-- <form> --}}
+      @csrf
       <div class="modal-content">
-        <h4>Edit Sales Quotation</h4>
-        <ul id="tabs-swipe-demo" class="tabs">
-          <li class="tab col s12 m4 l4"><a class="active" href="#edit-quotation">Quotation Details</a></li>
-          {{-- need auth ID and module for getApprover()  --}}
-          <li class="tab col s12 m4 l4"><a href="#edit-signatories" onclick="getApprover(2,'edit','Sales Quotation');">Signatories</a></li>
+        <h4>Edit Sales Order</h4>
+        <ul id="tabs-swipe-demo" class="tabs add">
+          <li class="tab col s12 m4 l4"><a class="active" href="#eorder">Order Details</a></li>
+          <li class="tab col s12 m4 l4"><a href="#esignatories">Signatories</a></li>
         </ul><br>
-
-        <div id="edit-quotation" name="quotation">
-            <input type="hidden" id="edit_id" name="id">
-          <div class="row" style="display: none" id="efcode">
-            <div class="input-field col s12 m6 l6">
-              <input type="text" id="edit_forecast_code" name="forecast_code" placeholder="0" readonly/>
-              <label for="forecast_code">Forecast Code<sup class="red-text">*</sup></label>
+  
+        <div id="eorder" name="eorder">
+  
+          <div class="row">
+            <div class="col s12 m6 l6">
+              <label class="active">Order Code</label>
+              <input type="text" id="edit_order_code" readonly/>
             </div>
           </div>
-
+  
           <div class="row">
-
-            <div class="input-field col s12 m6 l6">
-              <input type="text" id="edit_quotation_code" name="quotation_code" placeholder="0" readonly/>
-              <label for="quotation_code">Quotation Code<sup class="red-text">*</sup></label>
+            <div class="col s12 m6 l6">
+              <label class="active">Customer</label>
+              <input type="text" id="edit_customer" readonly/>
             </div>
-        
-            <div class="input-field col s12 m6 l6">
-              <select id="edit_customer_code" name="customer_code">
-                <option value="" disabled selected>Choose Customer</option>
-                @foreach ($customers as $customer)
-                  <option value="{{$customer->cust_code}}">{{$customer->cust_name}}</option>
-                @endforeach
-              </select>
-              <label for="customer_code">Customer<sup class="red-text">*</sup></label>
+  
+            <div class="col s12 m6 l6">
+              <label class="active">Quotation Code</label>
+              <input type="text" id="edit_quot_code" readonly/>
             </div>
-
           </div>
           
           <div class="row">
-            <div class="input-field col s12 m6 l6">
-              <select id="edit_payment_term" name="payment_term" required>
-                <option value="0" disabled selected>Choose Payment Term</option>
-                @foreach ($payment as $payments)
-                  <option value="{{$payments->id}}">{{$payments->term_name}}</option>
-                @endforeach
-              </select>
-              <label for="payment_term">Payment Term<sup class="red-text">*</sup></label>
+            <div class="col s12 m6 l6">
+              <label class="active">Payment Term</label>
+              <input type="text" id="edit_payment_term" readonly/>
             </div>
-
-            <div class="input-field col s12 m6 l6">
-              <select id="edit_currency_code" name="currency_code" onchange="computeTotal('edit');" required>
-                <option value="0" disabled selected>Choose Currency</option>
-                @foreach ($currencies as $curr)
-                  <option value="{{$curr->currency_code}}">{{$curr->symbol}} - {{$curr->currency_name}}</option>
-                @endforeach
-              </select>
-              <label for="currency_code">Currency<sup class="red-text">*</sup></label>
+  
+            <div class="col s12 m6 l6">
+              <label class="active">Currency</label>
+              <input type="text" id="edit_currency" readonly/>
             </div>
           </div>
-
+          
+          <div class="row">
+            <div class="input-field file-field col s12 m6 l6">
+                <label class="active">Customer PO Specs <sup class="red-text">*</sup></label><br>
+                <div class="btn">
+                    <span>Upload file</span>
+                    <input type="file" id="edit_customer_po_specs" name="ecustomer_po_specs" required>
+                </div>
+                <div class="file-path-wrapper">
+                    <input class="file-path validate" id="edit_customer_po_specs_filename" type="text">
+                </div>
+            </div>
+  
+            <div class="input-field col s12 m6 l6">
+              <input type="text" name="ecustomer_po_no" id="edit_customer_po_no" placeholder="e.g. PO-1234" required/>
+              <label class="active">Customer PO No.<sup class="red-text">*</sup></label><br><br>
+              <a href="#" class="btn" target="_blank" id="edit_customer_po_specs_attachment">Download Attachment</a>
+            </div>
+          </div>
+  
+          <div class="row">
+            <div class="col s12 m12 l12 right-align">
+              <button type="button" class="orange waves-effect waves-light btn" id="btn_edit_reset" style="display:none;"><i class="material-icons left">cached</i>Reset Details</button>
+            </div>
+          </div>
+  
           <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 1em; background-color:#0d47a1" class="white-text"><b>Product Details</b></h6>
           
           <div class="row">
             <div class="input-field col s12 m4 l4">
-              <select id="edit_site_code" name="site_code" required>
+              <select id="edit_site_code" name="site_code" disabled="true">
                 <option value="" disabled selected>Choose Site</option>
                 @foreach ($sites as $site)
                   <option value="{{$site->site_code}}">{{$site->site_desc}}</option>
@@ -372,46 +378,45 @@
               </select>
               <label for="site_code">Site<sup class="red-text">*</sup></label>
             </div>
-
+  
             <div class="input-field col s12 m4 l5">
-              <select id="edit_prod_code" name="prod_code" required>
+              <select id="edit_prod_code" name="prod_code" disabled="true">
                 <option value="" disabled selected>Choose Product</option>
               </select>
               <label for="prod_code">Product<sup class="red-text">*</sup></label>
             </div>
-
+  
             <div class="input-field col s12 m4 l3">
-              <select id="edit_uom_code" name="uom_code" required>
-                <option value="0" disabled selected>Choose Unit of Measure</option>
+              <select id="edit_uom_code" name="uom_code" disabled="true">
+                <option value="" disabled selected>Choose Unit of Measure</option>
                 @foreach ($uoms as $uom)
                   <option value="{{$uom->uom_code}}">{{$uom->uom_name}}</option>
                 @endforeach
               </select>
               <label for="uom_code">Unit of Measure<sup class="red-text">*</sup></label>
             </div>
-
+  
           </div>
-
+  
           <div class="row" style="margin-bottom: 0px">
             <div class="input-field col s12 m4 l4">
-              <input placeholder="0.00" id="edit_unit_price" name="unit_price" type="number" style="text-align: right" class="number validate"required>
+              <input placeholder="0.00" id="edit_unit_price" name="unit_price" type="number" style="text-align: right" class="number validate" readonly>
               <label for="unit_price">Unit Price<sup class="red-text">*</sup></label>
             </div>
-
+  
             <div class="input-field col s12 m4 l4">
-              <input placeholder="0" id="edit_quantity" name="quantity" type="number" style="text-align: right" class="number validate"required>
+              <input placeholder="0" id="edit_quantity" name="quantity" type="number" style="text-align: right" class="number validate" readonly>
               <label for="quantity">Quantity<sup class="red-text">*</sup></label>
             </div>
-
+  
             <div class="input-field col s12 m4 l4">
-              <input placeholder="0" id="edit_total_price" name="total_price" type="text" style="text-align: right" class="number" required readonly>
+              <input placeholder="0" id="edit_total_price" name="total_price" type="text" style="text-align: right" class="number" readonly>
               <label for="total_price">Total Price<sup class="red-text">*</sup></label>
             </div>
             
             <div class="input-field col s12 m12 l12">
-              <a class="blue waves-effect waves-light btn right-align" id="btnAdd"><i class="material-icons left">add_circle</i>Add Product</a>
+              <button type="button" class="blue waves-effect waves-light btn right-align" id="btnEditAdd" disabled="true"><i class="material-icons left">add_circle</i>Add Product</button>
             </div>
-
           </div>
            
           <div class="row">
@@ -419,18 +424,17 @@
               <div class="card">
                 <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Product List</b></h6><hr style="margin: 0px">
                 <div class="card-content" style="padding: 10px; padding-top: 0px">
-                  <table class="highlight responsive-table" id="product-dt-e">
+                  <table class="highlight responsive-table" id="eproduct-dt">
                     <thead>
                       <tr>
-                          {{-- <th></th> --}}
-                          <th class="left-align">Product Code</th> 
-                          <th class="left-align">Product Name</th> 
-                          <th class="left-align">Unit of Measure</th>
-                          <th class="left-align">Currency</th>
-                          <th class="left-align">Unit Price</th>
-                          <th class="left-align">Quantity</th>
-                          <th class="left-align">Total Price</th>
-                          <th class="left-align">Action</th>
+                          <th class="center-align">Product Code</th> 
+                          <th class="center-align">Product Name</th> 
+                          <th class="center-align">Unit of Measure</th>
+                          <th class="center-align">Currency</th>
+                          <th class="center-align">Unit Price</th>
+                          <th class="center-align">Quantity</th>
+                          <th class="center-align">Total Price</th>
+                          <th class="center-align">Action</th>
                       </tr>
                     </thead>
                     <tbody></tbody>
@@ -439,7 +443,7 @@
               </div>
             </div>
           </div>
-
+  
           <div class="row col s12 m12 l12">
               <div class="col s12 m8 l8"></div>
               <div class="col s12 m4 l4 right-align">
@@ -449,17 +453,15 @@
           </div>
           
         </div>
-
-        <div id="edit-signatories" name="signatories">
-
-          {{-- current signatories --}}
+  
+        <div id="esignatories" name="esignatories">
           <div class="row">
             <div class="col s12 m12 l12">
               <div class="card">
- 
+  
                 <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Current Signatories</b></h6><hr style="margin: 0px">
                 <div class="card-content" style="padding: 10px; padding-top: 0px">
-                  <table class="highlight" id="matrix-dt-e">
+                  <table class="highlight" id="ematrix-dt">
                     <thead>
                       <tr>
                           <th>Sequence</th> 
@@ -473,13 +475,37 @@
               </div>
             </div>
           </div>
+
+          {{-- approval history --}}
+          <div class="row">
+            <div class="col s12 m12 l12">
+              <div class="card">
+  
+                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Approval History</b></h6><hr style="margin: 0px">
+                <div class="card-content" style="padding: 10px; padding-top: 0px">
+                  <table class="highlight" id="ematrix-dt-app-h">
+                    <thead>
+                      <tr>
+                          <th>Sequence</th> 
+                          <th>Approver Name</th> 
+                          <th>Status</th> 
+                          <th>Remarks</th> 
+                          <th>Action Date</th> 
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
           
         </div>
-
+  
       </div>
       <div class="modal-footer">
-        <button class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Update</button>
-        <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Cancel</a>
+        <button class="green waves-effect waves-light btn" id="btnEditSave" disabled><i class="material-icons left">check_circle</i>Save</button>
+        <button type="button" id="closeAddModal" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Cancel</button>
       </div>
     </form>
   </div>
@@ -488,149 +514,62 @@
   <div id="viewModal" class="modal">
     <div class="modal-content">
       <h4>Sales Order</h4>
-      <ul id="tabs-swipe-demo" class="tabs add">
-        <li class="tab col s12 m4 l4"><a class="active" href="#order">Order Details</a></li>
-        {{-- need auth ID and module for getApprover()  --}}
-        <li class="tab col s12 m4 l4"><a href="#signatories">Signatories</a></li>
+      <ul id="tabs-swipe-demo" class="tabs view">
+        <li class="tab col s12 m4 l4"><a class="active" href="#vorder">Order Details</a></li>
+        <li class="tab col s12 m4 l4"><a href="#vsignatories">Signatories</a></li>
       </ul><br>
 
-      <div id="order" name="order">
+      <div id="vorder">
 
-        <div class="row" id="rowQouteAdd">
-          <div class="input-field col s12 m6 l6">
-            <input type="text" id="add_order_code" name="order_code" value="{{$lastid}}" readonly/>
-            <label for="order_code">Order Code<sup class="red-text">*</sup></label>
+        <div class="row">
+          <div class="col s12 m6 l6">
+            <label class="active">Order Code</label>
+            <input type="text" id="view_order_code" readonly/>
           </div>
         </div>
 
-        <div class="row" id="rowQouteAdd">
-          <div class="input-field col s12 m6 l6">
-            <select id="add_customer_code">
-              <option value="" disabled selected>Choose Customer</option>
-              @foreach ($customers as $customer)
-                <option value="{{$customer->cust_code}}">{{$customer->cust_name}}</option>
-              @endforeach
-            </select>
-            <input type="hidden" id="customer_code" name="customer_code"/>
-            <label class="active">Customer<sup class="red-text">*</sup></label>
+        <div class="row">
+          <div class="col s12 m6 l6">
+            <label class="active">Customer</label>
+            <input type="text" id="view_customer" readonly/>
           </div>
 
-          <div class="input-field col s12 m6 l6">
-            <select id="add_quotation_code">
-              <option value="" disabled selected>Choose Quotation</option>
-            </select>
-            <input type="hidden" id="quotation_code" name="quotation_code"/>
-            <label class="active">Quotation<sup class="red-text">*</sup></label>
+          <div class="col s12 m6 l6">
+            <label class="active">Quotation Code</label>
+            <input type="text" id="view_quot_code" readonly/>
           </div>
         </div>
         
         <div class="row">
-          <div class="input-field col s12 m6 l6">
-            <select id="add_payment_term" required>
-              <option value="" disabled selected>Choose Payment Term</option>
-              @foreach ($payment as $payments)
-                <option value="{{$payments->id}}">{{$payments->term_name}}</option>
-              @endforeach
-            </select>
-            <input type="hidden" id="payment_term" name="payment_term"/>
-            <label class="active">Payment Term<sup class="red-text">*</sup></label>
+          <div class="col s12 m6 l6">
+            <label class="active">Payment Term</label>
+            <input type="text" id="view_payment_term" readonly/>
           </div>
 
-          <div class="input-field col s12 m6 l6">
-            <select id="add_currency_code" required>
-              <option value="" disabled selected>Choose Currency</option>
-              @foreach ($currencies as $curr)
-                <option value="{{$curr->currency_code}}">{{$curr->symbol}} - {{$curr->currency_name}}</option>
-              @endforeach
-            </select>
-            <input type="hidden" id="currency_code" name="currency_code"/>
-            <label class="active">Currency<sup class="red-text">*</sup></label>
+          <div class="col s12 m6 l6">
+            <label class="active">Currency</label>
+            <input type="text" id="view_currency" readonly/>
           </div>
         </div>
         
         <div class="row">
-          <div class="input-field file-field col s12 m6 l6">
-              <label class="active">Customer PO Specs <sup class="red-text">*</sup></label><br>
-              <div class="btn">
-                  <span>Upload file</span>
-                  <input type="file" id="customer_po_specs" name="customer_po_specs" required>
-              </div>
-              <div class="file-path-wrapper">
-                  <input class="file-path validate" id="customer_po_specs_filename" type="text">
-              </div>
+          <div class="col s12 m6 l6">
+              <label class="active">Customer PO Specs</label><br><br>
+              <a href="#" class="btn" target="_blank" id="view_customer_po_specs">Download Attachment</a>
           </div>
 
-          <div class="input-field col s12 m6 l6">
-            <input type="text" name="customer_po_no" id="customer_po_no" placeholder="e.g. PO-1234" required/>
-            <label class="active">Customer PO No.<sup class="red-text">*</sup></label>
+          <div class="col s12 m6 l6">
+            <label class="active">Customer PO No.</label>
+            <input type="text" id="view_customer_po_no" readonly/>
           </div>
         </div>
 
-        <div class="row">
-          <div class="col s12 m12 l12 right-align">
-            <button type="button" class="orange waves-effect waves-light btn" id="btn_add_reset" style="display:none;"><i class="material-icons left">cached</i>Reset Details</button>
-          </div>
-        </div>
-
-        <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 1em; background-color:#0d47a1" class="white-text"><b>Product Details</b></h6>
-        
-        <div class="row">
-          <div class="input-field col s12 m4 l4">
-            <select id="add_site_code" name="site_code" disabled="true">
-              <option value="" disabled selected>Choose Site</option>
-              @foreach ($sites as $site)
-                <option value="{{$site->site_code}}">{{$site->site_desc}}</option>
-              @endforeach
-            </select>
-            <label for="site_code">Site<sup class="red-text">*</sup></label>
-          </div>
-
-          <div class="input-field col s12 m4 l5">
-            <select id="add_prod_code" name="prod_code" disabled="true">
-              <option value="" disabled selected>Choose Product</option>
-            </select>
-            <label for="prod_code">Product<sup class="red-text">*</sup></label>
-          </div>
-
-          <div class="input-field col s12 m4 l3">
-            <select id="add_uom_code" name="uom_code" disabled="true">
-              <option value="" disabled selected>Choose Unit of Measure</option>
-              @foreach ($uoms as $uom)
-                <option value="{{$uom->uom_code}}">{{$uom->uom_name}}</option>
-              @endforeach
-            </select>
-            <label for="uom_code">Unit of Measure<sup class="red-text">*</sup></label>
-          </div>
-
-        </div>
-
-        <div class="row" style="margin-bottom: 0px">
-          <div class="input-field col s12 m4 l4">
-            <input placeholder="0.00" id="add_unit_price" name="unit_price" type="number" style="text-align: right" class="number validate" readonly>
-            <label for="unit_price">Unit Price<sup class="red-text">*</sup></label>
-          </div>
-
-          <div class="input-field col s12 m4 l4">
-            <input placeholder="0" id="add_quantity" name="quantity" type="number" style="text-align: right" class="number validate" readonly>
-            <label for="quantity">Quantity<sup class="red-text">*</sup></label>
-          </div>
-
-          <div class="input-field col s12 m4 l4">
-            <input placeholder="0" id="add_total_price" name="total_price" type="text" style="text-align: right" class="number" readonly>
-            <label for="total_price">Total Price<sup class="red-text">*</sup></label>
-          </div>
-          
-          <div class="input-field col s12 m12 l12">
-            <button type="button" class="blue waves-effect waves-light btn right-align" id="btnAdd" disabled="true"><i class="material-icons left">add_circle</i>Add Product</button>
-          </div>
-        </div>
-         
         <div class="row">
           <div class="col s12 m12 l12">
             <div class="card">
               <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Product List</b></h6><hr style="margin: 0px">
               <div class="card-content" style="padding: 10px; padding-top: 0px">
-                <table class="highlight responsive-table" id="product-dt">
+                <table class="highlight responsive-table" id="vproduct-dt">
                   <thead>
                     <tr>
                         <th class="center-align">Product Code</th> 
@@ -640,7 +579,6 @@
                         <th class="center-align">Unit Price</th>
                         <th class="center-align">Quantity</th>
                         <th class="center-align">Total Price</th>
-                        <th class="center-align">Action</th>
                     </tr>
                   </thead>
                   <tbody></tbody>
@@ -653,14 +591,14 @@
         <div class="row col s12 m12 l12">
             <div class="col s12 m8 l8"></div>
             <div class="col s12 m4 l4 right-align">
-            <input placeholder="0" id="add_grand_total" name="grand_total" type="text" style="text-align: right; left: 75%; font-size: 25px" class="number" required readonly>
+            <input placeholder="0" id="view_grand_total" style="text-align: right; left: 75%; font-size: 25px" class="number" readonly>
             <label for="grand_total" style="left: 75%; font-size:20px;"><b>Grand Total Price</b><sup class="red-text"></sup></label>
           </div>
         </div>
         
       </div>
 
-      <div id="signatories" name="signatories">
+      <div id="vsignatories">
 
         {{-- current signatories --}}
         <div class="row">
@@ -669,12 +607,36 @@
 
               <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Current Signatories</b></h6><hr style="margin: 0px">
               <div class="card-content" style="padding: 10px; padding-top: 0px">
-                <table class="highlight" id="matrix-dt">
+                <table class="highlight" id="vmatrix-dt">
                   <thead>
                     <tr>
                         <th>Sequence</th> 
                         <th>Approver ID</th> 
                         <th>Approver Name</th> 
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {{-- approval history --}}
+        <div class="row">
+          <div class="col s12 m12 l12">
+            <div class="card">
+
+              <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Approval History</b></h6><hr style="margin: 0px">
+              <div class="card-content" style="padding: 10px; padding-top: 0px">
+                <table class="highlight" id="vmatrix-dt-app-h">
+                  <thead>
+                    <tr>
+                        <th>Sequence</th> 
+                        <th>Approver Name</th> 
+                        <th>Status</th> 
+                        <th>Remarks</th> 
+                        <th>Action Date</th> 
                     </tr>
                   </thead>
                   <tbody></tbody>
@@ -694,174 +656,173 @@
 
   <!--appModal-->
   <div id="appModal" class="modal">
-    <form method="POST" action="{{route('quotation.approve')}}">
+    <form method="POST" action="{{route('order.approve')}}">
       {{-- <form> --}}
     @csrf
-      <div class="modal-content" style="padding-bottom: 0px">
-        <h4>Sales Quotation Approval</h4>
-        <ul id="tabs-swipe-demo" class="tabs">
-          <li class="tab col s12 m4 l4"><a class="active" href="#app_details">Quotation Details</a></li>
-          {{-- need auth ID and module for getApprover()  --}}
-          {{-- onclick="getApprover(2,'view','Sales Quotation');" --}}
-          <li class="tab col s12 m4 l4"><a href="#app_signatory" >Signatories</a></li>
-        </ul><br>
+    <div class="modal-content">
+      <h4>Sales Order Approval</h4>
+      <ul id="tabs-swipe-demo" class="tabs app">
+        <li class="tab col s12 m4 l4"><a class="active" href="#apporder">Order Details</a></li>
+        <li class="tab col s12 m4 l4"><a href="#appsignatories">Signatories</a></li>
+      </ul><br>
 
-        {{-- hidden items --}}
-        <input type="hidden" name="id" id="id_app"/>
-        <input type="hidden" name="seq" id="seq_app"/>
-        <input type="hidden" name="appid" id="appid_app"/>
-        <input type="hidden" name="appname" id="appname_app">
-        {{-- hidden items --}}
+      <div id="apporder">
 
-        <div id="app_details" name="app_details">
-
-          <div class="row" style="display:none" id="facode">
-            <div class="input-field col s12 m6 l6">
-              <input type="text" id="app_forecast_code" name="forecast_code" placeholder="0" readonly/>
-              <label for="forecast_code">Forecast<sup class="red-text">*</sup></label>
-            </div>
-          </div>  
-
-          <div class="row">
-            <div class="input-field col s12 m6 l6">
-              <input type="text" id="app_quotation_code" name="quotation_code" placeholder="0" readonly/>
-              <label for="quotation_code">Quotation Code<sup class="red-text">*</sup></label>
-            </div>
-
-            <div class="input-field col s12 m6 l6">
-              <input type="text" id="app_customer_code" name="customer_code" placeholder="0" readonly/>
-              <label for="customer_code">Customer<sup class="red-text">*</sup></label>
-            </div>
+        <div class="row">
+          <div class="col s12 m6 l6">
+            <label class="active">Order Code</label>
+            <input type="text" id="app_order_code" name="app_order_code" readonly/>
+            <input type="hidden" id="app_id" name="id" readonly/>
           </div>
-
-          <div class="row">
-
-            <div class="input-field col s12 m6 l6">
-              <input type="text" id="app_payment_term" name="payment_term" placeholder="0" readonly/>
-              <label for="payment_term">Payment Term<sup class="red-text">*</sup></label>
-            </div>
-
-            <div class="input-field col s12 m6 l6">
-              <input type="text" id="app_currency_code" name="currency_code" placeholder="0" readonly/>
-              <label for="currency_code">Currency<sup class="red-text">*</sup></label>
-            </div>
-
-          </div>
-            
-          <div class="row">
-            <div class="col s12 m12 l12">
-              <div class="card">
-                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Product List</b></h6><hr style="margin: 0px">
-                <div class="card-content" style="padding: 10px; padding-top: 0px">
-                  <table class="highlight responsive-table" id="product-dt-app">
-                    <thead>
-                      <tr>
-                          {{-- <th></th> --}}
-                          <th class="left-align">Product Code</th> 
-                          <th class="left-align">Product Name</th> 
-                          <th class="left-align">Unit of Measure</th>
-                          <th class="left-align">Currency</th>
-                          <th class="left-align">Unit Price</th>
-                          <th class="left-align">Quantity</th>
-                          <th class="left-align">Total Price</th>
-                      </tr>
-                    </thead>
-                    <tbody></tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row col s12 m12 l12">
-              <div class="col s12 m8 l8"></div>
-              <div class="col s12 m4 l4 right-align">
-                <input placeholder="0" id="app_grand_total" name="grand_total" type="text" style="text-align: right; left: 75%; font-size: 25px" class="number" required readonly>
-                <label for="grand_total" style="left: 75%; font-size:20px;"><b>Grand Total Price</b><sup class="red-text"></sup></label>
-              </div>
-          </div>
-            
-        </div>
-        <hr style="padding:1px;color:blue;background-color:blue">
-
-        <div id="app_signatory" name="app_signatory">
-
-          {{-- current signatories --}}
-          <div class="row">
-            <div class="col s12 m12 l12">
-              <div class="card">
- 
-                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Current Signatories</b></h6><hr style="margin: 0px">
-                <div class="card-content" style="padding: 10px; padding-top: 0px">
-                  <table class="highlight" id="matrix-dt-app">
-                    <thead>
-                      <tr>
-                          <th>Sequence</th> 
-                          <th>Approver ID</th> 
-                          <th>Approver Name</th> 
-                      </tr>
-                    </thead>
-                    <tbody></tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {{-- approval history --}}
-          <div class="row">
-            <div class="col s12 m12 l12">
-              <div class="card">
- 
-                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Approval History</b></h6><hr style="margin: 0px">
-                <div class="card-content" style="padding: 10px; padding-top: 0px">
-                  <table class="highlight" id="matrix-dt-app-h">
-                    <thead>
-                      <tr>
-                          <th>Sequence</th> 
-                          <th>Approver Name</th> 
-                          <th>Status</th> 
-                          <th>Remarks</th> 
-                          <th>Action Date</th> 
-                      </tr>
-                    </thead>
-                    <tbody></tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-          
         </div>
 
+        <div class="row">
+          <div class="col s12 m6 l6">
+            <label class="active">Customer</label>
+            <input type="text" id="app_customer" readonly/>
+          </div>
+
+          <div class="col s12 m6 l6">
+            <label class="active">Quotation Code</label>
+            <input type="text" id="app_quot_code" readonly/>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col s12 m6 l6">
+            <label class="active">Payment Term</label>
+            <input type="text" id="app_payment_term" readonly/>
+          </div>
+
+          <div class="col s12 m6 l6">
+            <label class="active">Currency</label>
+            <input type="text" id="app_currency" readonly/>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col s12 m6 l6">
+              <label class="active">Customer PO Specs</label><br><br>
+              <a href="#" class="btn" target="_blank" id="app_customer_po_specs">Download Attachment</a>
+          </div>
+
+          <div class="col s12 m6 l6">
+            <label class="active">Customer PO No.</label>
+            <input type="text" id="app_customer_po_no" readonly/>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col s12 m12 l12">
+            <div class="card">
+              <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Product List</b></h6><hr style="margin: 0px">
+              <div class="card-content" style="padding: 10px; padding-top: 0px">
+                <table class="highlight responsive-table" id="appproduct-dt">
+                  <thead>
+                    <tr>
+                        <th class="center-align">Product Code</th> 
+                        <th class="center-align">Product Name</th> 
+                        <th class="center-align">Unit of Measure</th>
+                        <th class="center-align">Currency</th>
+                        <th class="center-align">Unit Price</th>
+                        <th class="center-align">Quantity</th>
+                        <th class="center-align">Total Price</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row col s12 m12 l12">
+            <div class="col s12 m8 l8"></div>
+            <div class="col s12 m4 l4 right-align">
+            <input placeholder="0" id="app_grand_total" style="text-align: right; left: 75%; font-size: 25px" class="number" readonly>
+            <label for="grand_total" style="left: 75%; font-size:20px;"><b>Grand Total Price</b><sup class="red-text"></sup></label>
+          </div>
+        </div>
       </div>
-      <div class="modal-footer" style="padding-right: 30px;">
-      
-        <div class="row" style="padding: 10px">
-          <div class="input-field col s12 m9 l9">
 
-            <textarea class="materialize-textarea" type="text" id="app_remarks" name="remarks" placeholder="Please input remarks here.." style="height: 150px; border-left: 10px; border-color: black; padding-left:20px;" required/></textarea>
-            <label for="icon_prefix2">Remarks</label>
+      <div id="appsignatories">
 
-          </div>
-          
-          <div class="input-field col s12 m3 l3">
-            <input type="hidden" id="status" name="status">
+        {{-- current signatories --}}
+        <div class="row">
+          <div class="col s12 m12 l12">
+            <div class="card">
 
-            <button id="btnApp" name="approve" value="Approve" onclick="getStatus('Approved');" class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Approve</button>
-            
-            <button id="btnRej" name="reject" value="Reject" onclick="getStatus('Reject');" class="red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Reject&nbsp;&nbsp;&nbsp;</button>
-
-            <a href="#!" class="modal-close orange waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Cancel&nbsp;&nbsp;</a>
+              <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Current Signatories</b></h6><hr style="margin: 0px">
+              <div class="card-content" style="padding: 10px; padding-top: 0px">
+                <table class="highlight" id="appmatrix-dt">
+                  <thead>
+                    <tr>
+                        <th>Sequence</th> 
+                        <th>Approver ID</th> 
+                        <th>Approver Name</th> 
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
 
+        {{-- approval history --}}
+        <div class="row">
+          <div class="col s12 m12 l12">
+            <div class="card">
+
+              <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Approval History</b></h6><hr style="margin: 0px">
+              <div class="card-content" style="padding: 10px; padding-top: 0px">
+                <table class="highlight" id="appmatrix-dt-app-h">
+                  <thead>
+                    <tr>
+                        <th>Sequence</th> 
+                        <th>Approver Name</th> 
+                        <th>Status</th> 
+                        <th>Remarks</th> 
+                        <th>Action Date</th> 
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        
       </div>
+
+        
+      <hr style="padding:1px;color:blue;background-color:blue">
+    </div>
+    <div class="modal-footer" style="padding-right: 30px;">
+      <div class="row" style="padding: 10px">
+        <div class="input-field col s12 m9 l9">
+
+          <textarea class="materialize-textarea" type="text" id="app_remarks" name="remarks" placeholder="Please input remarks here.." style="height: 150px; border-left: 10px; border-color: black; padding-left:20px;" required/></textarea>
+          <label for="icon_prefix2">Remarks</label>
+
+        </div>
+        
+        <div class="input-field col s12 m3 l3">
+          <input type="hidden" id="status" name="status">
+
+          <button id="btnApp" name="btnSubmit" value="Approved" class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Approve</button>
+          
+          <button id="btnRej" name="btnSubmit" value="Rejected" class="red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Reject&nbsp;&nbsp;&nbsp;</button>
+
+          <a href="#!" class="modal-close orange waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Cancel&nbsp;&nbsp;</a>
+        </div>
+      </div>
+    </div>
     </form>
   </div>
 
-  <!--deleteModal-->
-  <div id="deleteModal" class="modal bottom-sheet">
+  <!--voidModal-->
+  <div id="voidModal" class="modal bottom-sheet">
     <form method="POST" action="{{route('order.delete')}}">
         @csrf
         <div class="modal-content">
@@ -869,8 +830,7 @@
             <div class="row">
                 <div class="col s12 m6">
                     <input type="hidden" name="id" id="del_id">
-                    <input type="hidden" name="quot" id="del_quot">
-                    <p>Are you sure you want to delete this <strong>Sales Order</strong>?</p>
+                    <p>Are you sure you want to void this <strong>Sales Order</strong>?</p>
                 </div>
             </div>
         </div>
@@ -959,6 +919,7 @@
         $('#product-dt tbody').html("");
         $('#btnAdd').prop('disabled', true);
         $('#btnAddSave').prop('disabled', true);
+        $('#customer_po_specs').css("visibility","visible");
       }else{
         
       }
@@ -1041,28 +1002,84 @@
       }
     }
 
-    const renderProductTable = (products,table) =>{
+    const renderProductTable = (products,table,from_quot = false) =>{
       table.html("");
-      $.each(products, (index,row) => {
-        table.append('<tr>'+
-                     '<td class="center-align">'+row.prod_code+'</td>'+
-                     '<td class="center-align">'+row.prod_name+'</td>'+
-                     '<td class="center-align">'+row.currency+'</td>'+
-                     '<td class="center-align">'+row.uom+'</td>'+
-                     '<td class="right-align">'+$('#add_currency_code option:selected').text().split(" - ")[0]+" "+FormatNumber(row.unit_price)+'</td>'+
-                     '<td class="right-align">'+row.quantity+'</td>'+
-                     '<td class="right-align">'+$('#add_currency_code option:selected').text().split(" - ")[0]+" "+FormatNumber(row.total_price)+'</td>'+
-                     '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="removeProduct(\''+index+'\',\'add\')"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
-                     '<input type="hidden" name="details_prod_code[]" value="'+row.prod_code+'"/>'+
-                     '<input type="hidden" name="details_prod_name[]" value="'+row.prod_name+'"/>'+
-                     '<input type="hidden" name="details_uom_code[]" value="'+row.uom_code+'"/>'+
-                     '<input type="hidden" name="details_currency_code[]" value="'+row.currency_code+'"/>'+
-                     '<input type="hidden" name="details_unit_price[]" value="'+row.unit_price+'"/>'+
-                     '<input type="hidden" name="details_quantity[]" value="'+row.quantity+'"/>'+
-                     '<input type="hidden" name="details_total_price[]" value="'+row.total_price+'"/>'+
-                     '</tr>'
-                    );
-      });
+      if(!from_quot){
+        $.each(products, (index,row) => {
+          table.append('<tr>'+
+                      '<td class="center-align">'+row.prod_code+'</td>'+
+                      '<td class="center-align">'+row.prod_name+'</td>'+
+                      '<td class="center-align">'+row.uom+'</td>'+
+                      '<td class="center-align">'+row.currency+'</td>'+
+                      '<td class="right-align">'+row.currency.split(" - ")[0]+" "+FormatNumber(row.unit_price)+'</td>'+
+                      '<td class="right-align">'+row.quantity+'</td>'+
+                      '<td class="right-align">'+row.currency.split(" - ")[0]+" "+FormatNumber(row.total_price)+'</td>'+
+                      '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="removeProduct(\''+index+'\',\'add\')"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                      '<input type="hidden" name="details_prod_code[]" value="'+row.prod_code+'"/>'+
+                      '<input type="hidden" name="details_prod_name[]" value="'+row.prod_name+'"/>'+
+                      '<input type="hidden" name="details_uom[]" value="'+row.uom+'"/>'+
+                      '<input type="hidden" name="details_uom_code[]" value="'+row.uom_code+'"/>'+
+                      '<input type="hidden" name="details_currency[]" value="'+row.currency+'"/>'+
+                      '<input type="hidden" name="details_currency_code[]" value="'+row.currency_code+'"/>'+
+                      '<input type="hidden" name="details_unit_price[]" value="'+row.unit_price+'"/>'+
+                      '<input type="hidden" name="details_quantity[]" value="'+row.quantity+'"/>'+
+                      '<input type="hidden" name="details_total_price[]" value="'+row.total_price+'"/>'+
+                      '</tr>'
+                      );
+        });
+      }else{
+        $.each(products, (index,row) => {
+          table.append('<tr>'+
+                      '<td class="center-align">'+row.prod_code+'</td>'+
+                      '<td class="center-align">'+row.prod_name+'</td>'+
+                      '<td class="center-align">'+row.uom+'</td>'+
+                      '<td class="center-align">'+row.currency+'</td>'+
+                      '<td class="right-align">'+row.currency.split(" - ")[0]+" "+FormatNumber(row.unit_price)+'</td>'+
+                      '<td class="right-align">'+row.quantity+'</td>'+
+                      '<td class="right-align">'+row.currency.split(" - ")[0]+" "+FormatNumber(row.total_price)+'</td>'+
+                      '<td></td>'+
+                      '<input type="hidden" name="details_prod_code[]" value="'+row.prod_code+'"/>'+
+                      '<input type="hidden" name="details_prod_name[]" value="'+row.prod_name+'"/>'+
+                      '<input type="hidden" name="details_uom[]" value="'+row.uom+'"/>'+
+                      '<input type="hidden" name="details_uom_code[]" value="'+row.uom_code+'"/>'+
+                      '<input type="hidden" name="details_currency[]" value="'+row.currency+'"/>'+
+                      '<input type="hidden" name="details_currency_code[]" value="'+row.currency_code+'"/>'+
+                      '<input type="hidden" name="details_unit_price[]" value="'+row.unit_price+'"/>'+
+                      '<input type="hidden" name="details_quantity[]" value="'+row.quantity+'"/>'+
+                      '<input type="hidden" name="details_total_price[]" value="'+row.total_price+'"/>'+
+                      '</tr>'
+                      );
+        });
+
+        if(products.length > 0){
+          $('#btnAddSave').prop('disabled', false);
+        }
+      }
+    }
+
+    const renderSignatoriesTable = (matrix,table,is_history = false) => {
+      table.html("");
+      if(!is_history){
+        $.each(matrix, (index,row) => {
+          table.append('<tr>'+
+                      '<td>'+row.sequence+'</td>'+
+                      '<td>'+row.approver_emp_no+'</td>'+
+                      '<td>'+row.approver_name+'</td>'+
+                      '</tr>'
+                      );
+        });
+      }else{
+        $.each(matrix, (index,row) => {
+          table.append('<tr>'+
+                      '<td>'+row.sequence+'</td>'+
+                      '<td>'+row.approver_name+'</td>'+
+                      '<td>'+row.status+'</td>'+
+                      '<td>'+row.remarks+'</td>'+
+                      '<td>'+row.action_date+'</td>'+
+                      '</tr>'
+                      );
+        });
+      }
     }
 
     const removeProduct = (index, transaction) => {
@@ -1077,10 +1094,83 @@
     }
 
     const viewOrder = (id) => {
+      $('.tabs.view').tabs('select','vorder');
       $.get('order/'+id, (response) => {
-        var data = response.data;
-        
+        var data = response.data[0];
+        var products = JSON.parse(data.products);
+        var matrix = JSON.parse(data.matrix);
+        var matrix_h = JSON.parse(data.matrix_h);
+        $('#view_order_code').val(data.order_code);
+        $('#view_customer').val(data.customers.cust_name);
+        $('#view_quot_code').val(data.quotation_code ? data.quotation_code : "N/A");
+        $('#view_payment_term').val(data.payment.term_name);
+        $('#view_currency').val(data.currency.symbol+" - "+data.currency.currency_name);
+        $('#view_customer_po_no').val(data.customer_po_no);
+        $('#view_customer_po_specs').prop('href','order/pospecs/'+data.customer_po_specs);
+        renderProductTable(products,$('#vproduct-dt tbody'),true);
+        calculateGrandTotal(data.currency.symbol,products,$('#view_grand_total'));
+        if(matrix != null) renderSignatoriesTable(matrix,$('#vmatrix-dt tbody'));
+        if(matrix_h != null) renderSignatoriesTable(matrix_h,$('#vmatrix-dt-app-h tbody'),true);
+        $('#viewModal').modal('open');
       });
+    }
+
+    const editOrder = (id) => {
+      $('.tabs.view').tabs('select','eorder');
+      $.get('order/'+id, (response) => {
+        var data = response.data[0];
+        var products = JSON.parse(data.products);
+        var matrix = JSON.parse(data.matrix);
+        var matrix_h = JSON.parse(data.matrix_h);
+        $('#edit_order_code').val(data.order_code);
+        $('#edit_customer').val(data.customers.cust_name);
+        $('#edit_quot_code').val(data.quotation_code ? data.quotation_code : "N/A");
+        $('#edit_payment_term').val(data.payment.term_name);
+        $('#edit_currency').val(data.currency.symbol+" - "+data.currency.currency_name);
+        $('#edit_customer_po_no').val(data.customer_po_no);
+        $('#edit_customer_po_specs_attachment').prop('href','order/pospecs/'+data.customer_po_specs);
+        $('#edit_site_code').prop('disabled', data.quotation_code ? true : false);
+        $('#edit_site_code').formSelect();
+        $('#edit_prod_code').prop('disabled', data.quotation_code ? true : false);
+        $('#edit_prod_code').formSelect();
+        $('#edit_uom_code').prop('disabled', data.quotation_code ? true : false);
+        $('#edit_uom_code').formSelect();
+        $('#edit_unit_price').prop('readonly', data.quotation_code ? true : false);
+        $('#edit_quantity').prop('readonly', data.quotation_code ? true : false);
+        renderProductTable(products,$('#eproduct-dt tbody'),data.quotation_code ? true : false);
+        calculateGrandTotal(data.currency.symbol,products,$('#view_grand_total'));
+        if(matrix != null) renderSignatoriesTable(matrix,$('#ematrix-dt tbody'));
+        if(matrix_h != null) renderSignatoriesTable(matrix_h,$('#ematrix-dt-app-h tbody'),true);
+        $('#editModal').modal('open');
+      });
+    }
+
+    const viewApproval = (id) => {
+      $('.tabs.app').tabs('select','apporder');
+      $.get('order/'+id, (response) => {
+        var data = response.data[0];
+        var products = JSON.parse(data.products);
+        var matrix = JSON.parse(data.matrix);
+        var matrix_h = JSON.parse(data.matrix_h);
+        $('#app_id').val(data.id);
+        $('#app_order_code').val(data.order_code);
+        $('#app_customer').val(data.customers.cust_name);
+        $('#app_quot_code').val(data.quotation_code ? data.quotation_code : "N/A");
+        $('#app_payment_term').val(data.payment.term_name);
+        $('#app_currency').val(data.currency.symbol+" - "+data.currency.currency_name);
+        $('#app_customer_po_no').val(data.customer_po_no);
+        $('#app_customer_po_specs').prop('href','order/pospecs/'+data.customer_po_specs);
+        renderProductTable(products,$('#appproduct-dt tbody'),true);
+        calculateGrandTotal(data.currency.symbol,products,$('#app_grand_total'));
+        if(matrix != null) renderSignatoriesTable(matrix,$('#appmatrix-dt tbody'));
+        if(matrix_h != null) renderSignatoriesTable(matrix_h,$('#appmatrix-dt-app-h tbody'),true);
+        $('#appModal').modal('open');
+      });
+    }
+
+    const voidOrder = (id) => {
+      $('#del_id').val(id);
+      $('#voidModal').modal('open');
     }
 
     //AddModal Listeners
@@ -1116,6 +1206,7 @@
     $('body').on('click','#showaddQuotation',function(){
       $('div[id="rowAdd"]').hide();
       $('div[id="rowQouteAdd"]').show();
+      $('.tabs.add').tabs('select','order');
       is_qoute = true;
     });
 
@@ -1131,7 +1222,7 @@
     });
 
     $('body').on('change','#add_customer_code',function(){
-      $('#customer_code').val($(this).val());
+      $('input[id="customer_code"]').val($(this).val());
       if(is_qoute){
         $.get('quotation/'+$(this).val()+'/allbycustomer', (response) => {
           var data = response.data;
@@ -1159,6 +1250,11 @@
           $('#add_currency_code').val(data.currency_code);
           $('#currency_code').val(data.currency_code);
           $('#add_currency_code').formSelect();
+
+          var products = JSON.parse(data.products);
+          add_products = products;
+          renderProductTable(products,$('#product-dt tbody'),true);
+          calculateGrandTotal($('#add_currency_code option:selected').text().split(" - ")[0],products,$('#add_grand_total'));
         });
       checkDetails("add");
     });
@@ -1294,7 +1390,12 @@
                     case 'Voided':
                       return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
                     break;
- 
+                    case 'Delivered':
+                      return  '<span class="new badge green white-text" data-badge-caption="">Delivered</span>';
+                    break;
+                    case 'Project Ongoing':
+                      return  '<span class="new badge yellow black-text" data-badge-caption="">Project Ongoing</span>';
+                    break;
                   }
                    
                 }
@@ -1304,20 +1405,83 @@
                 "render": function ( data, type, row, meta ) {
                     if(row.status=='Pending')
                     {
-                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="getApprover(\'{{Auth::user()->emp_no}}\',\'edit\',\'Sales Quotation\'), editItem(\''+(row.quot_code)+'\')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1  waves-effect waves-light" onclick="voidItem('+(data)+')"><i class="material-icons">grid_off</i></a>';
+                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editOrder('+data+')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1  waves-effect waves-light" onclick="voidOrder('+(data)+')"><i class="material-icons">grid_off</i></a>';
                     }
-                    else if(row.status=='Voided')
+                    else if(row.status=='Voided' || row.status=='Delivered' || row.status=='Project Ongoing')
                     {
                       return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" disabled><i class="material-icons">grid_off</i></a>';
                     }
                     else
                     {
-                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1  waves-effect waves-light" onclick="voidItem('+(data)+')"><i class="material-icons">grid_off</i></a>';
+                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1  waves-effect waves-light" onclick="voidOrder('+(data)+')"><i class="material-icons">grid_off</i></a>';
                     }
 
                 }
             }
           ]
+    });
+
+    //approval-dt
+    var order_approval = $('#approval-dt').DataTable({
+        "lengthChange": false,
+        "pageLength": 15,
+        "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+        "pagingType": "full",
+        "ajax": "/api/reiss/order/all_approval/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
+        "columns": [
+          {  "data": "id" },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.sites.site_desc;
+                }
+            },
+            {
+                "data": "id",
+                "render": function ( data, type, row, meta ) {
+                    return  '<a href="#" onclick="viewOrder('+data+')">'+row.order_code+'</a>';
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.customers.cust_name;
+                }
+            },
+            {
+                "data": "status",
+                "render": function ( data, type, row, meta ) {
+                  switch(data){
+                    case 'Approved':
+                      return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
+                    break;
+                    case 'Pending':
+                      return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
+                    break;
+                    case 'Rejected':
+                      return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
+                    break;
+                    case 'For Approval':
+                      return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
+                    break;
+                    case 'For Review':
+                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
+                    break;
+                    case 'Voided':
+                      return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
+                    break;
+                    case 'Delivered':
+                      return  '<span class="new badge green white-text" data-badge-caption="">Delivered</span>';
+                    break;
+                  }
+                   
+                }
+            },
+            {
+                "data": "id",
+                "render": function ( data, type, row, meta ) {
+                    return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="viewApproval('+row.id+')"><i class="material-icons">rate_review</i></a>';
+                }
+            }
+        ]
     });
 
   </script>

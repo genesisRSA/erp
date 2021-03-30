@@ -10,17 +10,18 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use App\Mail\SalesMailable;
-use App\SalesQuotation;
-use App\SalesProductList;
-use App\SalesOrder;
-use App\Customer;
-use App\PaymentTerm;
 use App\ApproverMatrix;
-use App\Product;
-use App\Site;
 use App\Currency;
-use App\UnitOfMeasure;
+use App\Customer;
 use App\Employee;
+use App\PaymentTerm;
+use App\Product;
+use App\SalesForecast;
+use App\SalesOrder;
+use App\SalesProductList;
+use App\SalesQuotation;
+use App\Site;
+use App\UnitOfMeasure;
 use Validator;
 use Auth;
 
@@ -37,7 +38,7 @@ class SalesOrderController extends Controller
         $quotation = SalesQuotation::all()
                     ->where('status','=','Approved');
         $payment = PaymentTerm::all();
-        $site = Site::all();
+        $site = Site::where('site_code',Auth::user()->employee->site_code)->get();
         $customer = Customer::all();
         $uom = UnitOfMeasure::all();
         $currency = Currency::select('currency_code', 'currency_name', 'symbol')->get();
@@ -80,6 +81,24 @@ class SalesOrderController extends Controller
         ]);
     }
 
+
+    public function all_approval($emp_no)
+    {
+        
+        $emp_no = Crypt::decrypt($emp_no);
+
+        return response()
+        ->json([
+            "data" => SalesOrder::where('current_approver','=',$emp_no)
+                        ->whereNotIn('status',['Approved','Delivered','Project Ongoing','Voided'])
+                        ->with('sites:site_code,site_desc')
+                        ->with('currency:currency_code,currency_name,symbol')
+                        ->with('customers:cust_code,cust_name')
+                        ->with('payment:id,term_name')
+                        ->get()
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -100,29 +119,11 @@ class SalesOrderController extends Controller
     {
 
         $field = [
-            'customer_code' => 'required|string',
-            // 'site_code' => 'required',
-            // 'access_id' => 'required',
-            // 'emp_no' => 'required|string|unique:employees',
-            // 'work_email' => 'required',
-            // 'dept_code' => 'required|string',
-            // 'sect_code' => 'required|string',
-            // 'position' => 'required|string',
-            // 'date_hired' => 'date',
-            // 'emp_cat' => 'required|string',
-            // 'date_regularized' => 'date',
-            // 'sss_no' => 'required|string|unique:employees',
-            // 'phil_no' => 'required|string|unique:employees',
-            // 'pagibig_no' => 'required|string|unique:employees',
-            // 'tin_no' => 'required|string|unique:employees',
-            // 'emp_fname' => 'required|string',
-            // 'emp_lname' => 'required|string',
-            // 'dob' => 'date',
-            // 'current_address' => 'required|string',
-            // 'home_address' => 'required|string',
-            // 'emergency_person' => 'required|string',
-            // 'emergency_address' => 'required|string',
-            // 'emergency_contact' => 'required|string',
+            'customer_code' => 'required',
+            'currency_code' => 'required',
+            'payment_term' => 'required',
+            'customer_po_specs' => 'required',
+            'customer_po_no' => 'required'
         ];
 
         $validator = Validator::make($request->all(), $field);
@@ -144,6 +145,14 @@ class SalesOrderController extends Controller
             $sales_order = new SalesOrder();
             $sales_order->site_code = Auth::user()->employee->site_code;
             $sales_order->quotation_code = $request->input('quotation_code') ? $request->input('quotation_code') : null;
+            if($request->input('quotation_code')){
+                $quot = SalesQuotation::where('quot_code',$request->input('quotation_code'))->first();
+                $quot->status = "Ordered";
+                $forecast = SalesForecast::where('forecast_code',$quot->forecast_code)->first();
+                $forecast->status = "Ordered";
+                $forecast->save();
+                $quot->save();
+            }
             $sales_order->order_code = $lastid;
             $sales_order->cust_code = $request->input('customer_code');
             $sales_order->payment_term_id = $request->input('payment_term');
@@ -157,14 +166,26 @@ class SalesOrderController extends Controller
                 Storage::disk('sales_order')->put($filename, file_get_contents($file));
             }
                 
-            $sales_order->customer_po_specs = "storage/attachments/sales_order/".$filename;
+            $sales_order->customer_po_specs = $filename;
             $sales_order->customer_po_no = $request->input('customer_po_no');
             $sales_order->status = 'Pending';
 
             if($request->input('details_prod_code')){
                 $product_details = array();
+                $product_details_display = array();
 
                 for( $i = 0 ; $i < count($request->input('details_prod_code')) ; $i++ ){
+                    array_push($product_details_display, [ 'code' => $lastid,
+                                                'prod_code' => $request->input('details_prod_code.'.$i),
+                                                'prod_name' => $request->input('details_prod_name.'.$i),
+                                                'uom' => $request->input('details_uom.'.$i),
+                                                'uom_code' => $request->input('details_uom_code.'.$i),
+                                                'currency' => $request->input('details_currency.'.$i),
+                                                'currency_code' => $request->input('details_currency_code.'.$i),
+                                                'unit_price' => $request->input('details_unit_price.'.$i),
+                                                'quantity' => $request->input('details_quantity.'.$i),
+                                                'total_price' => $request->input('details_total_price.'.$i)
+                                            ]);
                     array_push($product_details, [ 'code' => $lastid,
                                                 'prod_code' => $request->input('details_prod_code.'.$i),
                                                 'prod_name' => $request->input('details_prod_name.'.$i),
@@ -177,7 +198,7 @@ class SalesOrderController extends Controller
                 }
 
                 SalesProductList::insert($product_details);
-                $product_details = json_encode($product_details);
+                $product_details = json_encode($product_details_display);
                 $sales_order->products = $product_details;
             }
 
@@ -197,12 +218,72 @@ class SalesOrderController extends Controller
 
         }
     }
-
     
-    public function test(Request $request)
+    public function approve(Request $request)
     {
-        //
-        return $request->input('test');
+        $sales_order = SalesOrder::find($request->input('id'));
+        $current_approver = json_decode($sales_order->matrix)[0];
+        $current_matrix = json_decode($sales_order->matrix);
+        array_splice($current_matrix,0,1);
+        $matrix_h = json_decode($sales_order->matrix_h) ? json_decode($sales_order->matrix_h) : array();
+        $status = $request->input('btnSubmit');
+        $remarks = $request->input('remarks');
+
+        if($status = "Approved"){
+            
+            if($current_approver->is_gate == "true"){
+                $sales_order->matrix = null;
+                array_push($matrix_h,["sequence" => $sales_order->current_sequence,
+                                      "approver_emp_no" => Auth::user()->emp_no,
+                                      "approver_name" => Auth::user()->employee->full_name,
+                                      "status" => "Approved",
+                                      "remarks" => $remarks,
+                                      "action_date" => date('Y-m-d H:i:s')]);
+                $sales_order->status = "Approved";
+            }else{
+                $sales_order->matrix = json_encode($current_matrix);
+                $status = $current_matrix ? $current_approver->next_status : "Approved";
+                
+                array_push($matrix_h,["sequence" => $sales_order->current_sequence,
+                                      "approver_emp_no" => Auth::user()->emp_no,
+                                      "approver_name" => Auth::user()->employee->full_name,
+                                      "status" => $status,
+                                      "remarks" => $remarks,
+                                      "action_date" => date('Y-m-d H:i:s')]);
+                $sales_order->status = $status;
+
+                if(count($current_matrix) > 0){
+                    $sales_order->current_approver = $current_matrix[0]->approver_emp_no;
+                    $sales_order->current_sequence = $current_matrix[0]->sequence;
+                }else{
+                    $sales_order->current_approver = "";
+                    $sales_order->current_sequence = 0;
+                    $sales_order->status = "Approved";
+                }
+            }
+
+        }else{
+            $sales_order->matrix = [];
+            array_push($matrix_h,["sequence" => $sales_order->current_sequence,
+                                  "approver_emp_no" => Auth::user()->emp_no,
+                                  "approver_name" => Auth::user()->employee->full_name,
+                                  "status" => "Rejected",
+                                  "remarks" => $remarks,
+                                  "action_date" => date('Y-m-d H:i:s')]);
+            $sales_order->status = "Rejected";
+        }
+
+        $sales_order->matrix_h = json_encode($matrix_h);
+        $sales_order->save();
+
+        return $sales_order;
+
+
+    }
+    
+    public function pospecs($filepath)
+    {
+        return Storage::disk('sales_order')->download($filepath);
     }
 
     /**
@@ -214,6 +295,15 @@ class SalesOrderController extends Controller
     public function show($id)
     {
         //
+        return response()
+                ->json([
+                        "data" => SalesOrder::where('id','=',$id)
+                        ->with('sites:site_code,site_desc')
+                        ->with('currency:currency_code,currency_name,symbol')
+                        ->with('customers:cust_code,cust_name')
+                        ->with('payment:id,term_name')
+                        ->get()
+                ]);
     }
 
     /**
@@ -256,8 +346,21 @@ class SalesOrderController extends Controller
     public function delete(Request $request)
     {
         //
-        if(SalesForecast::destroy($request->input('id',''))){
-            return redirect()->route('forecast.index')->withSuccess('Sales Forecast Details Successfully Deleted');
+        $sales_order = SalesOrder::find($request->input('id'));
+        $sales_order->status = 'Voided';
+        if($sales_order->quot_code){
+            $sales_quotation = SalesQuotation::where('quot_code', $sales_order->quot_code)->first();
+            $sales_quotation->status = 'Voided';
+            if($sales_quotation->forecast_code){
+                $sales_forecast = SalesForecast::where('forecast_code', $sales_quotation->forecast_code)->first();
+                $sales_forecast->status = 'Voided';
+                $sales_forecast->save();
+            }
+            $sales_quotation->save();
+        }
+
+        if($sales_order->save()){
+            return redirect()->route('order.index')->withSuccess('Sales Forecast Details Successfully Voided');
         }
     }
 }

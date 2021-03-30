@@ -38,7 +38,7 @@ class SalesQuotation extends Model
 
     public function sales_products()
     {
-        return $this->hasMany('App\SalesProductList', 'quot_code', 'quot_code');
+        return $this->hasMany('App\SalesProductList', 'code', 'quot_code');
     }
 
     public function payment()

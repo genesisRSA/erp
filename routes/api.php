@@ -94,3 +94,4 @@ Route::get('/reiss/product_category/all', 'ProductCategoriesController@all');
 Route::get('/reiss/product/all', 'ProductsController@all');
 
 Route::get('/reiss/order/all/{emp_no}','SalesOrderController@all');
+Route::get('/reiss/order/all_approval/{emp_no}','SalesOrderController@all_approval');
