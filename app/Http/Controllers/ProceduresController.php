@@ -160,10 +160,15 @@ class ProceduresController extends Controller
     public function create()
     {
         $employee = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
-        $docxCount = Procedure::where('created_by','=',Auth::user()->emp_no)
+        
+        $docxCount = Procedure::where('document_no','like', '%'.$employee->sect_code.'%')
                                 ->count();
+        $docx = Procedure::distinct('document_title')->count('document_title');
+
         $lastDocx = str_pad($docxCount+1,3,"0",STR_PAD_LEFT);
-        $docNo =  $employee->sect_code."-".$lastDocx;
+        $LDocx = str_pad($docx+1,3,"0",STR_PAD_LEFT);
+        $docNo =  $employee->sect_code."-".$LDocx;
+       
         $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
         ->where('module','=','Procedures')
         ->first();

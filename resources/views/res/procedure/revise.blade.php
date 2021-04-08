@@ -24,10 +24,6 @@
           <form method="POST" action="{{route('procedure.revision')}}" enctype="multipart/form-data">
             @csrf
 
-            {{-- <div class="col s12 m12 l12">
-              <h6 style="padding: 10px; padding-top: 20px; padding-left: 10px; padding-right: 10px; margin-bottom: 10px; margin-top: 20px; background-color:#0d47a1" class="white-text"><b>Procedure Details</b></h6>  
-            </div> --}}
-
             <div id="details" name="details">
               <div class="row">
                 <br>
@@ -39,12 +35,10 @@
                     <div class="col s12 m12 l12">
                         <div class="input-field col s12 m3 l3">
                             <input type="text" id="rev_dpr_code" name="dpr_code"  class="grey lighten-5" value="{{$lastDoc}}" readonly/>
-                            {{-- <input type="hidden" id="rev_dpr_code_h" name="dpr_code_h"  class="grey lighten-5" value="{{$procedures->dpr_code}}" readonly/> --}}
                             <label for="dpr_code">DPR No.<sup class="red-text"></sup></label>
                         </div>
                         <div class="input-field col s12 m3 l3">
                             <input type="text" id="rev_requested_date" name="requested_date" class="grey lighten-5" value="{{date('Y-m-d')}}" readonly/>
-                            {{-- <input type="hidden" id="rev_requested_date_h" name="requested_date_h" value="{{$procedures->requested_date}}" readonly/> --}}
                             <label for="requested_date">Date Requested<sup class="red-text"></sup></label>
                         </div> 
                     </div>
@@ -56,12 +50,10 @@
                         </div>
                         <div class="input-field col s12 m3 l3">
                             <input type="text" id="rev_document_no" name="document_no"  value="{{$procedures->document_no}}"  placeholder=" " readonly/>
-                            {{-- <input type="hidden" id="rev_document_no_h" name="document_no_h"  value="{{$procedures->document_no}}"  placeholder=" " readonly/> --}}
                             <label for="document_no">Document No.<sup class="red-text"></sup></label>
                         </div>
                         <div class="input-field col s12 m3 l3">
                             <input type="text" id="rev_revision_no" name="revision_no" value="{{$procedures->revision_no+1}}" placeholder=" " readonly/>
-                            {{-- <input type="hidden" id="rev_revision_no_h" name="revision_no_h" value="{{$procedures->revision_no}}" placeholder=" " readonly/> --}}
                             <label for="revision_no">Revision No.<sup class="red-text"></sup></label>
                         </div>
                     </div>
@@ -69,17 +61,11 @@
                     <div class="col s12 m12 l12">
                         <div class="input-field col s12 m6 l6">
                             <textarea id="rev_change_description" name="change_description" class="materialize-textarea" placeholder="Some text here.." style="padding-bottom: 0px; border-bottom-width: 2px; margin-bottom: 20px;" required ></textarea>
-
-                            {{-- <input id="rev_change_description_h" name="change_description_h" type="hidden" value="{{$procedures->change_description}}" /> --}}
-
                             <label for="change_description">Description of Change(s)<sup class="red-text">*</sup></label>
                         </div>
 
                         <div class="input-field col s12 m6 l6">
                             <textarea id="rev_change_reason" name="change_reason" class="materialize-textarea"  placeholder="Some text here.." style="padding-bottom: 0px; border-bottom-width: 2px; margin-bottom: 30px;" required></textarea>
-
-                            {{-- <input id="rev_change_reason_h" name="change_reason_h" type="hidden" value="{{$procedures->change_reason}}" /> --}}
-
                             <label for="change_reason">Reason for Preparation / Revision<sup class="red-text">*</sup></label>
                         </div>
                     </div>
@@ -90,7 +76,6 @@
                             <div class="btn blue">
                                 <span>File</span>
                                 <input id="rev_file" name="file" type="file" accept=".pdf">
-                                {{-- <input id="rev_file_h" name="file_h" type="hidden" value="{{$procedures->file_name}}"> --}}
                             </div>
                             <div class="file-path-wrapper">
                                 <input class="file-path validate" type="text" placeholder="Click to add attachment">

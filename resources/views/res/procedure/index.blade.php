@@ -265,7 +265,6 @@
             },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  // return '<a href="procedure/view/'+row.id+'">'+ row.document_title +'</a>';
                   return row.document_title;
                 }
             },

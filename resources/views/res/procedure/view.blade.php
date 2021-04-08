@@ -106,7 +106,6 @@
                             <th>Document No.</th>
                             <th>Revision No.</th>
                             <th>Status</th>
-                            {{-- <th>Action</th> --}}
                         </tr>
                       </thead>
                     </table>
@@ -147,23 +146,23 @@
 
     $(document).ready(function () {
 
-            // document.onkeydown = function(e) {
-            //   if(event.keyCode == 123) {
-            //     return false;
-            //   }
-            //   if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
-            //     return false;
-            //   }
-            //   if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
-            //     return false;
-            //   }
-            //   if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
-            //     return false;
-            //   }
-            //   if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
-            //     return false;
-            //   }
-            // }
+            document.onkeydown = function(e) {
+              if(event.keyCode == 123) {
+                return false;
+              }
+              if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
+                return false;
+              }
+              if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
+                return false;
+              }
+              if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
+                return false;
+              }
+              if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
+                return false;
+              }
+            }
 
         $('#add_description').trigger('autoresize');
 
@@ -197,14 +196,12 @@
             },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  // return '<a href="procedure/view_revision/'+row.id+'">'+ row.document_title +'</a>';
                   return row.document_title;
                 }
             },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
                   return '<a href="../view/'+row.procedures.id+'">'+ row.document_no +'</a>';
-                  // return '<a href="../view/{{Illuminate\Support\Facades\Crypt::encrypt('+row.procedures.id+')}}">'+ row.document_no + '</a>';
                 }
             },
             {   "data": "id",

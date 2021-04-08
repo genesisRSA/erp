@@ -104,8 +104,7 @@
                     </div>
                     <input type="hidden" name="file" type="file" value="/reiss/procedure/master/pdf/{{$procedures->id}}">
                   <embed
-                      {{-- src="{{ action('ProceduresController@getDocument', ['id'=> $procedures->id]) }}#toolbar=0" --}}
-                      {{-- src="{{ action('ProceduresController@pdf') }}" --}}
+
                       src="/reiss/procedure/master/pdf/{{$procedures->id}}#toolbar=0"
                       style="width:95%; 
                             height:130%; 
@@ -131,7 +130,6 @@
                               <th>Document No.</th>
                               <th>Revision No.</th>
                               <th>Status</th>
-                              {{-- <th>Action</th> --}}
                           </tr>
                         </thead>
                       </table>
@@ -183,23 +181,23 @@
 
     $(document).ready(function () {
 
-            // document.onkeydown = function(e) {
-            //   if(event.keyCode == 123) {
-            //     return false;
-            //   }
-            //   if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
-            //     return false;
-            //   }
-            //   if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
-            //     return false;
-            //   }
-            //   if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
-            //     return false;
-            //   }
-            //   if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
-            //     return false;
-            //   }
-            // }
+            document.onkeydown = function(e) {
+              if(event.keyCode == 123) {
+                return false;
+              }
+              if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
+                return false;
+              }
+              if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
+                return false;
+              }
+              if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
+                return false;
+              }
+              if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
+                return false;
+              }
+            }
         $('#copy_department').change(function () {
             var id = $(this).val();
             $('#copy_dept').val(id);
@@ -243,14 +241,12 @@
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    // return '<a href="procedure/view_revision/'+row.id+'">'+ row.document_title +'</a>';
                     return row.document_title;
                   }
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
                     return '<a href="../view/'+row.procedures.id+'">'+ row.document_no +'</a>';
-                    // return '<a href="../view/{{Illuminate\Support\Facades\Crypt::encrypt('+row.procedures.id+')}}">'+ row.document_no + '</a>';
                   }
               },
               {   "data": "id",

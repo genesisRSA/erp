@@ -207,7 +207,7 @@
                 
                 <div class="col s12 m12 l12">
                   <div class="input-field col s12 m10 l10">
-                    <textarea class="materialize-textarea" type="text" id="app_remarks" name="remarks" placeholder="Please input remarks here.." style="height: 150px; border-left: 10px; border-color: black; padding-left:20px;" required/></textarea>
+                    <textarea class="materialize-textarea" type="text" id="app_remarks" name="remarks" placeholder="Please input remarks here.." style="height: 150px; border-left: 10px; border-color: black; padding-left:20px;" required></textarea>
                     <label for="icon_prefix2">Remarks</label>
                   </div>
                   
@@ -240,7 +240,6 @@
 
 
         $('#rev_description').trigger('autoresize');
-        // $('#procedure_tab').tabs('select','details');
 
         document.onmousedown = disableRightclick;
         var message = "Right click is not allowed in this page";
@@ -251,23 +250,23 @@
           }
         }
 
-        // document.onkeydown = function(e) {
-        //       if(event.keyCode == 123) {
-        //         return false;
-        //       }
-        //       if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
-        //         return false;
-        //       }
-        //       if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
-        //         return false;
-        //       }
-        //       if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
-        //         return false;
-        //       }
-        //       if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
-        //         return false;
-        //       }
-        // }
+        document.onkeydown = function(e) {
+              if(event.keyCode == 123) {
+                return false;
+              }
+              if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
+                return false;
+              }
+              if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
+                return false;
+              }
+              if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
+                return false;
+              }
+              if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
+                return false;
+              }
+        }
 
         $.get('getApproverMatrix/'+{{$procedures->id}}, function(response){
           
