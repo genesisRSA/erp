@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ProceduresRevision extends Model
+class ProceduresMasterCopy extends Model
 {
     public function procedures()
     {

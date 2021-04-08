@@ -28,7 +28,25 @@
               <input type="hidden" name="id" id="id_app" value="{{$procedures->id}}"/>
               <input type="hidden" name="seq" id="seq_app" value="{{$procedures->current_sequence}}"/>
               <input type="hidden" name="appid" id="appid_app" value="{{$procedures->current_approver}}"/>
- 
+
+              @if($procedures->revision_no!=0)
+              <input type="hidden" id="rev_dpr_code_h" name="dpr_code_h"  class="grey lighten-5" value="{{$procedures_h->dpr_code}}"/>
+              <input type="hidden" id="rev_requested_date_h" name="requested_date_h" value="{{$procedures_h->requested_date}}"/>
+              <input type="hidden" id="rev_document_no_h" name="document_no_h" value="{{$procedures_h->document_no}}"  placeholder=" "/>
+              <input type="hidden" id="rev_revision_no_h" name="revision_no_h" value="{{$procedures_h->revision_no}}" placeholder=" "/>
+              <input type="hidden" id="rev_change_description_h" name="change_description_h" value="{{$procedures_h->change_description}}"/>
+              <input type="hidden" id="rev_change_reason_h" name="change_reason_h" value="{{$procedures_h->change_reason}}"/>
+              <input type="hidden" id="file_name_h" name="file_name_h" value="{{$procedures_h->file_name}}" />
+              <input type="hidden" id="created_by_h" name="created_by_h" value="{{$procedures_h->created_by}}" />
+              <input type="hidden" id="reviewed_by_h" name="reviewed_by_h" value="{{$procedures_h->reviewed_by}}" />
+              <input type="hidden" id="approved_by_h" name="approved_by_h" value="{{$procedures_h->approved_by}}" />
+              <input type="hidden" id="status_h" name="status_h" value="{{$procedures_h->status}}"/>
+              @endif
+
+              <input type="hidden" id="created_by" name="created_by" value="{{$procedures->created_by}}" />
+              <input type="hidden" id="file_name" name="file_name" value="{{$procedures->file_name}}" />
+              <input type="hidden" id="status" name="status">
+
               {{-- hidden items --}}
               <div id="procedure" name="procedure">
                 <br>
@@ -36,13 +54,11 @@
                   <div class="col s12 m12 l12">
                       <div class="col s12 m12 l12">
                           <div class="input-field col s12 m3 l3">
-                              <input type="text" id="rev_dpr_code" name="dpr_code"  class="grey lighten-5" value="{{$lastDoc}}" readonly/>
-                              <input type="hidden" id="rev_dpr_code_h" name="dpr_code_h"  class="grey lighten-5" value="{{$procedures->dpr_code}}" readonly/>
+                              <input type="text" id="rev_dpr_code" name="dpr_code"  class="grey lighten-5" value="{{$procedures->dpr_code}}" readonly/>
                               <label for="dpr_code">DPR No.<sup class="red-text"></sup></label>
                           </div>
                           <div class="input-field col s12 m3 l3">
-                              <input type="text" id="rev_requested_date" name="requested_date" class="grey lighten-5" value="{{date('Y-m-d')}}" readonly/>
-                              <input type="hidden" id="rev_requested_date_h" name="requested_date_h" value="{{$procedures->requested_date}}" readonly/>
+                              <input type="text" id="rev_requested_date" name="requested_date" class="grey lighten-5" value="{{$procedures->requested_date}}" readonly/>
                               <label for="requested_date">Date Requested<sup class="red-text"></sup></label>
                           </div> 
                       </div>
@@ -53,13 +69,11 @@
                               <label for="document_title">Document Title<sup class="red-text">*</sup></label>
                           </div>
                           <div class="input-field col s12 m3 l3">
-                              <input type="text" id="rev_document_no" name="document_no"  value="{{$docNo}}"  placeholder=" " readonly/>
-                              <input type="hidden" id="rev_document_no_h" name="document_no_h"  value="{{$procedures->document_no}}"  placeholder=" " readonly/>
+                              <input type="text" id="rev_document_no" name="document_no"  value="{{$procedures->document_no}}"  placeholder=" " readonly/>
                               <label for="document_no">Document No.<sup class="red-text"></sup></label>
                           </div>
                           <div class="input-field col s12 m3 l3">
-                              <input type="text" id="rev_revision_no" name="revision_no" value="{{$procedures->revision_no+1}}" placeholder=" " readonly/>
-                              <input type="hidden" id="rev_revision_no_h" name="revision_no_h" value="{{$procedures->revision_no}}" placeholder=" " readonly/>
+                              <input type="text" id="rev_revision_no" name="revision_no" value="{{$procedures->revision_no}}" placeholder=" " readonly/>
                               <label for="revision_no">Revision No.<sup class="red-text"></sup></label>
                           </div>
                       </div>
@@ -67,22 +81,17 @@
                       <div class="col s12 m12 l12">
                           <div class="input-field col s12 m6 l6">
                               <textarea id="rev_change_description" name="change_description" class="materialize-textarea" placeholder="Some text here.." style="padding-bottom: 0px; border-bottom-width: 2px; margin-bottom: 0px;" readonly>{{$procedures->change_description}}</textarea>
-
-                              <input id="rev_change_description_h" name="change_description_h" type="hidden" value="{{$procedures->change_description}}" />
-
                               <label for="change_description">Description of Change(s)<sup class="red-text">*</sup></label>
                           </div>
 
                           <div class="input-field col s12 m6 l6">
                               <textarea id="rev_change_reason" name="change_reason" class="materialize-textarea"  placeholder="Some text here.." style="padding-bottom: 0px; border-bottom-width: 2px; margin-bottom: 0px;" readonly>{{$procedures->change_reason}}</textarea>
-
-                              <input id="rev_change_reason_h" name="change_reason_h" type="hidden" value="{{$procedures->change_reason}}" />
-
                               <label for="change_reason">Reason for Preparation / Revision<sup class="red-text">*</sup></label>
                           </div>
                       </div>
                       
                       <div class="col s12 m12 l12">
+
 
                         <h6 style="padding: 10px; padding-top: 20px; padding-left: 10px; padding-right: 10px; margin-bottom: 10px;background-color:#0d47a1" class="white-text"><b>Procedure Attachment(s)</b></h6>  
                         <div class="col s12 m12 l12">
@@ -105,7 +114,7 @@
                           </div>
             
                             <embed
-                                src="{{ action('ProceduresController@getDocument', ['id'=> $idx]) }}#toolbar=1"
+                                src="{{ action('ProceduresController@getDocument', ['id'=> $idx, 'loc' => $procedures->status]) }}#toolbar=0"
                                 style="width:100%; 
                                       height:130%; 
                                       " type="application/pdf"
@@ -136,10 +145,6 @@
                               </div>
                             </div>
                           </div>
-
-
-
-                          
                       </div>
                   </div>
                 </div>
@@ -207,7 +212,7 @@
                   </div>
                   
                   <div class="input-field col s12 m2 l2">
-                    <input type="hidden" id="status" name="status">
+
         
                     <button id="btnApp" name="approve" value="Approve" onclick="getStatus('Approved');" class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Approve&nbsp;</button> <br> 
                     
@@ -232,6 +237,8 @@
     var searchInput = 'rev_complete_address';
 
     $(document).ready(function () {
+
+
         $('#rev_description').trigger('autoresize');
         // $('#procedure_tab').tabs('select','details');
 
@@ -243,6 +250,24 @@
               return false;    
           }
         }
+
+        // document.onkeydown = function(e) {
+        //       if(event.keyCode == 123) {
+        //         return false;
+        //       }
+        //       if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
+        //         return false;
+        //       }
+        //       if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
+        //         return false;
+        //       }
+        //       if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
+        //         return false;
+        //       }
+        //       if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
+        //         return false;
+        //       }
+        // }
 
         $.get('getApproverMatrix/'+{{$procedures->id}}, function(response){
           

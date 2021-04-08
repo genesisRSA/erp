@@ -53,6 +53,21 @@ return [
             'root' => storage_path('app').'/attachments/sales_order',
         ],
 
+        'documents' => [
+            'driver' => 'local',
+            'root' => storage_path('app').'/documents/draft/',
+        ],
+
+        'master' => [
+            'driver' => 'local',
+            'root' => storage_path('app').'/documents/master/',
+        ],
+
+        'controlled' => [
+            'driver' => 'local',
+            'root' => storage_path('app').'/documents/controlled/',
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

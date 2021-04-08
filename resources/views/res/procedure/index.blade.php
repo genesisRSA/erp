@@ -14,12 +14,13 @@
       @if($permission[0]["approval"]==true)
       <li class="tab col s12 m4 l4"><a href="#approval">For Approval</a></li>
       @endif
-      {{-- <li class="tab col s12 m4 l4"><a  >Master Copy</a></li>
-      <li class="tab col s12 m4 l4"><a  >Controlled Copy</a></li> --}}
+      @if($permission[0]["masterlist"]==true)
+      <li class="tab col s12 m4 l4"><a href="#master">Master Copy</a></li>
+      <li class="tab col s12 m4 l4"><a href="#controlled">Controlled Copy</a></li>
+      @endif
     </ul>
 
     <div id="ongoing" name="ongoing">
-
         <div class="card" style="margin-top: 0px">
           <div class="card-content">
             <table class="responsive-table highlight" id="procedures-dt" style="width: 100%">
@@ -38,9 +39,9 @@
           </div>
         </div>
       
-    @if($permission[0]["add"]==true)
-      <a href="{{ route('procedure.create') }}" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button" data-position="left" data-tooltip="Add Procedures"><i class="material-icons">add</i></a>
-    @endif
+      @if($permission[0]["add"]==true)
+        <a href="{{ route('procedure.create') }}" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button" data-position="left" data-tooltip="Add Procedures"><i class="material-icons">add</i></a>
+      @endif
     </div>
 
     @if($permission[0]["approval"]==true)
@@ -63,6 +64,48 @@
           </div>
         </div>
     </div>
+    @endif  
+
+    @if($permission[0]["masterlist"]==true)
+    <div id="master" name="master">
+        <div class="card" style="margin-top: 0px">
+          <div class="card-content">
+            <table class="responsive-table highlight" id="master-dt" style="width: 100%">
+              <thead>
+                <tr>
+                    <th>ID</th> 
+                    <th>DPR No.</th>
+                    <th>Document Title</th>
+                    <th>Document No.</th>
+                    <th>Revision No.</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+    </div>
+
+    <div id="controlled" name="controlled">
+      <div class="card" style="margin-top: 0px">
+        <div class="card-content">
+          <table class="responsive-table highlight" id="controlled-dt" style="width: 100%">
+            <thead>
+              <tr>
+                  <th>ID</th> 
+                  <th>DPR No.</th>
+                  <th>Document Title</th>
+                  <th>Document No.</th>
+                  <th>Revision No.</th>
+                  <th>Status</th>
+                  <th>Action</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+  </div>
     @endif  
 
   </div>
@@ -207,14 +250,12 @@
         });
     }
 
- 
-
     var procedures = $('#procedures-dt').DataTable({
         "lengthChange": false,
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
+        "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/procedures",
         "columns": [
             {  "data": "id" },
             {  "data": "id",
@@ -241,49 +282,49 @@
             {   "data": "status",
                 "render": function ( data, type, row, meta ) {
                   switch(data){
-                    case 'For Review':
-                      return  '<span class="new badge green white-text" data-badge-caption="">For Review</span>';
+                    case 'Approved':
+                      return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
                     break;
                     case 'Pending':
                       return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
                     break;
-                    case 'Approved':
+                    case 'Created':
+                      return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
+                    break;
+                    case 'Rejected':
                       return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
                     break;
+                    case 'For Approval':
+                      return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
+                    break;
+                    case 'For Review':
+                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
+                    break;
+                    case 'Voided':
+                      return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
+                    break;
+                    case 'Quoted':
+                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
+                    break;
+                    case 'Ordered':
+                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Ordered</span>';
+                    break;
+                    // case 'Created':
+                    //   return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
+                    // break;
                   }
                    
                 }
             },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return  '<a href="procedure/revise/'+row.id+'" class="btn-small amber darken3 waves-effect waves-dark"><i class="material-icons">create</i></a>';
-
-
-                  // if(row.status=='Pending')
-                  // {
-                  //   @if($permission[0]["void"]==true && $permission[0]["edit"]==true)
-                  //     return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem('+row.id+')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" onclick="voidItem('+row.id+')"><i class="material-icons">grid_off</i></a>';
-                  //   @elseif($permission[0]["void"]==false && $permission[0]["edit"]==false)
-                  //     return  '<a href="#!" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#!" class="btn-small red lighten-1 waves-effect waves-light" disabled><i class="material-icons">grid_off</i></a>';
-                  //   @elseif($permission[0]["void"]==false && $permission[0]["edit"]==true)
-                  //     return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editItem('+row.id+')"><i class="material-icons">create</i></a> <a href="#!" class="btn-small red lighten-1 waves-effect waves-light" disabled><i class="material-icons">grid_off</i></a>';
-                  //   @elseif($permission[0]["void"]==true && $permission[0]["edit"]==false)
-                  //     return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" onclick="voidItem('+row.id+')"><i class="material-icons">grid_off</i></a>';
-                  //   @endif
-                  // }
-                  // else if(row.status=='Voided' || row.status=='Quoted')
-                  // {
-                  //   return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" disabled><i class="material-icons">grid_off</i></a>';
-                  // }
-                  // else
-                  // {
-                  //   @if($permission[0]["void"]==true)
-                  //     return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" onclick="voidItem('+row.id+')"><i class="material-icons">grid_off</i></a>';
-                  //   @else
-                  //     return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red lighten-1 waves-effect waves-light" disabled><i class="material-icons">grid_off</i></a>';
-                  //   @endif
-                  // }
-
+                  
+                  if(row.status=='Approved')
+                  {
+                    return  '<a href="procedure/revise/'+row.id+'" class="btn-small amber darken3 waves-effect waves-dark"><i class="material-icons">create</i></a>';
+                  } else {
+                    return  '<a href="#!" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a>';
+                  }
 
                 }
             }
@@ -297,7 +338,7 @@
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/reiss/procedure/all_approval/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
+        "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/approval",
         "columns": [
             {  "data": "id" },
             {  "data": "id",
@@ -329,6 +370,9 @@
                     case 'Pending':
                       return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
                     break;
+                    case 'Created':
+                      return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
+                    break;
                     case 'Rejected':
                       return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
                     break;
@@ -354,6 +398,140 @@
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
                   return  '<a href="procedure/approval/'+row.id+'" class="btn-small blue darken3 waves-effect waves-dark"><i class="material-icons">rate_review</i></a>';
+                }
+            }
+        ]
+    });
+    @endif
+
+    @if($permission[0]["masterlist"]==true)
+    var masterdt = $('#master-dt').DataTable({
+        "lengthChange": false,
+        "pageLength": 15,
+        "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+        "pagingType": "full",
+        "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/master",
+        "columns": [
+            {  "data": "id" },
+            {  "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.dpr_code;
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.document_title;
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return '<a href="procedure/view/'+row.id+'">'+ row.document_no +'</a>';
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.revision_no;
+                }
+            },
+            {   "data": "status",
+                "render": function ( data, type, row, meta ) {
+                  switch(data){
+                    case 'Approved':
+                      return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
+                    break;
+                    case 'Pending':
+                      return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
+                    break;
+                    case 'Created':
+                      return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
+                    break;
+                    case 'Rejected':
+                      return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
+                    break;
+                    case 'For Approval':
+                      return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
+                    break;
+                    case 'For Review':
+                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
+                    break;
+                    case 'Voided':
+                      return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
+                    break;
+                    case 'Quoted':
+                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
+                    break;
+                    case 'Ordered':
+                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Ordered</span>';
+                    break;
+ 
+                  }
+                   
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  if(row.status=='Approved')
+                  {
+                    return  '<a href="procedure/master/'+row.id+'" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
+                  }else{
+                    return  '<a href="#!" class="btn-small blue darken3 waves-effect waves-dark" disabled><i class="small material-icons">note_add</i></a>';
+                  }
+                }
+            }
+        ]
+    });
+
+    var controlled = $('#controlled-dt').DataTable({
+        "lengthChange": false,
+        "pageLength": 15,
+        "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+        "pagingType": "full",
+        "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/controlled",
+        "columns": [
+            {  "data": "id" },
+            {  "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.procedures.dpr_code;
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.document_title;
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return '<a href="procedure/view/'+row.procedures.id+'">'+ row.document_no +'</a>';
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.revision_no;
+                }
+            },
+            {   "data": "status",
+                "render": function ( data, type, row, meta ) {
+                  switch(data){
+                    case 'Created':
+                      return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
+                    break;
+                  
+                    case 'For CC':
+                      return  '<span class="new badge blue white-text" data-badge-caption="">For CC</span>';
+                    break;
+                   
+                  }
+                   
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  if(row.status=='For CC')
+                  {
+                    return  '<a href="procedure/copy/'+row.procedures.id+'" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
+                  }else{
+                    return  '<a href="#!" class="btn-small blue darken3 waves-effect waves-dark" disabled><i class="small material-icons">note_add</i></a>';
+                  }
                 }
             }
         ]

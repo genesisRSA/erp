@@ -212,15 +212,22 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::resource('/reiss/procedure', 'ProceduresController');
     Route::post('/reiss/procedure/revision', 'ProceduresController@revision')->name('procedure.revision');
     Route::post('/reiss/procedure/approve', 'ProceduresController@approve')->name('procedure.approve');
-    // Route::post('/reiss/procedure/view', 'ProceduresController@view')->name('procedure.view');
+    Route::post('/reiss/procedure/makemaster', 'ProceduresController@makeMaster')->name('procedure.makemaster');
+    Route::post('/reiss/procedure/makecopy', 'ProceduresController@makeCopy')->name('procedure.makecopy');
+    Route::post('/reiss/procedure/getPostDocument', 'ProceduresController@getPostDocument')->name('procedure.getPostDocument');
     Route::get('/reiss/procedure/view/{id}', 'ProceduresController@view')->name('procedure.view');
     Route::get('/reiss/procedure/view_revision/{id}', 'ProceduresController@view_revision')->name('procedure.view_revision');
     Route::get('/reiss/procedure/revise/{id}', 'ProceduresController@revise')->name('procedure.revise');
-    Route::get('/reiss/procedure/getDocument/{id}', 'ProceduresController@getDocument')->name('procedure.getDocument');
-    Route::post('/reiss/procedure/getPostDocument', 'ProceduresController@getPostDocument')->name('procedure.getPostDocument');
+    Route::get('/reiss/procedure/getDocument/{id}/{loc}', 'ProceduresController@getDocument')->name('procedure.getDocument');
+    Route::get('/reiss/procedure/master/pdf/{id}', 'ProceduresController@pdf')->name('procedure.pdf');
+    Route::get('/reiss/procedure/master/pdfx/{id}', 'ProceduresController@pdfx')->name('procedure.pdfx');
+    Route::get('/reiss/procedure/approval/{id}', 'ProceduresController@approval_view')->name('procedure.approval');
+    Route::get('/reiss/procedure/master/{id}', 'ProceduresController@master_view')->name('procedure.master');
+    Route::get('/reiss/procedure/copy/{id}', 'ProceduresController@copy_view')->name('procedure.copy');
+
     Route::get('/reiss/procedure/getApprover/{id}', 'ProceduresController@getApprover');
     Route::get('/reiss/procedure/approval/getApproverMatrix/{id}', 'ProceduresController@getApproverMatrix');
-    Route::get('/reiss/procedure/approval/{id}', 'ProceduresController@approval_view')->name('procedure.approval');
+
 
 
     Route::get('/reiss/dashboard/{parent}', 'ReissDashboardController@index');

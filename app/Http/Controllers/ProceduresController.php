@@ -7,18 +7,22 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
-// use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Storage;
 use App\Mail\SalesMailable;
 use App\SitePermission;
 use App\ApproverMatrix;
 use App\Procedure;
 use App\ProceduresRevision;
+use App\ProceduresMasterCopy;
+use App\ProceduresControlledCopy;
 use App\Site;
 use App\Employee;
+use App\Department;
 use Validator;
 use Response;
-use Storage;
 use Auth;
+use PDF;
+// use Elibyy\TCPDF\Facades\TCPDF;
 
 class ProceduresController extends Controller
 {
@@ -27,13 +31,14 @@ class ProceduresController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index()
     {
         $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
                                     ->where('module','=','Procedures')
                                     ->first();
 
-        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":true,"edit":true,"view":true,"delete":true,"void":true,"approval":true}]', true));
+        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":true,"edit":true,"view":true,"delete":true,"void":true,"approval":true,"masterlist":true}]', true));
 
         return view('res.procedure.index')
                 ->with('site','res')
@@ -41,15 +46,84 @@ class ProceduresController extends Controller
                 ->with('subpage','procedures')
                 ->with('permission',$permissionx);
     }
-
-    public function all($id)
+ 
+    public function pdf($id)
     {
- 
+        $procedure = Procedure::find($id);
+        $pdf = 'file://'.realpath('../storage/app/'.$procedure->file_name);
+        $signature = realpath('../storage/app/assets/copy.png');
+        $pageCount = PDF::setSourceFile($pdf);
+        for($i=1; $i <= $pageCount; $i++){
+            PDF::AddPage();
+            $page = PDF::importPage($i);
+            PDF::useTemplate($page, 0, 0);
+            PDF::setPrintHeader(false);
+            PDF::setPrintFooter(true);
+            PDF::setFooterCallback(function($pdf) {
+                $signature = realpath('../storage/app/assets/copy_m_nv.png');
+                $pdf->SetY(-15);
+                $pdf->Cell(0, 40, $pdf->Image($signature, 10, 315 - 50, 90, 30, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+
+            });
+            PDF::SetMargins(false, false);
+        }
+        PDF::Output('hello_world.pdf', 'I');
+    }
+
+    public function pdfx($id,$loc)
+    {
+        $procedure = Procedure::find($id);
+        $newFile = ($loc == "master" ? 'documents/master/master_'.str_replace("documents/draft/","",$procedure->file_name) : 'documents/controlled/cc_'.str_replace("documents/draft/","",$procedure->file_name));
+        Storage::copy($procedure->file_name,$newFile);
+        $pdf = 'file://'.realpath('../storage/app/'.$newFile);
+        $signature = realpath('../storage/app/assets/copy.png');
+        $pageCount = PDF::setSourceFile($pdf);
+        for($i=1; $i <= $pageCount; $i++){
+            PDF::AddPage();
+            $page = PDF::importPage($i);
+            PDF::useTemplate($page, 0, 0);
+            PDF::setPrintHeader(false);
+            PDF::setPrintFooter(true);
+            PDF::setFooterCallback(function($pdf) {
+                $signature = realpath('../storage/app/assets/copy_m_nv.png');
+                $pdf->SetY(-15);
+                $pdf->Cell(0, 40, $pdf->Image($signature, 10, 315 - 50, 90, 30, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+            });
+            PDF::SetMargins(false, false);
+        }
+        PDF::Output(realpath('../storage/app/'.$newFile), 'F');
+        return realpath('../storage/app/'.$newFile);
+    }
+
+    public function all($id, $loc)
+    {
         $idx = Crypt::decrypt($id);
- 
-        $data =  Procedure::where('created_by','=',$idx)
-                                ->get();
-                    
+        $locx = $loc;
+        switch($locx){
+            case "procedures":
+                $data =  Procedure::where('created_by','=',$idx)
+                ->get();
+            break;
+            case "approval":
+                $data = Procedure::where('status','<>','Approved')
+                        ->where('status','<>','Rejected')
+                        ->where('status','<>','Created')
+                        ->where('status','<>','Voided')
+                        ->where('current_approver','=',$idx)
+                        ->get();
+            break;
+            case "master":
+                $data = Procedure::where('status','<>','Pending')
+                        ->where('status','<>','For Review')
+                        ->where('status','<>','Approval')
+                        ->get();
+            break;
+            case "controlled":
+                $data = ProceduresMasterCopy::with('procedures:document_no,dpr_code,id')
+                        ->get();
+            break;
+        }
+            
         return response()
         ->json([
             "data" => $data
@@ -58,34 +132,15 @@ class ProceduresController extends Controller
 
     public function all_revision($id)
     {
- 
-        $idx = Crypt::decrypt($id);
- 
-        $data =  ProceduresRevision::where('created_by','=',$idx)
+        $data =  ProceduresRevision::where('document_no','=',$id)
+                                ->with('procedures:document_no,id')
                                 ->get();
                     
         return response()
         ->json([
             "data" => $data
         ]); 
-    }
-
-    public function all_approval($id)
-    {
-        
-        $idx = Crypt::decrypt($id);
-
-        $data = Procedure::where('status','<>','x')
-                            ->where('status','<>','Rejected')
-                            ->where('status','<>','Voided')
-                            ->where('current_approver','=',$idx)
-                            ->get();
-
-        return response()
-        ->json([
-            "data" => $data
-        ]); 
-    }
+    } 
 
     public function getApprover($id)
     {   
@@ -104,11 +159,11 @@ class ProceduresController extends Controller
 
     public function create()
     {
-        $employee = Employee::where('emp_no','=','0204-2021');
+        $employee = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
         $docxCount = Procedure::where('created_by','=',Auth::user()->emp_no)
                                 ->count();
         $lastDocx = str_pad($docxCount+1,3,"0",STR_PAD_LEFT);
-        $docNo =  "RSA-ITS-".$lastDocx;
+        $docNo =  $employee->sect_code."-".$lastDocx;
         $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
         ->where('module','=','Procedures')
         ->first();
@@ -133,6 +188,7 @@ class ProceduresController extends Controller
             // 'desc' => 'required',
             // 'reas' => 'required',
             // 'file' => 'required',
+            'app_seq' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $field);
@@ -178,12 +234,12 @@ class ProceduresController extends Controller
 
             $procedure->reviewed_by = $request->input('','');
             $procedure->approved_by = $request->input('','');
-            $procedure->status = 'For Review';
+            $procedure->status = 'Pending';
 
             if($request->hasFile('file'))
             {
                 //$filename = $request->file('file')->getClientOriginalName();
-                $path = $request->file('file')->store('documents');
+                $path = $request->file('file')->store('documents/draft');
                 // $path = str_replace('public', '/storage', $path);
                 $url = env('APP_URL') . Storage::url($path);
             } 
@@ -192,6 +248,93 @@ class ProceduresController extends Controller
 
             if($procedure->save()){
                 return redirect()->route('procedure.index')->withSuccess('Procedure Successfully Added');
+            }
+        }
+    }
+
+    public function makeMaster(Request $request)
+    {
+        $field = [
+            'id' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $field);
+         
+        if ($validator->fails()) {
+            return redirect()->route('procedure.index')
+                        ->withInput()
+                        ->withErrors($validator);
+        }else{
+            $employee = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
+            $department = $employee->dept_code;
+
+            $fileName = self::pdfx($request->input('id'),"master");
+            $filePath = str_replace('\\','/', $fileName);
+            $newFileName = substr($filePath, -51, 51);
+
+            $master = new ProceduresMasterCopy();
+            $master->document_title = $request->input('document_title','');
+            $master->file_name = $newFileName;
+            $master->revision_no = $request->input('revision_no','');
+            $master->document_no = $request->input('document_no','');
+            $master->department = $department;
+            $master->process_owner = $request->input('process_owner','');
+            $master->released_by = Auth::user()->emp_no;
+            $master->status = 'For CC';
+
+            $procedure = Procedure::find($request->input('id'));
+            $procedure->status = 'Created';
+            
+            // $filename =  str_replace("documents/draft/", "", $procedure->file_name);
+            // return $filename;
+            // Storage::disk('master')->put($filename,file_get_contents(self::pdfx($request->input('id'))));
+
+            if($master->save()){
+                $procedure->save();
+                return redirect()->route('procedure.index')->withSuccess('Master Copy Successfully Created');
+            }
+        }
+    }
+
+    public function makeCopy(Request $request)
+    {
+        $field = [
+            'id' => 'required',
+            'dept' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $field);
+         
+        if ($validator->fails()) {
+            return redirect()->route('procedure.index')
+                        ->withInput()
+                        ->withErrors($validator);
+        }else{
+            $employee = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
+            $department = $employee->dept_code;
+
+            $fileName = self::pdfx($request->input('id'),"controlled");
+            $filePath = str_replace('\\','/', $fileName);
+            $newFileName = substr($filePath, -51, 51);
+
+            $cc = new ProceduresControlledCopy();
+            $cc->document_title = $request->input('document_title','');
+            $cc->file_name = $newFileName;
+            $cc->revision_no = $request->input('revision_no','');
+            $cc->document_no = $request->input('document_no','');
+            $cc->department = $request->input('department','');
+            $cc->process_owner = $request->input('process_owner','');
+            $cc->released_by = Auth::user()->emp_no;
+            $cc->status = 'Created';
+
+            $procedure = ProceduresMasterCopy::where('document_no','=',$request->input('document_no'))
+                                            ->where('revision_no','=',$request->input('revision_no'))
+                                            ->first();
+            $procedure->status = 'Created';
+
+            if($cc->save()){
+                $procedure->save();
+                return redirect()->route('procedure.index')->withSuccess('Controlled Copy Successfully Created');
             }
         }
     }
@@ -216,41 +359,64 @@ class ProceduresController extends Controller
                         ->withErrors($validator);
         }else{
             // return  $request->input('change_description_h');
-            $procedure_h = new ProceduresRevision();
-            $procedure_h->dpr_code =            $request->input('dpr_code_h');
-            $procedure_h->requested_date =      $request->input('requested_date_h');
-            $procedure_h->document_title =      $request->input('document_title');
-            $procedure_h->document_no =         $request->input('document_no_h');
-            $procedure_h->revision_no =         $request->input('revision_no_h');
-            $procedure_h->change_description =  $request->input('change_description_h');
-            $procedure_h->change_reason =       $request->input('change_reason_h');
-            $procedure_h->created_by =          Auth::user()->emp_no;
-            $procedure_h->reviewed_by =         $request->input('reviewed_by');
-            $procedure_h->approved_by =         $request->input('approved_by');
-            $procedure_h->status =              $request->input('status_h');
-            $procedure_h->file_name =           $request->input('file_h');
-            $procedure_h->save();
+            
+            // $procedure_h = new ProceduresRevision();
+            // $procedure_h->dpr_code =            $request->input('dpr_code_h');
+            // $procedure_h->requested_date =      $request->input('requested_date_h');
+            // $procedure_h->document_title =      $request->input('document_title');
+            // $procedure_h->document_no =         $request->input('document_no_h');
+            // $procedure_h->revision_no =         $request->input('revision_no_h');
+            // $procedure_h->change_description =  $request->input('change_description_h');
+            // $procedure_h->change_reason =       $request->input('change_reason_h');
+            // $procedure_h->created_by =          Auth::user()->emp_no;
+            // $procedure_h->reviewed_by =         $request->input('reviewed_by');
+            // $procedure_h->approved_by =         $request->input('approved_by');
+            // $procedure_h->status =              $request->input('status_h');
+            // $procedure_h->file_name =           $request->input('file_h');
+            // $procedure_h->save();
 
-            $procedure = new ProceduresRevision();
-            $procedure->dpr_code =              $request->input('dpr_code','');
-            $procedure->requested_date =        $request->input('requested_date','');
-            $procedure->document_title =        $request->input('document_title','');
-            $procedure->document_no =           $request->input('document_no','');
-            $procedure->revision_no =           $request->input('revision_no','');
-            $procedure->change_description =    $request->input('change_description','');
-            $procedure->change_reason =         $request->input('change_reason','');
-            $procedure->created_by =            Auth::user()->emp_no;
-            $procedure->reviewed_by =           $request->input('','');
-            $procedure->approved_by =           $request->input('','');
-            $procedure->status =                'For Review';
+            $procedure = new Procedure();
+            $procedure->dpr_code = $request->input('dpr_code','');
+            $procedure->requested_date = $request->input('requested_date','');
+            $procedure->document_title = $request->input('document_title','');
+            $procedure->document_no = $request->input('document_no','');
+            $procedure->revision_no = $request->input('revision_no','');
+            $procedure->change_description = $request->input('change_description','');
+            $procedure->change_reason = $request->input('change_reason','');
+            $procedure->created_by = Auth::user()->emp_no;
+            if($request->input('app_seq'))
+            {
+                $approvers = array();
+
+                    for( $i = 0 ; $i < count($request->input('app_seq')) ; $i++ )
+                    {
+                        array_push($approvers, [
+                                                'sequence' => $request->input('app_seq.'.$i),
+                                                'approver_emp_no' => $request->input('app_id.'.$i),
+                                                'approver_name' => $request->input('app_fname.'.$i),
+                                                'next_status' => $request->input('app_nstatus.'.$i),
+                                                'is_gate' => $request->input('app_gate.'.$i)
+                                                ]);
+                        if($request->input('app_seq.'.$i)==0) {
+                            $procedure->current_sequence = $request->input('app_seq.'.$i);
+                            $procedure->current_approver = $request->input('app_id.'.$i);
+                        }
+                    }
+
+                    $approvers = json_encode($approvers);            
+                    $procedure->matrix = $approvers;
+            }
+
+            $procedure->reviewed_by = '';
+            $procedure->approved_by = '';
+            $procedure->status = 'Pending';
 
             if($request->hasFile('file'))
             {
-                $path = $request->file('file')->store('documents');
+                $path = $request->file('file')->store('documents/draft');
             } 
 
             $procedure->file_name = $path;
-
             if($procedure->save()){
                 return redirect()->route('procedure.index')->withSuccess('Procedure Revision Successfully Added');
             }
@@ -269,23 +435,7 @@ class ProceduresController extends Controller
                 ->with('site','res')
                 ->with('page','dcc')
                 ->with('subpage','procedures')
-                ->with('idx', $procedures->id);
-    }
-
-    public function view_revision($id)
-    {    
-        $docxCount = Procedure::where('created_by','=',Auth::user()->emp_no)
-                            ->count();
-        $lastDocx = str_pad($docxCount+1,3,"0",STR_PAD_LEFT);
-        $docNo =  "RSA-ITS-".$lastDocx;
-
-        $procedures = ProceduresRevision::find($id);
-        return view('res.procedure.view')
-                ->with('site','res')
-                ->with('page','dcc')
-                ->with('subpage','procedures')
-                ->with('docNo',$docNo)
-                ->with('idx', $procedures->id);
+                ->with('procedures', $procedures);
     }
 
     public function getPostDocument(Request $request)
@@ -307,12 +457,15 @@ class ProceduresController extends Controller
         ]);
     }
 
-    public function getDocument($id)
+    public function getDocument($id, $loc)
     {
+  
         $document = Procedure::findOrFail($id);
+        
         $filename = str_replace("documents/", "", $document->file_name);
-        $filePath = $document->file_name;
-
+        
+        $filePath = ($loc == 'Created' ?  str_replace("draft/","master/master_", $document->file_name) : $document->file_name );
+ 
         if( ! Storage::exists($filePath) ) {
         abort(404);
         }
@@ -333,11 +486,11 @@ class ProceduresController extends Controller
     public function revise($id)
     {
         
-        $employee = Employee::where('emp_no','=','0204-2021');
+        $employeeSec = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
         $docxCount = Procedure::where('created_by','=',Auth::user()->emp_no)
                                 ->count();
         $lastDocx = str_pad($docxCount+1,3,"0",STR_PAD_LEFT);
-        $docNo =  "RSA-ITS-".$lastDocx;
+        $docNo =  $employeeSec->sect_code."-".$lastDocx;
         $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
         ->where('module','=','Procedures')
         ->first();
@@ -455,6 +608,45 @@ class ProceduresController extends Controller
                     $procedure_app->approved_by = $curr_app;
                     // $procedure_app->updated_by = $curr_app;
                     $matrix = [];
+
+                    $revNo = $request->input('revision_no') ? $request->input('revision_no') : 0;
+                    $revNoH = $request->input('revision_no_h') ? $request->input('revision_no_h') : 0;
+
+                        if($revNo>=1)
+                            {
+                                if($revNoH==0)
+                                {
+                                    $procedure_h = new ProceduresRevision();
+                                    $procedure_h->dpr_code =            $request->input('dpr_code_h');
+                                    $procedure_h->requested_date =      $request->input('requested_date_h');
+                                    $procedure_h->document_title =      $request->input('document_title');
+                                    $procedure_h->document_no =         $request->input('document_no_h');
+                                    $procedure_h->revision_no =         $request->input('revision_no_h');
+                                    $procedure_h->change_description =  $request->input('change_description_h');
+                                    $procedure_h->change_reason =       $request->input('change_reason_h');
+                                    $procedure_h->created_by =          $request->input('created_by','');
+                                    $procedure_h->reviewed_by =         $request->input('reviewed_by_h');
+                                    $procedure_h->approved_by =         $request->input('approved_by_h');
+                                    $procedure_h->status =              $request->input('status_h');
+                                    $procedure_h->file_name =           $request->input('file_name_h');
+                                    $procedure_h->save();
+                                }
+                                    $procedure = new ProceduresRevision();
+                                    $procedure->dpr_code =              $request->input('dpr_code','');
+                                    $procedure->requested_date =        $request->input('requested_date','');
+                                    $procedure->document_title =        $request->input('document_title','');
+                                    $procedure->document_no =           $request->input('document_no','');
+                                    $procedure->revision_no =           $request->input('revision_no','');
+                                    $procedure->change_description =    $request->input('change_description','');
+                                    $procedure->change_reason =         $request->input('change_reason','');
+                                    $procedure->created_by =            $request->input('created_by','');
+                                    $procedure->reviewed_by =           $request->input('','');
+                                    $procedure->approved_by =           $curr_app;
+                                    $procedure->status =                $status;
+                                    $procedure_h->file_name =           $request->input('file_name');
+                                    $procedure_h->save();
+                            }
+
                     // $approver = Employee::where('emp_no','=',$empID)->first();
                     // $maildetails = new SalesMailable('REISS - Sales Forecast Approval', // subject
                     //                                 'forecast', // location
@@ -482,6 +674,43 @@ class ProceduresController extends Controller
                         array_splice($matrix,0,1);
                         $procedure_app->status = $next_status;
                         $procedure_app->approved_by = $curr_app;
+                        $revNo = $request->input('revision_no') ? $request->input('revision_no') : 0;
+                        $revNoH = $request->input('revision_no_h') ? $request->input('revision_no_h') : 0;
+                        // return $revNoH;
+                        if($revNo>=1)
+                            {
+                                if($revNoH==0)
+                                {
+                                    $procedure_h = new ProceduresRevision();
+                                    $procedure_h->dpr_code =            $request->input('dpr_code_h');
+                                    $procedure_h->requested_date =      $request->input('requested_date_h');
+                                    $procedure_h->document_title =      $request->input('document_title');
+                                    $procedure_h->document_no =         $request->input('document_no_h');
+                                    $procedure_h->revision_no =         $request->input('revision_no_h');
+                                    $procedure_h->change_description =  $request->input('change_description_h');
+                                    $procedure_h->change_reason =       $request->input('change_reason_h');
+                                    $procedure_h->created_by =          $request->input('created_by','');
+                                    $procedure_h->reviewed_by =         $request->input('reviewed_by_h');
+                                    $procedure_h->approved_by =         $request->input('approved_by_h');
+                                    $procedure_h->status =              $request->input('status_h');
+                                    $procedure_h->file_name =           $request->input('file_name_h');
+                                    $procedure_h->save();
+                                }
+                                    $procedure = new ProceduresRevision();
+                                    $procedure->dpr_code =              $request->input('dpr_code','');
+                                    $procedure->requested_date =        $request->input('requested_date','');
+                                    $procedure->document_title =        $request->input('document_title','');
+                                    $procedure->document_no =           $request->input('document_no','');
+                                    $procedure->revision_no =           $request->input('revision_no','');
+                                    $procedure->change_description =    $request->input('change_description','');
+                                    $procedure->change_reason =         $request->input('change_reason','');
+                                    $procedure->created_by =            $request->input('created_by','');
+                                    $procedure->reviewed_by =           $request->input('reviewed_by','');
+                                    $procedure->approved_by =           $curr_app;
+                                    $procedure->status =                $status;
+                                    $procedure->file_name =           $request->input('file_name');
+                                    $procedure->save();
+                            }
                         // $procedure_app->updated_by = $curr_app;
                         
                         // $approver = Employee::where('emp_no','=',$empID)->first();
@@ -587,26 +816,91 @@ class ProceduresController extends Controller
 
     public function approval_view($id)
     {    
+        // sect_code will be used for document no ex. RSA-ITS-001
+        $employeeSec = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
+ 
         $docxCount = Procedure::where('created_by','=',Auth::user()->emp_no)
         ->count();
         $lastDocx = str_pad($docxCount+1,3,"0",STR_PAD_LEFT);
-        $docNo =  "RSA-ITS-".$lastDocx;
+        $docNo =  $employeeSec->sect_code."-".$lastDocx;
+        $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
+        ->where('module','=','Procedures')
+        ->first();
+        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":true,"edit":true,"view":true,"delete":true,"void":true,"approval":true}]', true));
+        $procedure = Procedure::find($id);
+        $procedures = Procedure::where('dpr_code','=',$procedure->dpr_code)->first();
+        $procedures_h = Procedure::where('revision_no','=',$procedure->revision_no-1)->first();
+ 
+        return view('res.procedure.approval')
+                ->with('site','res')
+                ->with('page','dcc')
+                ->with('subpage','procedures')
+                ->with('idx', $id) 
+                ->with('docNo',$docNo)
+                ->with('permission',$permissionx)
+                ->with('lastDoc', $lastDocx)
+                ->with('procedures', $procedures)
+                ->with('procedures_h', $procedures_h);
+    }
+
+    public function master_view($id)
+    {    
+        // sect_code will be used for document no ex. RSA-ITS-001
+        $employeeSec = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
+ 
+        $docxCount = Procedure::where('created_by','=',Auth::user()->emp_no)
+        ->count();
+        $lastDocx = str_pad($docxCount+1,3,"0",STR_PAD_LEFT);
+        $docNo =  $employeeSec->sect_code."-".$lastDocx;
         $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
         ->where('module','=','Procedures')
         ->first();
         $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":true,"edit":true,"view":true,"delete":true,"void":true,"approval":true}]', true));
         $procedure = Procedure::find($id);
         $procedures = Procedure::where('document_no','=',$procedure->document_no)->first();
+        $procedures_h = Procedure::where('revision_no','=',$procedure->revision_no-1)->first();
  
-        return view('res.procedure.approval')
+        return view('res.procedure.master')
                 ->with('site','res')
                 ->with('page','dcc')
                 ->with('subpage','procedures')
-                ->with('idx', $procedures->id) 
+                ->with('idx', $id) 
                 ->with('docNo',$docNo)
                 ->with('permission',$permissionx)
                 ->with('lastDoc', $lastDocx)
-                ->with('procedures', $procedures);
+                ->with('procedures', $procedures)
+                ->with('procedures_h', $procedures_h);
+    }
+
+    public function copy_view($id)
+    {    
+        // sect_code will be used for document no ex. RSA-ITS-001
+        $employeeSec = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
+        $department = Department::get();
+ 
+        $docxCount = Procedure::where('created_by','=',Auth::user()->emp_no)
+        ->count();
+        $lastDocx = str_pad($docxCount+1,3,"0",STR_PAD_LEFT);
+        $docNo =  $employeeSec->sect_code."-".$lastDocx;
+        $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
+        ->where('module','=','Procedures')
+        ->first();
+        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":true,"edit":true,"view":true,"delete":true,"void":true,"approval":true}]', true));
+        $procedure = Procedure::find($id);
+        $procedures = Procedure::where('document_no','=',$procedure->document_no)->first();
+        $procedures_h = Procedure::where('revision_no','=',$procedure->revision_no-1)->first();
+ 
+        return view('res.procedure.copy')
+                ->with('site','res')
+                ->with('page','dcc')
+                ->with('subpage','procedures')
+                ->with('idx', $id) 
+                ->with('docNo',$docNo)
+                ->with('permission',$permissionx)
+                ->with('lastDoc', $lastDocx)
+                ->with('procedures', $procedures)
+                ->with('procedures_h', $procedures_h)
+                ->with('department', $department);
     }
 
     public function destroy($id)
