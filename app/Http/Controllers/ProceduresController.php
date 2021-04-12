@@ -73,7 +73,8 @@ class ProceduresController extends Controller
     public function pdfx($id,$loc)
     {
         $procedure = Procedure::find($id);
-        $newFile = ($loc == "master" ? 'documents/master/master_'.str_replace("documents/draft/","",$procedure->file_name) : 'documents/controlled/cc_'.str_replace("documents/draft/","",$procedure->file_name));
+        $copyCount =    ProceduresControlledCopy::where('document_no','=',$procedure->document_no)->count();
+        $newFile = ($loc == "master" ? 'documents/master/master_'.str_replace("documents/draft/","",$procedure->file_name) : 'documents/controlled/cc_'.$copyCount.'_'.str_replace("documents/draft/","",$procedure->file_name));
         Storage::copy($procedure->file_name,$newFile);
         $pdf = 'file://'.realpath('../storage/app/'.$newFile);
         $signature = realpath('../storage/app/assets/copy.png');
@@ -101,11 +102,12 @@ class ProceduresController extends Controller
         $locx = $loc;
         switch($locx){
             case "procedures":
-                $data =  Procedure::where('created_by','=',$idx)
-                ->get();
+                $data = Procedure::where('created_by','=',$idx)
+                        ->get();
             break;
             case "approval":
-                $data = Procedure::where('status','<>','Approved')
+                $data = Procedure::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
+                        ->where('status','<>','Approved')
                         ->where('status','<>','Rejected')
                         ->where('status','<>','Created')
                         ->where('status','<>','Voided')
@@ -113,13 +115,21 @@ class ProceduresController extends Controller
                         ->get();
             break;
             case "master":
-                $data = Procedure::where('status','<>','Pending')
+                $data = Procedure::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
+                        ->where('status','<>','Pending')
                         ->where('status','<>','For Review')
                         ->where('status','<>','Approval')
                         ->get();
             break;
             case "controlled":
-                $data = ProceduresMasterCopy::with('procedures:document_no,dpr_code,id')
+                $data = ProceduresMasterCopy::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
+                        ->with('procedures:document_no,dpr_code,id')
+                        ->get();
+            break;
+            case "cc":
+                $data = ProceduresControlledCopy::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
+                        ->with('procedures:document_no,dpr_code,id')
+                        ->with('dept_details:dept_code,dept_desc')
                         ->get();
             break;
         }
@@ -133,7 +143,6 @@ class ProceduresController extends Controller
     public function all_revision($id)
     {
         $data =  ProceduresRevision::where('document_no','=',$id)
-                                ->with('procedures:document_no,id')
                                 ->get();
                     
         return response()
@@ -318,16 +327,21 @@ class ProceduresController extends Controller
             $employee = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
             $department = $employee->dept_code;
 
+            $copyCount = ProceduresControlledCopy::where('document_no','=',$request->input('document_no'))->count();
+
             $fileName = self::pdfx($request->input('id'),"controlled");
             $filePath = str_replace('\\','/', $fileName);
-            $newFileName = substr($filePath, -51, 51);
+            $newFileName = substr($filePath, -49, 51);
+
+           
 
             $cc = new ProceduresControlledCopy();
             $cc->document_title = $request->input('document_title','');
             $cc->file_name = $newFileName;
             $cc->revision_no = $request->input('revision_no','');
+            $cc->copy_no = $copyCount + 1;
             $cc->document_no = $request->input('document_no','');
-            $cc->department = $request->input('department','');
+            $cc->department = $request->input('dept','');
             $cc->process_owner = $request->input('process_owner','');
             $cc->released_by = Auth::user()->emp_no;
             $cc->status = 'Created';
@@ -433,43 +447,44 @@ class ProceduresController extends Controller
         //
     }
     
-    public function view($id)
+    public function view($id, $loc)
     {    
+        $locx = $loc;
         $procedures = Procedure::find($id);
+        $employee = Employee::where('emp_no','=',$procedures->created_by)
+                            ->first();
         return view('res.procedure.view')
                 ->with('site','res')
                 ->with('page','dcc')
-                ->with('subpage','procedures')
+                ->with('subpage','proceduress')
+                ->with('loc', $locx)
+                ->with('employee',$employee)
                 ->with('procedures', $procedures);
     }
 
-    public function getPostDocument(Request $request)
-    {
-        $document = Procedure::findOrFail($request->input('id'));
-
-        $filename = str_replace("documents/", "", $document->file_name);
-        $filePath = $document->file_name;
-
-        if( ! Storage::exists($filePath) ) {
-        abort(404);
-        }
-
-        $pdfContent = Storage::get($filePath);
-
-        return Response::make($pdfContent, 200, [
-        'Content-Type'        =>  'application/pdf',
-        'Content-Disposition' => 'inline; filename="'.$filename.''
-        ]);
+    public function view_rev($id, $loc)
+    {    
+        $procedures = ProceduresRevision::find($id);
+        $rev = "rev";
+        $employee = Employee::where('emp_no','=',$procedures->created_by)
+                            ->first();
+        return view('res.procedure.view')
+                ->with('site','res')
+                ->with('page','dcc')
+                ->with('subpage','proceduress')
+                ->with('loc',$rev)
+                ->with('employee',$employee)
+                ->with('procedures', $procedures);
     }
 
-    public function getDocument($id, $loc)
-    {
-  
-        $document = Procedure::findOrFail($id);
+    public function getDocument($id, $stat, $loc)
+    {   
+        // return $loc;
+        $document = ($loc == "rev" ? ProceduresRevision::findOrFail($id) : Procedure::findOrFail($id));
         
         $filename = str_replace("documents/", "", $document->file_name);
         
-        $filePath = ($loc == 'Created' ?  str_replace("draft/","master/master_", $document->file_name) : $document->file_name );
+        $filePath = ($stat == 'Created' ?  str_replace("draft/","master/master_", $document->file_name) : $document->file_name );
  
         if( ! Storage::exists($filePath) ) {
         abort(404);
@@ -501,7 +516,12 @@ class ProceduresController extends Controller
         ->first();
         $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":true,"edit":true,"view":true,"delete":true,"void":true,"approval":true}]', true));
         $procedure = Procedure::find($id);
-        $procedures = Procedure::where('document_no','=',$procedure->document_no)->first();
+        $procedures = Procedure::where('document_no','=',$procedure->document_no)
+                                ->where('revision_no','=',$procedure->revision_no)
+                                ->first();
+        
+        $revCount = Procedure::where('document_no','=',$procedure->document_no)
+                                ->count();
  
 
         return view('res.procedure.revise')
@@ -511,6 +531,7 @@ class ProceduresController extends Controller
                 ->with('docNo',$docNo)
                 ->with('permission',$permissionx)
                 ->with('lastDoc', $lastDocx)
+                ->with('revCount', $revCount)
                 ->with('procedures', $procedures);
     }
 
@@ -819,11 +840,11 @@ class ProceduresController extends Controller
         }
     }
 
-    public function approval_view($id)
+    public function approval_view($id, $loc)
     {    
         // sect_code will be used for document no ex. RSA-ITS-001
         $employeeSec = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
- 
+        $locx = $loc;
         $docxCount = Procedure::where('created_by','=',Auth::user()->emp_no)
         ->count();
         $lastDocx = str_pad($docxCount+1,3,"0",STR_PAD_LEFT);
@@ -841,6 +862,7 @@ class ProceduresController extends Controller
                 ->with('page','dcc')
                 ->with('subpage','procedures')
                 ->with('idx', $id) 
+                ->with('loc', $locx)
                 ->with('docNo',$docNo)
                 ->with('permission',$permissionx)
                 ->with('lastDoc', $lastDocx)
@@ -852,7 +874,7 @@ class ProceduresController extends Controller
     {    
         // sect_code will be used for document no ex. RSA-ITS-001
         $employeeSec = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
- 
+        
         $docxCount = Procedure::where('created_by','=',Auth::user()->emp_no)
         ->count();
         $lastDocx = str_pad($docxCount+1,3,"0",STR_PAD_LEFT);
@@ -862,6 +884,7 @@ class ProceduresController extends Controller
         ->first();
         $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":true,"edit":true,"view":true,"delete":true,"void":true,"approval":true}]', true));
         $procedure = Procedure::find($id);
+        $employee = Employee::where('emp_no','=',$procedure->created_by)->first();
         $procedures = Procedure::where('document_no','=',$procedure->document_no)->first();
         $procedures_h = Procedure::where('revision_no','=',$procedure->revision_no-1)->first();
  
@@ -874,25 +897,37 @@ class ProceduresController extends Controller
                 ->with('permission',$permissionx)
                 ->with('lastDoc', $lastDocx)
                 ->with('procedures', $procedures)
+                ->with('employee', $employee)
                 ->with('procedures_h', $procedures_h);
     }
 
     public function copy_view($id)
     {    
-        // sect_code will be used for document no ex. RSA-ITS-001
-        $employeeSec = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
-        $department = Department::get();
+        $employeeSec =  Employee::where('emp_no','=',Auth::user()->emp_no)->first();
+
  
-        $docxCount = Procedure::where('created_by','=',Auth::user()->emp_no)
-        ->count();
+        $docxCount =    Procedure::where('created_by','=',Auth::user()->emp_no)
+                                     ->count();
         $lastDocx = str_pad($docxCount+1,3,"0",STR_PAD_LEFT);
         $docNo =  $employeeSec->sect_code."-".$lastDocx;
-        $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
-        ->where('module','=','Procedures')
-        ->first();
-        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":true,"edit":true,"view":true,"delete":true,"void":true,"approval":true}]', true));
-        $procedure = Procedure::find($id);
-        $procedures = Procedure::where('document_no','=',$procedure->document_no)->first();
+       
+        $procedure =    Procedure::find($id);
+        $employee =     Employee::where('emp_no','=',$procedure->created_by)->first();
+        $copyCount =    ProceduresControlledCopy::where('document_no','=',$procedure->document_no)->count();
+        $cc =           ProceduresControlledCopy::where('document_no','=',$procedure->document_no)->get();
+        $dept_code = array();
+        foreach($cc as $dept)
+        {
+            array_push($dept_code,$dept["department"]);
+        }
+      
+        $deptx =        ProceduresMasterCopy::where('document_no','=',$procedure->document_no)
+                                            ->where('revision_no','=',$procedure->revision_no)
+                                            ->with('dept_details:dept_code,dept_desc')
+                                            ->first();
+        $department =   Department::whereNotIn('dept_code',$dept_code)->get();
+
+        $procedures =   Procedure::where('document_no','=',$procedure->document_no)->first();
         $procedures_h = Procedure::where('revision_no','=',$procedure->revision_no-1)->first();
  
         return view('res.procedure.copy')
@@ -901,11 +936,13 @@ class ProceduresController extends Controller
                 ->with('subpage','procedures')
                 ->with('idx', $id) 
                 ->with('docNo',$docNo)
-                ->with('permission',$permissionx)
                 ->with('lastDoc', $lastDocx)
                 ->with('procedures', $procedures)
+                ->with('copyCount', $copyCount)
+                ->with('employee', $employee)
                 ->with('procedures_h', $procedures_h)
-                ->with('department', $department);
+                ->with('department', $department)
+                ->with('deptx', $deptx);
     }
 
     public function destroy($id)

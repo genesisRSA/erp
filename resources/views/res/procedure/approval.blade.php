@@ -114,7 +114,7 @@
                           </div>
             
                             <embed
-                                src="{{ action('ProceduresController@getDocument', ['id'=> $idx, 'loc' => $procedures->status]) }}#toolbar=0"
+                                src="{{ action('ProceduresController@getDocument', ['id'=> $idx, 'stat' => $procedures->status, 'loc' => $loc]) }}#toolbar=0"
                                 style="width:100%; 
                                       height:130%; 
                                       " type="application/pdf"
@@ -212,13 +212,11 @@
                   </div>
                   
                   <div class="input-field col s12 m2 l2">
-
-        
-                    <button id="btnApp" name="approve" value="Approve" onclick="getStatus('Approved');" class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Approve&nbsp;</button> <br> 
+                    <button id="btnApp" name="approve" value="Approve" onclick="getStatus('Approved');" style="width: 100%; margin-bottom: 5px" class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Approve&nbsp;</button> <br> 
                     
-                    <button id="btnRej" name="reject" value="Reject" onclick="getStatus('Reject');" class="red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Reject&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button> <br> 
+                    <button id="btnRej" name="reject" value="Reject" onclick="getStatus('Reject');" style="width: 100%;  margin-bottom: 5px" class="red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Reject&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button> <br> 
         
-                    <a href="{{route('procedure.index')}}" class="modal-close orange waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Cancel&nbsp;&nbsp;&nbsp;</a>
+                    <a href="{{route('procedure.index')}}" style="width: 100%" class="modal-close orange waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Cancel&nbsp;&nbsp;&nbsp;</a>
                   </div>
                 </div>
               </div>
@@ -250,25 +248,25 @@
           }
         }
 
-        document.onkeydown = function(e) {
-              if(event.keyCode == 123) {
-                return false;
-              }
-              if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
-                return false;
-              }
-              if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
-                return false;
-              }
-              if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
-                return false;
-              }
-              if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
-                return false;
-              }
-        }
+        // document.onkeydown = function(e) {
+        //       if(event.keyCode == 123) {
+        //         return false;
+        //       }
+        //       if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
+        //         return false;
+        //       }
+        //       if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
+        //         return false;
+        //       }
+        //       if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
+        //         return false;
+        //       }
+        //       if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
+        //         return false;
+        //       }
+        // }
 
-        $.get('getApproverMatrix/'+{{$procedures->id}}, function(response){
+        $.get('../../getApproverMatrix/'+{{$procedures->id}}, function(response){
           
           var AppendString = "";
           var AppendStringH = "";

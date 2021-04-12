@@ -53,7 +53,8 @@
                             <label for="document_no">Document No.<sup class="red-text"></sup></label>
                         </div>
                         <div class="input-field col s12 m3 l3">
-                            <input type="text" id="rev_revision_no" name="revision_no" value="{{$procedures->revision_no+1}}" placeholder=" " readonly/>
+                            {{-- <input type="text" id="rev_revision_no" name="revision_no" value="{{$procedures->revision_no == 0 ? $procedures->revision_no + 1 : $revCount}}" placeholder=" " readonly/> --}}
+                            <input type="text" id="rev_revision_no" name="revision_no" value="{{$revCount}}" placeholder=" " readonly/>
                             <label for="revision_no">Revision No.<sup class="red-text"></sup></label>
                         </div>
                     </div>

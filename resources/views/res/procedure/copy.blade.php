@@ -29,9 +29,14 @@
                 <div class="input-field col s12 m6 l6">
                     <select id="copy_department" name="department" required>
                         <option value="" disabled selected>Choose your option</option>
-                        @foreach ($department as $dept)
-                          <option value="{{$dept->dept_code}}">{{$dept->dept_desc}}</option>
-                        @endforeach
+                          @if($copyCount==0)
+                              <option value="{{$deptx->department}}" selected>{{$deptx->dept_details->dept_desc}}</option>
+                          @else
+                            @foreach ($department as $dept)
+                              <option value="{{$dept->dept_code}}">{{$dept->dept_desc}}</option>
+                            @endforeach
+                          @endif
+                        
                     </select>
                       <label for="prod_code">Department<sup class="red-text">*</sup></label>
                 </div>
@@ -39,7 +44,7 @@
                     <a href="#!" onclick="CreateCopy({{$procedures->id}});" class="green waves-effect waves-dark btn" style="width: 100%"><i class="material-icons left">add_box</i>Create Copy</a>
                 </div>
                 <div class="input-field col s12 m3 l3">
-                    <a href="{{route('procedure.index')}}" class="red waves-effect waves-dark btn" style="width: 100%"><i class="material-icons left">keyboard_return</i>Return Back</a>
+                    <a href="{{route('procedure.index')}}" class="red waves-effect waves-dark btn" style="width: 100%"><i class="material-icons left">keyboard_return</i>Return</a>
                 </div>    
        
               </div>
@@ -54,6 +59,10 @@
                 <div class="input-field col s12 m3 l3">
                     <input type="text" id="rev_requested_date" name="requested_date" class="grey lighten-5" value="{{$procedures->requested_date}}" readonly/>
                     <label for="requested_date">Date Requested<sup class="red-text"></sup></label>
+                </div> 
+                <div class="input-field col s12 m6 l6">
+                  <input type="text" id="rev_requested_date" name="requested_date" class="grey lighten-5" value="{{$employee->full_name}}" readonly/>
+                  <label for="requested_date">Requested By<sup class="red-text"></sup></label>
                 </div> 
               </div>
             
@@ -150,7 +159,11 @@
                   <div class="row">
                       <div class="col s12 m6">
                           <input type="hidden" name="id" id="copy_id">
+                          @if($copyCount==0)
+                          <input type="hidden" name="dept" id="copy_dept" value="{{$deptx->department}}">
+                          @else
                           <input type="hidden" name="dept" id="copy_dept">
+                          @endif
                           <input type="hidden" name="document_title" id="c_document_title" value="{{$procedures->document_title}}">
                           <input type="hidden" name="revision_no" id="c_revision_no" value="{{$procedures->revision_no}}">
                           <input type="hidden" name="document_no" id="c_document_no" value="{{$procedures->document_no}}">
@@ -181,23 +194,23 @@
 
     $(document).ready(function () {
 
-            document.onkeydown = function(e) {
-              if(event.keyCode == 123) {
-                return false;
-              }
-              if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
-                return false;
-              }
-              if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
-                return false;
-              }
-              if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
-                return false;
-              }
-              if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
-                return false;
-              }
-            }
+            // document.onkeydown = function(e) {
+            //   if(event.keyCode == 123) {
+            //     return false;
+            //   }
+            //   if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
+            //     return false;
+            //   }
+            //   if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
+            //     return false;
+            //   }
+            //   if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
+            //     return false;
+            //   }
+            //   if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
+            //     return false;
+            //   }
+            // }
         $('#copy_department').change(function () {
             var id = $(this).val();
             $('#copy_dept').val(id);

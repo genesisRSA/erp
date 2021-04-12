@@ -26,6 +26,15 @@
               </div>
 
               <div class="col s12 m12 l12">
+                <div class="col s12 m6 l6"></div>
+                <div class="input-field col s12 m3 l3">
+                  <a href="#!" onclick="CreateMaster({{$procedures->id}});" class="green waves-effect waves-dark btn" style="width: 100%"><i class="material-icons left">add_box</i>Create Copy</a>
+                </div>
+                <div class="input-field col s12 m3 l3">
+                  <a href="{{route('procedure.index')}}" class="red waves-effect waves-dark btn" style="width: 100%"><i class="material-icons left">keyboard_return</i>Return</a>
+                </div>
+              </div>
+              <div class="col s12 m12 l12">
                 <div class="input-field col s12 m3 l3">
                     <input type="text" id="rev_dpr_code" name="dpr_code"  class="grey lighten-5" value="{{$procedures->dpr_code}}" readonly/>
                     <label for="dpr_code">DPR No.<sup class="red-text"></sup></label>
@@ -34,12 +43,10 @@
                     <input type="text" id="rev_requested_date" name="requested_date" class="grey lighten-5" value="{{$procedures->requested_date}}" readonly/>
                     <label for="requested_date">Date Requested<sup class="red-text"></sup></label>
                 </div> 
-                <div class="input-field col s12 m3 l3">
-                  <a href="#!" onclick="CreateMaster({{$procedures->id}});" class="green waves-effect waves-dark btn" style="width: 100%"><i class="material-icons left">add_box</i>Create Copy</a>
-                </div>
-                <div class="input-field col s12 m3 l3">
-                  <a href="{{route('procedure.index')}}" class="red waves-effect waves-dark btn" style="width: 100%"><i class="material-icons left">keyboard_return</i>Return Back</a>
-                </div>
+                <div class="input-field col s12 m6 l6">
+                  <input type="text" id="rev_requested_date" name="requested_date" class="grey lighten-5" value="{{$employee->full_name}}" readonly/>
+                  <label for="requested_date">Requested By<sup class="red-text"></sup></label>
+                </div> 
               </div>
             
               <div class="col s12 m12 l12">

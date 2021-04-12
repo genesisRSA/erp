@@ -9,7 +9,7 @@
   <div class="row main-content">
   
     {{-- <ul id="tabs-swipe-demo" class="tabs"> --}}
-    <ul id="forecast_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
+    <ul id="procedures_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
       <li class="tab col s12 m4 l4"><a class="active" href="#ongoing">Procedures</a></li>
       @if($permission[0]["approval"]==true)
       <li class="tab col s12 m4 l4"><a href="#approval">For Approval</a></li>
@@ -52,9 +52,11 @@
               <thead>
                 <tr>
                     <th>ID</th> 
-                    <th>DPR No.</th>
-                    <th>Document Title</th>
                     <th>Document No.</th>
+                    <th>Date Requested</th>
+                    <th>Requested By</th>
+                    <th>Document Title</th>
+                    <th>DPR No.</th>
                     <th>Revision No.</th>
                     <th>Status</th>
                     <th>Action</th>
@@ -73,13 +75,15 @@
             <table class="responsive-table highlight" id="master-dt" style="width: 100%">
               <thead>
                 <tr>
-                    <th>ID</th> 
-                    <th>DPR No.</th>
-                    <th>Document Title</th>
-                    <th>Document No.</th>
-                    <th>Revision No.</th>
-                    <th>Status</th>
-                    <th>Action</th>
+                  <th>ID</th> 
+                  <th>Document No.</th>
+                  <th>Date Requested</th>
+                  <th>Requested By</th>
+                  <th>Document Title</th>
+                  <th>DPR No.</th>
+                  <th>Revision No.</th>
+                  <th>Status</th>
+                  <th>Action</th>
                 </tr>
               </thead>
             </table>
@@ -88,15 +92,21 @@
     </div>
 
     <div id="controlled" name="controlled">
+
       <div class="card" style="margin-top: 0px">
+        <div class="col s12 m12 l12">
+          <h6 style="padding: 10px; padding-top: 20px; padding-left: 20px; padding-right: 20px;   margin-top: 5px; background-color:#0d47a1" class="white-text"><b>For Control Copy</b></h6>  
+        </div>
         <div class="card-content">
           <table class="responsive-table highlight" id="controlled-dt" style="width: 100%">
             <thead>
               <tr>
                   <th>ID</th> 
-                  <th>DPR No.</th>
-                  <th>Document Title</th>
                   <th>Document No.</th>
+                  <th>Date Requested</th>
+                  <th>Requested By</th>
+                  <th>Document Title</th>
+                  <th>DPR No.</th>
                   <th>Revision No.</th>
                   <th>Status</th>
                   <th>Action</th>
@@ -104,8 +114,29 @@
             </thead>
           </table>
         </div>
+        <div class="col s12 m12 l12">
+          <h6 style="padding: 10px; padding-top: 20px; padding-left: 20px; padding-right: 20px;   margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Created Copies</b></h6>  
+        </div>
+        <div class="card-content">
+          <table class="responsive-table highlight" id="created-dt" style="width: 100%">
+            <thead>
+              <tr>
+                  <th>ID</th> 
+                  <th>Document No.</th>     
+                  <th>Requested By</th>
+                  <th>Copy Owner</th>
+                  <th>Document Title</th>
+                  <th>DPR No.</th>
+                  <th>Revision No.</th>
+                  <th>Copy No.</th>
+                  <th>Status</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
       </div>
-  </div>
+      
+    </div>
     @endif  
 
   </div>
@@ -250,291 +281,390 @@
         });
     }
 
-    var procedures = $('#procedures-dt').DataTable({
-        "lengthChange": false,
-        "pageLength": 15,
-        "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
-        "pagingType": "full",
-        "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/procedures",
-        "columns": [
-            {  "data": "id" },
-            {  "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return row.dpr_code;
-                }
-            },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return row.document_title;
-                }
-            },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return '<a href="procedure/view/'+row.id+'">'+ row.document_no +'</a>';
-                }
-            },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return row.revision_no;
-                }
-            },
-            {   "data": "status",
-                "render": function ( data, type, row, meta ) {
-                  switch(data){
-                    case 'Approved':
-                      return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
-                    break;
-                    case 'Pending':
-                      return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
-                    break;
-                    case 'Created':
-                      return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
-                    break;
-                    case 'Rejected':
-                      return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
-                    break;
-                    case 'For Approval':
-                      return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
-                    break;
-                    case 'For Review':
-                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
-                    break;
-                    case 'Voided':
-                      return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
-                    break;
-                    case 'Quoted':
-                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
-                    break;
-                    case 'Ordered':
-                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Ordered</span>';
-                    break;
-                    // case 'Created':
-                    //   return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
-                    // break;
+      var procedures = $('#procedures-dt').DataTable({
+          "lengthChange": false,
+          "pageLength": 15,
+          "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+          "pagingType": "full",
+          "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/procedures",
+          "columns": [
+              {  "data": "id" },
+              {  "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.dpr_code;
                   }
-                   
-                }
-            },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  
-                  if(row.status=='Approved')
-                  {
-                    return  '<a href="procedure/revise/'+row.id+'" class="btn-small amber darken3 waves-effect waves-dark"><i class="material-icons">create</i></a>';
-                  } else {
-                    return  '<a href="#!" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a>';
+              },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.document_title;
                   }
+              },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return '<a href="procedure/view/'+row.id+'/procedures">'+ row.document_no +'</a>';
+                  }
+              },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.revision_no;
+                  }
+              },
+              {   "data": "status",
+                  "render": function ( data, type, row, meta ) {
+                    switch(data){
+                      case 'Approved':
+                        return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
+                      break;
+                      case 'Pending':
+                        return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
+                      break;
+                      case 'Created':
+                        return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
+                      break;
+                      case 'Rejected':
+                        return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
+                      break;
+                      case 'For Approval':
+                        return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
+                      break;
+                      case 'For Review':
+                        return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
+                      break;
+                      case 'Voided':
+                        return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
+                      break;
+                      case 'Quoted':
+                        return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
+                      break;
+                      case 'Ordered':
+                        return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Ordered</span>';
+                      break;
+                    }
+                    
+                  }
+              },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    
+                    if(row.status=='Approved'||row.status=='Created')
+                    {
+                      return  '<a href="procedure/revise/'+row.id+'" class="btn-small amber darken3 waves-effect waves-dark"><i class="material-icons">create</i></a>';
+                    } else {
+                      return  '<a href="#!" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a>';
+                    }
 
-                }
-            }
-                 
-        ]
-    });
+                  }
+              }
+                  
+          ]
+      });
      
     @if($permission[0]["approval"]==true)
-    var approvaldt = $('#approval-dt').DataTable({
-        "lengthChange": false,
-        "pageLength": 15,
-        "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
-        "pagingType": "full",
-        "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/approval",
-        "columns": [
-            {  "data": "id" },
-            {  "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return row.dpr_code;
-                }
-            },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return row.document_title;
-                }
-            },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return '<a href="procedure/view/'+row.id+'">'+ row.document_no +'</a>';
-                }
-            },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return row.revision_no;
-                }
-            },
-            {   "data": "status",
-                "render": function ( data, type, row, meta ) {
-                  switch(data){
-                    case 'Approved':
-                      return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
-                    break;
-                    case 'Pending':
-                      return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
-                    break;
-                    case 'Created':
-                      return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
-                    break;
-                    case 'Rejected':
-                      return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
-                    break;
-                    case 'For Approval':
-                      return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
-                    break;
-                    case 'For Review':
-                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
-                    break;
-                    case 'Voided':
-                      return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
-                    break;
-                    case 'Quoted':
-                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
-                    break;
-                    case 'Ordered':
-                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Ordered</span>';
-                    break;
+      var approvaldt = $('#approval-dt').DataTable({
+          "lengthChange": false,
+          "pageLength": 15,
+          "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+          "pagingType": "full",
+          "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/approval",
+          "columns": [
+              {  "data": "id" },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return '<a href="procedure/view/'+row.id+'/approval">'+ row.document_no +'</a>';
                   }
-                   
-                }
-            },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return  '<a href="procedure/approval/'+row.id+'" class="btn-small blue darken3 waves-effect waves-dark"><i class="material-icons">rate_review</i></a>';
-                }
-            }
-        ]
-    });
+              },
+              {  "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.requested_date;
+                  }
+              },
+              {  "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.employee_details.full_name;
+                  }
+              },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.document_title;
+                  }
+              },
+              {  "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.dpr_code;
+                  }
+              },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.revision_no;
+                  }
+              },
+              {   "data": "status",
+                  "render": function ( data, type, row, meta ) {
+                    switch(data){
+                      case 'Approved':
+                        return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
+                      break;
+                      case 'Pending':
+                        return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
+                      break;
+                      case 'Created':
+                        return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
+                      break;
+                      case 'Rejected':
+                        return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
+                      break;
+                      case 'For Approval':
+                        return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
+                      break;
+                      case 'For Review':
+                        return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
+                      break;
+                      case 'Voided':
+                        return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
+                      break;
+                      case 'Quoted':
+                        return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
+                      break;
+                      case 'Ordered':
+                        return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Ordered</span>';
+                      break;
+                    }
+                    
+                  }
+              },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return  '<a href="procedure/approval/'+row.id+'/app" class="btn-small blue darken3 waves-effect waves-dark"><i class="material-icons">rate_review</i></a>';
+                  }
+              }
+          ]
+      });
     @endif
 
     @if($permission[0]["masterlist"]==true)
-    var masterdt = $('#master-dt').DataTable({
-        "lengthChange": false,
-        "pageLength": 15,
-        "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
-        "pagingType": "full",
-        "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/master",
-        "columns": [
-            {  "data": "id" },
-            {  "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return row.dpr_code;
-                }
-            },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return row.document_title;
-                }
-            },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return '<a href="procedure/view/'+row.id+'">'+ row.document_no +'</a>';
-                }
-            },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return row.revision_no;
-                }
-            },
-            {   "data": "status",
-                "render": function ( data, type, row, meta ) {
-                  switch(data){
-                    case 'Approved':
-                      return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
-                    break;
-                    case 'Pending':
-                      return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
-                    break;
-                    case 'Created':
-                      return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
-                    break;
-                    case 'Rejected':
-                      return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
-                    break;
-                    case 'For Approval':
-                      return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
-                    break;
-                    case 'For Review':
-                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
-                    break;
-                    case 'Voided':
-                      return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
-                    break;
-                    case 'Quoted':
-                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
-                    break;
-                    case 'Ordered':
-                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Ordered</span>';
-                    break;
- 
+      var masterdt = $('#master-dt').DataTable({
+          "lengthChange": false,
+          "pageLength": 15,
+          "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+          "pagingType": "full",
+          "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/master",
+          "columns": [
+              {  "data": "id" },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return '<a href="procedure/view/'+row.id+'/master">'+ row.document_no +'</a>';
                   }
-                   
-                }
-            },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  if(row.status=='Approved')
-                  {
-                    return  '<a href="procedure/master/'+row.id+'" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
-                  }else{
-                    return  '<a href="#!" class="btn-small blue darken3 waves-effect waves-dark" disabled><i class="small material-icons">note_add</i></a>';
+              },
+              {  "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.requested_date;
                   }
-                }
-            }
-        ]
-    });
+              },
+              {  "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.employee_details.full_name;
+                  }
+              },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.document_title;
+                  }
+              },
+              {  "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.dpr_code;
+                  }
+              },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.revision_no;
+                  }
+              },
+              {   "data": "status",
+                  "render": function ( data, type, row, meta ) {
+                    switch(data){
+                      case 'Approved':
+                        return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
+                      break;
+                      case 'Pending':
+                        return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
+                      break;
+                      case 'Created':
+                        return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
+                      break;
+                      case 'Rejected':
+                        return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
+                      break;
+                      case 'For Approval':
+                        return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
+                      break;
+                      case 'For Review':
+                        return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
+                      break;
+                      case 'Voided':
+                        return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
+                      break;
+                      case 'Quoted':
+                        return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
+                      break;
+                      case 'Ordered':
+                        return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Ordered</span>';
+                      break;
+  
+                    }
+                    
+                  }
+              },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    if(row.status=='Approved')
+                    {
+                      return  '<a href="procedure/master/'+row.id+'" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
+                    }else{
+                      return  '<a href="#!" class="btn-small blue darken3 waves-effect waves-dark" disabled><i class="small material-icons">note_add</i></a>';
+                    }
+                  }
+              }
+          ]
+      });
 
-    var controlled = $('#controlled-dt').DataTable({
-        "lengthChange": false,
-        "pageLength": 15,
-        "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
-        "pagingType": "full",
-        "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/controlled",
-        "columns": [
-            {  "data": "id" },
-            {  "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return row.procedures.dpr_code;
-                }
-            },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return row.document_title;
-                }
-            },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return '<a href="procedure/view/'+row.procedures.id+'">'+ row.document_no +'</a>';
-                }
-            },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return row.revision_no;
-                }
-            },
-            {   "data": "status",
-                "render": function ( data, type, row, meta ) {
-                  switch(data){
-                    case 'Created':
-                      return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
-                    break;
-                  
-                    case 'For CC':
-                      return  '<span class="new badge blue white-text" data-badge-caption="">For CC</span>';
-                    break;
-                   
+      var controlled = $('#controlled-dt').DataTable({
+          "lengthChange": false,
+          "pageLength": 15,
+          "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+          "pagingType": "full",
+          "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/controlled",
+          "columns": [
+              {  "data": "id" },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return '<a href="procedure/view/'+row.procedures.id+'/controlled">'+ row.document_no +'</a>';
                   }
-                   
-                }
-            },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  if(row.status=='For CC')
-                  {
-                    return  '<a href="procedure/copy/'+row.procedures.id+'" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
-                  }else{
-                    return  '<a href="#!" class="btn-small blue darken3 waves-effect waves-dark" disabled><i class="small material-icons">note_add</i></a>';
+              },
+              {  "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.created_at.substring(0,10);
                   }
-                }
-            }
-        ]
-    });
+              },
+              {  "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.employee_details.full_name;
+                  }
+              },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.document_title;
+                  }
+              },
+          
+              {  "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.procedures.dpr_code;
+                  }
+              },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.revision_no;
+                  }
+              },
+              {   "data": "status",
+                  "render": function ( data, type, row, meta ) {
+                    switch(data){
+                      case 'Created':
+                        return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
+                      break;
+                    
+                      case 'For CC':
+                        return  '<span class="new badge blue white-text" data-badge-caption="">For CC</span>';
+                      break;
+                    
+                    }
+                    
+                  }
+              },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    if(row.status=='For CC'||row.status=='Created')
+                    {
+                      return  '<a href="procedure/copy/'+row.procedures.id+'" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
+                    }else{
+                      return  '<a href="#!" class="btn-small blue darken3 waves-effect waves-dark" disabled><i class="small material-icons">note_add</i></a>';
+                    }
+                  }
+              }
+          ]
+      });
+
+      var controlled = $('#created-dt').DataTable({
+          "lengthChange": false,
+          "pageLength": 15,
+          "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+          "pagingType": "full",
+          "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/cc",
+          "columns": [
+              {  "data": "id" },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return '<a href="procedure/view/'+row.procedures.id+'/controlled">'+ row.document_no +'</a>';
+                  }
+              },
+              {  "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.employee_details.full_name;
+                  }
+              },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.dept_details.dept_desc;
+                  }
+              },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.document_title;
+                  }
+              },
+              {  "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.procedures.dpr_code;
+                  }
+              },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.revision_no;
+                  }
+              },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.copy_no;
+                  }
+              },
+              {   "data": "status",
+                  "render": function ( data, type, row, meta ) {
+                    switch(data){
+                      case 'Created':
+                        return  '<span class="new badge blue white-text" data-badge-caption="">Created</span>';
+                      break;
+                    
+                      case 'For CC':
+                        return  '<span class="new badge blue white-text" data-badge-caption="">For CC</span>';
+                      break;
+                    
+                    }
+                    
+                  }
+              },
+              // {   "data": "id",
+              //     "render": function ( data, type, row, meta ) {
+              //       if(row.status=='For CC'||row.status=='Created')
+              //       {
+              //         return  '<a href="procedure/copy/'+row.procedures.id+'" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
+              //       }else{
+              //         return  '<a href="#!" class="btn-small blue darken3 waves-effect waves-dark" disabled><i class="small material-icons">note_add</i></a>';
+              //       }
+              //     }
+              // }
+          ]
+      });
     @endif
 
   </script>
