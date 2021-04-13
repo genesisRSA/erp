@@ -61,6 +61,10 @@
                               <input type="text" id="rev_requested_date" name="requested_date" class="grey lighten-5" value="{{$procedures->requested_date}}" readonly/>
                               <label for="requested_date">Date Requested<sup class="red-text"></sup></label>
                           </div> 
+                          <div class="input-field col s12 m6 l6">
+                            <input type="text" id="rev_requested_by" name="requested_by" class="grey lighten-5" value="{{$employee->full_name}}" readonly/>
+                            <label for="requested_by">Requested By<sup class="red-text"></sup></label>
+                          </div> 
                       </div>
                       
                       <div class="col s12 m12 l12">

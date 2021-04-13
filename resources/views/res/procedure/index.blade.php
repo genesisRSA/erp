@@ -129,7 +129,7 @@
                   <th>DPR No.</th>
                   <th>Revision No.</th>
                   <th>Copy No.</th>
-                  <th>Status</th>
+                  {{-- <th>Status</th> --}}
               </tr>
             </thead>
           </table>
@@ -533,12 +533,12 @@
           "pageLength": 15,
           "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
           "pagingType": "full",
-          "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/controlled",
+          "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/forCC",
           "columns": [
               {  "data": "id" },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return '<a href="procedure/view/'+row.procedures.id+'/controlled">'+ row.document_no +'</a>';
+                    return '<a href="procedure/view_fcc/'+row.id+'/controlled">'+ row.document_no +'</a>';
                   }
               },
               {  "data": "id",
@@ -559,7 +559,7 @@
           
               {  "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return row.procedures.dpr_code;
+                    return row.dpr_code;
                   }
               },
               {   "data": "id",
@@ -586,7 +586,7 @@
                   "render": function ( data, type, row, meta ) {
                     if(row.status=='For CC'||row.status=='Created')
                     {
-                      return  '<a href="procedure/copy/'+row.procedures.id+'" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
+                      return  '<a href="procedure/copy/'+row.id+'" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
                     }else{
                       return  '<a href="#!" class="btn-small blue darken3 waves-effect waves-dark" disabled><i class="small material-icons">note_add</i></a>';
                     }
@@ -605,7 +605,7 @@
               {  "data": "id" },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return '<a href="procedure/view/'+row.procedures.id+'/controlled">'+ row.document_no +'</a>';
+                    return '<a href="procedure/view_cc/'+row.id+'/controlled">'+ row.document_no +'</a>';
                   }
               },
               {  "data": "id",
@@ -625,7 +625,7 @@
               },
               {  "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return row.procedures.dpr_code;
+                    return row.dpr_code;
                   }
               },
               {   "data": "id",
@@ -638,26 +638,26 @@
                     return row.copy_no;
                   }
               },
-              {   "data": "status",
-                  "render": function ( data, type, row, meta ) {
-                    switch(data){
-                      case 'Created':
-                        return  '<span class="new badge blue white-text" data-badge-caption="">Created</span>';
-                      break;
+              // {   "data": "status",
+              //     "render": function ( data, type, row, meta ) {
+              //       switch(data){
+              //         case 'Created':
+              //           return  '<span class="new badge blue white-text" data-badge-caption="">Created</span>';
+              //         break;
                     
-                      case 'For CC':
-                        return  '<span class="new badge blue white-text" data-badge-caption="">For CC</span>';
-                      break;
+              //         case 'For CC':
+              //           return  '<span class="new badge blue white-text" data-badge-caption="">For CC</span>';
+              //         break;
                     
-                    }
+              //       }
                     
-                  }
-              },
+              //     }
+              // },
               // {   "data": "id",
               //     "render": function ( data, type, row, meta ) {
               //       if(row.status=='For CC'||row.status=='Created')
               //       {
-              //         return  '<a href="procedure/copy/'+row.procedures.id+'" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
+              //         return  '<a href="procedure/copy/'+row.id+'" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
               //       }else{
               //         return  '<a href="#!" class="btn-small blue darken3 waves-effect waves-dark" disabled><i class="small material-icons">note_add</i></a>';
               //       }

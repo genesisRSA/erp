@@ -19,79 +19,55 @@
         <div class="card mb-3 col s12 m12 l12">
           <div class="card-body" style="height: 100%">
             <form method="POST" enctype="multipart/form-data">
-              <input type="hidden" name="process_owner" id="process_owner" value="{{$procedures->created_by}}">
-              @csrf
-              <div class="col s12 m12 l12">
-                <h6 style="padding: 10px; padding-top: 20px; padding-left: 10px; padding-right: 10px; background-color:#0d47a1" class="white-text"><b>Procedure Details</b></h6>  
-              </div>
-
-              <div class="col s12 m12 l12">
-                <div class="input-field col s12 m6 l6">
-                    <select id="copy_department" name="department" required>
-                        <option value="" disabled selected>Choose your option</option>
-                          @if($copyCount==0)
-                              <option value="{{$deptx->department}}" selected>{{$deptx->dept_details->dept_desc}}</option>
-                          @else
-                            @foreach ($department as $dept)
-                              <option value="{{$dept->dept_code}}">{{$dept->dept_desc}}</option>
-                            @endforeach
-                          @endif
+              <div class="row">
+                <input type="hidden" name="process_owner" id="process_owner" value="{{$procedures->created_by}}">
+                @csrf
+                <div class="col s12 m12 l12">
+                  <h6 style="padding: 10px; padding-top: 20px; padding-left: 10px; padding-right: 10px; background-color:#0d47a1" class="white-text"><b>Procedure Details</b></h6>  
+                </div>
                         
-                    </select>
-                      <label for="prod_code">Department<sup class="red-text">*</sup></label>
+                <div class="col s12 m12 l12">
+                  <br>
+                  <div class="input-field col s12 m3 l3">
+                      <input type="text" id="rev_dpr_code" name="dpr_code"  class="grey lighten-5" value="{{$procedures->dpr_code}}" readonly/>
+                      <label for="dpr_code">DPR No.<sup class="red-text"></sup></label>
+                  </div>
+                  <div class="input-field col s12 m3 l3">
+                      <input type="text" id="rev_requested_date" name="requested_date" class="grey lighten-5" value="{{$procedures->requested_date}}" readonly/>
+                      <label for="requested_date">Date Requested<sup class="red-text"></sup></label>
+                  </div> 
+                  <div class="input-field col s12 m6 l6">
+                    <input type="text" id="rev_requested_date" name="requested_date" class="grey lighten-5" value="{{$employee->full_name}}" readonly/>
+                    <label for="requested_date">Requested By<sup class="red-text"></sup></label>
+                  </div> 
                 </div>
-                <div class="input-field col s12 m3 l3">
-                    <a href="#!" onclick="CreateCopy({{$procedures->id}});" class="green waves-effect waves-dark btn" style="width: 100%"><i class="material-icons left">add_box</i>Create Copy</a>
-                </div>
-                <div class="input-field col s12 m3 l3">
-                    <a href="{{route('procedure.index')}}" class="red waves-effect waves-dark btn" style="width: 100%"><i class="material-icons left">keyboard_return</i>Return</a>
-                </div>    
-       
-              </div>
               
-         
-              <div class="col s12 m12 l12">
-                <br>
-                <div class="input-field col s12 m3 l3">
-                    <input type="text" id="rev_dpr_code" name="dpr_code"  class="grey lighten-5" value="{{$procedures->dpr_code}}" readonly/>
-                    <label for="dpr_code">DPR No.<sup class="red-text"></sup></label>
+                <div class="col s12 m12 l12">
+                    <div class="input-field col s12 m6 l6">
+                        <input type="text" id="rev_document_title" name="document_title" value="{{$procedures->document_title}}"  placeholder=" " readonly/>
+                        <label for="document_title">Document Title<sup class="red-text">*</sup></label>
+                    </div>
+                    <div class="input-field col s12 m3 l3">
+                        <input type="text" id="rev_document_no" name="document_no"  value="{{$procedures->document_no}}"  placeholder=" " readonly/>
+                        <label for="document_no">Document No.<sup class="red-text"></sup></label>
+                    </div>
+                    <div class="input-field col s12 m3 l3">
+                        <input type="text" id="rev_revision_no" name="revision_no" value="{{$procedures->revision_no}}" placeholder=" " readonly/>
+                        <label for="revision_no">Revision No.<sup class="red-text"></sup></label>
+                    </div>
                 </div>
-                <div class="input-field col s12 m3 l3">
-                    <input type="text" id="rev_requested_date" name="requested_date" class="grey lighten-5" value="{{$procedures->requested_date}}" readonly/>
-                    <label for="requested_date">Date Requested<sup class="red-text"></sup></label>
-                </div> 
-                <div class="input-field col s12 m6 l6">
-                  <input type="text" id="rev_requested_date" name="requested_date" class="grey lighten-5" value="{{$employee->full_name}}" readonly/>
-                  <label for="requested_date">Requested By<sup class="red-text"></sup></label>
-                </div> 
-              </div>
-            
-              <div class="col s12 m12 l12">
-                  <div class="input-field col s12 m6 l6">
-                      <input type="text" id="rev_document_title" name="document_title" value="{{$procedures->document_title}}"  placeholder=" " readonly/>
-                      <label for="document_title">Document Title<sup class="red-text">*</sup></label>
-                  </div>
-                  <div class="input-field col s12 m3 l3">
-                      <input type="text" id="rev_document_no" name="document_no"  value="{{$procedures->document_no}}"  placeholder=" " readonly/>
-                      <label for="document_no">Document No.<sup class="red-text"></sup></label>
-                  </div>
-                  <div class="input-field col s12 m3 l3">
-                      <input type="text" id="rev_revision_no" name="revision_no" value="{{$procedures->revision_no}}" placeholder=" " readonly/>
-                      <label for="revision_no">Revision No.<sup class="red-text"></sup></label>
-                  </div>
-              </div>
 
-              <div class="col s12 m12 l12">
-                  <div class="input-field col s12 m6 l6">
-                      <textarea id="rev_change_description" name="change_description" class="materialize-textarea" placeholder="Some text here.." style="padding-bottom: 0px; border-bottom-width: 2px; margin-bottom: 0px;" readonly>{{$procedures->change_description}}</textarea>
-                      <label for="change_description">Description of Change(s)<sup class="red-text">*</sup></label>
-                  </div>
+                <div class="col s12 m12 l12">
+                    <div class="input-field col s12 m6 l6">
+                        <textarea id="rev_change_description" name="change_description" class="materialize-textarea" placeholder="Some text here.." style="padding-bottom: 0px; border-bottom-width: 2px; margin-bottom: 0px;" readonly>{{$procedures->change_description}}</textarea>
+                        <label for="change_description">Description of Change(s)<sup class="red-text">*</sup></label>
+                    </div>
 
-                  <div class="input-field col s12 m6 l6">
-                      <textarea id="rev_change_reason" name="change_reason" class="materialize-textarea"  placeholder="Some text here.." style="padding-bottom: 0px; border-bottom-width: 2px; margin-bottom: 0px;" readonly>{{$procedures->change_reason}}</textarea>
-                      <label for="change_reason">Reason for Preparation / Revision<sup class="red-text">*</sup></label>
-                  </div>
-              </div>
+                    <div class="input-field col s12 m6 l6">
+                        <textarea id="rev_change_reason" name="change_reason" class="materialize-textarea"  placeholder="Some text here.." style="padding-bottom: 0px; border-bottom-width: 2px; margin-bottom: 0px;" readonly>{{$procedures->change_reason}}</textarea>
+                        <label for="change_reason">Reason for Preparation / Revision<sup class="red-text">*</sup></label>
+                    </div>
+                </div>
 
                 <div class="col s12 m12 l12">
                   <h6 style="padding: 10px; padding-top: 20px; padding-left: 10px; padding-right: 10px;   margin-top: 20px; background-color:#0d47a1" class="white-text"><b>Procedure Attachment(s)</b></h6>  
@@ -100,7 +76,7 @@
                 <div class="row">
                   <br>
                   <div style="width:96%; 
-                              height:60%; 
+                              height:50%; 
                               z-index: 10; 
                               opacity:0.15;
                               position:absolute; 
@@ -145,8 +121,32 @@
                     </div>
                   </div>
                 </div>
+              </div>
 
+              <div class="row">
+                <div class="input-field col s12 m6 l6">
+                    <select id="copy_department" name="department" required>
+                        <option value="" disabled selected>Choose your option</option>
+                          @if($copyCount==0)
+                              <option value="{{$deptx->department}}" selected>{{$deptx->dept_details->dept_desc}}</option>
+                          @else
+                            @foreach ($department as $dept)
+                              <option value="{{$dept->dept_code}}">{{$dept->dept_desc}}</option>
+                            @endforeach
+                          @endif
+                        
+                    </select>
+                      <label for="prod_code">Department<sup class="red-text">*</sup></label>
+                </div>
+                <div class="col s12 m3 l3 right-align">
+                    <a href="#!" onclick="CreateCopy({{$procedures->id}});" class="green waves-effect waves-dark btn" style="width: 100%"><i class="material-icons left">add_box</i>Create Copy</a>
+                </div>
+                <div class="col s12 m3 l3 right-align">
+                    <a href="{{route('procedure.index')}}" class="red waves-effect waves-dark btn" style="width: 100%; margin-bottom: 30px"><i class="material-icons left">keyboard_return</i>Return</a>
+                </div>    
+              </div>
 
+           
             </form>
           </div>
         </div>
@@ -164,6 +164,7 @@
                           @else
                           <input type="hidden" name="dept" id="copy_dept">
                           @endif
+                          <input type="hidden" name="dpr_code" id="rev_dpr_code" value="{{$procedures->dpr_code}}">
                           <input type="hidden" name="document_title" id="c_document_title" value="{{$procedures->document_title}}">
                           <input type="hidden" name="revision_no" id="c_revision_no" value="{{$procedures->revision_no}}">
                           <input type="hidden" name="document_no" id="c_document_no" value="{{$procedures->document_no}}">
@@ -194,23 +195,23 @@
 
     $(document).ready(function () {
 
-            // document.onkeydown = function(e) {
-            //   if(event.keyCode == 123) {
-            //     return false;
-            //   }
-            //   if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
-            //     return false;
-            //   }
-            //   if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
-            //     return false;
-            //   }
-            //   if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
-            //     return false;
-            //   }
-            //   if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
-            //     return false;
-            //   }
-            // }
+            document.onkeydown = function(e) {
+              if(event.keyCode == 123) {
+                return false;
+              }
+              if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
+                return false;
+              }
+              if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
+                return false;
+              }
+              if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
+                return false;
+              }
+              if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
+                return false;
+              }
+            }
         $('#copy_department').change(function () {
             var id = $(this).val();
             $('#copy_dept').val(id);
@@ -259,7 +260,7 @@
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return '<a href="../view/'+row.procedures.id+'">'+ row.document_no +'</a>';
+                    return '<a href="../view/'+row.procedures.id+'/'+row.status+'">'+ row.document_no +'</a>';
                   }
               },
               {   "data": "id",
@@ -275,6 +276,9 @@
                       break;
                       case 'Pending':
                         return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
+                      break;
+                      case 'Created':
+                        return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
                       break;
                       case 'Rejected':
                         return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';

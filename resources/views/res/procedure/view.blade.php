@@ -173,10 +173,10 @@
             </div>
 
             <div class="row">
-              <div class="col s12 m3 l3"></div>
-              <div class="col s12 m9 l9 right-align" style="padding-right: 10px">
+              <div class="col s12 m9 l9"></div>
+              <div class="col s12 m3 l3 right-align" style="padding-right: 10px">
               <a href="{{route('procedure.index')}}" class="red waves-effect waves-dark btn" style="
-              margin-bottom: 25px;
+              margin-bottom: 30px; width: 100%
           "><i class="material-icons left">keyboard_return</i>Return</a>
               </div>
             </div>
@@ -332,7 +332,7 @@
             },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return '<a href="../../view_rev/'+row.id+'/'+row.status+'">'+ row.document_no +'</a>';
+                  return '<a href="../../view/'+row.procedures.id+'/'+row.status+'">'+ row.document_no +'</a>';
                 }
             },
             {   "data": "id",

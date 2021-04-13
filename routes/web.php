@@ -216,9 +216,10 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::post('/reiss/procedure/makecopy', 'ProceduresController@makeCopy')->name('procedure.makecopy');
   
     Route::get('/reiss/procedure/view/{id}/{loc}', 'ProceduresController@view')->name('procedure.view');
-    Route::get('/reiss/procedure/view_rev/{id}/{loc}', 'ProceduresController@view_rev')->name('procedure.view_rev');
+    Route::get('/reiss/procedure/view_fcc/{id}/{loc}', 'ProceduresController@view_fcc')->name('procedure.view_fcc');
+    Route::get('/reiss/procedure/view_cc/{id}/{loc}', 'ProceduresController@view_cc')->name('procedure.view_cc');
     Route::get('/reiss/procedure/revise/{id}', 'ProceduresController@revise')->name('procedure.revise');
-    Route::get('/reiss/procedure/getDocument/{id}{stat}/{loc}', 'ProceduresController@getDocument')->name('procedure.getDocument');
+    Route::get('/reiss/procedure/getDocument/{id}/{stat}/{loc}', 'ProceduresController@getDocument')->name('procedure.getDocument');
     Route::get('/reiss/procedure/master/pdf/{id}', 'ProceduresController@pdf')->name('procedure.pdf');
     Route::get('/reiss/procedure/master/pdfx/{id}', 'ProceduresController@pdfx')->name('procedure.pdfx');
     Route::get('/reiss/procedure/master/{id}', 'ProceduresController@master_view')->name('procedure.master');

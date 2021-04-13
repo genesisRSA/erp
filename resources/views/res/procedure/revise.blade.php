@@ -110,10 +110,12 @@
             </div>
 
             <div class="row">
-              <div class="col s12 m3 l3"></div>
-              <div class="col s12 m9 l9 right-align" style="padding-right: 35px; padding-bottom: 100px">
-              <button class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Save&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
-              <a href="{{route('procedure.index')}}" class="red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Cancel</a>
+              <div class="col s12 m6 l6"></div>
+              <div class="col s12 m3 l3 right-align" style="padding-bottom: 100px;padding-right: 10px;padding-left: 12px;">
+              <button class="green waves-effect waves-light btn" style="width: 100%"><i class="material-icons left">check_circle</i>Save&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+              </div>
+              <div class="col s12 m3 l3 right-align" style="padding-bottom: 100px;padding-right: 30px;padding-left: 0px;">
+              <a href="{{route('procedure.index')}}" class="red waves-effect waves-dark btn" style="width: 100%"><i class="material-icons left">cancel</i>Cancel</a>
               </div>
             </div>
 
