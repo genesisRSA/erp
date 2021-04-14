@@ -334,6 +334,7 @@ class ProceduresController extends Controller
 
             $fileName = self::pdfx($request->input('id'),"master");
             $filePath = str_replace('\\','/', $fileName);
+            
             $newFileName = substr($filePath, -51, 51);
 
             $master = new ProceduresMasterCopy();
@@ -407,7 +408,7 @@ class ProceduresController extends Controller
                 $revision->status = 'Created';
                 $revision->save();
             }
-            
+
             if($cc->save()){
                 $procedure->save();
                 return redirect()->route('procedure.index')->withSuccess('Controlled Copy Successfully Created');
