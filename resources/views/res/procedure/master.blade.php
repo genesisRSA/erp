@@ -86,9 +86,8 @@
                     &nbspRSA PROPERTY
                     &nbspRSA PROPERTY
                     </div>
-                    <input type="hidden" name="file" type="file" value="/reiss/procedure/master/pdf/{{$procedures->id}}">
                   <embed
-                      src="/reiss/procedure/master/pdf/{{$procedures->id}}#toolbar=0"
+                      src="/reiss/procedure/pdf/{{$procedures->id}}/master#toolbar=0"
                       style="width:95%; 
                             height:130%; 
                             margin-left:2.5%;" type="application/pdf"
@@ -149,6 +148,7 @@
                           <input type="hidden" name="document_title"  id="m_document_title" value="{{$procedures->document_title}}">
                           <input type="hidden" name="revision_no"     id="m_revision_no"    value="{{$procedures->revision_no}}">
                           <input type="hidden" name="document_no"     id="m_document_no"    value="{{$procedures->document_no}}">
+                          <input type="hidden" name="dept"     id="m_dept"    value="{{$employee->dept_code}}">
                           <input type="hidden" name="process_owner"   id="m_process_owner"  value="{{$procedures->created_by}}">
 
                           <p>Are you sure you want to create a master copy for this <strong>Procedure</strong>?</p>
@@ -174,23 +174,23 @@
 
     $(document).ready(function () {
 
-            document.onkeydown = function(e) {
-              if(event.keyCode == 123) {
-                return false;
-              }
-              if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
-                return false;
-              }
-              if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
-                return false;
-              }
-              if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
-                return false;
-              }
-              if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
-                return false;
-              }
-            }
+            // document.onkeydown = function(e) {
+            //   if(event.keyCode == 123) {
+            //     return false;
+            //   }
+            //   if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
+            //     return false;
+            //   }
+            //   if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
+            //     return false;
+            //   }
+            //   if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
+            //     return false;
+            //   }
+            //   if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
+            //     return false;
+            //   }
+            // }
 
         $('#add_description').trigger('autoresize');
 
@@ -234,7 +234,7 @@
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return '<a href="../view/'+row.procedures.id+'/'+row.status+'">'+ row.document_no +'</a>';
+                    return '<a href="../../view/'+row.procedures.id+'/{{$loc}}">'+ row.document_no +'</a>';
                   }
               },
               {   "data": "id",

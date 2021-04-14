@@ -87,10 +87,8 @@
                     &nbspRSA PROPERTY
                     &nbspRSA PROPERTY
                     </div>
-                    <input type="hidden" name="file" type="file" value="/reiss/procedure/master/pdf/{{$procedures->id}}">
-                  <embed
-
-                      src="/reiss/procedure/master/pdf/{{$procedures->id}}#toolbar=0"
+                    <embed
+                      src="/reiss/procedure/pdf/{{$procedures->id}}/copy#toolbar=0"
                       style="width:95%; 
                             height:130%; 
                             margin-left:2.5%;" type="application/pdf"
@@ -260,7 +258,7 @@
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return '<a href="../view/'+row.procedures.id+'/'+row.status+'">'+ row.document_no +'</a>';
+                    return '<a href="../../view/'+row.procedures.id+'/{{$loc}}">'+ row.document_no +'</a>';
                   }
               },
               {   "data": "id",

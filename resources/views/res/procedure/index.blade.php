@@ -16,8 +16,9 @@
       @endif
       @if($permission[0]["masterlist"]==true)
       <li class="tab col s12 m4 l4"><a href="#master">Master Copy</a></li>
-      <li class="tab col s12 m4 l4"><a href="#controlled">Controlled Copy</a></li>
       @endif
+      <li class="tab col s12 m4 l4"><a href="#controlled">Controlled Copy</a></li>
+     
     </ul>
 
     <div id="ongoing" name="ongoing">
@@ -83,7 +84,7 @@
                   <th>DPR No.</th>
                   <th>Revision No.</th>
                   <th>Status</th>
-                  @if($employee->dept_code=="QA")
+                  @if($permission[0]["masterlist"]==true)
                   <th>Action</th>
                   @endif
                 </tr>
@@ -92,10 +93,11 @@
           </div>
         </div>
     </div>
+    @endif  
     
     <div id="controlled" name="controlled">
       <div class="card" style="margin-top: 0px">
-        @if($employee->dept_code=="QA")
+       @if($permission[0]["masterlist"]==true)
           <div class="col s12 m12 l12">
             <h6 style="padding: 10px; padding-top: 20px; padding-left: 20px; padding-right: 20px;   margin-top: 5px; background-color:#0d47a1" class="white-text"><b>For Control Copy</b></h6>  
           </div>
@@ -120,6 +122,7 @@
             <h6 style="padding: 10px; padding-top: 20px; padding-left: 20px; padding-right: 20px;   margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Created Copies</b></h6>  
           </div>
         @endif
+
         <div class="card-content">
           <table class="responsive-table highlight" id="created-dt" style="width: 100%">
             <thead>
@@ -129,10 +132,9 @@
                   <th>Requested By</th>
                   <th>Copy Owner</th>
                   <th>Document Title</th>
-                  {{-- <th>DPR No.</th>
-                  <th>Revision No.</th> --}}
+                  <th>DPR No.</th>
                   <th>Copy No.</th>
-                  @if($employee->dept_code=="QA")
+                  @if($permission[0]["masterlist"]==true)
                   <th>Action</th>
                   @endif
               </tr>
@@ -143,7 +145,7 @@
       </div>
       
     </div>
-    @endif  
+
 
 
     <div id="ccModal" class="modal bottom-sheet">
@@ -219,93 +221,8 @@
 
     $(document).ready(function () {
  
-        @if(isset($_GET['forecastID']))
-          @if($_GET['loc']=='approval')
-            appItem({{Illuminate\Support\Facades\Crypt::decrypt($_GET['forecastID'])}});
-          @else
-            viewItem({{Illuminate\Support\Facades\Crypt::decrypt($_GET['forecastID'])}});
- 
-          @endif
-        @endif
-
     });
  
-
-    function viewItem(id)
-    {  
-        $('.tabs').tabs('select','view-forecast');
-        $.get('forecast/'+id, function(response){
-
-          const formatter = new Intl.NumberFormat('en-US', {
-              minimumFractionDigits: 4,      
-              maximumFractionDigits: 4,
-            });
-
-            var data = response.data;
-            var curr_symbol = data.currency.symbol;
-            var curr_name = data.currency.currency_name;
-            var currency =  curr_symbol + ' - ' + curr_name;
-
-            var unit_price = data.unit_price;
-            var unit_pricex = formatter.format(unit_price);
-                unit_pricex = curr_symbol + ' ' + unit_pricex;
-            
-            
-            $('#view_id').val(data.id);
-            $('#view_forecast_code').val(data.forecast_code);
-            $('#view_forecast_year').val(data.forecast_year);
-            $('#view_forecast_month').val(data.forecast_month);
-            $('#view_site_code').val(data.sites.site_desc);
-            $('#view_prod_code').val(data.products.prod_name);
-            $('#view_uom_code').val(data.uoms.uom_name);
-            $('#view_currency_code').val(currency);
-            $('#view_unit_price').val(unit_pricex);
-            $('#view_quantity').val(data.quantity);
-            $('#view_total_price').val(data.total_price);
-            $('#viewModal').modal('open');
-        });
-    }
-
-    function appItem(id)
-    {   
-      $('#forecast_tab').tabs('select','approval');
-        $('.tabs').tabs('select','app-forecast');
-        $.get('forecast/'+id, function(response){
-
-            const formatter = new Intl.NumberFormat('en-US', {
-              minimumFractionDigits: 4,      
-              maximumFractionDigits: 4,
-            });
-
-            var i, j = "";
-            var data = response.data;
-            var dataUP = data.unit_price;
-            var dataTP = data.total_price;
-            var curr_x = data.currency;
-            var curr_name = curr_x.currency_name;
-            
-            var dataUPx = formatter.format(dataUP);
-                dataUpx = curr_x.symbol + ' ' + dataUPx;
-
-            $('#id_app').val(data.id);
-            $('#seq_app').val(data.current_sequence);
-            $('#appid_app').val(data.current_approver);
-            
-            $('#app_forecast_code').val(data.forecast_code);
-            $('#app_forecast_year').val(data.forecast_year);
-            $('#app_forecast_month').val(data.forecast_month);
-            $('#app_site_code').val(data.site_code);
-            $('#app_prod_code').val(data.prod_code);
-            $('#app_uom_code').val(data.uom_code);
-            $('#app_currency_code').val(curr_name);
-            $('#app_unit_price').val(dataUpx);
-            $('#app_quantity').val(data.quantity);
-            $('#app_total_price').val(data.total_price);
-
-            $('#appModal').modal('open');
-            
-        });
-    }
 
     function deleteCC(id)
     {
@@ -402,7 +319,7 @@
               {  "data": "id" },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return '<a href="procedure/view/'+row.id+'/approval">'+ row.document_no +'</a>';
+                    return '<a href="procedure/view/'+row.id+'/app">'+ row.document_no +'</a>';
                   }
               },
               {  "data": "id",
@@ -547,89 +464,86 @@
                     
                   }
               },
-              @if($employee->dept_code=="QA")
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
                     if(row.status=='Approved')
                     {
-                      return  '<a href="procedure/master/'+row.id+'" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
+                      return  '<a href="procedure/master/'+row.id+'/master" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
                     }else{
                       return  '<a href="#!" class="btn-small blue darken3 waves-effect waves-dark" disabled><i class="small material-icons">note_add</i></a>';
                     }
                   }
               }
-              @endif
           ]
       });
-
-      @if($employee->dept_code=="QA")
-        var controlled = $('#controlled-dt').DataTable({
-            "lengthChange": false,
-            "pageLength": 15,
-            "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
-            "pagingType": "full",
-            "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/forCC",
-            "columns": [
-                {  "data": "id" },
-                {   "data": "id",
-                    "render": function ( data, type, row, meta ) {
-                      return '<a href="procedure/view_fcc/'+row.id+'/controlled">'+ row.document_no +'</a>';
+      
+      var controlled = $('#controlled-dt').DataTable({
+          "lengthChange": false,
+          "pageLength": 15,
+          "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+          "pagingType": "full",
+          "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/forCC",
+          "columns": [
+              {  "data": "id" },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return '<a href="procedure/view_fcc/'+row.id+'/controlled">'+ row.document_no +'</a>';
+                  }
+              },
+              {  "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.created_at.substring(0,10);
+                  }
+              },
+              {  "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.employee_details.full_name;
+                  }
+              },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.document_title;
+                  }
+              },
+          
+              {  "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return '<a href="procedure/view_fcc/'+row.id+'/controlled">'+ row.dpr_code +'</a>';
+                  }
+              },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.revision_no;
+                  }
+              },
+              {   "data": "status",
+                  "render": function ( data, type, row, meta ) {
+                    switch(data){
+                      case 'Created':
+                        return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
+                      break;
+                    
+                      case 'For CC':
+                        return  '<span class="new badge blue white-text" data-badge-caption="">For CC</span>';
+                      break;
+                    
                     }
-                },
-                {  "data": "id",
-                    "render": function ( data, type, row, meta ) {
-                      return row.created_at.substring(0,10);
+                    
+                  }
+              },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    if(row.status=='For CC'||row.status=='Created')
+                    {
+                      return  '<a href="procedure/copy/'+row.id+'/controlled" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
+                    }else{
+                      return  '<a href="#!" class="btn-small blue darken3 waves-effect waves-dark" disabled><i class="small material-icons">note_add</i></a>';
                     }
-                },
-                {  "data": "id",
-                    "render": function ( data, type, row, meta ) {
-                      return row.employee_details.full_name;
-                    }
-                },
-                {   "data": "id",
-                    "render": function ( data, type, row, meta ) {
-                      return row.document_title;
-                    }
-                },
-            
-                {  "data": "id",
-                    "render": function ( data, type, row, meta ) {
-                      return row.dpr_code;
-                    }
-                },
-                {   "data": "id",
-                    "render": function ( data, type, row, meta ) {
-                      return row.revision_no;
-                    }
-                },
-                {   "data": "status",
-                    "render": function ( data, type, row, meta ) {
-                      switch(data){
-                        case 'Created':
-                          return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
-                        break;
-                      
-                        case 'For CC':
-                          return  '<span class="new badge blue white-text" data-badge-caption="">For CC</span>';
-                        break;
-                      
-                      }
-                      
-                    }
-                },
-                {   "data": "id",
-                    "render": function ( data, type, row, meta ) {
-                      if(row.status=='For CC'||row.status=='Created')
-                      {
-                        return  '<a href="procedure/copy/'+row.id+'" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
-                      }else{
-                        return  '<a href="#!" class="btn-small blue darken3 waves-effect waves-dark" disabled><i class="small material-icons">note_add</i></a>';
-                      }
-                    }
-                }
-            ]
-        });
-      @endif
+                  }
+              }
+          ]
+      });
+    @endif
 
       var controlled = $('#created-dt').DataTable({
           "lengthChange": false,
@@ -641,7 +555,7 @@
               {  "data": "id" },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return '<a href="procedure/view_cc/'+row.id+'/controlled">'+ row.document_no +'</a>';
+                    return '<a href="procedure/view_cc/'+row.id+'/cc">'+ row.document_no +'</a>';
                   }
               },
               {  "data": "id",
@@ -661,10 +575,15 @@
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
+                    return '<a href="procedure/view_cc/'+row.id+'/cc">'+ row.dpr_code +'</a>';
+                  }
+              },
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
                     return row.copy_no;
                   }
               },
-              @if($employee->dept_code=="QA")
+              @if($permission[0]["masterlist"]==true)
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
                     return  '<a href="#!" onclick="deleteCC('+data+')" class="btn-small red darken3 waves-effect waves-dark"><i class="small material-icons">delete_forever</i></a> ';
@@ -673,7 +592,7 @@
               @endif
           ]
       });
-    @endif
+    
 
   </script>
 

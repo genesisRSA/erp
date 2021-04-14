@@ -108,9 +108,9 @@
                           <thead>
                             <tr>
                                 <th>ID</th> 
-                                <th>DPR No.</th>
-                                <th>Document Title</th>
                                 <th>Document No.</th>
+                                <th>Document Title</th>
+                                <th>DPR No.</th>
                                 <th>Revision No.</th>
                                 <th>Status</th>
                             </tr>
@@ -317,12 +317,14 @@
         "pagingType": "full",
         "ajax": "/api/reiss/procedure/all_revision/{{$procedures->document_no}}",
         "columns": [
-            {  "data": "id" 
-             
-            },
-            {  "data": "id",
+            {  "data": "id" },
+            {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return row.dpr_code;
+                 if(row.status=='Created'){
+                  return '<a href="../../view/'+row.procedures.id+'/{{$loc}}">'+ row.document_no +'</a>';
+                 }else{
+                  return row.document_no;
+                 }  
                 }
             },
             {   "data": "id",
@@ -330,9 +332,13 @@
                   return row.document_title;
                 }
             },
-            {   "data": "id",
+            {  "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return '<a href="../../view/'+row.procedures.id+'/'+row.status+'">'+ row.document_no +'</a>';
+                  if(row.status=='Created'){
+                    return '<a href="../../view/'+row.procedures.id+'/{{$loc}}">'+ row.dpr_code +'</a>';
+                  }else{
+                    return row.dpr_code;
+                  }  
                 }
             },
             {   "data": "id",

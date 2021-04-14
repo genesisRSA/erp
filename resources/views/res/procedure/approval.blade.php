@@ -104,7 +104,7 @@
                           <div class="row">
                             <br>
                             <div style="width:93%; 
-                                        height:60%; 
+                                        height:50%; 
                                         z-index: 10; 
                                         opacity:0.15;
                                         position:absolute; 
@@ -138,9 +138,9 @@
                                   <thead>
                                     <tr>
                                         <th>ID</th> 
-                                        <th>DPR No.</th>
-                                        <th>Document Title</th>
                                         <th>Document No.</th>
+                                        <th>Document Title</th>
+                                        <th>DPR No.</th>
                                         <th>Revision No.</th>
                                         <th>Status</th>
                                     </tr>
@@ -352,22 +352,22 @@
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/reiss/procedure/all_revision/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
+        "ajax": "/api/reiss/procedure/all_revision/{{$procedures->document_no}}",
         "columns": [
           {  "data": "id" },
-            {  "data": "id",
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return '<a href="../../view/'+row.procedures.id+'/{{$loc}}">'+ row.document_no +'</a>';
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.document_title;
+                }
+            },
+            {   "data": "id",
                 "render": function ( data, type, row, meta ) {
                   return row.dpr_code;
-                }
-            },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return '<a href="procedure/view_revision/'+row.id+'">'+ row.document_title +'</a>';
-                }
-            },
-            {   "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return '<a href="procedure/view_revision/'+row.id+'">'+ row.document_no +'</a>';
                 }
             },
             {   "data": "id",
@@ -378,14 +378,32 @@
             {   "data": "status",
                 "render": function ( data, type, row, meta ) {
                   switch(data){
-                    case 'For Review':
-                      return  '<span class="new badge green white-text" data-badge-caption="">For Review</span>';
+                    case 'Approved':
+                      return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
                     break;
                     case 'Pending':
                       return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
                     break;
-                    case 'Approved':
+                    case 'Rejected':
                       return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
+                    break;
+                    case 'For Approval':
+                      return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
+                    break;
+                    case 'For Review':
+                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
+                    break;
+                    case 'Voided':
+                      return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
+                    break;
+                    case 'Quoted':
+                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
+                    break;
+                    case 'Ordered':
+                      return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Ordered</span>';
+                    break;
+                     case 'Created':
+                      return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
                     break;
                   }
                    

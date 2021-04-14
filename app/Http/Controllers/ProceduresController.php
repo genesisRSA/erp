@@ -40,7 +40,7 @@ class ProceduresController extends Controller
 
         $employee = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
 
-        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":true,"edit":true,"view":true,"delete":true,"void":true,"approval":true,"masterlist":true}]', true));
+        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"masterlist":false,"approval":false}]', true));
 
         return view('res.procedure.index')
                 ->with('site','res')
@@ -50,11 +50,14 @@ class ProceduresController extends Controller
                 ->with('employee',$employee);
     }
  
-    public function pdf($id)
+    public function pdf($id,$loc)
     {
+        $locx = $loc;
+        // return $locx;
         $procedure = Procedure::find($id);
         $pdf = 'file://'.realpath('../storage/app/'.$procedure->file_name);
-        $signature = realpath('../storage/app/assets/copy.png');
+
+        // return $pdf;
         $pageCount = PDF::setSourceFile($pdf);
         for($i=1; $i <= $pageCount; $i++){
             PDF::AddPage();
@@ -62,12 +65,24 @@ class ProceduresController extends Controller
             PDF::useTemplate($page, 0, 0);
             PDF::setPrintHeader(false);
             PDF::setPrintFooter(true);
-            PDF::setFooterCallback(function($pdf) {
-                $signature = realpath('../storage/app/assets/copy_m_nv.png');
-                $pdf->SetY(-15);
-                $pdf->Cell(0, 40, $pdf->Image($signature, 10, 315 - 50, 90, 30, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+            if($locx=='master')
+            {
+                PDF::setFooterCallback(function($pdf) {
+                        $master_v = realpath('../storage/app/assets/copy_m_v.png');
+                        $pdf->SetY(-15);
+                        $pdf->Cell(0, 40, $pdf->Image($master_v, 10, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+                });
+            }else{
+                PDF::setFooterCallback(function($pdf) {
+                        $master_nv = realpath('../storage/app/assets/copy_m_nv.png');
+                        $pdf->SetY(-15);
+                        $pdf->Cell(0, 40, $pdf->Image($master_nv, 10, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
 
-            });
+                        $copy_cc = realpath('../storage/app/assets/copy_cc.png');
+                        $pdf->SetY(-15);
+                        $pdf->Cell(0, 40, $pdf->Image($copy_cc, 65, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+                });
+            }
             PDF::SetMargins(false, false);
         }
         PDF::Output('hello_world.pdf', 'I');
@@ -75,12 +90,12 @@ class ProceduresController extends Controller
 
     public function pdfx($id,$loc)
     {
+        $locx = $loc;
         $procedure = Procedure::find($id);
         $copyCount =    ProceduresControlledCopy::where('document_no','=',$procedure->document_no)->count();
         $newFile = ($loc == "master" ? 'documents/master/master_'.str_replace("documents/draft/","",$procedure->file_name) : 'documents/controlled/cc_'.$copyCount.'_'.str_replace("documents/draft/","",$procedure->file_name));
         Storage::copy($procedure->file_name,$newFile);
         $pdf = 'file://'.realpath('../storage/app/'.$newFile);
-        $signature = realpath('../storage/app/assets/copy.png');
         $pageCount = PDF::setSourceFile($pdf);
         for($i=1; $i <= $pageCount; $i++){
             PDF::AddPage();
@@ -88,11 +103,24 @@ class ProceduresController extends Controller
             PDF::useTemplate($page, 0, 0);
             PDF::setPrintHeader(false);
             PDF::setPrintFooter(true);
-            PDF::setFooterCallback(function($pdf) {
-                $signature = realpath('../storage/app/assets/copy_m_nv.png');
-                $pdf->SetY(-15);
-                $pdf->Cell(0, 40, $pdf->Image($signature, 10, 315 - 50, 90, 30, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
-            });
+            if($locx=='master')
+            {
+                PDF::setFooterCallback(function($pdf) {
+                        $master_v = realpath('../storage/app/assets/copy_m_v.png');
+                        $pdf->SetY(-15);
+                        $pdf->Cell(0, 40, $pdf->Image($master_v, 10, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+                });
+            }else{
+                PDF::setFooterCallback(function($pdf) {
+                        $master_nv = realpath('../storage/app/assets/copy_m_nv.png');
+                        $pdf->SetY(-15);
+                        $pdf->Cell(0, 40, $pdf->Image($master_nv, 10, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+
+                        $copy_cc = realpath('../storage/app/assets/copy_cc.png');
+                        $pdf->SetY(-15);
+                        $pdf->Cell(0, 40, $pdf->Image($copy_cc, 65, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+                });
+            }
             PDF::SetMargins(false, false);
         }
         PDF::Output(realpath('../storage/app/'.$newFile), 'F');
@@ -102,9 +130,16 @@ class ProceduresController extends Controller
     public function all($id, $loc)
     {
         $idx = Crypt::decrypt($id);
-        $userDept = Employee::select('dept_code')->where('emp_no','=',$idx)->first();
-        // return $userDept;
         $locx = $loc;
+
+        $userDept = Employee::select('dept_code')->where('emp_no','=',$idx)->first();
+
+        $permission = SitePermission::where('requestor','=',$idx)
+                                    ->where('module','=','Procedures')
+                                    ->first();
+
+        $permissionx =  ($permission ? json_decode($permission->permission) : 
+                                    json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"masterlist":false,"approval":false}]'));
         
         switch($locx){
             case "procedures":
@@ -122,29 +157,19 @@ class ProceduresController extends Controller
                         ->get();
             break;
             case "master":
-                if($userDept->dept_code=="QA"){
-                    $data = Procedure::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
-                    ->where('status','<>','Pending')
-                    ->where('status','<>','For Review')
-                    ->where('status','<>','Approval')
-                    ->where('status','<>','Rejected')
-                    ->get();
-                } else {
-                    $data = Procedure::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
-                    ->where('status','<>','Pending')
-                    ->where('status','<>','For Review')
-                    ->where('status','<>','Approval')
-                    ->where('status','<>','Rejected')
-                    ->where('created_by','=',$idx)
-                    ->get();
-                }
+                $data = Procedure::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
+                        ->where('status','<>','Pending')
+                        ->where('status','<>','For Review')
+                        ->where('status','<>','Approval')
+                        ->where('status','<>','Rejected')
+                        ->get();
             break;
             case "forCC":
                 $data = ProceduresMasterCopy::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
                         ->get();
             break;
             case "cc":
-                if($userDept->dept_code=="QA"){
+                if($permissionx[0]->masterlist==true){
                     $data = ProceduresControlledCopy::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
                     ->with('dept_details:dept_code,dept_desc')
                     ->get();
@@ -207,7 +232,7 @@ class ProceduresController extends Controller
         $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
         ->where('module','=','Procedures')
         ->first();
-        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":true,"edit":true,"view":true,"delete":true,"void":true,"approval":true}]', true));
+        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"masterlist":false,"approval":false}]', true));
 
         return view('res.procedure.new')
                 ->with('site','res')
@@ -305,8 +330,7 @@ class ProceduresController extends Controller
                         ->withInput()
                         ->withErrors($validator);
         }else{
-            $employee = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
-            $department = $employee->dept_code;
+           
 
             $fileName = self::pdfx($request->input('id'),"master");
             $filePath = str_replace('\\','/', $fileName);
@@ -318,7 +342,7 @@ class ProceduresController extends Controller
             $master->file_name = $newFileName;
             $master->revision_no = $request->input('revision_no','');
             $master->document_no = $request->input('document_no','');
-            $master->department = $department;
+            $master->department = $request->input('dept','');
             $master->process_owner = $request->input('process_owner','');
             $master->released_by = Auth::user()->emp_no;
             $master->status = 'For CC';
@@ -353,12 +377,10 @@ class ProceduresController extends Controller
             $copyCount = ProceduresControlledCopy::where('document_no','=',$request->input('document_no'))
                                                 ->where('revision_no','=',$request->input('revision_no'))
                                                 ->count();
-                                                            
+                                                           
             $fileName = self::pdfx($request->input('id'),"controlled");
             $filePath = str_replace('\\','/', $fileName);
             $newFileName = substr($filePath, -49, 51);
-
-           
 
             $cc = new ProceduresControlledCopy();
             $cc->dpr_code = $request->input('dpr_code','');
@@ -377,6 +399,15 @@ class ProceduresController extends Controller
                                             ->first();
             $procedure->status = 'Created';
 
+            if($copyCount>=1)
+            { 
+                $revision = ProceduresRevision::where('document_no','=',$request->input('document_no'))
+                                                ->where('revision_no','=',$request->input('revision_no'))
+                                                ->first();
+                $revision->status = 'Created';
+                $revision->save();
+            }
+            
             if($cc->save()){
                 $procedure->save();
                 return redirect()->route('procedure.index')->withSuccess('Controlled Copy Successfully Created');
@@ -509,19 +540,61 @@ class ProceduresController extends Controller
 
     public function getDocument($id, $stat, $loc)
     {   
-        // return $loc;
-        $document = ($loc == "rev" ? ProceduresRevision::findOrFail($id) : Procedure::findOrFail($id));
-        
-        $filename = str_replace("documents/", "", $document->file_name);
-        
-        $filePath = ($stat == 'Created' ?  str_replace("draft/","master/master_", $document->file_name) : $document->file_name );
- 
+        switch($loc){
+            case "procedures":
+                $document = Procedure::find($id);
+                $filename = str_replace("documents/", "", $document->file_name);
+                $filePath = $document->file_name;
+               
+                break;
+            case "app":
+                $document = Procedure::find($id);
+                $filename = str_replace("documents/", "", $document->file_name);
+                $filePath = $document->file_name;
+                break;
+            case "master":
+                if($stat=="Created"){
+                    $document = Procedure::find($id);
+                    $documentm = ProceduresMasterCopy::where('dpr_code','=',$document->dpr_code)
+                                                    ->where('revision_no','=',$document->revision_no)
+                                                    ->first();
+                    $filename = $documentm->file_name;
+                    $filePath = "documents/master/".$documentm->file_name;
+                } else {
+                    $document = Procedure::find($id);
+                    $filename = str_replace("documents/", "", $document->file_name);
+                    $filePath = $document->file_name;
+                }
+                break;
+            case "controlled":
+                if($stat!="Created"){
+                    $document = Procedure::find($id);
+                    $documentm = ProceduresMasterCopy::where('dpr_code','=',$document->dpr_code)
+                                                    ->where('revision_no','=',$document->revision_no)
+                                                    ->first();
+                    $filename = $documentm->file_name;
+                    $filePath = "documents/master/".$documentm->file_name;
+                } else {
+                    $document = Procedure::find($id);
+                    $filename = str_replace("documents/", "", $document->file_name);
+                    $filePath = $document->file_name;
+                }
+                break;
+            case "cc":
+                $document = Procedure::find($id);
+                $documentcc = ProceduresControlledCopy::where('dpr_code','=',$document->dpr_code)
+                                                ->where('revision_no','=',$document->revision_no)
+                                                ->first();
+                $filename = $documentcc->file_name;
+                $filePath = "documents/controlled/".$documentcc->file_name;
+                break;
+        }
+
         if( ! Storage::exists($filePath) ) {
         abort(404);
         }
 
         $pdfContent = Storage::get($filePath);
-
         return Response::make($pdfContent, 200, [
             'Content-Type'        =>  'application/pdf',
             'Content-Disposition' => 'inline; filename="'.$filename.''
@@ -544,7 +617,7 @@ class ProceduresController extends Controller
         $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
         ->where('module','=','Procedures')
         ->first();
-        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":true,"edit":true,"view":true,"delete":true,"void":true,"approval":true}]', true));
+        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"masterlist":false,"approval":false}]', true));
         $procedure = Procedure::find($id);
         $procedures = Procedure::where('document_no','=',$procedure->document_no)
                                 ->where('revision_no','=',$procedure->revision_no)
@@ -699,8 +772,8 @@ class ProceduresController extends Controller
                                     $procedure->reviewed_by =           $request->input('','');
                                     $procedure->approved_by =           $curr_app;
                                     $procedure->status =                $status;
-                                    $procedure_h->file_name =           $request->input('file_name');
-                                    $procedure_h->save();
+                                    $procedure->file_name =           $request->input('file_name');
+                                    $procedure->save();
                             }
 
                     // $approver = Employee::where('emp_no','=',$empID)->first();
@@ -891,30 +964,27 @@ class ProceduresController extends Controller
                 ->with('procedures_h', $procedures_h);
     }
 
-    public function master_view($id)
+    public function master_view($id, $loc)
     {    
         $procedure = Procedure::find($id);
         $employee = Employee::where('emp_no','=',$procedure->created_by)->first();
         $procedures = Procedure::where('document_no','=',$procedure->document_no) 
                                 ->where('revision_no','=',$procedure->revision_no)
                                 ->where('dpr_code','=',$procedure->dpr_code)
-                                ->first();
-        $procedures_h = Procedure::where('document_no','=',$procedure->document_no) 
-                                ->where('revision_no','=',$procedure->revision_no-1)
-                                ->where('dpr_code','=',$procedure->dpr_code)
-                                ->first();
+                                ->first();              
  
         return view('res.procedure.master')
                 ->with('site','res')
                 ->with('page','dcc')
                 ->with('subpage','procedures')
                 ->with('idx', $id) 
+                ->with('loc', $loc)
                 ->with('employee', $employee)
-                ->with('procedures', $procedures)
-                ->with('procedures_h', $procedures_h);
+                ->with('procedures', $procedures);
+ 
     }
 
-    public function copy_view($id)
+    public function copy_view($id, $loc)
     {  
         $procedure =    ProceduresMasterCopy::find($id);
         $procedures =   Procedure::where('document_no','=',$procedure->document_no) 
@@ -948,6 +1018,7 @@ class ProceduresController extends Controller
                 ->with('site','res')
                 ->with('page','dcc')
                 ->with('subpage','procedures')
+                ->with('loc', $loc)
                 ->with('procedures', $procedures)
                 ->with('copyCount', $copyCount)
                 ->with('employee', $employee)
