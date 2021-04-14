@@ -27,9 +27,9 @@
               <thead>
                 <tr>
                     <th>ID</th> 
-                    <th>DPR No.</th>
-                    <th>Document Title</th>
                     <th>Document No.</th>
+                    <th>Document Title</th>
+                    <th>DPR No.</th>
                     <th>Revision No.</th>
                     <th>Status</th>
                     <th>Action</th>
@@ -83,40 +83,43 @@
                   <th>DPR No.</th>
                   <th>Revision No.</th>
                   <th>Status</th>
+                  @if($employee->dept_code=="QA")
                   <th>Action</th>
+                  @endif
                 </tr>
               </thead>
             </table>
           </div>
         </div>
     </div>
-
+    
     <div id="controlled" name="controlled">
-
       <div class="card" style="margin-top: 0px">
-        <div class="col s12 m12 l12">
-          <h6 style="padding: 10px; padding-top: 20px; padding-left: 20px; padding-right: 20px;   margin-top: 5px; background-color:#0d47a1" class="white-text"><b>For Control Copy</b></h6>  
-        </div>
-        <div class="card-content">
-          <table class="responsive-table highlight" id="controlled-dt" style="width: 100%">
-            <thead>
-              <tr>
-                  <th>ID</th> 
-                  <th>Document No.</th>
-                  <th>Date Requested</th>
-                  <th>Requested By</th>
-                  <th>Document Title</th>
-                  <th>DPR No.</th>
-                  <th>Revision No.</th>
-                  <th>Status</th>
-                  <th>Action</th>
-              </tr>
-            </thead>
-          </table>
-        </div>
-        <div class="col s12 m12 l12">
-          <h6 style="padding: 10px; padding-top: 20px; padding-left: 20px; padding-right: 20px;   margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Created Copies</b></h6>  
-        </div>
+        @if($employee->dept_code=="QA")
+          <div class="col s12 m12 l12">
+            <h6 style="padding: 10px; padding-top: 20px; padding-left: 20px; padding-right: 20px;   margin-top: 5px; background-color:#0d47a1" class="white-text"><b>For Control Copy</b></h6>  
+          </div>
+          <div class="card-content">
+            <table class="responsive-table highlight" id="controlled-dt" style="width: 100%">
+              <thead>
+                <tr>
+                    <th>ID</th> 
+                    <th>Document No.</th>
+                    <th>Date Requested</th>
+                    <th>Requested By</th>
+                    <th>Document Title</th>
+                    <th>DPR No.</th>
+                    <th>Revision No.</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+          <div class="col s12 m12 l12">
+            <h6 style="padding: 10px; padding-top: 20px; padding-left: 20px; padding-right: 20px;   margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Created Copies</b></h6>  
+          </div>
+        @endif
         <div class="card-content">
           <table class="responsive-table highlight" id="created-dt" style="width: 100%">
             <thead>
@@ -126,18 +129,41 @@
                   <th>Requested By</th>
                   <th>Copy Owner</th>
                   <th>Document Title</th>
-                  <th>DPR No.</th>
-                  <th>Revision No.</th>
+                  {{-- <th>DPR No.</th>
+                  <th>Revision No.</th> --}}
                   <th>Copy No.</th>
-                  {{-- <th>Status</th> --}}
+                  @if($employee->dept_code=="QA")
+                  <th>Action</th>
+                  @endif
               </tr>
             </thead>
           </table>
         </div>
+
       </div>
       
     </div>
     @endif  
+
+
+    <div id="ccModal" class="modal bottom-sheet">
+      <form method="POST" action="{{route('procedure.delete')}}">
+          @csrf
+          <div class="modal-content">
+              <h4>Controlled Copy</h4><br><br>
+              <div class="row">
+                  <div class="col s12 m6">
+                      <input type="hidden" name="id" id="cc_id">
+                      <p>Are you sure you want to delete this <strong>Procedure Controlled Copy</strong>?</p>
+                  </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+              <button class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Yes</button>
+              <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>No</a>
+          </div>
+      </form>
+    </div>
 
   </div>
 
@@ -281,6 +307,12 @@
         });
     }
 
+    function deleteCC(id)
+    {
+      $('#cc_id').val(id);
+      $('#ccModal').modal('open');
+    }
+
       var procedures = $('#procedures-dt').DataTable({
           "lengthChange": false,
           "pageLength": 15,
@@ -289,9 +321,9 @@
           "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/procedures",
           "columns": [
               {  "data": "id" },
-              {  "data": "id",
+              {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return row.dpr_code;
+                    return '<a href="procedure/view/'+data+'/procedures">'+ row.document_no +'</a>';
                   }
               },
               {   "data": "id",
@@ -299,9 +331,9 @@
                     return row.document_title;
                   }
               },
-              {   "data": "id",
+              {  "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return '<a href="procedure/view/'+row.id+'/procedures">'+ row.document_no +'</a>';
+                    return row.dpr_code;
                   }
               },
               {   "data": "id",
@@ -515,6 +547,7 @@
                     
                   }
               },
+              @if($employee->dept_code=="QA")
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
                     if(row.status=='Approved')
@@ -525,75 +558,78 @@
                     }
                   }
               }
+              @endif
           ]
       });
 
-      var controlled = $('#controlled-dt').DataTable({
-          "lengthChange": false,
-          "pageLength": 15,
-          "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
-          "pagingType": "full",
-          "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/forCC",
-          "columns": [
-              {  "data": "id" },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return '<a href="procedure/view_fcc/'+row.id+'/controlled">'+ row.document_no +'</a>';
-                  }
-              },
-              {  "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return row.created_at.substring(0,10);
-                  }
-              },
-              {  "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return row.employee_details.full_name;
-                  }
-              },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return row.document_title;
-                  }
-              },
-          
-              {  "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return row.dpr_code;
-                  }
-              },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return row.revision_no;
-                  }
-              },
-              {   "data": "status",
-                  "render": function ( data, type, row, meta ) {
-                    switch(data){
-                      case 'Created':
-                        return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
-                      break;
-                    
-                      case 'For CC':
-                        return  '<span class="new badge blue white-text" data-badge-caption="">For CC</span>';
-                      break;
-                    
+      @if($employee->dept_code=="QA")
+        var controlled = $('#controlled-dt').DataTable({
+            "lengthChange": false,
+            "pageLength": 15,
+            "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+            "pagingType": "full",
+            "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/forCC",
+            "columns": [
+                {  "data": "id" },
+                {   "data": "id",
+                    "render": function ( data, type, row, meta ) {
+                      return '<a href="procedure/view_fcc/'+row.id+'/controlled">'+ row.document_no +'</a>';
                     }
-                    
-                  }
-              },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    if(row.status=='For CC'||row.status=='Created')
-                    {
-                      return  '<a href="procedure/copy/'+row.id+'" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
-                    }else{
-                      return  '<a href="#!" class="btn-small blue darken3 waves-effect waves-dark" disabled><i class="small material-icons">note_add</i></a>';
+                },
+                {  "data": "id",
+                    "render": function ( data, type, row, meta ) {
+                      return row.created_at.substring(0,10);
                     }
-                  }
-              }
-          ]
-      });
+                },
+                {  "data": "id",
+                    "render": function ( data, type, row, meta ) {
+                      return row.employee_details.full_name;
+                    }
+                },
+                {   "data": "id",
+                    "render": function ( data, type, row, meta ) {
+                      return row.document_title;
+                    }
+                },
+            
+                {  "data": "id",
+                    "render": function ( data, type, row, meta ) {
+                      return row.dpr_code;
+                    }
+                },
+                {   "data": "id",
+                    "render": function ( data, type, row, meta ) {
+                      return row.revision_no;
+                    }
+                },
+                {   "data": "status",
+                    "render": function ( data, type, row, meta ) {
+                      switch(data){
+                        case 'Created':
+                          return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
+                        break;
+                      
+                        case 'For CC':
+                          return  '<span class="new badge blue white-text" data-badge-caption="">For CC</span>';
+                        break;
+                      
+                      }
+                      
+                    }
+                },
+                {   "data": "id",
+                    "render": function ( data, type, row, meta ) {
+                      if(row.status=='For CC'||row.status=='Created')
+                      {
+                        return  '<a href="procedure/copy/'+row.id+'" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
+                      }else{
+                        return  '<a href="#!" class="btn-small blue darken3 waves-effect waves-dark" disabled><i class="small material-icons">note_add</i></a>';
+                      }
+                    }
+                }
+            ]
+        });
+      @endif
 
       var controlled = $('#created-dt').DataTable({
           "lengthChange": false,
@@ -623,46 +659,18 @@
                     return row.document_title;
                   }
               },
-              {  "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return row.dpr_code;
-                  }
-              },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return row.revision_no;
-                  }
-              },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
                     return row.copy_no;
                   }
               },
-              // {   "data": "status",
-              //     "render": function ( data, type, row, meta ) {
-              //       switch(data){
-              //         case 'Created':
-              //           return  '<span class="new badge blue white-text" data-badge-caption="">Created</span>';
-              //         break;
-                    
-              //         case 'For CC':
-              //           return  '<span class="new badge blue white-text" data-badge-caption="">For CC</span>';
-              //         break;
-                    
-              //       }
-                    
-              //     }
-              // },
-              // {   "data": "id",
-              //     "render": function ( data, type, row, meta ) {
-              //       if(row.status=='For CC'||row.status=='Created')
-              //       {
-              //         return  '<a href="procedure/copy/'+row.id+'" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
-              //       }else{
-              //         return  '<a href="#!" class="btn-small blue darken3 waves-effect waves-dark" disabled><i class="small material-icons">note_add</i></a>';
-              //       }
-              //     }
-              // }
+              @if($employee->dept_code=="QA")
+              {   "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return  '<a href="#!" onclick="deleteCC('+data+')" class="btn-small red darken3 waves-effect waves-dark"><i class="small material-icons">delete_forever</i></a> ';
+                  }
+              }
+              @endif
           ]
       });
     @endif

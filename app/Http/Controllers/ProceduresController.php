@@ -38,13 +38,16 @@ class ProceduresController extends Controller
                                     ->where('module','=','Procedures')
                                     ->first();
 
+        $employee = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
+
         $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":true,"edit":true,"view":true,"delete":true,"void":true,"approval":true,"masterlist":true}]', true));
 
         return view('res.procedure.index')
                 ->with('site','res')
                 ->with('page','dcc')
                 ->with('subpage','procedures')
-                ->with('permission',$permissionx);
+                ->with('permission',$permissionx)
+                ->with('employee',$employee);
     }
  
     public function pdf($id)
@@ -99,11 +102,15 @@ class ProceduresController extends Controller
     public function all($id, $loc)
     {
         $idx = Crypt::decrypt($id);
+        $userDept = Employee::select('dept_code')->where('emp_no','=',$idx)->first();
+        // return $userDept;
         $locx = $loc;
+        
         switch($locx){
             case "procedures":
                 $data = Procedure::where('created_by','=',$idx)
                         ->get();
+                        
             break;
             case "approval":
                 $data = Procedure::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
@@ -115,21 +122,38 @@ class ProceduresController extends Controller
                         ->get();
             break;
             case "master":
-                $data = Procedure::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
-                        ->where('status','<>','Pending')
-                        ->where('status','<>','For Review')
-                        ->where('status','<>','Approval')
-                        ->where('status','<>','Rejected')
-                        ->get();
+                if($userDept->dept_code=="QA"){
+                    $data = Procedure::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
+                    ->where('status','<>','Pending')
+                    ->where('status','<>','For Review')
+                    ->where('status','<>','Approval')
+                    ->where('status','<>','Rejected')
+                    ->get();
+                } else {
+                    $data = Procedure::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
+                    ->where('status','<>','Pending')
+                    ->where('status','<>','For Review')
+                    ->where('status','<>','Approval')
+                    ->where('status','<>','Rejected')
+                    ->where('created_by','=',$idx)
+                    ->get();
+                }
             break;
             case "forCC":
                 $data = ProceduresMasterCopy::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
                         ->get();
             break;
             case "cc":
-                $data = ProceduresControlledCopy::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
-                        ->with('dept_details:dept_code,dept_desc')
-                        ->get();
+                if($userDept->dept_code=="QA"){
+                    $data = ProceduresControlledCopy::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
+                    ->with('dept_details:dept_code,dept_desc')
+                    ->get();
+                } else {
+                    $data = ProceduresControlledCopy::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
+                    ->with('dept_details:dept_code,dept_desc')
+                    ->where('department','=',$userDept->dept_code)
+                    ->get();
+                }
             break;
         }
             
@@ -302,10 +326,6 @@ class ProceduresController extends Controller
             $procedure = Procedure::find($request->input('id'));
             $procedure->status = 'Created';
             
-            // $filename =  str_replace("documents/draft/", "", $procedure->file_name);
-            // return $filename;
-            // Storage::disk('master')->put($filename,file_get_contents(self::pdfx($request->input('id'))));
-
             if($master->save()){
                 $procedure->save();
                 return redirect()->route('procedure.index')->withSuccess('Master Copy Successfully Created');
@@ -383,23 +403,7 @@ class ProceduresController extends Controller
                         ->withInput()
                         ->withErrors($validator);
         }else{
-            // return  $request->input('change_description_h');
             
-            // $procedure_h = new ProceduresRevision();
-            // $procedure_h->dpr_code =            $request->input('dpr_code_h');
-            // $procedure_h->requested_date =      $request->input('requested_date_h');
-            // $procedure_h->document_title =      $request->input('document_title');
-            // $procedure_h->document_no =         $request->input('document_no_h');
-            // $procedure_h->revision_no =         $request->input('revision_no_h');
-            // $procedure_h->change_description =  $request->input('change_description_h');
-            // $procedure_h->change_reason =       $request->input('change_reason_h');
-            // $procedure_h->created_by =          Auth::user()->emp_no;
-            // $procedure_h->reviewed_by =         $request->input('reviewed_by');
-            // $procedure_h->approved_by =         $request->input('approved_by');
-            // $procedure_h->status =              $request->input('status_h');
-            // $procedure_h->file_name =           $request->input('file_h');
-            // $procedure_h->save();
-
             $procedure = new Procedure();
             $procedure->dpr_code = $request->input('dpr_code','');
             $procedure->requested_date = $request->input('requested_date','');
@@ -955,5 +959,13 @@ class ProceduresController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function delete(Request $request)
+    {
+        //
+        if(ProceduresControlledCopy::destroy($request->input('id',''))){
+            return redirect()->route('procedure.index')->withSuccess('Procedure Controlled Copy Successfully Deleted');
+        }
     }
 }
