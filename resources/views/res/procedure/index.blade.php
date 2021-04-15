@@ -134,9 +134,9 @@
                   <th>DPR No.</th>
                   <th>Copy No.</th>
                   <th>Status</th>
-                  @if($permission[0]["masterlist"]==true)
+                  {{-- @if($permission[0]["masterlist"]==true) --}}
                   <th>Action</th>
-                  @endif
+                  {{-- @endif --}}
               </tr>
             </thead>
           </table>
@@ -169,6 +169,25 @@
     </form>
   </div>
 
+  <div id="receiveModal" class="modal bottom-sheet">
+    <form method="POST" action="{{route('procedure.receive')}}">
+        @csrf
+        <div class="modal-content">
+            <h4>Copy Acknowledgement</h4><br><br>
+            <div class="row">
+                <div class="col s12 m6">
+                    <input type="hidden" name="id" id="re_id">
+                    <p>Do you want to confirm receipt of this <strong>Procedure Controlled Copy</strong>?</p>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Yes</button>
+            <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>No</a>
+        </div>
+    </form>
+  </div>
+
   <!-- End of MODALS -->
 
   <!-- SCRIPTS -->
@@ -188,6 +207,11 @@
     {
       $('#cc_id').val(id);
       $('#ccModal').modal('open');
+    }
+    function receiveCC(id)
+    {
+      $('#re_id').val(id);
+      $('#receiveModal').modal('open');
     }
 
       var procedures = $('#procedures-dt').DataTable({
@@ -227,6 +251,9 @@
                       case 'Pending':
                         return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
                       break;
+                      case 'Received':
+                        return  '<span class="new badge deep-orange lighten-1 white-text" data-badge-caption="">Received</span>';
+                      break;
                       case 'Created':
                         return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
                       break;
@@ -243,7 +270,7 @@
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
                     
-                    if(row.status=='Created')
+                    if(row.status=='Created' || row.status=='Received')
                     {
                       return  '<a href="procedure/revise/'+row.id+'" class="btn-small amber darken3 waves-effect waves-dark"><i class="material-icons">create</i></a>';
                     } else {
@@ -306,6 +333,9 @@
                       break;
                       case 'Created':
                         return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
+                      break;
+                      case 'Received':
+                        return  '<span class="new badge deep-orange lighten-1 white-text" data-badge-caption="">Received</span>';
                       break;
                       case 'Obsolete':
                         return  '<span class="new badge black white-text" data-badge-caption="">Obsolete</span>';
@@ -382,6 +412,9 @@
                       break;
                       case 'Created':
                         return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
+                      break;
+                      case 'Received':
+                        return  '<span class="new badge deep-orange lighten-1 white-text" data-badge-caption="">Received</span>';
                       break;
                       case 'Obsolete':
                         return  '<span class="new badge black white-text" data-badge-caption="">Obsolete</span>';
@@ -460,6 +493,9 @@
                       case 'Created':
                         return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
                       break;
+                      case 'Received':
+                        return  '<span class="new badge deep-orange lighten-1 white-text" data-badge-caption="">Received</span>';
+                      break;
                       case 'Obsolete':
                         return  '<span class="new badge black white-text" data-badge-caption="">Obsolete</span>';
                       break;
@@ -472,7 +508,7 @@
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    if(row.status=='For CC'||row.status=='Created')
+                    if(row.status=='For CC'||row.status=='Created'||row.status=='Received')
                     {
                       return  '<a href="procedure/copy/'+row.id+'/controlled" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
                     }else{
@@ -534,6 +570,9 @@
                       case 'Created':
                         return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
                       break;
+                      case 'Received':
+                        return  '<span class="new badge deep-orange lighten-1 white-text" data-badge-caption="">Received</span>';
+                      break;
                       case 'Obsolete':
                         return  '<span class="new badge black white-text" data-badge-caption="">Obsolete</span>';
                       break;
@@ -544,13 +583,21 @@
                     
                   }
               },
-              @if($permission[0]["masterlist"]==true)
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return  '<a href="#!" onclick="deleteCC('+data+')" class="btn-small red darken3 waves-effect waves-dark"><i class="small material-icons">delete_forever</i></a> ';
+                    @if($permission[0]["masterlist"]==true)
+                        return  '<a href="#!" onclick="deleteCC('+data+')" class="btn-small red darken3 waves-effect waves-dark"><i class="small material-icons">delete_forever</i></a> ';
+                    @else
+                      if(row.status=='Received')
+                      {
+                        return  '<a href="#!" class="btn-small deep-orange lighten-1 waves-effect waves-dark" disabled><i class="small material-icons">assignment_turned_in</i></a> ';
+                      } else {
+                        return  '<a href="#!" onclick="receiveCC('+data+')" class="btn-small deep-orange lighten-1 waves-effect waves-dark"><i class="small material-icons">assignment_turned_in</i></a> ';
+                      }
+                    @endif
                   }
               }
-              @endif
+             
           ]
       });
     

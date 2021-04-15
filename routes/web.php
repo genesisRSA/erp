@@ -211,6 +211,7 @@ Route::group(['middleware' => ['auth.dcs']], function() {
 
     Route::resource('/reiss/procedure', 'ProceduresController');
     Route::post('/reiss/procedure/revision', 'ProceduresController@revision')->name('procedure.revision');
+    Route::post('/reiss/procedure/receive', 'ProceduresController@receive')->name('procedure.receive');
     Route::post('/reiss/procedure/approve', 'ProceduresController@approve')->name('procedure.approve');
     Route::post('/reiss/procedure/makemaster', 'ProceduresController@makeMaster')->name('procedure.makemaster');
     Route::post('/reiss/procedure/makecopy', 'ProceduresController@makeCopy')->name('procedure.makecopy');

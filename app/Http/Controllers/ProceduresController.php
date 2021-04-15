@@ -95,6 +95,8 @@ class ProceduresController extends Controller
                         $pdf->SetY(-15);
                         $pdf->Cell(0, 40, $pdf->Image($copy_cc, 65, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
 
+                        // $pdf->WriteCell()
+
                         $obs = realpath('../storage/app/assets/copy_ob.png');
                         $pdf->SetY(-15);
                         $pdf->Cell(0, 40, $pdf->Image($obs, 145, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
@@ -161,21 +163,22 @@ class ProceduresController extends Controller
                         $pdf->SetY(-15);
                         $pdf->Cell(0, 40, $pdf->Image($obs, 145, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
                 });
-            }elseif($locx=='obswc'){
-                PDF::setFooterCallback(function($pdf) {
-                        $master_nv = realpath('../storage/app/assets/copy_m_nv.png');
-                        $pdf->SetY(-15);
-                        $pdf->Cell(0, 40, $pdf->Image($master_nv, 10, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
-                        
-                        $copy_cc = realpath('../storage/app/assets/copy_cc.png');
-                        $pdf->SetY(-15);
-                        $pdf->Cell(0, 40, $pdf->Image($copy_cc, 65, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
-
-                        $obs = realpath('../storage/app/assets/copy_ob.png');
-                        $pdf->SetY(-15);
-                        $pdf->Cell(0, 40, $pdf->Image($obs, 145, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
-                });
             }
+            // }elseif($locx=='obswc'){
+            //     PDF::setFooterCallback(function($pdf) {
+            //             $master_nv = realpath('../storage/app/assets/copy_m_nv.png');
+            //             $pdf->SetY(-15);
+            //             $pdf->Cell(0, 40, $pdf->Image($master_nv, 10, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+                        
+            //             $copy_cc = realpath('../storage/app/assets/copy_cc.png');
+            //             $pdf->SetY(-15);
+            //             $pdf->Cell(0, 40, $pdf->Image($copy_cc, 65, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+
+            //             $obs = realpath('../storage/app/assets/copy_ob.png');
+            //             $pdf->SetY(-15);
+            //             $pdf->Cell(0, 40, $pdf->Image($obs, 145, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+            //     });
+            // }
             PDF::SetMargins(false, false);
         }
         PDF::Output(realpath('../storage/app/'.$newFile), 'F');
@@ -208,6 +211,7 @@ class ProceduresController extends Controller
                         ->where('status','<>','Rejected')
                         ->where('status','<>','Created')
                         ->where('status','<>','Obsolete')
+                        ->where('status','<>','Received')
                         ->where('current_approver','=',$idx)
                         ->get();
             break;
@@ -221,6 +225,7 @@ class ProceduresController extends Controller
             break;
             case "forCC":
                 $data = ProceduresMasterCopy::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
+                        ->where('status','<>','Obsolete')
                         ->get();
             break;
             case "cc":
@@ -412,7 +417,7 @@ class ProceduresController extends Controller
                 if($copy_obs){$copy_obs->status = 'Obsolete'; $obs = "obswc"; Storage::delete('documents/controlled/'.$copy_obs->file_name); $copy_obs->save();}else{$obs = "obswoc";}
                 if($rev_obs){$rev_obs->status = 'Obsolete'; $rev_obs->save();}
 
-                $filenamex = self::pdfx($idx,$obs);
+                $filenamex = self::pdfx($idx,'obswoc');
             }
 
             $fileName = self::pdfx($request->input('id'),"master");
@@ -653,7 +658,7 @@ class ProceduresController extends Controller
                 }
                 break;
             case "controlled":
-               
+                // return $stat;
                 if($stat=="Created"){
                     $document = Procedure::find($id);
                     $documentc = ProceduresControlledCopy::where('dpr_code','=',$document->dpr_code)
@@ -1038,6 +1043,31 @@ class ProceduresController extends Controller
                     return redirect()->route('procedure.index')->withSuccess('Procedure Successfully Rejected');
                 }
             }
+        }
+    }
+
+    public function receive(Request $request)
+    {
+        $receive = ProceduresControlledCopy::find($request->input('id'));
+        $receive->status = 'Received';
+
+        $receivedM = ProceduresMasterCopy::where('document_no','=',$receive->document_no)
+                            ->where('revision_no','=',$receive->revision_no)
+                            ->first();
+        $receivedM->status = 'Received';
+
+        $receivedR = ProceduresRevision::where('document_no','=',$receive->document_no)
+                            ->where('revision_no','=',$receive->revision_no)
+                            ->first();
+        $receivedR->status = 'Received';
+        
+        $received = Procedure::where('document_no','=',$receive->document_no)
+                            ->where('revision_no','=',$receive->revision_no)
+                            ->first();
+        $received->status = 'Received';
+        if($received->save()){
+            $receive->save(); $receivedM->save(); $receivedR->save();
+            return redirect()->route('procedure.index')->withSuccess('Procedure Successfully Received');
         }
     }
 
