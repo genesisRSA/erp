@@ -232,6 +232,7 @@ class ProceduresController extends Controller
                     $data = ProceduresControlledCopy::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
                     ->with('dept_details:dept_code,dept_desc')
                     ->where('department','=',$userDept->dept_code)
+                    ->where('status','<>','Obsolete')
                     ->get();
                 }
             break;
@@ -671,6 +672,7 @@ class ProceduresController extends Controller
                 }
                 break;
             case "cc": 
+                // return $stat;
                 if($stat=="Created"){
                     $document = Procedure::find($id);
                     $documentcc = ProceduresControlledCopy::where('dpr_code','=',$document->dpr_code)

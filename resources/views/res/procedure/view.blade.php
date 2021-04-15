@@ -320,7 +320,7 @@
             {  "data": "id" },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                 if(row.status=='Created'){
+                 if(row.status=='Approved'){
                   return '<a href="../../view/'+row.procedures.id+'/{{$loc}}">'+ row.document_no +'</a>';
                  }else{
                   return row.document_no;
