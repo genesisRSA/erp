@@ -174,23 +174,23 @@
 
     $(document).ready(function () {
 
-            // document.onkeydown = function(e) {
-            //   if(event.keyCode == 123) {
-            //     return false;
-            //   }
-            //   if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
-            //     return false;
-            //   }
-            //   if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
-            //     return false;
-            //   }
-            //   if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
-            //     return false;
-            //   }
-            //   if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
-            //     return false;
-            //   }
-            // }
+            document.onkeydown = function(e) {
+              if(event.keyCode == 123) {
+                return false;
+              }
+              if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
+                return false;
+              }
+              if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
+                return false;
+              }
+              if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
+                return false;
+              }
+              if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
+                return false;
+              }
+            }
 
         $('#add_description').trigger('autoresize');
 
@@ -254,23 +254,11 @@
                       case 'Created':
                         return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
                       break;
+                      case 'Obsolete':
+                        return  '<span class="new badge black white-text" data-badge-caption="">Obsolete</span>';
+                      break;
                       case 'Rejected':
                         return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
-                      break;
-                      case 'For Approval':
-                        return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
-                      break;
-                      case 'For Review':
-                        return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
-                      break;
-                      case 'Voided':
-                        return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
-                      break;
-                      case 'Quoted':
-                        return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
-                      break;
-                      case 'Ordered':
-                        return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Ordered</span>';
                       break;
                     }
                     

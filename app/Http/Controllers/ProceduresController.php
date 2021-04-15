@@ -53,11 +53,8 @@ class ProceduresController extends Controller
     public function pdf($id,$loc)
     {
         $locx = $loc;
-        // return $locx;
         $procedure = Procedure::find($id);
         $pdf = 'file://'.realpath('../storage/app/'.$procedure->file_name);
-
-        // return $pdf;
         $pageCount = PDF::setSourceFile($pdf);
         for($i=1; $i <= $pageCount; $i++){
             PDF::AddPage();
@@ -72,7 +69,9 @@ class ProceduresController extends Controller
                         $pdf->SetY(-15);
                         $pdf->Cell(0, 40, $pdf->Image($master_v, 10, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
                 });
-            }else{
+            }
+            elseif($locx=='controlled')
+            {
                 PDF::setFooterCallback(function($pdf) {
                         $master_nv = realpath('../storage/app/assets/copy_m_nv.png');
                         $pdf->SetY(-15);
@@ -81,6 +80,22 @@ class ProceduresController extends Controller
                         $copy_cc = realpath('../storage/app/assets/copy_cc.png');
                         $pdf->SetY(-15);
                         $pdf->Cell(0, 40, $pdf->Image($copy_cc, 65, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+                });
+            }
+            else
+            {
+                PDF::setFooterCallback(function($pdf) {
+                        $master_nv = realpath('../storage/app/assets/copy_m_nv.png');
+                        $pdf->SetY(-15);
+                        $pdf->Cell(0, 40, $pdf->Image($master_nv, 10, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+
+                        $copy_cc = realpath('../storage/app/assets/copy_cc.png');
+                        $pdf->SetY(-15);
+                        $pdf->Cell(0, 40, $pdf->Image($copy_cc, 65, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+
+                        $obs = realpath('../storage/app/assets/copy_ob.png');
+                        $pdf->SetY(-15);
+                        $pdf->Cell(0, 40, $pdf->Image($obs, 145, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
                 });
             }
             PDF::SetMargins(false, false);
@@ -92,10 +107,24 @@ class ProceduresController extends Controller
     {
         $locx = $loc;
         $procedure = Procedure::find($id);
-        $copyCount =    ProceduresControlledCopy::where('document_no','=',$procedure->document_no)->count();
-        $newFile = ($loc == "master" ? 'documents/master/master_'.str_replace("documents/draft/","",$procedure->file_name) : 'documents/controlled/cc_'.$copyCount.'_'.str_replace("documents/draft/","",$procedure->file_name));
+        $copyCount = ProceduresControlledCopy::where('document_no','=',$procedure->document_no)->count();
+       
+        if($locx=='master')
+        {
+            $newFile = 'documents/master/master_'.str_replace("documents/draft/","",$procedure->file_name);
+        }
+        elseif ($locx=='controlled')
+        {
+            $newFile = 'documents/controlled/cc_'.$copyCount.'_'.str_replace("documents/draft/","",$procedure->file_name);
+        }
+        else
+        {
+            $newFile = 'documents/obsolete/obs_'.str_replace("documents/draft/","",$procedure->file_name);
+        }
+
         Storage::copy($procedure->file_name,$newFile);
         $pdf = 'file://'.realpath('../storage/app/'.$newFile);
+        PDF::Reset();
         $pageCount = PDF::setSourceFile($pdf);
         for($i=1; $i <= $pageCount; $i++){
             PDF::AddPage();
@@ -110,7 +139,7 @@ class ProceduresController extends Controller
                         $pdf->SetY(-15);
                         $pdf->Cell(0, 40, $pdf->Image($master_v, 10, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
                 });
-            }else{
+            }elseif($locx=='controlled'){
                 PDF::setFooterCallback(function($pdf) {
                         $master_nv = realpath('../storage/app/assets/copy_m_nv.png');
                         $pdf->SetY(-15);
@@ -119,6 +148,30 @@ class ProceduresController extends Controller
                         $copy_cc = realpath('../storage/app/assets/copy_cc.png');
                         $pdf->SetY(-15);
                         $pdf->Cell(0, 40, $pdf->Image($copy_cc, 65, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+                });
+            }elseif($locx=='obswoc'){
+                PDF::setFooterCallback(function($pdf) {
+                        $master_nv = realpath('../storage/app/assets/copy_m_nv.png');
+                        $pdf->SetY(-15);
+                        $pdf->Cell(0, 40, $pdf->Image($master_nv, 10, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+                  
+                        $obs = realpath('../storage/app/assets/copy_ob.png');
+                        $pdf->SetY(-15);
+                        $pdf->Cell(0, 40, $pdf->Image($obs, 145, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+                });
+            }elseif($locx=='obswc'){
+                PDF::setFooterCallback(function($pdf) {
+                        $master_nv = realpath('../storage/app/assets/copy_m_nv.png');
+                        $pdf->SetY(-15);
+                        $pdf->Cell(0, 40, $pdf->Image($master_nv, 10, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+                        
+                        $copy_cc = realpath('../storage/app/assets/copy_cc.png');
+                        $pdf->SetY(-15);
+                        $pdf->Cell(0, 40, $pdf->Image($copy_cc, 65, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+
+                        $obs = realpath('../storage/app/assets/copy_ob.png');
+                        $pdf->SetY(-15);
+                        $pdf->Cell(0, 40, $pdf->Image($obs, 145, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
                 });
             }
             PDF::SetMargins(false, false);
@@ -331,20 +384,46 @@ class ProceduresController extends Controller
                         ->withErrors($validator);
         }else{
            
+            $revCount = $request->input('revision_no');
+            if($revCount>=1)
+            {
+                $procedure_obs = Procedure::where('document_no','=',$request->input('document_no'))
+                                        ->where('revision_no','=',$revCount-1)
+                                        ->first();
+                
+                $master_obs = ProceduresMasterCopy::where('document_no','=',$procedure_obs->document_no)
+                                        ->where('revision_no','=',$procedure_obs->revision_no)
+                                        ->first();
+               
+                $copy_obs = ProceduresControlledCopy::where('document_no','=',$procedure_obs->document_no)
+                                        ->where('revision_no','=',$procedure_obs->revision_no)
+                                        ->first();
+                
+                $rev_obs = ProceduresRevision::where('document_no','=',$procedure_obs->document_no)
+                                        ->where('revision_no','=',$procedure_obs->revision_no)
+                                        ->first();
+                
+                $idx = $procedure_obs->id;
+                if($procedure_obs){$procedure_obs->status = 'Obsolete'; $procedure_obs->save();}
+                if($master_obs){$master_obs->status = 'Obsolete'; Storage::delete('documents/master/'.$master_obs->file_name); $master_obs->save();}
+                if($copy_obs){$copy_obs->status = 'Obsolete'; $obs = "obswc"; Storage::delete('documents/controlled/'.$copy_obs->file_name); $copy_obs->save();}else{$obs = "obswoc";}
+                if($rev_obs){$rev_obs->status = 'Obsolete'; $rev_obs->save();}
+
+                $filenamex = self::pdfx($idx,$obs);
+            }
 
             $fileName = self::pdfx($request->input('id'),"master");
             $filePath = str_replace('\\','/', $fileName);
-            
             $newFileName = substr($filePath, -51, 51);
 
             $master = new ProceduresMasterCopy();
-            $master->dpr_code = $request->input('dpr_code','');
-            $master->document_title = $request->input('document_title','');
+            $master->dpr_code = $request->input('dpr_code');
+            $master->document_title = $request->input('document_title');
             $master->file_name = $newFileName;
-            $master->revision_no = $request->input('revision_no','');
-            $master->document_no = $request->input('document_no','');
-            $master->department = $request->input('dept','');
-            $master->process_owner = $request->input('process_owner','');
+            $master->revision_no = $revCount;
+            $master->document_no = $request->input('document_no');
+            $master->department = $request->input('dept');
+            $master->process_owner = $request->input('process_owner');
             $master->released_by = Auth::user()->emp_no;
             $master->status = 'For CC';
 

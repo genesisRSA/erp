@@ -8,7 +8,6 @@
   </div>
   <div class="row main-content">
   
-    {{-- <ul id="tabs-swipe-demo" class="tabs"> --}}
     <ul id="procedures_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
       <li class="tab col s12 m4 l4"><a class="active" href="#ongoing">Procedures</a></li>
       @if($permission[0]["approval"]==true)
@@ -146,59 +145,19 @@
       
     </div>
 
-
-
-    <div id="ccModal" class="modal bottom-sheet">
-      <form method="POST" action="{{route('procedure.delete')}}">
-          @csrf
-          <div class="modal-content">
-              <h4>Controlled Copy</h4><br><br>
-              <div class="row">
-                  <div class="col s12 m6">
-                      <input type="hidden" name="id" id="cc_id">
-                      <p>Are you sure you want to delete this <strong>Procedure Controlled Copy</strong>?</p>
-                  </div>
-              </div>
-          </div>
-          <div class="modal-footer">
-              <button class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Yes</button>
-              <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>No</a>
-          </div>
-      </form>
-    </div>
-
   </div>
 
   <!-- MODALS -->
 
-  <div id="deleteModal" class="modal bottom-sheet">
-    <form method="POST" action="{{route('forecast.delete')}}">
+  <div id="ccModal" class="modal bottom-sheet">
+    <form method="POST" action="{{route('procedure.delete')}}">
         @csrf
         <div class="modal-content">
-            <h4>Delete Sales Forecast Details</h4><br><br>
+            <h4>Controlled Copy</h4><br><br>
             <div class="row">
                 <div class="col s12 m6">
-                    <input type="hidden" name="id" id="del_id">
-                    <p>Are you sure you want to delete this <strong>Sales Forecast Details</strong>?</p>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Yes</button>
-            <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>No</a>
-        </div>
-    </form>
-  </div>
-
-  <div id="voidModal" class="modal bottom-sheet">
-    <form method="POST" action="{{route('forecast.void')}}">
-        @csrf
-        <div class="modal-content">
-            <h4>Void Sales Forecast</h4><br><br>
-            <div class="row">
-                <div class="col s12 m6">
-                    <input type="hidden" name="id" id="void_id">
-                    <p>Are you sure you want to void this <strong>Sales Forecast</strong>?</p>
+                    <input type="hidden" name="id" id="cc_id">
+                    <p>Are you sure you want to delete this <strong>Procedure Controlled Copy</strong>?</p>
                 </div>
             </div>
         </div>
@@ -270,23 +229,11 @@
                       case 'Created':
                         return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
                       break;
+                      case 'Obsolete':
+                        return  '<span class="new badge black white-text" data-badge-caption="">Obsolete</span>';
+                      break;
                       case 'Rejected':
                         return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
-                      break;
-                      case 'For Approval':
-                        return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
-                      break;
-                      case 'For Review':
-                        return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
-                      break;
-                      case 'Voided':
-                        return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
-                      break;
-                      case 'Quoted':
-                        return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
-                      break;
-                      case 'Ordered':
-                        return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Ordered</span>';
                       break;
                     }
                     
@@ -295,7 +242,7 @@
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
                     
-                    if(row.status=='Approved'||row.status=='Created')
+                    if(row.status=='Created')
                     {
                       return  '<a href="procedure/revise/'+row.id+'" class="btn-small amber darken3 waves-effect waves-dark"><i class="material-icons">create</i></a>';
                     } else {
@@ -359,23 +306,11 @@
                       case 'Created':
                         return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
                       break;
+                      case 'Obsolete':
+                        return  '<span class="new badge black white-text" data-badge-caption="">Obsolete</span>';
+                      break;
                       case 'Rejected':
                         return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
-                      break;
-                      case 'For Approval':
-                        return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
-                      break;
-                      case 'For Review':
-                        return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
-                      break;
-                      case 'Voided':
-                        return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
-                      break;
-                      case 'Quoted':
-                        return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
-                      break;
-                      case 'Ordered':
-                        return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Ordered</span>';
                       break;
                     }
                     
@@ -441,25 +376,12 @@
                       case 'Created':
                         return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
                       break;
+                      case 'Obsolete':
+                        return  '<span class="new badge black white-text" data-badge-caption="">Obsolete</span>';
+                      break;
                       case 'Rejected':
                         return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
                       break;
-                      case 'For Approval':
-                        return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
-                      break;
-                      case 'For Review':
-                        return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
-                      break;
-                      case 'Voided':
-                        return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
-                      break;
-                      case 'Quoted':
-                        return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Quoted</span>';
-                      break;
-                      case 'Ordered':
-                        return  '<span class="new badge blue darken-4 white-text" data-badge-caption="">Ordered</span>';
-                      break;
-  
                     }
                     
                   }
@@ -519,14 +441,24 @@
               {   "data": "status",
                   "render": function ( data, type, row, meta ) {
                     switch(data){
-                      case 'Created':
-                        return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
-                      break;
-                    
                       case 'For CC':
                         return  '<span class="new badge blue white-text" data-badge-caption="">For CC</span>';
                       break;
-                    
+                      case 'Approved':
+                        return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
+                      break;
+                      case 'Pending':
+                        return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
+                      break;
+                      case 'Created':
+                        return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
+                      break;
+                      case 'Obsolete':
+                        return  '<span class="new badge black white-text" data-badge-caption="">Obsolete</span>';
+                      break;
+                      case 'Rejected':
+                        return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
+                      break;
                     }
                     
                   }
