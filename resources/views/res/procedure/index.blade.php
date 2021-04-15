@@ -128,11 +128,12 @@
               <tr>
                   <th>ID</th> 
                   <th>Document No.</th>     
-                  <th>Requested By</th>
+                  <th>Created By</th>
                   <th>Copy Owner</th>
                   <th>Document Title</th>
                   <th>DPR No.</th>
                   <th>Copy No.</th>
+                  <th>Status</th>
                   @if($permission[0]["masterlist"]==true)
                   <th>Action</th>
                   @endif
@@ -318,7 +319,13 @@
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return  '<a href="procedure/approval/'+row.id+'/app" class="btn-small blue darken3 waves-effect waves-dark"><i class="material-icons">rate_review</i></a>';
+                    if(row.status=='Pending')
+                    {
+                      return  '<a href="procedure/approval/'+row.id+'/app" class="btn-small blue darken3 waves-effect waves-dark"><i class="material-icons">rate_review</i></a>';
+                    } else {
+                      return  '<a href="#!" class="btn-small blue darken3 waves-effect waves-dark" disabled><i class="material-icons">rate_review</i></a>';
+                    }
+
                   }
               }
           ]
@@ -513,6 +520,28 @@
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
                     return row.copy_no;
+                  }
+              },
+              {   "data": "status",
+                  "render": function ( data, type, row, meta ) {
+                    switch(data){
+                      case 'Approved':
+                        return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
+                      break;
+                      case 'Pending':
+                        return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
+                      break;
+                      case 'Created':
+                        return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
+                      break;
+                      case 'Obsolete':
+                        return  '<span class="new badge black white-text" data-badge-caption="">Obsolete</span>';
+                      break;
+                      case 'Rejected':
+                        return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
+                      break;
+                    }
+                    
                   }
               },
               @if($permission[0]["masterlist"]==true)
