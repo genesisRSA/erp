@@ -175,7 +175,7 @@
             <div class="row">
               <div class="col s12 m9 l9"></div>
               <div class="col s12 m3 l3 right-align" style="padding-right: 10px">
-              <a href="{{route('procedure.index')}}" class="red waves-effect waves-dark btn" style="
+              <a href="{{route('procedure.index', ['#'.$locx = ($loc=='cc'?'controlled': ($loc=='controlled'?'controlled':($loc=='master'?'master':($loc=='app'?'approval':($loc=='master'?'master': ($loc=='procedures'?'ongoing':''))))))])}}" class="red waves-effect waves-dark btn" style="
               margin-bottom: 30px; width: 100%
           "><i class="material-icons left">keyboard_return</i>Return</a>
               </div>
@@ -357,6 +357,9 @@
                     break;
                     case 'Created':
                       return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
+                    break;
+                    case 'Received':
+                      return  '<span class="new badge deep-orange lighten-1 white-text" data-badge-caption="">Received</span>';
                     break;
                     case 'Obsolete':
                       return  '<span class="new badge black white-text" data-badge-caption="">Obsolete</span>';

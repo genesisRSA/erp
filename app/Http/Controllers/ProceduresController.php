@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use App\Mail\SalesMailable;
+use App\Mail\ProcedureMailable;
 use App\SitePermission;
 use App\ApproverMatrix;
 use App\Procedure;
@@ -49,12 +49,21 @@ class ProceduresController extends Controller
                 ->with('permission',$permissionx)
                 ->with('employee',$employee);
     }
+
+    public function SetFooter()
+    {   
+        $cc = ProceduresControlledCopy::where('document_no','=',$procedure->document_no)
+        ->count();
+
+        return '<span color="black">'.$cc.'</span>';
+    }
  
     public function pdf($id,$loc)
     {
         $locx = $loc;
         // return $locx;
         $procedure = Procedure::find($id);
+       
         $pdf = 'file://'.realpath('../storage/app/'.$procedure->file_name);
         PDF::Reset();
         $pageCount = PDF::setSourceFile($pdf);
@@ -74,7 +83,10 @@ class ProceduresController extends Controller
             }
             elseif($locx=='copy')
             {
-                PDF::setFooterCallback(function($pdf) {
+
+                // return $cc;
+                PDF::setFooterCallback(
+                    function($pdf) {
                         $master_nv = realpath('../storage/app/assets/copy_m_nv.png');
                         $pdf->SetY(-15);
                         $pdf->Cell(0, 40, $pdf->Image($master_nv, 10, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
@@ -82,6 +94,10 @@ class ProceduresController extends Controller
                         $copy_cc = realpath('../storage/app/assets/copy_cc.png');
                         $pdf->SetY(-15);
                         $pdf->Cell(0, 40, $pdf->Image($copy_cc, 65, 315 - 50, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+                        $html = '<span color="black">2</span>';
+                   
+                        $pdf->writeHTMLCell(0, 50, 78, 280, $html, 0, 1, 0, true, 'L', true);
+
                 });
             }
             else
@@ -647,11 +663,18 @@ class ProceduresController extends Controller
                                                     ->first();
                     $filename = $documentm->file_name;
                     $filePath = "documents/master/".$documentm->file_name;
+                } elseif ($stat=="Received") {
+                    $document = Procedure::find($id);
+                    $documentm = ProceduresMasterCopy::where('dpr_code','=',$document->dpr_code)
+                                                    ->where('revision_no','=',$document->revision_no)
+                                                    ->first();
+                    $filename = $documentm->file_name;
+                    $filePath = "documents/master/".$documentm->file_name;
                 } elseif ($stat=="Obsolete") {
                     $document = Procedure::find($id);
                     $filename = 'obs_'.str_replace("documents/draft/", "", $document->file_name);
                     $filePath = 'documents/obsolete/'.$filename;
-                } else {
+                }else {
                     $document = Procedure::find($id);
                     $filename = str_replace("documents/", "", $document->file_name);
                     $filePath = $document->file_name;
@@ -674,6 +697,13 @@ class ProceduresController extends Controller
                     $document = Procedure::find($id);
                     $filename = str_replace("documents/", "", $document->file_name);
                     $filePath = $document->file_name;
+                } elseif ($stat=="Received") {
+                    $document = Procedure::find($id);
+                    $documentc = ProceduresControlledCopy::where('dpr_code','=',$document->dpr_code)
+                                                    ->where('revision_no','=',$document->revision_no)
+                                                    ->first();
+                    $filename = $documentc->file_name;
+                    $filePath = "documents/controlled/".$documentc->file_name;
                 }
                 break;
             case "cc": 
@@ -685,10 +715,21 @@ class ProceduresController extends Controller
                                                     ->first();
                     $filename = $documentcc->file_name;
                     $filePath = "documents/controlled/".$documentcc->file_name;
-                } else {
+                } elseif ($stat=="Received") {
+                    $document = Procedure::find($id);
+                    $documentc = ProceduresControlledCopy::where('dpr_code','=',$document->dpr_code)
+                                                    ->where('revision_no','=',$document->revision_no)
+                                                    ->first();
+                    $filename = $documentc->file_name;
+                    $filePath = "documents/controlled/".$documentc->file_name;
+                } elseif ($stat=="Obsolete") {
                     $document = Procedure::find($id);
                     $filename = 'obs_'.str_replace("documents/draft/", "", $document->file_name);
                     $filePath = 'documents/obsolete/'.$filename;
+                } elseif ($stat=="Approved") {
+                    $document = Procedure::find($id);
+                    $filename = str_replace("documents/", "", $document->file_name);
+                    $filePath = $document->file_name;
                 }
                 break;
         }
@@ -702,6 +743,24 @@ class ProceduresController extends Controller
             'Content-Type'        =>  'application/pdf',
             'Content-Disposition' => 'inline; filename="'.$filename.''
         ]);
+    }
+
+    public function check($id,$loc)
+    {
+        $locx = $loc;
+        $procedure = Procedure::where('document_no','=',$id)
+                                ->where('current_approver','=',Auth::user()->emp_no)
+                                ->first();
+        if($procedure)
+        {   
+            $procedureID = $procedure->id;
+            return redirect()->route('procedure.approve', ['ProcedureID' => Crypt::encrypt($procedureID), 'loc' => $locx]);
+        }
+        else
+        {
+            return redirect()->route('procedure.index');
+        }
+
     }
 
     public function edit($id)
@@ -837,8 +896,8 @@ class ProceduresController extends Controller
                         }
                     }
                     $procedure_app->status = 'Approved';
+                    $procedure_app->reviewed_by = $curr_app;
                     $procedure_app->approved_by = $curr_app;
-                    // $procedure_app->updated_by = $curr_app;
                     $matrix = [];
 
                     $revNo = $request->input('revision_no') ? $request->input('revision_no') : 0;
@@ -879,16 +938,16 @@ class ProceduresController extends Controller
                                     $procedure->save();
                             }
 
-                    // $approver = Employee::where('emp_no','=',$empID)->first();
-                    // $maildetails = new SalesMailable('REISS - Sales Forecast Approval', // subject
-                    //                                 'forecast', // location
-                    //                                 'Approved', // next status val
-                    //                                 'filer', // who to receive
-                    //                                 $approver->emp_fname, // approver name
-                    //                                 $procedure_app->forecast_code, // forecast code
-                    //                                 Auth::user()->employee->full_name, // full_name
-                    //                                 $remarks, // remarks
-                    //                                 $lastid); // last id + 1
+                    $approver = Employee::where('emp_no','=',$empID)->first();
+                    $maildetails = new ProcedureMailable('REISS - Procedure Approval', // subject
+                                                    'procedure', // location
+                                                    'Approved', // next status val
+                                                    'filer', // who to receive
+                                                    $approver->emp_fname, // approver name
+                                                    $procedure_app->document_no, // document_no
+                                                    Auth::user()->employee->full_name, // full_name
+                                                    $remarks, // remarks
+                                                    $lastid); // last id + 1
                 }
                 else 
                 {
@@ -908,7 +967,7 @@ class ProceduresController extends Controller
                         $procedure_app->approved_by = $curr_app;
                         $revNo = $request->input('revision_no') ? $request->input('revision_no') : 0;
                         $revNoH = $request->input('revision_no_h') ? $request->input('revision_no_h') : 0;
-                        // return $revNoH;
+                    
                         if($revNo>=1)
                             {
                                 if($revNoH==0)
@@ -943,18 +1002,18 @@ class ProceduresController extends Controller
                                     $procedure->file_name =           $request->input('file_name');
                                     $procedure->save();
                             }
-                        // $procedure_app->updated_by = $curr_app;
-                        
-                        // $approver = Employee::where('emp_no','=',$empID)->first();
-                        // $maildetails = new SalesMailable('REISS - Sales Forecast Approval', // subject
-                        //                                 'forecast', // location
-                        //                                 'Approved', // next status val
-                        //                                 'filer', // who to receive
-                        //                                 $approver->emp_fname, // approver name
-                        //                                 $procedure_app->forecast_code, // forecast code
-                        //                                 Auth::user()->employee->full_name, // full_name
-                        //                                 $remarks, // remarks
-                        //                                 $lastid); // last id + 1
+                        $procedure_app->approved_by = $curr_app;
+                    
+                        $approver = Employee::where('emp_no','=',$empID)->first();
+                        $maildetails = new ProcedureMailable('REISS - Procedure Approval', // subject
+                                                        'procedure', // location
+                                                        'Approved', // next status val
+                                                        'filer', // who to receive
+                                                        $approver->emp_fname, // approver name
+                                                        $procedure_app->document_no, // document_no
+                                                        Auth::user()->employee->full_name, // full_name
+                                                        $remarks, // remarks
+                                                        $lastid); // last id + 1
                     }
                     else
                     {
@@ -969,19 +1028,18 @@ class ProceduresController extends Controller
                         $curr_seq += 1;
                         array_splice($matrix,0,1);
                         $procedure_app->status = $next_status;
-                        $procedure_app->approved_by = $curr_app;
-                        // $procedure_app->updated_by = $curr_app;
-                        
-                        // $approver = Employee::where('emp_no','=',$empID)->first();
-                        // $maildetails = new SalesMailable('REISS - Sales Forecast Approval', // subject
-                        //                                 'forecast', // location
-                        //                                 $next_status, // next status val
-                        //                                 'approver', // who to receive
-                        //                                 $approver->emp_fname, // approver name
-                        //                                 $procedure_app->forecast_code, // forecast code
-                        //                                 Auth::user()->employee->full_name, // full_name
-                        //                                 $remarks, // remarks
-                        //                                 $lastid); // last id + 1
+                        $procedure_app->reviewed_by = $curr_app;
+                    
+                        $approver = Employee::where('emp_no','=',$empID)->first();
+                        $maildetails = new ProcedureMailable('REISS - Procedure Approval', // subject
+                                                        'procedure', // location
+                                                        $next_status, // next status val
+                                                        'approver', // who to receive
+                                                        $approver->emp_fname, // approver name
+                                                        $procedure_app->document_no, // document_no
+                                                        Auth::user()->employee->full_name, // full_name
+                                                        $remarks, // remarks
+                                                        $lastid); // last id + 1
                     }
                 }
             }
@@ -1015,19 +1073,20 @@ class ProceduresController extends Controller
                     }
                 $procedure_app->status = 'Rejected';
                 $procedure_app->approved_by = 'N/A';
-                // $procedure_app->updated_by = $curr_app;
+                $procedure_app->reviewed_by = $curr_app;
                 $matrix = [];
+ 
+                $approver = Employee::where('emp_no','=',$empID)->first();
+                $maildetails = new ProcedureMailable('REISS - Procedure Approval', // subject
+                                                'procedure', // location
+                                                'Rejected', // next status val
+                                                'filer', // who to receive
+                                                $approver->emp_fname, // approver name
+                                                $procedure_app->document_no, // document_no
+                                                Auth::user()->employee->full_name, // full_name
+                                                $remarks, // remarks
+                                                $lastid); // last id + 1
                 
-                // $approver = Employee::where('emp_no','=',$empID)->first();
-                // $maildetails = new SalesMailable('REISS - Sales Forecast Approval', // subject
-                //                                 'forecast', // location
-                //                                 'Rejected', // next status val
-                //                                 'filer', // who to receive
-                //                                 $approver->emp_fname, // approver name
-                //                                 $procedure_app->forecast_code, // forecast code
-                //                                 Auth::user()->employee->full_name, // full_name
-                //                                 $remarks, // remarks
-                //                                 $lastid); // last id + 1
             }
             
             $procedure_app->current_sequence = $curr_seq;
@@ -1036,10 +1095,10 @@ class ProceduresController extends Controller
 
             if($procedure_app->save()){
                 if($status=='Approved'){
-                    // Mail::to('johnpaul.sarinas@rsa.com.ph', 'John Paul Sarinas')->send($maildetails);
+                    Mail::to('johnpaul.sarinas@rsa.com.ph', 'John Paul Sarinas')->send($maildetails);
                     return redirect()->route('procedure.index')->withSuccess('Procedure Successfully Approved');
                 } else {
-                    // Mail::to('johnpaul.sarinas@rsa.com.ph', 'John Paul Sarinas')->send($maildetails);
+                    Mail::to('johnpaul.sarinas@rsa.com.ph', 'John Paul Sarinas')->send($maildetails);
                     return redirect()->route('procedure.index')->withSuccess('Procedure Successfully Rejected');
                 }
             }

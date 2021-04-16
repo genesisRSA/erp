@@ -254,6 +254,9 @@
                       case 'Created':
                         return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
                       break;
+                      case 'Received':
+                        return  '<span class="new badge deep-orange lighten-1 white-text" data-badge-caption="">Received</span>';
+                      break;
                       case 'Obsolete':
                         return  '<span class="new badge black white-text" data-badge-caption="">Obsolete</span>';
                       break;

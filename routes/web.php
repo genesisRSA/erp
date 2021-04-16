@@ -217,6 +217,7 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::post('/reiss/procedure/makecopy', 'ProceduresController@makeCopy')->name('procedure.makecopy');
     Route::post('/reiss/procedure/delete', 'ProceduresController@delete')->name('procedure.delete');
 
+    Route::get('/reiss/procedure/check/{id}/{loc}', 'ProceduresController@check');
     Route::get('/reiss/procedure/view/{id}/{loc}/', 'ProceduresController@view')->name('procedure.view');
     Route::get('/reiss/procedure/view_fcc/{id}/{loc}', 'ProceduresController@view_fcc')->name('procedure.view_fcc');
     Route::get('/reiss/procedure/view_cc/{id}/{loc}', 'ProceduresController@view_cc')->name('procedure.view_cc');
