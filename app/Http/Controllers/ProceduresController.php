@@ -1179,10 +1179,10 @@ class ProceduresController extends Controller
         $receive->receive_date = date('Y-m-d H:i:s');
         $receive->receive_by = Auth::user()->emp_no;
 
-        $receivedM = ProceduresMasterCopy::where('document_no','=',$receive->document_no)
-                            ->where('revision_no','=',$receive->revision_no)
-                            ->first();
-        $receivedM->status = 'Received';
+        // $receivedM = ProceduresMasterCopy::where('document_no','=',$receive->document_no)
+        //                     ->where('revision_no','=',$receive->revision_no)
+        //                     ->first();
+        // $receivedM->status = 'Received';
 
         $cc = ProceduresControlledCopy::where('document_no','=',$receive->document_no)->count();
         if($cc)
@@ -1198,12 +1198,12 @@ class ProceduresController extends Controller
             }
         }
         
-        $received = Procedure::where('document_no','=',$receive->document_no)
-                            ->where('revision_no','=',$receive->revision_no)
-                            ->first();
-        $received->status = 'Received';
-        if($received->save()){
-            $receive->save(); $receivedM->save();
+        // $received = Procedure::where('document_no','=',$receive->document_no)
+        //                     ->where('revision_no','=',$receive->revision_no)
+        //                     ->first();
+        // $received->status = 'Received';
+        if($receive->save()){
+            // $received->save(); $receivedM->save();
             return redirect()->route('procedure.index', ['#controlled'])->withSuccess('Procedure Successfully Received');
         }
     }
