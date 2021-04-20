@@ -36,9 +36,13 @@
                       <input type="text" id="rev_requested_date" name="requested_date" class="grey lighten-5" value="{{$procedures->requested_date}}" readonly/>
                       <label for="requested_date">Date Requested<sup class="red-text"></sup></label>
                   </div> 
-                  <div class="input-field col s12 m6 l6">
+                  <div class="input-field col s12 m3 l3">
                     <input type="text" id="rev_requested_date" name="requested_date" class="grey lighten-5" value="{{$employee->full_name}}" readonly/>
                     <label for="requested_date">Requested By<sup class="red-text"></sup></label>
+                  </div> 
+                  <div class="input-field col s12 m3 l3">
+                    <input type="text" id="rev_control_copy" name="control_copy" class="grey lighten-5" value="{{$copyCount+1}}" readonly/>
+                    <label for="requested_date">Copy No.<sup class="red-text"></sup></label>
                   </div> 
                 </div>
               
@@ -140,7 +144,7 @@
                     <a href="#!" onclick="CreateCopy({{$procedures->id}});" class="green waves-effect waves-dark btn" style="width: 100%"><i class="material-icons left">add_box</i>Create Copy</a>
                 </div>
                 <div class="col s12 m3 l3 right-align">
-                    <a href="{{route('procedure.index')}}" class="red waves-effect waves-dark btn" style="width: 100%; margin-bottom: 30px"><i class="material-icons left">keyboard_return</i>Return</a>
+                    <a href="{{route('procedure.index', ['#'.$locx = ($loc=='cc'?'controlled': ($loc=='controlled'?'controlled':($loc=='master'?'master':($loc=='app'?'approval':($loc=='master'?'master': ($loc=='procedures'?'ongoing':''))))))])}}" class="red waves-effect waves-dark btn" style="width: 100%; margin-bottom: 30px"><i class="material-icons left">keyboard_return</i>Return</a>
                 </div>    
               </div>
 

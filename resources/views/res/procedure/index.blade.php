@@ -135,7 +135,7 @@
                   <th>Copy No.</th>
                   <th>Status</th>
                   {{-- @if($permission[0]["masterlist"]==true) --}}
-                  <th>Action</th>
+                  <th class="center-align">Action</th>
                   {{-- @endif --}}
               </tr>
             </thead>
@@ -158,6 +158,7 @@
             <div class="row">
                 <div class="col s12 m6">
                     <input type="hidden" name="id" id="cc_id">
+                    <input type="hidden" name="stat" id="cc_stat">
                     <p>Are you sure you want to delete this <strong>Procedure Controlled Copy</strong>?</p>
                 </div>
             </div>
@@ -188,6 +189,25 @@
     </form>
   </div>
 
+  <div id="orientModal" class="modal bottom-sheet">
+    <form method="POST" action="{{route('procedure.orient')}}">
+        @csrf
+        <div class="modal-content">
+            <h4>Copy Orientation</h4><br><br>
+            <div class="row">
+                <div class="col s12 m6">
+                    <input type="hidden" name="id" id="or_id">
+                    <p>Do you want to mark this <strong>Controlled Copy</strong> as <strong>Oriented</strong> to copy owner?</p>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Yes</button>
+            <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>No</a>
+        </div>
+    </form>
+  </div>
+
   <!-- End of MODALS -->
 
   <!-- SCRIPTS -->
@@ -196,22 +216,31 @@
   <script type="text/javascript" src="http://code.jquery.com/jquery-3.4.1.js"></script> 
   <script type="text/javascript" src="{{ asset('datatables/datatables.js') }}"></script>
   <script type="text/javascript">
-   
 
     $(document).ready(function () {
        
     });
  
 
-    function deleteCC(id)
+    function deleteCC(id, stat)
     {
+      var statx = stat;
+      console.log(statx);
       $('#cc_id').val(id);
+      $('#cc_stat').val(stat);
       $('#ccModal').modal('open');
     }
+
     function receiveCC(id)
     {
       $('#re_id').val(id);
       $('#receiveModal').modal('open');
+    }
+
+    function orientCC(id)
+    {
+      $('#or_id').val(id);
+      $('#orientModal').modal('open');
     }
 
       var procedures = $('#procedures-dt').DataTable({
@@ -256,6 +285,12 @@
                       break;
                       case 'Created':
                         return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
+                      break;
+                      case 'For Orientation':
+                        return  '<span class="new badge deep-purple darken-1 white-text" data-badge-caption="">For Orientation</span>';
+                      break;
+                      case 'Oriented':
+                        return  '<span class="new badge green darken-1 white-text" data-badge-caption="">Oriented</span>';
                       break;
                       case 'Obsolete':
                         return  '<span class="new badge black white-text" data-badge-caption="">Obsolete</span>';
@@ -333,6 +368,12 @@
                       break;
                       case 'Created':
                         return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
+                      break;
+                      case 'For Orientation':
+                        return  '<span class="new badge deep-purple darken-1 white-text" data-badge-caption="">For Orientation</span>';
+                      break;
+                      case 'Oriented':
+                        return  '<span class="new badge green darken-1 white-text" data-badge-caption="">Oriented</span>';
                       break;
                       case 'Received':
                         return  '<span class="new badge deep-orange lighten-1 white-text" data-badge-caption="">Received</span>';
@@ -412,6 +453,12 @@
                       break;
                       case 'Created':
                         return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
+                      break;
+                      case 'For Orientation':
+                        return  '<span class="new badge deep-purple darken-1 white-text" data-badge-caption="">For Orientation</span>';
+                      break;
+                      case 'Oriented':
+                        return  '<span class="new badge green darken-1 white-text" data-badge-caption="">Oriented</span>';
                       break;
                       case 'Received':
                         return  '<span class="new badge deep-orange lighten-1 white-text" data-badge-caption="">Received</span>';
@@ -493,6 +540,12 @@
                       case 'Created':
                         return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
                       break;
+                      case 'For Orientation':
+                        return  '<span class="new badge deep-purple darken-1 white-text" data-badge-caption="">For Orientation</span>';
+                      break;
+                      case 'Oriented':
+                        return  '<span class="new badge green darken-1 white-text" data-badge-caption="">Oriented</span>';
+                      break;
                       case 'Received':
                         return  '<span class="new badge deep-orange lighten-1 white-text" data-badge-caption="">Received</span>';
                       break;
@@ -519,8 +572,8 @@
           ]
       });
     @endif
-
-      var controlled = $('#created-dt').DataTable({
+      
+      var created = $('#created-dt').DataTable({
           "lengthChange": false,
           "pageLength": 15,
           "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
@@ -530,7 +583,12 @@
               {  "data": "id" },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return '<a href="procedure/view_cc/'+row.id+'/cc">'+ row.document_no +'</a>';
+                    if(row.status=='For Orientation')
+                    {
+                      return row.document_no;
+                    }else{
+                      return '<a href="procedure/view_cc/'+row.id+'/cc">'+ row.document_no +'</a>';
+                    } 
                   }
               },
               {  "data": "id",
@@ -550,7 +608,12 @@
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return '<a href="procedure/view_cc/'+row.id+'/cc">'+ row.dpr_code +'</a>';
+                    if(row.status=='For Orientation')
+                    {
+                      return row.dpr_code;
+                    }else{
+                      return '<a href="procedure/view_cc/'+row.id+'/cc">'+ row.dpr_code +'</a>';
+                    } 
                   }
               },
               {   "data": "id",
@@ -570,6 +633,12 @@
                       case 'Created':
                         return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
                       break;
+                      case 'For Orientation':
+                        return  '<span class="new badge deep-purple darken-1 white-text" data-badge-caption="">For Orientation</span>';
+                      break;
+                      case 'Oriented':
+                        return  '<span class="new badge green darken-1 white-text" data-badge-caption="">Oriented</span>';
+                      break;
                       case 'Received':
                         return  '<span class="new badge deep-orange lighten-1 white-text" data-badge-caption="">Received</span>';
                       break;
@@ -586,13 +655,31 @@
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
                     @if($permission[0]["masterlist"]==true)
-                        return  '<a href="#!" onclick="deleteCC('+data+')" class="btn-small red darken3 waves-effect waves-dark"><i class="small material-icons">delete_forever</i></a> ';
+                      if(row.dept_details.dept_code=='{{$employee->dept_code}}'){
+                          if(row.status=='For Orientation' || row.status=='Received')
+                          {
+                            return  '<a href="#!" onclick="orientCC('+data+')" class="btn-small amber darken-2 waves-effect waves-dark center-align"><i class="small material-icons">forum</i></a>    <a href="#!" onclick="deleteCC('+data+','+row.status+')" class="btn-small red darken-3 waves-effect waves-dark center-align"><i class="small material-icons">delete_forever</i></a>   <a href="#!" class="btn-small deep-orange lighten-1 waves-effect waves-dark" disabled><i class="small material-icons">assignment_turned_in</i></a> ';
+                          } else {
+                            return  '<a href="#!" onclick="orientCC('+data+')" class="btn-small amber darken-2 waves-effect waves-dark center-align"><i class="small material-icons">forum</i></a>    <a href="#!" onclick="deleteCC('+data+','+row.status+')" class="btn-small red darken-3 waves-effect waves-dark center-align"><i class="small material-icons">delete_forever</i></a>   <a href="#!" onclick="receiveCC('+data+')" class="btn-small deep-orange lighten-1 waves-effect waves-dark"><i class="small material-icons">assignment_turned_in</i></a>';
+                          }
+                      } else {
+                          if(row.status=='For Orientation')
+                          {
+                            return  '<a href="#!" onclick="orientCC('+data+')" class="btn-small amber darken-2 waves-effect waves-dark center-align"><i class="small material-icons">forum</i></a>  <a href="#!" onclick="deleteCC('+data+','+row.status+')" class="btn-small red darken-3 waves-effect waves-dark center-align"><i class="small material-icons">delete_forever</i></a> ';
+                          } else {
+                            return  '<a href="#!" class="btn-small amber darken-2 waves-effect waves-dark center-align" disabled><i class="small material-icons">forum</i></a>  <a href="#!" onclick="deleteCC('+data+',\''+row.status+'\')" class="btn-small red darken-3 waves-effect waves-dark center-align"><i class="small material-icons">delete_forever</i></a> ';
+                          }
+                      }
                     @else
                       if(row.status=='Received')
                       {
                         return  '<a href="#!" class="btn-small deep-orange lighten-1 waves-effect waves-dark" disabled><i class="small material-icons">assignment_turned_in</i></a> ';
-                      } else {
+                      } else if(row.status=='Oriented') {
                         return  '<a href="#!" onclick="receiveCC('+data+')" class="btn-small deep-orange lighten-1 waves-effect waves-dark"><i class="small material-icons">assignment_turned_in</i></a> ';
+                      } else if(row.status=='For Orientation') {
+                        return '<a href="#!" class="btn-small deep-orange lighten-1 waves-effect waves-dark" disabled><i class="small material-icons">assignment_turned_in</i></a> ';
+                      } else {
+                        return '<a href="#!" class="btn-small deep-orange lighten-1 waves-effect waves-dark" disabled><i class="small material-icons">assignment_turned_in</i></a> ';
                       }
                     @endif
                   }

@@ -35,10 +35,20 @@
                         <input type="text" id="rev_requested_date" name="requested_date" class="grey lighten-5" value="{{$procedures->requested_date}}" readonly/>
                         <label for="requested_date">Date Requested<sup class="red-text"></sup></label>
                     </div> 
+                    @if($loc=='cc')
+                    <div class="input-field col s12 m3 l3">
+                    @else
                     <div class="input-field col s12 m6 l6">
+                    @endif
                       <input type="text" id="rev_requested_date" name="requested_date" class="grey lighten-5" value="{{$employee->full_name}}" readonly/>
                       <label for="requested_date">Requested By<sup class="red-text"></sup></label>
                     </div> 
+                    @if($loc=='cc')
+                    <div class="input-field col s12 m3 l3">
+                      <input type="text" id="rev_control_copy" name="control_copy" class="grey lighten-5" value="{{$procedurex->copy_no}}" readonly/>
+                      <label for="requested_date">Copy No.<sup class="red-text"></sup></label>
+                    </div> 
+                    @endif
                   </div>
                 
                   <div class="col s12 m12 l12">
@@ -88,7 +98,7 @@
                       </div>
 
                     <embed
-                        src="{{ action('ProceduresController@getDocument', ['id'=> $procedures->id, 'stat' => $procedures->status, 'loc' => $loc ]) }}#toolbar=0"
+                        src="{{ action('ProceduresController@getDocument', ['id'=> $procedures->id, 'stat' => $procedures->status, 'loc' => $loc, 'cc' => $cc = $loc == 'cc' ? $procedurex->copy_no : 0 ]) }}#toolbar=0"
                         style="width:95%; 
                               height:130%; 
                               margin-left:2.5%;" type="application/pdf"

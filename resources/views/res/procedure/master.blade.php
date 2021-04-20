@@ -127,7 +127,7 @@
                   <a href="#!" onclick="CreateMaster({{$procedures->id}});" class="green waves-effect waves-dark btn" style="width: 100%"><i class="material-icons left">add_box</i>Create Copy</a>
                 </div>
                 <div class="col s12 m3 l3 left-align">
-                  <a href="{{route('procedure.index')}}" class="red waves-effect waves-dark btn" style="width: 100%; margin-bottom: 30px"><i class="material-icons left">keyboard_return</i>Return</a>
+                  <a href="{{route('procedure.index', ['#'.$locx = ($loc=='cc'?'controlled': ($loc=='controlled'?'controlled':($loc=='master'?'master':($loc=='app'?'approval':($loc=='master'?'master': ($loc=='procedures'?'ongoing':''))))))])}}" class="red waves-effect waves-dark btn" style="width: 100%; margin-bottom: 30px"><i class="material-icons left">keyboard_return</i>Return</a>
                 </div>
               </div>
 

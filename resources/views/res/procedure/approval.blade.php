@@ -118,7 +118,7 @@
                           </div>
             
                             <embed
-                                src="{{ action('ProceduresController@getDocument', ['id'=> $idx, 'stat' => $procedures->status, 'loc' => $loc]) }}#toolbar=0"
+                                src="{{ action('ProceduresController@getDocument', ['id'=> $idx, 'stat' => $procedures->status, 'loc' => $loc, 'cc' => $cc = $loc == 'cc' ? $procedurex->copy_no : 0 ]) }}#toolbar=0"
                                 style="width:100%; 
                                       height:130%; 
                                       " type="application/pdf"

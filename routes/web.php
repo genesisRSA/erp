@@ -212,6 +212,7 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::resource('/reiss/procedure', 'ProceduresController');
     Route::post('/reiss/procedure/revision', 'ProceduresController@revision')->name('procedure.revision');
     Route::post('/reiss/procedure/receive', 'ProceduresController@receive')->name('procedure.receive');
+    Route::post('/reiss/procedure/orient', 'ProceduresController@orient')->name('procedure.orient');
     Route::post('/reiss/procedure/approve', 'ProceduresController@approve')->name('procedure.approve');
     Route::post('/reiss/procedure/makemaster', 'ProceduresController@makeMaster')->name('procedure.makemaster');
     Route::post('/reiss/procedure/makecopy', 'ProceduresController@makeCopy')->name('procedure.makecopy');
@@ -222,7 +223,7 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::get('/reiss/procedure/view_fcc/{id}/{loc}', 'ProceduresController@view_fcc')->name('procedure.view_fcc');
     Route::get('/reiss/procedure/view_cc/{id}/{loc}', 'ProceduresController@view_cc')->name('procedure.view_cc');
     Route::get('/reiss/procedure/revise/{id}', 'ProceduresController@revise')->name('procedure.revise');
-    Route::get('/reiss/procedure/getDocument/{id}/{stat}/{loc}', 'ProceduresController@getDocument')->name('procedure.getDocument');
+    Route::get('/reiss/procedure/getDocument/{id}/{stat}/{loc}/{cc}', 'ProceduresController@getDocument')->name('procedure.getDocument');
     Route::get('/reiss/procedure/pdf/{id}/{loc}', 'ProceduresController@pdf')->name('procedure.pdf');
     Route::get('/reiss/procedure/pdfx/{id}/{loc}', 'ProceduresController@pdfx')->name('procedure.pdfx');
 
