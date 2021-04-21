@@ -1328,7 +1328,7 @@ class ProceduresController extends Controller
         }
       
         if(ProceduresControlledCopy::destroy($procedurecc->id)){
-            return redirect()->route('procedure.index')->withSuccess('Procedure Controlled Copy Successfully Deleted');
+            return redirect()->route('procedure.index',['#controlled'])->withSuccess('Procedure Controlled Copy Successfully Deleted');
         }
     }
 }

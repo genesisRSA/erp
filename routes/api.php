@@ -89,7 +89,7 @@ Route::get('/reiss/procedure/all/{id}/{loc}','ProceduresController@all');
 Route::get('/reiss/procedure/all_revision/{id}','ProceduresController@all_revision');
 Route::get('/reiss/procedure/all_approval/{id}','ProceduresController@all_approval');
 
-
+Route::get('/reiss/drawing/all/{id}/{loc}','DrawingsController@all');
 
 Route::get('/reiss/product_category/all', 'ProductCategoriesController@all');
 Route::get('/reiss/product/all', 'ProductsController@all');

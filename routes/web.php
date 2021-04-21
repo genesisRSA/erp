@@ -217,7 +217,6 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::post('/reiss/procedure/makemaster', 'ProceduresController@makeMaster')->name('procedure.makemaster');
     Route::post('/reiss/procedure/makecopy', 'ProceduresController@makeCopy')->name('procedure.makecopy');
     Route::post('/reiss/procedure/delete', 'ProceduresController@delete')->name('procedure.delete');
-
     Route::get('/reiss/procedure/check/{id}/{loc}', 'ProceduresController@check');
     Route::get('/reiss/procedure/view/{id}/{loc}/', 'ProceduresController@view')->name('procedure.view');
     Route::get('/reiss/procedure/view_fcc/{id}/{loc}', 'ProceduresController@view_fcc')->name('procedure.view_fcc');
@@ -226,15 +225,13 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::get('/reiss/procedure/getDocument/{id}/{stat}/{loc}/{cc}', 'ProceduresController@getDocument')->name('procedure.getDocument');
     Route::get('/reiss/procedure/pdf/{id}/{loc}', 'ProceduresController@pdf')->name('procedure.pdf');
     Route::get('/reiss/procedure/pdfx/{id}/{loc}', 'ProceduresController@pdfx')->name('procedure.pdfx');
-
     Route::get('/reiss/procedure/master/{id}/{loc}', 'ProceduresController@master_view')->name('procedure.master');
     Route::get('/reiss/procedure/copy/{id}/{loc}', 'ProceduresController@copy_view')->name('procedure.copy');
-
     Route::get('/reiss/procedure/approval/{id}/{loc}', 'ProceduresController@approval_view')->name('procedure.approval');
     Route::get('/reiss/procedure/getApprover/{id}', 'ProceduresController@getApprover');
     Route::get('/reiss/procedure/getApproverMatrix/{id}', 'ProceduresController@getApproverMatrix');
 
-
+    Route::resource('/reiss/drawing', 'DrawingsController');
 
     Route::get('/reiss/dashboard/{parent}', 'ReissDashboardController@index');
 

@@ -79,7 +79,7 @@
               <li><a href="#!">PO Specs</a></li>
               <li><a href="#!">Design Review</a></li>
               <li><a href="#!">Bill of Materials</a></li>
-              <li><a href="#!">Drawings</a></li>
+              <li @if($subpage=='drawings') class="active" @endif><a href="{{ route('drawing.index') }}">Drawings</a></li>
               <li><a href="#!">Software Documentation</a></li>
               <li><a href="#!">Manuals</a></li>
               <li @if($subpage=='procedures') class="active" @endif><a href="{{ route('procedure.index') }}">Procedures</a></li>
