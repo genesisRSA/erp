@@ -23,14 +23,14 @@
     <div id="ongoing" name="ongoing">
         <div class="card" style="margin-top: 0px">
           <div class="card-content">
-            <table class="responsive-table highlight" id="procedures-dt" style="width: 100%">
+            <table class="responsive-table highlight" id="drawing-dt" style="width: 100%">
               <thead>
                 <tr>
                     <th>ID</th> 
-                    <th>Document No.</th>
-                    <th>Document Title</th>
-                    <th>DPR No.</th>
-                    <th>Revision No.</th>
+                    <th>Drawing No.</th>
+                    <th>Part Name</th>
+                    <th>ECN No.</th>
+                  <th>Revision No.</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -40,7 +40,7 @@
         </div>
       
       @if($permission[0]["add"]==true)
-        <a href="{{ route('procedure.create') }}" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button" data-position="left" data-tooltip="Add Procedures"><i class="material-icons">add</i></a>
+        <a href="{{ route('drawing.create') }}" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button" data-position="left" data-tooltip="Add Procedures"><i class="material-icons">add</i></a>
       @endif
     </div>
 
@@ -52,11 +52,11 @@
               <thead>
                 <tr>
                     <th>ID</th> 
-                    <th>Document No.</th>
+                    <th>Drawing No.</th>
                     <th>Date Requested</th>
                     <th>Requested By</th>
-                    <th>Document Title</th>
-                    <th>DPR No.</th>
+                    <th>Part Name</th>
+                    <th>ECN No.</th>
                     <th>Revision No.</th>
                     <th>Status</th>
                     <th>Action</th>
@@ -80,7 +80,7 @@
                   <th>Date Requested</th>
                   <th>Requested By</th>
                   <th>Document Title</th>
-                  <th>DPR No.</th>
+                  <th>ECN No.</th>
                   <th>Revision No.</th>
                   <th>Status</th>
                   @if($permission[0]["masterlist"]==true)
@@ -109,7 +109,7 @@
                     <th>Date Requested</th>
                     <th>Requested By</th>
                     <th>Document Title</th>
-                    <th>DPR No.</th>
+                    <th>ECN No.</th>
                     <th>Revision No.</th>
                     <th>Status</th>
                     <th>Action</th>
@@ -128,10 +128,10 @@
               <tr>
                   <th>ID</th> 
                   <th>Document No.</th>     
-                  <th>Created By</th>
+                  <th>Designer</th>
                   <th>Copy Owner</th>
                   <th>Document Title</th>
-                  <th>DPR No.</th>
+                  <th>ECN No.</th>
                   <th>Copy No.</th>
                   <th>Status</th>
                   {{-- @if($permission[0]["masterlist"]==true) --}}
@@ -151,7 +151,7 @@
   <!-- MODALS -->
 
   <div id="ccModal" class="modal bottom-sheet">
-    <form method="POST" action="{{route('procedure.delete')}}">
+    <form method="POST" action="{{route('drawing.delete')}}">
         @csrf
         <div class="modal-content">
             <h4>Controlled Copy</h4><br><br>
@@ -159,7 +159,7 @@
                 <div class="col s12 m6">
                     <input type="hidden" name="id" id="cc_id">
                     <input type="hidden" name="stat" id="cc_stat">
-                    <p>Are you sure you want to delete this <strong>Procedure Controlled Copy</strong>?</p>
+                    <p>Are you sure you want to delete this <strong>Drawing Controlled Copy</strong>?</p>
                 </div>
             </div>
         </div>
@@ -171,14 +171,14 @@
   </div>
 
   <div id="receiveModal" class="modal bottom-sheet">
-    <form method="POST" action="{{route('procedure.receive')}}">
+    <form method="POST" action="{{route('drawing.receive')}}">
         @csrf
         <div class="modal-content">
             <h4>Copy Acknowledgement</h4><br><br>
             <div class="row">
                 <div class="col s12 m6">
                     <input type="hidden" name="id" id="re_id">
-                    <p>Do you want to confirm receipt of this <strong>Procedure Controlled Copy</strong>?</p>
+                    <p>Do you want to confirm receipt of this <strong>Drawing Controlled Copy</strong>?</p>
                 </div>
             </div>
         </div>
@@ -188,25 +188,7 @@
         </div>
     </form>
   </div>
-
-  <div id="orientModal" class="modal bottom-sheet">
-    <form method="POST" action="{{route('procedure.orient')}}">
-        @csrf
-        <div class="modal-content">
-            <h4>Copy Orientation</h4><br><br>
-            <div class="row">
-                <div class="col s12 m6">
-                    <input type="hidden" name="id" id="or_id">
-                    <p>Do you want to mark this <strong>Controlled Copy</strong> as <strong>Oriented</strong> to copy owner?</p>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Yes</button>
-            <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>No</a>
-        </div>
-    </form>
-  </div>
+ 
 
   <!-- End of MODALS -->
 
@@ -244,27 +226,27 @@
     }
 
 
-      var procedures = $('#procedures-dt').DataTable({
+      var procedures = $('#drawing-dt').DataTable({
           "lengthChange": false,
           "pageLength": 15,
           "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
           "pagingType": "full",
-          "ajax": "/api/reiss/drawing/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/procedures",
+          "ajax": "/api/reiss/drawing/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/drawing",
           "columns": [
               {  "data": "id" },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return '<a href="procedure/view/'+data+'/procedures">'+ row.document_no +'</a>';
+                    return '<a href="drawing/view/'+data+'/drawings">'+ row.drawing_no +'</a>';
                   }
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return row.document_title;
+                    return row.part_name;
                   }
               },
               {  "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return row.dpr_code;
+                    return row.ecn_code;
                   }
               },
               {   "data": "id",
@@ -308,7 +290,7 @@
                     
                     if(row.status=='Created' || row.status=='Received')
                     {
-                      return  '<a href="procedure/revise/'+row.id+'" class="btn-small amber darken3 waves-effect waves-dark"><i class="material-icons">create</i></a>';
+                      return  '<a href="drawing/revise/'+row.id+'" class="btn-small amber darken3 waves-effect waves-dark"><i class="material-icons">create</i></a>';
                     } else {
                       return  '<a href="#!" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a>';
                     }
@@ -330,12 +312,12 @@
               {  "data": "id" },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return '<a href="procedure/view/'+row.id+'/app">'+ row.document_no +'</a>';
+                    return '<a href="drawing/view/'+row.id+'/app">'+ row.drawing_no +'</a>';
                   }
               },
               {  "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return row.requested_date;
+                    return row.revision_date;
                   }
               },
               {  "data": "id",
@@ -345,12 +327,12 @@
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return row.document_title;
+                    return row.part_name;
                   }
               },
               {  "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return row.dpr_code;
+                    return row.ecn_code;
                   }
               },
               {   "data": "id",
@@ -393,7 +375,7 @@
                   "render": function ( data, type, row, meta ) {
                     if(row.status=='Pending')
                     {
-                      return  '<a href="procedure/approval/'+row.id+'/app" class="btn-small blue darken3 waves-effect waves-dark"><i class="material-icons">rate_review</i></a>';
+                      return  '<a href="drawing/approval/'+row.id+'/app" class="btn-small blue darken3 waves-effect waves-dark"><i class="material-icons">rate_review</i></a>';
                     } else {
                       return  '<a href="#!" class="btn-small blue darken3 waves-effect waves-dark" disabled><i class="material-icons">rate_review</i></a>';
                     }
@@ -415,12 +397,12 @@
               {  "data": "id" },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return '<a href="procedure/view/'+row.id+'/master">'+ row.document_no +'</a>';
+                    return '<a href="drawing/view/'+row.id+'/master">'+ row.drawing_no +'</a>';
                   }
               },
               {  "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return row.requested_date;
+                    return row.revision_date;
                   }
               },
               {  "data": "id",
@@ -430,12 +412,12 @@
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return row.document_title;
+                    return row.part_name;
                   }
               },
               {  "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return row.dpr_code;
+                    return row.ecn_code;
                   }
               },
               {   "data": "id",
@@ -478,7 +460,7 @@
                   "render": function ( data, type, row, meta ) {
                     if(row.status=='Approved')
                     {
-                      return  '<a href="procedure/master/'+row.id+'/master" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
+                      return  '<a href="drawing/master/'+row.id+'/master" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
                     }else{
                       return  '<a href="#!" class="btn-small blue darken3 waves-effect waves-dark" disabled><i class="small material-icons">note_add</i></a>';
                     }
@@ -497,7 +479,7 @@
               {  "data": "id" },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return '<a href="procedure/view_fcc/'+row.id+'/controlled">'+ row.document_no +'</a>';
+                    return '<a href="drawing/view_fcc/'+row.id+'/controlled">'+ row.drawing_no +'</a>';
                   }
               },
               {  "data": "id",
@@ -512,13 +494,13 @@
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return row.document_title;
+                    return row.part_name;
                   }
               },
           
               {  "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return '<a href="procedure/view_fcc/'+row.id+'/controlled">'+ row.dpr_code +'</a>';
+                    return '<a href="drawing/view_fcc/'+row.id+'/controlled">'+ row.ecn_code +'</a>';
                   }
               },
               {   "data": "id",
@@ -564,7 +546,7 @@
                   "render": function ( data, type, row, meta ) {
                     if(row.status=='For CC'||row.status=='Created'||row.status=='Received')
                     {
-                      return  '<a href="procedure/copy/'+row.id+'/controlled" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
+                      return  '<a href="drawing/copy/'+row.id+'/controlled" class="btn-small blue darken3 waves-effect waves-dark"><i class="small material-icons">note_add</i></a>';
                     }else{
                       return  '<a href="#!" class="btn-small blue darken3 waves-effect waves-dark" disabled><i class="small material-icons">note_add</i></a>';
                     }
@@ -584,12 +566,7 @@
               {  "data": "id" },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    if(row.status=='For Orientation')
-                    {
-                      return row.document_no;
-                    }else{
-                      return '<a href="procedure/view_cc/'+row.id+'/cc">'+ row.document_no +'</a>';
-                    } 
+                    return '<a href="drawing/view_cc/'+row.id+'/cc">'+ row.drawing_no +'</a>'; 
                   }
               },
               {  "data": "id",
@@ -604,16 +581,16 @@
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return row.document_title;
+                    return row.part_name;
                   }
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
                     if(row.status=='For Orientation')
                     {
-                      return row.dpr_code;
+                      return row.ecn_code;
                     }else{
-                      return '<a href="procedure/view_cc/'+row.id+'/cc">'+ row.dpr_code +'</a>';
+                      return '<a href="drawing/view_cc/'+row.id+'/cc">'+ row.ecn_code +'</a>';
                     } 
                   }
               },
@@ -634,8 +611,8 @@
                       case 'Created':
                         return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
                       break;
-                      case 'For Orientation':
-                        return  '<span class="new badge deep-purple darken-1 white-text" data-badge-caption="">For Orientation</span>';
+                      case 'For Receiving':
+                        return  '<span class="new badge deep-orange darken-1 white-text" data-badge-caption="">For Receiving</span>';
                       break;
                       case 'Oriented':
                         return  '<span class="new badge green darken-1 white-text" data-badge-caption="">Oriented</span>';
@@ -668,7 +645,7 @@
                             return  '<a href="#!" onclick="orientCC('+data+')" class="btn-small amber darken-2 waves-effect waves-dark center-align"><i class="small material-icons">forum</i></a>    <a href="#!" onclick="deleteCC('+data+',\''+row.status+'\')" class="btn-small red darken-3 waves-effect waves-dark center-align"><i class="small material-icons">delete_forever</i></a>   <a href="#!" onclick="receiveCC('+data+')" class="btn-small deep-orange lighten-1 waves-effect waves-dark"><i class="small material-icons">assignment_turned_in</i></a>';
                           }
                       } else {
-                          if(row.status=='For Orientation')
+                          if(row.status=='For Receiving')
                           {
                             return  '<a href="#!" onclick="orientCC('+data+')" class="btn-small amber darken-2 waves-effect waves-dark center-align"><i class="small material-icons">forum</i></a>  <a href="#!" onclick="deleteCC('+data+',\''+row.status+'\')" class="btn-small red darken-3 waves-effect waves-dark center-align"><i class="small material-icons">delete_forever</i></a> ';
                           } else {
@@ -676,16 +653,12 @@
                           }
                       }
                     @else
-                      if(row.status=='Received')
+                      if(row.status=='For Receiving')
                       {
-                        return  '<a href="#!" class="btn-small deep-orange lighten-1 waves-effect waves-dark" disabled><i class="small material-icons">assignment_turned_in</i></a> ';
-                      } else if(row.status=='Oriented') {
                         return  '<a href="#!" onclick="receiveCC('+data+')" class="btn-small deep-orange lighten-1 waves-effect waves-dark"><i class="small material-icons">assignment_turned_in</i></a> ';
-                      } else if(row.status=='For Orientation') {
+                      } else  {
                         return '<a href="#!" class="btn-small deep-orange lighten-1 waves-effect waves-dark" disabled><i class="small material-icons">assignment_turned_in</i></a> ';
-                      } else {
-                        return '<a href="#!" class="btn-small deep-orange lighten-1 waves-effect waves-dark" disabled><i class="small material-icons">assignment_turned_in</i></a> ';
-                      }
+                      }  
                     @endif
                   }
               }

@@ -9,13 +9,13 @@
 @section('content')<body oncontextmenu="return false;">
   <div class="row blue-text text-darken-4 white" style="border-bottom: 1px solid rgba(0,0,0,0.14);">
     <div class="col s12 m12">
-        <h4 class="title"><span class="grey-text darken-4">Document Control Centre<i class="material-icons">arrow_forward_ios</i></span><span class="grey-text darken-4">Procedures<i class="material-icons">arrow_forward_ios</i></span>View Procedure</h4>
+        <h4 class="title"><span class="grey-text darken-4">Document Control Centre<i class="material-icons">arrow_forward_ios</i></span><span class="grey-text darken-4">Drawings<i class="material-icons">arrow_forward_ios</i></span>View Drawing</h4>
     </div>
   </div>
   
     <div class="m-3 main-content">  
-      <ul id="procedure_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
-        <li class="tab col s12 m4 l4"><a class="active" href="#procedure">Procedure Details</a></li>
+      <ul id="drawing_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
+        <li class="tab col s12 m4 l4"><a class="active" href="#details">Drawing Details</a></li>
         <li class="tab col s12 m4 l4"><a href="#signatories">signatories</a></li>
       </ul>
       
@@ -24,113 +24,147 @@
             <form method="POST" enctype="multipart/form-data">
               @csrf
             <div class="row">
-              <div id="procedure" name="procedure">
-                <br>
+            <div id="details" name="details">
+              <div class="row"><br>
+                <div class="col s12 m12 l12">
+
                   <div class="col s12 m12 l12">
                     <div class="input-field col s12 m3 l3">
-                        <input type="text" id="rev_dpr_code" name="dpr_code"  class="grey lighten-5" value="{{$procedures->dpr_code}}" readonly/>
-                        <label for="dpr_code">DPR No.<sup class="red-text"></sup></label>
+                      <input type="text" id="add_ecn_code" name="ecn_code" value="{{$drawings->ecn_code}}" readonly/>
+                      <label for="ecn_code">ECN No.<sup class="red-text"></sup></label>
                     </div>
+
                     <div class="input-field col s12 m3 l3">
-                        <input type="text" id="rev_requested_date" name="requested_date" class="grey lighten-5" value="{{$procedures->requested_date}}" readonly/>
-                        <label for="requested_date">Date Requested<sup class="red-text"></sup></label>
+                      <input type="text" id="add_designer" name="designer" value="{{$employee->full_name}}" readonly/>
+                      <label for="ecn_code">Designer<sup class="red-text"></sup></label>
                     </div> 
                     @if($loc=='cc')
                     <div class="input-field col s12 m3 l3">
-                    @else
-                    <div class="input-field col s12 m6 l6">
-                    @endif
-                      <input type="text" id="rev_requested_date" name="requested_date" class="grey lighten-5" value="{{$employee->full_name}}" readonly/>
-                      <label for="requested_date">Requested By<sup class="red-text"></sup></label>
-                    </div> 
-                    @if($loc=='cc')
-                    <div class="input-field col s12 m3 l3">
-                      <input type="text" id="rev_control_copy" name="control_copy" class="grey lighten-5" value="{{$procedurex->copy_no}}" readonly/>
+                      <input type="text" id="add_control_copy" name="control_copy" value="{{$drawingx->copy_no}}" readonly/>
                       <label for="requested_date">Copy No.<sup class="red-text"></sup></label>
                     </div> 
                     @endif
                   </div>
-                
-                  <div class="col s12 m12 l12">
-                      <div class="input-field col s12 m6 l6">
-                          <input type="text" id="rev_document_title" name="document_title" value="{{$procedures->document_title}}"  placeholder=" " readonly/>
-                          <label for="document_title">Document Title<sup class="red-text">*</sup></label>
-                      </div>
-                      <div class="input-field col s12 m3 l3">
-                          <input type="text" id="rev_document_no" name="document_no"  value="{{$procedures->document_no}}"  placeholder=" " readonly/>
-                          <label for="document_no">Document No.<sup class="red-text"></sup></label>
-                      </div>
-                      <div class="input-field col s12 m3 l3">
-                          <input type="text" id="rev_revision_no" name="revision_no" value="{{$procedures->revision_no}}" placeholder=" " readonly/>
-                          <label for="revision_no">Revision No.<sup class="red-text"></sup></label>
-                      </div>
+
+                  <div class="col s12 m12 l12">                  
+                    <div class="input-field col s12 m6 l6">
+                      <input type="text" id="add_cust_code" name="cust_code" value="{{$drawings->cust_code}}" readonly/>
+                      <label for="cust_code">Customer<sup class="red-text"> </sup></label>
+                    </div> 
+
+                    <div class="input-field col s12 m3 l3">
+                      <input type="text" id="add_revision_no" name="revision_no" value="0" placeholder=" " readonly/>
+                      <label for="revision_no">Revision No.<sup class="red-text"></sup></label>
+                    </div>
+
+                    <div class="input-field col s12 m3 l3">
+                      <input type="text" id="add_revision_date" name="revision_date" value="{{date('Y-m-d')}}" readonly/>
+                      <label for="revision_date">Revision Date<sup class="red-text"></sup></label>
+                    </div> 
                   </div>
 
                   <div class="col s12 m12 l12">
-                      <div class="input-field col s12 m6 l6">
-                          <textarea id="rev_change_description" name="change_description" class="materialize-textarea" placeholder="Some text here.." style="padding-bottom: 0px; border-bottom-width: 2px; margin-bottom: 0px;" readonly>{{$procedures->change_description}}</textarea>
-                          <label for="change_description">Description of Change(s)<sup class="red-text">*</sup></label>
-                      </div>
+                    <div class="input-field col s12 m3 l3">
+                      <input type="text" id="add_cust_code" name="cust_code" value="{{$drawings->project_code}}" readonly/>
+                      <label for="project_code">Project Name<sup class="red-text"> </sup></label>
+                    </div>
 
-                      <div class="input-field col s12 m6 l6">
-                          <textarea id="rev_change_reason" name="change_reason" class="materialize-textarea"  placeholder="Some text here.." style="padding-bottom: 0px; border-bottom-width: 2px; margin-bottom: 0px;" readonly>{{$procedures->change_reason}}</textarea>
-                          <label for="change_reason">Reason for Preparation / Revision<sup class="red-text">*</sup></label>
-                      </div>
-                  </div>
+                    <div class="input-field col s12 m3 l3">
+                      <input type="text" id="add_cust_code" name="cust_code" value="{{$drawings->assy_code}}" readonly/>
+                      <label for="assy_code">Assembly Description<sup class="red-text"> </sup></label>
+                    </div>
+                    
+                    <div class="input-field col s12 m3 l3">
+                      <input type="text" id="add_cust_code" name="cust_code" value="{{$drawings->fab_code}}" readonly/>
+                      <label for="fab_code">Fabrication Description<sup class="red-text"> </sup></label>
+                    </div>
 
-                  <div class="col s12 m12 l12" >
-                    <h6 style="padding: 10px; padding-top: 20px; padding-left: 20px; padding-right: 20px;   margin-top: 20px; background-color:#0d47a1" class="white-text"><b>Procedure Attachment(s)</b></h6>  
-                  </div>
-
-                  <div class="row">
-                    <br>
-                    <div class="col s12 l12 m12" style="width:96%; 
-                                height:50%; 
-                                z-index: 10; 
-                                opacity:0.15;
-                                position:absolute; 
-                                text-align:center;
-                                line-height:400px;
-                                font-size:130px; 
-                                color:blue;">
-                      &nbspRSA PROPERTY
-                      &nbspRSA PROPERTY
-                      </div>
-
-                    <embed
-                        src="{{ action('ProceduresController@getDocument', ['id'=> $procedures->id, 'stat' => $procedures->status, 'loc' => $loc, 'cc' => $cc = $loc == 'cc' ? $procedurex->copy_no : 0 ]) }}#toolbar=0"
-                        style="width:95%; 
-                              height:130%; 
-                              margin-left:2.5%;" type="application/pdf"
-                        id = "pdf_file"
-                        frameborder="1"
-                        > 
+                    <div class="input-field col s12 m3 l3">
+                      <input type="text" id="add_cust_code" name="cust_code" value="{{$drawings->drawing_no}}" readonly/>
+                      <label for="drawing_no">Drawing No. / Assembly Name<sup class="red-text"></sup></label>
+                    </div>
                   </div>
 
                   <div class="col s12 m12 l12">
-                    <h6 style="padding: 10px; padding-top: 20px; padding-left: 20px; padding-right: 20px;   margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Revision History</b></h6>  
+                    <div class="input-field col s12 m6 l6">
+                      <input type="text" id="add_part_name" name="part_name" value="{{$drawings->part_name}}" readonly/>
+                      <label for="v">Part Name / BOM / Module Name<sup class="red-text"> </sup></label>
+                    </div>
+
+                    <div class="input-field col s12 m6 l6">
+                      <input type="text" id="add_process_specs" name="process_specs" value="{{$drawings->process_specs}}" readonly/>
+                      <label for="process_specs">Existing Process Specification(s)<sup class="red-text"> </sup></label>
+                    </div>
                   </div>
 
                   <div class="col s12 m12 l12">
-                    <div class="card" style="margin-top: 0px">
-                      <div class="card-content">
-                        <table class="responsive-table highlight" id="revisions-dt" style="width: 100%">
-                          <thead>
-                            <tr>
-                                <th>ID</th> 
-                                <th>Document No.</th>
-                                <th>Document Title</th>
-                                <th>DPR No.</th>
-                                <th>Revision No.</th>
-                                <th>Status</th>
-                            </tr>
-                          </thead>
-                        </table>
-                      </div>
+                    <div class="input-field col s12 m6 l6">
+                        <textarea id="add_change_description" name="change_description" class="materialize-textarea" placeholder="Some text here.." style="padding-bottom: 0px; margin-bottom: 20px;" required readonly>{{$drawings->change_description}}</textarea>
+                        <label for="change_description">Description of Change(s)<sup class="red-text"> </sup></label>
+                    </div>
+
+                    <div class="input-field col s12 m6 l6">
+                        <textarea id="add_change_reason" name="change_reason" class="materialize-textarea"  placeholder="Some text here.." style="padding-bottom: 0px; margin-bottom: 30px;" required readonly>{{$drawings->change_reason}}</textarea>
+                        <label for="change_reason">Reason for Change / Revision<sup class="red-text"> </sup></label>
+                    </div>
+                  </div>
+            
+                </div>
+              </div>
+
+                <div class="col s12 m12 l12" >
+                  <h6 style="padding: 10px; padding-top: 20px; padding-left: 20px; padding-right: 20px;   margin-top: 20px; background-color:#0d47a1" class="white-text"><b>Drawing Attachment(s)</b></h6>  
+                </div>
+
+                <div class="row">
+                  <br>
+                  <div class="col s12 l12 m12" style="width:96%; 
+                              height:50%; 
+                              z-index: 10; 
+                              opacity:0.15;
+                              position:absolute; 
+                              text-align:center;
+                              line-height:400px;
+                              font-size:130px; 
+                              color:blue;">
+                    &nbspRSA PROPERTY
+                    &nbspRSA PROPERTY
+                    </div>
+
+                  <embed
+                      src="{{ action('DrawingsController@getDocument', ['id'=> $drawings->id, 'stat' => $drawings->status, 'loc' => $loc, 'cc' => $cc = $loc == 'cc' ? $drawingx->copy_no : 0 ]) }}#toolbar=0"
+                      style="width:98%; 
+                            height:90%; 
+                            margin-left:1%;" type="application/pdf"
+                      id = "pdf_file"
+                      frameborder="1"
+                      > 
+                </div>
+
+                <div class="col s12 m12 l12">
+                  <h6 style="padding: 10px; padding-top: 20px; padding-left: 20px; padding-right: 20px;   margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Revision History</b></h6>  
+                </div>
+
+                <div class="col s12 m12 l12">
+                  <div class="card" style="margin-top: 0px">
+                    <div class="card-content">
+                      <table class="responsive-table highlight" id="revisions-dt" style="width: 100%">
+                        <thead>
+                          <tr>
+                              <th>ID</th> 
+                              <th>Drawing No.</th>
+                              <th>Part Name</th>
+                              <th>ECN No.</th>
+                              <th>Revision No.</th>
+                              <th>Status</th>
+                          </tr>
+                        </thead>
+                      </table>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
           
             <div id="signatories" name="signatories" class="row">
                 <div class="row">
@@ -185,9 +219,8 @@
             <div class="row">
               <div class="col s12 m9 l9"></div>
               <div class="col s12 m3 l3 right-align" style="padding-right: 10px">
-              <a href="{{route('procedure.index', ['#'.$locx = ($loc=='cc'?'controlled': ($loc=='controlled'?'controlled':($loc=='master'?'master':($loc=='app'?'approval':($loc=='master'?'master': ($loc=='procedures'?'ongoing':''))))))])}}" class="red waves-effect waves-dark btn" style="
-              margin-bottom: 30px; width: 100%
-          "><i class="material-icons left">keyboard_return</i>Return</a>
+              <a href="{{route('drawing.index', ['#'.$locx = ($loc=='cc'?'controlled': ($loc=='controlled'?'controlled':($loc=='master'?'master':($loc=='app'?'approval':($loc=='master'?'master': ($loc=='drawings'?'ongoing':''))))))])}}" class="red waves-effect waves-dark btn" style="
+              margin-bottom: 30px; width: 100%"><i class="material-icons left">keyboard_return</i>Return</a>
               </div>
             </div>
 
@@ -201,39 +234,29 @@
   </div>
 
   <!-- SCRIPTS -->
+
   <script type="text/javascript" src="{{ asset('datatables/datatables.js') }}"></script>
   <script type="text/javascript">
 
-    var searchInput = 'add_complete_address';
-
-    
-    function prepareFrame(test) {
-                var ifrm = document.createElement("iframe");
-                ifrm.setAttribute("src", test);
-                ifrm.style.width = "640px";
-                ifrm.style.height = "480px";
-                document.body.appendChild(ifrm);
-            }
-
     $(document).ready(function () {
 
-            document.onkeydown = function(e) {
-              if(event.keyCode == 123) {
-                return false;
-              }
-              if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
-                return false;
-              }
-              if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
-                return false;
-              }
-              if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
-                return false;
-              }
-              if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
-                return false;
-              }
-            }
+            // document.onkeydown = function(e) {
+            //   if(event.keyCode == 123) {
+            //     return false;
+            //   }
+            //   if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
+            //     return false;
+            //   }
+            //   if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
+            //     return false;
+            //   }
+            //   if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
+            //     return false;
+            //   }
+            //   if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
+            //     return false;
+            //   }
+            // }
 
         $('#add_description').trigger('autoresize');
 
@@ -246,7 +269,7 @@
           }
         }
         
-        $.get('../../getApproverMatrix/'+{{$procedures->id}}, function(response){
+        $.get('../../getApproverMatrix/'+{{$drawings->id}}, function(response){
           
           var AppendString = "";
           var AppendStringH = "";
@@ -319,19 +342,18 @@
        
     });
 
-     
-    var procedures = $('#revisions-dt').DataTable({
+    var drawings = $('#revisions-dt').DataTable({
         "lengthChange": false,
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/reiss/procedure/all_revision/{{$procedures->document_no}}",
+        "ajax": "/api/reiss/drawing/all_revision/{{$drawings->drawing_no}}",
         "columns": [
             {  "data": "id" },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
                  if(row.status=='Approved'){
-                  return '<a href="../../view/'+row.procedures.id+'/{{$loc}}">'+ row.document_no +'</a>';
+                  return '<a href="../../view/'+row.drawings.id+'/{{$loc}}">'+ row.document_no +'</a>';
                  }else{
                   return row.document_no;
                  }  
@@ -345,7 +367,7 @@
             {  "data": "id",
                 "render": function ( data, type, row, meta ) {
                   if(row.status=='Created'){
-                    return '<a href="../../view/'+row.procedures.id+'/{{$loc}}">'+ row.dpr_code +'</a>';
+                    return '<a href="../../view/'+row.drawings.id+'/{{$loc}}">'+ row.dpr_code +'</a>';
                   }else{
                     return row.dpr_code;
                   }  

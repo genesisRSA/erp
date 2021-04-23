@@ -124,6 +124,27 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::get('/reiss/procedure/getApproverMatrix/{id}', 'ProceduresController@getApproverMatrix');
 
     Route::resource('/reiss/drawing', 'DrawingsController');
+    Route::post('/reiss/drawing/revision', 'DrawingsController@revision')->name('drawing.revision');
+    Route::post('/reiss/drawing/receive', 'DrawingsController@receive')->name('drawing.receive');
+    Route::post('/reiss/drawing/approve', 'DrawingsController@approve')->name('drawing.approve');
+    Route::post('/reiss/drawing/makemaster', 'DrawingsController@makeMaster')->name('drawing.makemaster');
+    Route::post('/reiss/drawing/makecopy', 'DrawingsController@makeCopy')->name('drawing.makecopy');
+    Route::post('/reiss/drawing/delete', 'DrawingsController@delete')->name('drawing.delete');
+    Route::get('/reiss/drawing/check/{id}/{loc}', 'DrawingsController@check');
+    Route::get('/reiss/drawing/view/{id}/{loc}/', 'DrawingsController@view')->name('drawing.view');
+    Route::get('/reiss/drawing/view_fcc/{id}/{loc}', 'DrawingsController@view_fcc')->name('drawing.view_fcc');
+    Route::get('/reiss/drawing/view_cc/{id}/{loc}', 'DrawingsController@view_cc')->name('drawing.view_cc');
+    Route::get('/reiss/drawing/revise/{id}', 'DrawingsController@revise')->name('drawing.revise');
+    Route::get('/reiss/drawing/getDocument/{id}/{stat}/{loc}/{cc}', 'DrawingsController@getDocument')->name('drawing.getDocument');
+    Route::get('/reiss/drawing/pdf/{id}/{loc}', 'DrawingsController@pdf')->name('drawing.pdf');
+    Route::get('/reiss/drawing/pdfx/{id}/{loc}', 'DrawingsController@pdfx')->name('drawing.pdfx');
+    Route::get('/reiss/drawing/master/{id}/{loc}', 'DrawingsController@master_view')->name('drawing.master');
+    Route::get('/reiss/drawing/copy/{id}/{loc}', 'DrawingsController@copy_view')->name('drawing.copy');
+    Route::get('/reiss/drawing/approval/{id}/{loc}', 'DrawingsController@approval_view')->name('drawing.approval');
+    Route::get('/reiss/drawing/getApprover/{id}', 'DrawingsController@getApprover');
+    Route::get('/reiss/drawing/getApproverMatrix/{id}', 'DrawingsController@getApproverMatrix');
+
+    
 
     Route::get('/reiss/dashboard/{parent}', 'ReissDashboardController@index');
 

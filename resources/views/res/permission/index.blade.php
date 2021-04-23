@@ -43,6 +43,7 @@
               <option value="Sales Quotation">Sales Quotation</option>
               <option value="Sales Visit">Sales Visit</option>
               <option value="Procedures">Procedures</option>
+              <option value="Drawings">Drawings</option>
             </select>
             <label for="add_module">Module<sup class="red-text">*</sup></label>
           </div>
@@ -129,7 +130,7 @@
     <form method="POST" action="{{route('permission.patch')}}">
     @csrf
       <div class="modal-content">
-        <h4>Add Site Permission</h4><br><br>
+        <h4>Edit Site Permission</h4><br><br>
         <div class="row">
           <input type="hidden" name="id" id="edit_id">
           <div class="input-field col s12 m6">
@@ -139,6 +140,7 @@
               <option value="Sales Quotation">Sales Quotation</option>
               <option value="Sales Visit">Sales Visit</option>
               <option value="Procedures">Procedures</option>
+              <option value="Drawings">Drawings</option>
             </select>
             <label for="module">Module<sup class="red-text">*</sup></label>
           </div>

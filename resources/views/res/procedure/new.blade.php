@@ -42,7 +42,7 @@
                       
                       <div class="col s12 m12 l12">
                           <div class="input-field col s12 m6 l6">
-                              <input type="text" id="add_document_title" name="document_title" placeholder=" " />
+                              <input type="text" id="add_document_title" name="document_title" placeholder=" " required/>
                               <label for="document_title">Document Title<sup class="red-text">*</sup></label>
                           </div>
                           <div class="input-field col s12 m3 l3">
@@ -72,7 +72,7 @@
                           <div class="file-field input-field col s12 m6 l6">
                               <div class="btn blue">
                                   <span>File</span>
-                                  <input id="add_file" name="file" type="file" accept=".pdf">
+                                  <input id="add_file" name="file" type="file" accept=".pdf" required>
                               </div>
                               <div class="file-path-wrapper">
                                   <input class="file-path validate" type="text" placeholder="Click to add attachment">

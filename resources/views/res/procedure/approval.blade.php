@@ -90,7 +90,7 @@
 
                           <div class="input-field col s12 m6 l6">
                               <textarea id="rev_change_reason" name="change_reason" class="materialize-textarea"  placeholder="Some text here.." style="padding-bottom: 0px; border-bottom-width: 2px; margin-bottom: 0px;" readonly>{{$procedures->change_reason}}</textarea>
-                              <label for="change_reason">Reason for Preparation / Revision<sup class="red-text">*</sup></label>
+                              <label for="change_reason">Reason for Change / Revision<sup class="red-text">*</sup></label>
                           </div>
                       </div>
                       
@@ -220,7 +220,7 @@
                     
                     <button id="btnRej" name="reject" value="Reject" onclick="getStatus('Reject');" style="width: 100%;  margin-bottom: 5px" class="red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Reject&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button> <br> 
         
-                    <a href="{{route('procedure.index')}}" style="width: 100%" class="modal-close orange waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Cancel&nbsp;&nbsp;&nbsp;</a>
+                    <a href="{{route('procedure.index', ['#approval'])}}" style="width: 100%" class="modal-close orange waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Cancel&nbsp;&nbsp;&nbsp;</a>
                   </div>
                 </div>
               </div>

@@ -15,6 +15,18 @@ class CreateDrawingsMasterCopiesTable extends Migration
     {
         Schema::create('drawings_master_copies', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('ecn_code');
+            $table->string('part_name');
+            $table->string('cust_code');
+            $table->string('project_code');
+            $table->string('file_name');
+            $table->string('revision_no');
+            $table->string('drawing_no');
+            $table->string('department');
+            $table->string('designer');
+            $table->string('released_by');
+            $table->string('status');
+            $table->string('updated_by');
             $table->timestamps();
         });
     }

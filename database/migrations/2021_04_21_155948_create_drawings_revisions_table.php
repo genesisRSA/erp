@@ -15,6 +15,21 @@ class CreateDrawingsRevisionsTable extends Migration
     {
         Schema::create('drawings_revisions', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('ecn_code');
+            $table->string('cust_code');
+            $table->string('project_code');
+            $table->string('part_name');
+            $table->string('drawing_no');
+            $table->string('revision_no');
+            $table->string('revision_date');
+            $table->string('process_specs');
+            $table->string('change_description');
+            $table->string('change_reason');
+            $table->string('assy_code');
+            $table->string('fab_code');
+            $table->string('file_name');
+            $table->string('created_by');
+            $table->string('status');
             $table->timestamps();
         });
     }

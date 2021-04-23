@@ -49,14 +49,6 @@ class ProceduresController extends Controller
                 ->with('permission',$permissionx)
                 ->with('employee',$employee);
     }
-
-    public function SetFooter()
-    {   
-        $cc = ProceduresControlledCopy::where('document_no','=',$procedure->document_no)
-        ->count();
-
-        return '<span color="black">'.$cc.'</span>';
-    }
  
     public function pdf($id,$loc)
     {
@@ -338,13 +330,10 @@ class ProceduresController extends Controller
     public function store(Request $request)
     {
         $field = [
-            // 'dpr_code' => 'required',
-            // 'doctitle' => 'required',
-            // 'docno' => 'required',
-            // 'revno' => 'required',
-            // 'desc' => 'required',
-            // 'reas' => 'required',
-            // 'file' => 'required',
+            'document_title' => 'required',
+            'change_description' => 'required',
+            'change_reason' => 'required',
+            'file' => 'required',
             'app_seq' => 'required',
         ];
 
@@ -666,7 +655,7 @@ class ProceduresController extends Controller
         return view('res.procedure.view')
                 ->with('site','res')
                 ->with('page','dcc')
-                ->with('subpage','proceduress')
+                ->with('subpage','procedures')
                 ->with('loc', $loc)
                 ->with('employee',$employee)
                 ->with('procedures', $procedures);
@@ -751,11 +740,8 @@ class ProceduresController extends Controller
             case "controlled":
                 if($stat=="Created"){
                     $document = Procedure::find($id);
-                    $documentc = ProceduresControlledCopy::where('dpr_code','=',$document->dpr_code)
-                                                    ->where('revision_no','=',$document->revision_no)
-                                                    ->first();
-                    $filename = $documentc->file_name;
-                    $filePath = "documents/controlled/".$documentc->file_name;
+                    $filename = str_replace("documents/draft/", "", $document->file_name);
+                    $filePath = 'documents/draft/'.$filename;
                 } elseif ($stat=="Obsolete") {
                     $document = Procedure::find($id);
                     $filename = 'obs_'.str_replace("documents/draft/", "", $document->file_name);
@@ -774,6 +760,7 @@ class ProceduresController extends Controller
                 }  
                 break;
             case "cc": 
+                
                 if($stat=="Created"){
                     $document = Procedure::find($id);
                     $documentcc = ProceduresControlledCopy::where('dpr_code','=',$document->dpr_code)

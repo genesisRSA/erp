@@ -16,7 +16,7 @@ class CreateDrawingsTable extends Migration
         Schema::create('drawings', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('ecn_code'); // dpr code
-            $table->string('customer_code'); // customer
+            $table->string('cust_code'); // customer
             $table->string('project_code'); // ??
             $table->string('part_name'); // document title
             $table->string('drawing_no'); // document no
@@ -32,7 +32,7 @@ class CreateDrawingsTable extends Migration
             $table->integer('current_sequence');
             $table->string('current_approver');
             $table->json('matrix');
-            $table->json('matrix_h');
+            $table->json('matrix_h')->nullable();
             $table->string('reviewed_by')->nullable();
             $table->string('approved_by')->nullable();
             $table->string('status');

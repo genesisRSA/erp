@@ -17,14 +17,14 @@ class CreateDrawingsControlledCopiesTable extends Migration
             $table->bigIncrements('id');
             $table->string('ecn_code');
             $table->string('part_name');
-            $table->string('customer_code');
+            $table->string('cust_code');
             $table->string('project_code');
             $table->string('file_name');
             $table->string('revision_no');
             $table->string('drawing_no');
             $table->string('copy_no');
             $table->string('department');
-            $table->string('process_owner');
+            $table->string('designer');
             $table->string('released_by');
             $table->string('status');
             $table->timestamps();

@@ -9,79 +9,135 @@
 @section('content')
   <div class="row blue-text text-darken-4 white" style="border-bottom: 1px solid rgba(0,0,0,0.14);">
     <div class="col s12 m12">
-        <h4 class="title"><span class="grey-text darken-4">Document Control Centre<i class="material-icons">arrow_forward_ios</i></span><span class="grey-text darken-4">Procedures<i class="material-icons">arrow_forward_ios</i></span>New Procedure</h4>
+        <h4 class="title"><span class="grey-text darken-4">Document Control Centre<i class="material-icons">arrow_forward_ios</i></span><span class="grey-text darken-4">Drawings<i class="material-icons">arrow_forward_ios</i></span>New Drawing</h4>
     </div>
   </div>
  
     <div class="m-3 main-content">  
        
-        <ul id="procedure_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
-          <li class="tab col s12 m4 l4"><a class="active" href="#details">Procedure Details</a></li>
+        <ul id="drawing_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
+          <li class="tab col s12 m4 l4"><a class="active" href="#details">Drawing Details</a></li>
           <li class="tab col s12 m4 l4"><a href="#signatories">signatories</a></li>
         </ul>
 
         <div class="card" style="margin-top: 0px">
           <div class="card-body">
-            <form method="POST" action="{{route('procedure.store')}}" enctype="multipart/form-data">
+            <form method="POST" action="{{route('drawing.store')}}" enctype="multipart/form-data">
               @csrf
 
               <div id="details" name="details">
-                <div class="row">
-                  <br>
+                <div class="row"><br>
                   <div class="col s12 m12 l12">
-                      <div class="col s12 m12 l12">
-                          <div class="input-field col s12 m3 l3">
-                              <input type="text" id="add_dpr_code" name="dpr_code"  class="grey lighten-5" value="{{$lastDoc}}" readonly/>
-                              <label for="dpr_code">DPR No.<sup class="red-text"></sup></label>
-                          </div>
-                          <div class="input-field col s12 m3 l3">
-                              <input type="text" id="add_requested_date" name="requested_date" class="grey lighten-5" value="{{date('Y-m-d')}}" readonly/>
-                              <label for="requested_date">Date Requested<sup class="red-text"></sup></label>
-                          </div> 
-                      </div>
-                      
-                      <div class="col s12 m12 l12">
-                          <div class="input-field col s12 m6 l6">
-                              <input type="text" id="add_document_title" name="document_title" placeholder=" " />
-                              <label for="document_title">Document Title<sup class="red-text">*</sup></label>
-                          </div>
-                          <div class="input-field col s12 m3 l3">
-                              <input type="text" id="add_document_no" name="document_no"  value="{{$docNo}}"  placeholder=" " readonly/>
-                              <label for="document_no">Document No.<sup class="red-text"></sup></label>
-                          </div>
-                          <div class="input-field col s12 m3 l3">
-                              <input type="text" id="add_revision_no" name="revision_no" value="0" placeholder=" " readonly/>
-                              <label for="revision_no">Revision No.<sup class="red-text"></sup></label>
-                          </div>
+
+                    <div class="col s12 m12 l12">
+                      <div class="input-field col s12 m3 l3">
+                        <input type="text" id="add_ecn_code" name="ecn_code" class="grey lighten-5" value="{{$lastDoc}}" readonly/>
+                        <label for="ecn_code">ECN No.<sup class="red-text"></sup></label>
                       </div>
 
-                      <div class="col s12 m12 l12">
-                          <div class="input-field col s12 m6 l6">
-                              <textarea id="add_change_description" name="change_description" class="materialize-textarea" placeholder="Some text here.." style="padding-bottom: 0px; border-bottom-width: 2px; margin-bottom: 20px;" required ></textarea>
-                              <label for="change_description">Description of Change(s)<sup class="red-text">*</sup></label>
-                          </div>
+                      <div class="input-field col s12 m3 l3"></div>
 
-                          <div class="input-field col s12 m6 l6">
-                              <textarea id="add_change_reason" name="change_reason" class="materialize-textarea"  placeholder="Some text here.." style="padding-bottom: 0px; border-bottom-width: 2px; margin-bottom: 30px;" required></textarea>
-                              <label for="change_reason">Reason for Preparation / Revision<sup class="red-text">*</sup></label>
-                          </div>
+                      <div class="input-field col s12 m3 l3">
+                        <input type="text" id="add_revision_no" name="revision_no" class="grey lighten-5" value="0" placeholder=" " readonly/>
+                        <label for="revision_no">Revision No.<sup class="red-text"></sup></label>
+                      </div>
+
+                      <div class="input-field col s12 m3 l3">
+                        <input type="text" id="add_revision_date" name="revision_date" class="grey lighten-5" value="{{date('Y-m-d')}}" readonly/>
+                        <label for="revision_date">Revision Date<sup class="red-text"></sup></label>
+                      </div> 
+                    </div>
+
+                    <div class="col s12 m12 l12">                  
+                      <div class="input-field col s12 m6 l6">
+                        <select id="add_cust_code" name="cust_code" required>
+                          <option value="" disabled selected>Choose Customer</option>
+                          @foreach ($customer as $cust)
+                            <option value="{{$cust->cust_code}}">{{$cust->cust_name}}</option>
+                          @endforeach
+                        </select>
+                        <label for="cust_code">Customer<sup class="red-text">*</sup></label>
+                      </div>
+
+                      <div class="input-field col s12 m6 l6">
+                          <select id="add_project_code" name="project_code" required>
+                            <option value="" disabled selected>Choose Project</option>
+                            <option value="DISSYS">DISASSY SYSTEM WITH CONVEYOR</option>
+                            {{-- @foreach ($sites as $site)
+                              <option value="{{$site->site_code}}">{{$site->site_desc}}</option>
+                            @endforeach --}}
+                          </select>
+                          <label for="project_code">Project Name<sup class="red-text">*</sup></label>
+                      </div>
+                    </div>
+
+                    <div class="col s12 m12 l12">
+                      <div class="input-field col s12 m4 l4">
+                        <select id="add_assy_code" name="assy_code" required>
+                          <option value="" disabled selected>Choose Assembly</option>
+                          @foreach ($assembly as $assem)
+                            <option value="{{$assem->assy_code}}">{{$assem->assy_desc}}</option>
+                          @endforeach
+                        </select>
+                        <label for="assy_code">Assembly Description<sup class="red-text">*</sup></label>
                       </div>
                       
-                      <div class="col s12 m12 l12">
-                          <div class="col s12 m6 l6"></div>
-                          <div class="file-field input-field col s12 m6 l6">
-                              <div class="btn blue">
-                                  <span>File</span>
-                                  <input id="add_file" name="file" type="file" accept=".pdf">
-                              </div>
-                              <div class="file-path-wrapper">
-                                  <input class="file-path validate" type="text" placeholder="Click to add attachment">
-                              </div>
-                          </div>
+                      <div class="input-field col s12 m4 l4">
+                        <select id="add_fab_code" name="fab_code" required>
+                          <option value="" disabled selected>Choose Fabrication</option>
+                          @foreach ($fabrication as $fab)
+                            <option value="{{$fab->fab_code}}">{{$fab->fab_desc}}</option>
+                          @endforeach
+                        </select>
+                        <label for="fab_code">Fabrication Description<sup class="red-text">*</sup></label>
                       </div>
+
+                      <div class="input-field col s12 m4 l4">
+                        <input type="text" id="add_drawing_no" name="drawing_no"   value="{{$docNo}}"  placeholder=" " readonly/>
+                        {{-- <input type="text" id="add_drawing_no" name="drawing_no"   value="RSA-001-A0001-1-F"  placeholder=" " readonly/> --}}
+                        <label for="drawing_no">Drawing No. / Assembly Name<sup class="red-text"></sup></label>
+                      </div>
+                    </div>
+
+                    <div class="col s12 m12 l12">
+                      <div class="input-field col s12 m6 l6">
+                        <input type="text" id="add_part_name" name="part_name" placeholder=" " required/>
+                        <label for="v">Part Name / BOM / Module Name<sup class="red-text">*</sup></label>
+                      </div>
+
+                      <div class="input-field col s12 m6 l6">
+                        <input type="text" id="add_process_specs" name="process_specs" placeholder=" " required/>
+                        <label for="process_specs">Existing Process Specification(s)<sup class="red-text">*</sup></label>
+                      </div>
+                    </div>
+
+                    <div class="col s12 m12 l12">
+                      <div class="input-field col s12 m6 l6">
+                          <textarea id="add_change_description" name="change_description" class="materialize-textarea" placeholder="Some text here.." style="padding-bottom: 0px; margin-bottom: 20px;" required ></textarea>
+                          <label for="change_description">Description of Change(s)<sup class="red-text">*</sup></label>
+                      </div>
+
+                      <div class="input-field col s12 m6 l6">
+                          <textarea id="add_change_reason" name="change_reason" class="materialize-textarea"  placeholder="Some text here.." style="padding-bottom: 0px; margin-bottom: 30px;" required></textarea>
+                          <label for="change_reason">Reason for Change / Revision<sup class="red-text">*</sup></label>
+                      </div>
+                    </div>
+                  
+                    <div class="col s12 m12 l12">
+                        <div class="col s12 m6 l6"></div>
+                        <div class="file-field input-field col s12 m6 l6">
+                            <div class="btn blue">
+                                <span>File</span>
+                                <input id="add_file" name="file" type="file" accept=".pdf" required>
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text" placeholder="Click to add attachment">
+                            </div>
+                        </div>
+                    </div>
+
                   </div>
                 </div>
-
               </div>
 
               <div id="signatories" name="signatories">
@@ -112,7 +168,7 @@
                 <button class="green waves-effect waves-light btn" style="width: 100%"><i class="material-icons left">check_circle</i>Save&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
                 </div>
                 <div class="col s12 m3 l3 right-align" style="padding-bottom: 100px;padding-right: 30px;padding-left: 0px;">
-                <a href="{{route('procedure.index')}}" class="red waves-effect waves-dark btn" style="width: 100%"><i class="material-icons left">cancel</i>Cancel</a>
+                <a href="{{route('drawing.index')}}" class="red waves-effect waves-dark btn" style="width: 100%"><i class="material-icons left">cancel</i>Cancel</a>
                 </div>
               </div>
 
@@ -131,8 +187,37 @@
     $(document).ready(function () {
         $('#add_change_description').trigger('autoresize');
         $('#add_change_reason').trigger('autoresize');
-        // $('#procedure_tab').tabs('select','details');
+        // $('#drawing_tab').tabs('select','details');  
 
+        $('#add_cust_code').on('change', function(){
+          var cust = $(this).val();
+          var assy = $('#add_assy_code').val();
+          var fab = $('#add_fab_code').val();
+          drawingNo(cust,assy,fab);
+        });
+        $('#add_assy_code').on('change', function(){
+          var assy = $(this).val();
+          var cust = $('#add_cust_code').val();
+          var fab = $('#add_fab_code').val();
+          drawingNo(cust,assy,fab);
+        });
+        $('#add_fab_code').on('change', function(){
+          var fab = $(this).val();
+          var cust = $('#add_cust_code').val();
+          var assy = $('#add_assy_code').val();
+          drawingNo(cust,assy,fab);
+        });
+
+        function drawingNo(cust, assy, fab){
+          var drawing_no = '{{$docNo}}';
+          var site = drawing_no.slice(0,3);
+          var count = drawing_no.slice(4,7);
+          
+          console.log (drawing_no + ' ' + site + ' ' + count + ' ' + cust + ' ' + assy + ' ' + fab);
+
+          // $('#add_drawing_no').val(site+'-'+cust+'-'+);
+        };
+        
         $.get('getApprover/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}', function(response){
  
           var AppendString = "";

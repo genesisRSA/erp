@@ -9,147 +9,182 @@
 @section('content')
   <div class="row blue-text text-darken-4 white" style="border-bottom: 1px solid rgba(0,0,0,0.14);">
     <div class="col s12 m12">
-        <h4 class="title"><span class="grey-text darken-4">Document Control Centre<i class="material-icons">arrow_forward_ios</i></span><span class="grey-text darken-4">Procedures<i class="material-icons">arrow_forward_ios</i></span>Procedure Approval</h4>
+        <h4 class="title"><span class="grey-text darken-4">Document Control Centre<i class="material-icons">arrow_forward_ios</i></span><span class="grey-text darken-4">Drawings<i class="material-icons">arrow_forward_ios</i></span>Drawing Approval</h4>
     </div>
   </div>
  
   <div class="m-3 main-content">  
-    <ul id="procedure_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
-      <li class="tab col s12 m4 l4"><a class="active" href="#procedure">Procedure Details</a></li>
+    <ul id="drawing_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
+      <li class="tab col s12 m4 l4"><a class="active" href="#drawing">Drawing Details</a></li>
       <li class="tab col s12 m4 l4"><a href="#signatories">signatories</a></li>
     </ul>
       <div class="card" style="margin-top: 0px">
         <div class="card-body">
-          <form method="POST" action="{{route('procedure.approve')}}" enctype="multipart/form-data">
+          <form method="POST" action="{{route('drawing.approve')}}" enctype="multipart/form-data">
           {{-- <form> --}}
             @csrf
             <div class="row">
               {{-- hidden items --}}
-              <input type="hidden" name="id" id="id_app" value="{{$procedures->id}}"/>
-              <input type="hidden" name="seq" id="seq_app" value="{{$procedures->current_sequence}}"/>
-              <input type="hidden" name="appid" id="appid_app" value="{{$procedures->current_approver}}"/>
+                <input type="hidden" name="id" id="id_app" value="{{$drawings->id}}"/>
+                <input type="hidden" name="seq" id="seq_app" value="{{$drawings->current_sequence}}"/>
+                <input type="hidden" name="appid" id="appid_app" value="{{$drawings->current_approver}}"/>
 
-              @if($procedures->revision_no!=0)
-              <input type="hidden" id="rev_dpr_code_h" name="dpr_code_h"  class="grey lighten-5" value="{{$procedures_h->dpr_code}}"/>
-              <input type="hidden" id="rev_requested_date_h" name="requested_date_h" value="{{$procedures_h->requested_date}}"/>
-              <input type="hidden" id="rev_document_no_h" name="document_no_h" value="{{$procedures_h->document_no}}"  placeholder=" "/>
-              <input type="hidden" id="rev_revision_no_h" name="revision_no_h" value="{{$procedures_h->revision_no}}" placeholder=" "/>
-              <input type="hidden" id="rev_change_description_h" name="change_description_h" value="{{$procedures_h->change_description}}"/>
-              <input type="hidden" id="rev_change_reason_h" name="change_reason_h" value="{{$procedures_h->change_reason}}"/>
-              <input type="hidden" id="file_name_h" name="file_name_h" value="{{$procedures_h->file_name}}" />
-              <input type="hidden" id="created_by_h" name="created_by_h" value="{{$procedures_h->created_by}}" />
-              <input type="hidden" id="reviewed_by_h" name="reviewed_by_h" value="{{$procedures_h->reviewed_by}}" />
-              <input type="hidden" id="approved_by_h" name="approved_by_h" value="{{$procedures_h->approved_by}}" />
-              <input type="hidden" id="status_h" name="status_h" value="{{$procedures_h->status}}"/>
+              @if($drawings->revision_no!=0)
+                <input type="hidden" id="ecn_code_h" name="ecn_code_h" value="{{$drawings_h->ecn_code}}"/>
+                <input type="hidden" id="cust_code_h" name="cust_code_h" value="{{$drawings_h->cust_code}}"/>
+                <input type="hidden" id="project_code_h" name="project_code_h" value="{{$drawings_h->project_code}}"/>
+                <input type="hidden" id="drawing_no_h" name="drawing_no_h" value="{{$drawings_h->drawing_no}}"/>
+                <input type="hidden" id="revision_no_h" name="revision_no_h" value="{{$drawings_h->revision_no}}"/>
+                <input type="hidden" id="revision_date_h" name="revision_date_h" value="{{$drawings_h->revision_date}}"/>
+                <input type="hidden" id="process_specs_h" name="process_specs_h" value="{{$drawings_h->process_specs}}"/>
+                <input type="hidden" id="change_description_h" name="change_description_h" value="{{$drawings_h->change_description}}"/>
+                <input type="hidden" id="change_reason_h" name="change_reason_h" value="{{$drawings_h->change_reason}}"/>
+                <input type="hidden" id="assy_code_h" name="assy_code_h" value="{{$drawings_h->assy_code}}"/>
+                <input type="hidden" id="fab_code_h" name="fab_code_h" value="{{$drawings_h->fab_code}}"/>
+                <input type="hidden" id="created_by_h" name="created_by_h" value="{{$drawings_h->created_by}}" />
+                <input type="hidden" id="approved_by_h" name="approved_by_h" value="{{$drawings_h->approved_by}}" />
+                <input type="hidden" id="status_h" name="status_h" value="{{$drawings_h->status}}"/>
+                <input type="hidden" id="file_name_h" name="file_name_h" value="{{$drawings_h->file_name}}" />
               @endif
 
-              <input type="hidden" id="created_by" name="created_by" value="{{$procedures->created_by}}" />
-              <input type="hidden" id="file_name" name="file_name" value="{{$procedures->file_name}}" />
-              <input type="hidden" id="status" name="status">
-
+                <input type="hidden" id="created_by" name="created_by" value="{{$drawings->created_by}}" />
+                <input type="hidden" id="file_name" name="file_name" value="{{$drawings->file_name}}" />
+                <input type="hidden" id="status" name="status">
               {{-- hidden items --}}
-              <div id="procedure" name="procedure">
+              <div id="drawing" name="drawing">
                 <br>
                 <div class="row">
                   <div class="col s12 m12 l12">
-                      <div class="col s12 m12 l12">
-                          <div class="input-field col s12 m3 l3">
-                              <input type="text" id="rev_dpr_code" name="dpr_code"  class="grey lighten-5" value="{{$procedures->dpr_code}}" readonly/>
-                              <label for="dpr_code">DPR No.<sup class="red-text"></sup></label>
-                          </div>
-                          <div class="input-field col s12 m3 l3">
-                              <input type="text" id="rev_requested_date" name="requested_date" class="grey lighten-5" value="{{$procedures->requested_date}}" readonly/>
-                              <label for="requested_date">Date Requested<sup class="red-text"></sup></label>
-                          </div> 
-                          <div class="input-field col s12 m6 l6">
-                            <input type="text" id="rev_requested_by" name="requested_by" class="grey lighten-5" value="{{$employee->full_name}}" readonly/>
-                            <label for="requested_by">Requested By<sup class="red-text"></sup></label>
-                          </div> 
+
+                    <div class="col s12 m12 l12">
+                      <div class="input-field col s12 m3 l3">
+                        <input type="text" id="app_ecn_code" name="ecn_code" value="{{$drawings->ecn_code}}" readonly/>
+                        <label for="ecn_code">ECN No.<sup class="red-text"></sup></label>
+                      </div>
+  
+                      <div class="input-field col s12 m3 l3">
+                        <input type="text" id="app_designer" name="designer" value="{{$employee->full_name}}" readonly/>
+                        <label for="ecn_code">Designer<sup class="red-text"></sup></label>
+                      </div> 
+                       
+                      <div class="input-field col s12 m3 l3">
+                        <input type="text" id="app_revision_no" name="revision_no" value="0" placeholder=" " readonly/>
+                        <label for="revision_no">Revision No.<sup class="red-text"></sup></label>
+                      </div>
+  
+                      <div class="input-field col s12 m3 l3">
+                        <input type="text" id="app_revision_date" name="revision_date" value="{{date('Y-m-d')}}" readonly/>
+                        <label for="revision_date">Revision Date<sup class="red-text"></sup></label>
+                      </div> 
+                    </div>
+  
+                    <div class="col s12 m12 l12">                  
+                      <div class="input-field col s12 m6 l6">
+                        <input type="text" id="app_cust_code" name="cust_code" value="{{$drawings->cust_code}}" readonly/>
+                        <label for="cust_code">Customer<sup class="red-text"> </sup></label>
+                      </div>
+  
+                      <div class="input-field col s12 m6 l6">
+                        <input type="text" id="app_cust_code" name="cust_code" value="{{$drawings->project_code}}" readonly/>
+                        <label for="project_code">Project Name<sup class="red-text"> </sup></label>
+                      </div>
+                    </div>
+  
+                    <div class="col s12 m12 l12">
+                      <div class="input-field col s12 m4 l4">
+                        <input type="text" id="app_cust_code" name="cust_code" value="{{$drawings->assy_code}}" readonly/>
+                        <label for="assy_code">Assembly Description<sup class="red-text"> </sup></label>
                       </div>
                       
-                      <div class="col s12 m12 l12">
-                          <div class="input-field col s12 m6 l6">
-                              <input type="text" id="rev_document_title" name="document_title" value="{{$procedures->document_title}}"  placeholder=" " readonly/>
-                              <label for="document_title">Document Title<sup class="red-text">*</sup></label>
-                          </div>
-                          <div class="input-field col s12 m3 l3">
-                              <input type="text" id="rev_document_no" name="document_no"  value="{{$procedures->document_no}}"  placeholder=" " readonly/>
-                              <label for="document_no">Document No.<sup class="red-text"></sup></label>
-                          </div>
-                          <div class="input-field col s12 m3 l3">
-                              <input type="text" id="rev_revision_no" name="revision_no" value="{{$procedures->revision_no}}" placeholder=" " readonly/>
-                              <label for="revision_no">Revision No.<sup class="red-text"></sup></label>
-                          </div>
+                      <div class="input-field col s12 m4 l4">
+                        <input type="text" id="app_cust_code" name="cust_code" value="{{$drawings->fab_code}}" readonly/>
+                        <label for="fab_code">Fabrication Description<sup class="red-text"> </sup></label>
                       </div>
-
-                      <div class="col s12 m12 l12">
-                          <div class="input-field col s12 m6 l6">
-                              <textarea id="rev_change_description" name="change_description" class="materialize-textarea" placeholder="Some text here.." style="padding-bottom: 0px; border-bottom-width: 2px; margin-bottom: 0px;" readonly>{{$procedures->change_description}}</textarea>
-                              <label for="change_description">Description of Change(s)<sup class="red-text">*</sup></label>
-                          </div>
-
-                          <div class="input-field col s12 m6 l6">
-                              <textarea id="rev_change_reason" name="change_reason" class="materialize-textarea"  placeholder="Some text here.." style="padding-bottom: 0px; border-bottom-width: 2px; margin-bottom: 0px;" readonly>{{$procedures->change_reason}}</textarea>
-                              <label for="change_reason">Reason for Preparation / Revision<sup class="red-text">*</sup></label>
-                          </div>
+  
+                      <div class="input-field col s12 m4 l4">
+                        <input type="text" id="app_cust_code" name="cust_code" value="{{$drawings->drawing_no}}" readonly/>
+                        <label for="drawing_no">Drawing No. / Assembly Name<sup class="red-text"></sup></label>
                       </div>
+                    </div>
+  
+                    <div class="col s12 m12 l12">
+                      <div class="input-field col s12 m6 l6">
+                        <input type="text" id="app_part_name" name="part_name" value="{{$drawings->part_name}}" readonly/>
+                        <label for="v">Part Name / BOM / Module Name<sup class="red-text"> </sup></label>
+                      </div>
+  
+                      <div class="input-field col s12 m6 l6">
+                        <input type="text" id="app_process_specs" name="process_specs" value="{{$drawings->process_specs}}" readonly/>
+                        <label for="process_specs">Existing Process Specification(s)<sup class="red-text"> </sup></label>
+                      </div>
+                    </div>
+  
+                    <div class="col s12 m12 l12">
+                      <div class="input-field col s12 m6 l6">
+                          <textarea id="app_change_description" name="change_description" class="materialize-textarea" placeholder="Some text here.." style="padding-bottom: 0px; margin-bottom: 10px;" required readonly>{{$drawings->change_description}}</textarea>
+                          <label for="change_description">Description of Change(s)<sup class="red-text"> </sup></label>
+                      </div>
+  
+                      <div class="input-field col s12 m6 l6">
+                          <textarea id="app_change_reason" name="change_reason" class="materialize-textarea"  placeholder="Some text here.." style="padding-bottom: 0px; margin-bottom: 10px;" required readonly>{{$drawings->change_reason}}</textarea>
+                          <label for="change_reason">Reason for Change / Revision<sup class="red-text"> </sup></label>
+                      </div>
+                    </div>
                       
+                    <div class="col s12 m12 l12">
+                      <h6 style="padding: 10px; padding-top: 20px; padding-left: 10px; padding-right: 10px; margin-bottom: 0px; background-color:#0d47a1" class="white-text"><b>Drawing Attachment(s)</b></h6>  
                       <div class="col s12 m12 l12">
 
-
-                        <h6 style="padding: 10px; padding-top: 20px; padding-left: 10px; padding-right: 10px; margin-bottom: 10px;background-color:#0d47a1" class="white-text"><b>Procedure Attachment(s)</b></h6>  
+                        </div>
+                        {{-- <div class="row"> --}}
+                          <br>
+                          <div style="width:93%; 
+                                      height:50%; 
+                                      z-index: 10; 
+                                      opacity:0.15;
+                                      position:absolute; 
+                                      text-align:center;
+                                      line-height:400px;
+                                      font-size:130px; 
+                                      color:blue;">
+                              &nbspRSA PROPERTY
+                              &nbspRSA PROPERTY
+                            </div>
+                        {{-- </div> --}}
+          
+                          <embed
+                              src="{{ action('DrawingsController@getDocument', ['id'=> $idx, 'stat' => $drawings->status, 'loc' => $loc, 'cc' => $cc = $loc == 'cc' ? $drawingx->copy_no : 0 ]) }}#toolbar=0"
+                              style="width:100%; 
+                                    height:90%; 
+                                    " type="application/pdf"
+                              id = "pdf_file"
+                              frameborder="1"
+                              > 
+                        </div>
+          
                         <div class="col s12 m12 l12">
-
-                          </div>
-                          <div class="row">
-                            <br>
-                            <div style="width:93%; 
-                                        height:50%; 
-                                        z-index: 10; 
-                                        opacity:0.15;
-                                        position:absolute; 
-                                        text-align:center;
-                                        line-height:400px;
-                                        font-size:130px; 
-                                        color:blue;">
-                                &nbspRSA PROPERTY
-                                &nbspRSA PROPERTY
-                              </div>
-                          </div>
-            
-                            <embed
-                                src="{{ action('ProceduresController@getDocument', ['id'=> $idx, 'stat' => $procedures->status, 'loc' => $loc, 'cc' => $cc = $loc == 'cc' ? $procedurex->copy_no : 0 ]) }}#toolbar=0"
-                                style="width:100%; 
-                                      height:130%; 
-                                      " type="application/pdf"
-                                id = "pdf_file"
-                                frameborder="1"
-                                > 
-                          </div>
-            
-                          <div class="col s12 m12 l12">
-                            <h6 style="padding: 10px; padding-top: 20px; padding-left: 10px; padding-right: 10px;  margin-top: 20px; background-color:#0d47a1" class="white-text"><b>Revision History</b></h6>  
-                          </div>
-            
-                          <div class="col s12 m12 l12">
-                            <div class="card" style="margin-top: 0px">
-                              <div class="card-content">
-                                <table class="responsive-table highlight" id="revisions-dt" style="width: 100%">
-                                  <thead>
-                                    <tr>
-                                        <th>ID</th> 
-                                        <th>Document No.</th>
-                                        <th>Document Title</th>
-                                        <th>DPR No.</th>
-                                        <th>Revision No.</th>
-                                        <th>Status</th>
-                                    </tr>
-                                  </thead>
-                                </table>
-                              </div>
+                          <h6 style="padding: 10px; padding-top: 20px; padding-left: 10px; padding-right: 10px;  margin-top: 20px; background-color:#0d47a1" class="white-text"><b>Revision History</b></h6>  
+                        </div>
+          
+                        <div class="col s12 m12 l12">
+                          <div class="card" style="margin-top: 0px">
+                            <div class="card-content">
+                              <table class="responsive-table highlight" id="revisions-dt" style="width: 100%">
+                                <thead>
+                                  <tr>
+                                      <th>ID</th> 
+                                      <th>Document No.</th>
+                                      <th>Document Title</th>
+                                      <th>DPR No.</th>
+                                      <th>Revision No.</th>
+                                      <th>Status</th>
+                                  </tr>
+                                </thead>
+                              </table>
                             </div>
                           </div>
-                      </div>
+                        </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -220,7 +255,7 @@
                     
                     <button id="btnRej" name="reject" value="Reject" onclick="getStatus('Reject');" style="width: 100%;  margin-bottom: 5px" class="red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Reject&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button> <br> 
         
-                    <a href="{{route('procedure.index')}}" style="width: 100%" class="modal-close orange waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Cancel&nbsp;&nbsp;&nbsp;</a>
+                    <a href="{{route('drawing.index', ['#approval'])}}" style="width: 100%" class="modal-close orange waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Cancel&nbsp;&nbsp;&nbsp;</a>
                   </div>
                 </div>
               </div>
@@ -236,12 +271,12 @@
   <script type="text/javascript" src="{{ asset('datatables/datatables.js') }}"></script>
   <script type="text/javascript">
 
-    var searchInput = 'rev_complete_address';
+    var searchInput = 'complete_address';
 
     $(document).ready(function () {
 
 
-        $('#rev_description').trigger('autoresize');
+        $('#description').trigger('autoresize');
 
         document.onmousedown = disableRightclick;
         var message = "Right click is not allowed in this page";
@@ -252,25 +287,25 @@
           }
         }
 
-        document.onkeydown = function(e) {
-              if(event.keyCode == 123) {
-                return false;
-              }
-              if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
-                return false;
-              }
-              if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
-                return false;
-              }
-              if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
-                return false;
-              }
-              if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
-                return false;
-              }
-        }
+        // document.onkeydown = function(e) {
+        //       if(event.keyCode == 123) {
+        //         return false;
+        //       }
+        //       if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
+        //         return false;
+        //       }
+        //       if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
+        //         return false;
+        //       }
+        //       if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
+        //         return false;
+        //       }
+        //       if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
+        //         return false;
+        //       }
+        // }
 
-        $.get('../../getApproverMatrix/'+{{$procedures->id}}, function(response){
+        $.get('../../getApproverMatrix/'+{{$drawings->id}}, function(response){
           
           var AppendString = "";
           var AppendStringH = "";
@@ -347,17 +382,17 @@
       $('#status').val(stat);
     }
 
-    var procedures = $('#revisions-dt').DataTable({
+    var drawings = $('#revisions-dt').DataTable({
         "lengthChange": false,
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/reiss/procedure/all_revision/{{$procedures->document_no}}",
+        "ajax": "/api/reiss/drawing/all_revision/{{$drawings->drawing_no}}",
         "columns": [
           {  "data": "id" },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return '<a href="../../view/'+row.procedures.id+'/{{$loc}}">'+ row.document_no +'</a>';
+                  return '<a href="../../view/'+row.drawings.id+'/{{$loc}}">'+ row.document_no +'</a>';
                 }
             },
             {   "data": "id",
