@@ -199,11 +199,12 @@ class DrawingsController extends Controller
                         
                         $copy_cc = realpath('../storage/app/assets/stamps/copy_cc.png');
                         $pdf->SetY(-15);
-                        $pdf->Cell(0, 40, $pdf->Image($copy_cc, 10, 315 - 310, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+                        // $pdf->Cell(0, 40, $pdf->Image($copy_cc, 5, 315 - 310, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+                        $pdf->Cell(0, 40, $pdf->Image($copy_cc, 238, 315 - 310, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
 
                         $obs = realpath('../storage/app/assets/copy_ob.png');
                         $pdf->SetY(-15);
-                        $pdf->Cell(0, 40, $pdf->Image($obs, 238, 315 - 310, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
+                        $pdf->Cell(0, 40, $pdf->Image($obs, 5, 315 - 310, 55, 25, 'PNG') , 0, 0, '', 0, '', 0, false, '', '');
                 });
             }
             PDF::SetMargins(false, false);
@@ -475,11 +476,11 @@ class DrawingsController extends Controller
                 if($master_obs)
                     {self::pdfx($idx,'obsm');
                         $master_obs->status = 'Obsolete'; 
-                            Storage::delete('documents/master/'.$master_obs->file_name); 
+                            Storage::delete('drawings/master/'.$master_obs->file_name); 
                                 $master_obs->save();}
                 if($copy_obs)
                     {$copy_obs->status = 'Obsolete';
-                        Storage::delete('documents/controlled/'.$copy_obs->file_name); 
+                        Storage::delete('drawings/controlled/'.$copy_obs->file_name); 
                             $copy_obs->save();
                                 $obs = 'obswc';} else 
                                     { $obs = 'obswoc'; }
@@ -534,7 +535,7 @@ class DrawingsController extends Controller
             $cc->department = $request->input('dept');
             $cc->designer = $request->input('designer');
             $cc->released_by = Auth::user()->emp_no;
-            $cc->status = 'For Orientation';
+            $cc->status = 'For Receiving';
 
             $drawing = DrawingsMasterCopy::where('drawing_no','=',$request->input('drawing_no'))
                                             ->where('revision_no','=',$request->input('revision_no'))
@@ -593,6 +594,81 @@ class DrawingsController extends Controller
         }); 
         
         $img->save('../storage/app/assets/stamps/copy_cc.png'); 
+    }
+
+    public function revision(Request $request)
+    {
+        $field = [
+            // 'ecn_code' => 'required',
+            // 'doctitle' => 'required',
+            // 'docno' => 'required',
+            // 'revno' => 'required',
+            // 'desc' => 'required',
+            // 'reas' => 'required',
+            // 'file' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $field);
+         
+        if ($validator->fails()) {
+            return redirect()->route('drawing.index')
+                        ->withInput()
+                        ->withErrors($validator);
+        }else{
+            
+            $drawing = new Drawing();
+            $drawing->ecn_code = $request->input('ecn_code','');
+            $drawing->cust_code = $request->input('cust_code','');
+            $drawing->project_code = $request->input('project_code','');
+            $drawing->part_name = $request->input('part_name','');
+            $drawing->drawing_no = $request->input('drawing_no','');
+            $drawing->revision_no = $request->input('revision_no','');
+            $drawing->revision_date = $request->input('revision_date','');
+            $drawing->process_specs = $request->input('process_specs','');
+            $drawing->change_description = $request->input('change_description','');
+            $drawing->change_reason = $request->input('change_reason','');
+            $drawing->assy_code = $request->input('assy_code','');
+            $drawing->fab_code = $request->input('fab_code','');
+
+            $drawing->created_by = Auth::user()->emp_no;
+            if($request->input('app_seq'))
+            {
+                $approvers = array();
+
+                    for( $i = 0 ; $i < count($request->input('app_seq')) ; $i++ )
+                    {
+                        array_push($approvers, [
+                                                'sequence' => $request->input('app_seq.'.$i),
+                                                'approver_emp_no' => $request->input('app_id.'.$i),
+                                                'approver_name' => $request->input('app_fname.'.$i),
+                                                'next_status' => $request->input('app_nstatus.'.$i),
+                                                'is_gate' => $request->input('app_gate.'.$i)
+                                                ]);
+                        if($request->input('app_seq.'.$i)==0) {
+                            $drawing->current_sequence = $request->input('app_seq.'.$i);
+                            $drawing->current_approver = $request->input('app_id.'.$i);
+                        }
+                    }
+
+                    $approvers = json_encode($approvers);            
+                    $drawing->matrix = $approvers;
+            }
+
+            $drawing->reviewed_by = '';
+            $drawing->approved_by = '';
+            $drawing->status = 'Pending';
+
+            if($request->hasFile('file'))
+            { 
+                $path = $request->file('file')->store('drawings/draft'); 
+                $url = env('APP_URL') . Storage::url($path);
+            }  
+
+            $drawing->file_name = $path;
+            if($drawing->save()){
+                return redirect()->route('drawing.index')->withSuccess('Drawing Revision Successfully Added');
+            }
+        }
     }
 
     public function show($id)
@@ -679,7 +755,12 @@ class DrawingsController extends Controller
         $drawings = Drawing::where('drawing_no','=',$drawing->drawing_no) 
                                 ->where('revision_no','=',$drawing->revision_no)
                                 ->where('ecn_code','=',$drawing->ecn_code)
-                                ->first();              
+                                ->first();           
+        $customer = Customer::where('cust_code','=',$drawings->cust_code)->first();
+        // $project  = Project::where('project_code','=',$drawings->project_code)->first();
+        $assy = Assembly::where('assy_code','=',$drawings->assy_code)->first();
+        $fab = Fabrication::where('fab_code','=',$drawings->fab_code)->first();
+                        
  
         return view('res.drawing.master')
                 ->with('site','res')
@@ -688,22 +769,30 @@ class DrawingsController extends Controller
                 ->with('idx', $id) 
                 ->with('loc', $loc)
                 ->with('employee', $employee)
-                ->with('drawings', $drawings);
+                ->with('drawings', $drawings)
+                ->with('customer', $customer)
+                // ->with('project', $project)
+                ->with('assy', $assy)
+                ->with('fab', $fab);
  
     }
 
     public function copy_view($id, $loc)
     {  
-        $drawing =    DrawingsMasterCopy::find($id);
-        $drawings =   Drawing::where('drawing_no','=',$drawing->drawing_no) 
+        $drawing =      DrawingsMasterCopy::find($id);
+        $drawings =     Drawing::where('drawing_no','=',$drawing->drawing_no) 
                                     ->where('revision_no','=',$drawing->revision_no)
                                     ->where('ecn_code','=',$drawing->ecn_code)
                                     ->first();
-        $drawings_h = Drawing::where('drawing_no','=',$drawing->drawing_no) 
+        $drawings_h =   Drawing::where('drawing_no','=',$drawing->drawing_no) 
                                     ->where('revision_no','=',$drawing->revision_no-1)
                                     ->where('ecn_code','=',$drawing->ecn_code)
                                     ->first();
         $employee =     Employee::where('emp_no','=',$drawings->created_by)->first();
+        $customer = Customer::where('cust_code','=',$drawings->cust_code)->first();
+        // $project  = Project::where('project_code','=',$drawings->project_code)->first();
+        $assy = Assembly::where('assy_code','=',$drawings->assy_code)->first();
+        $fab = Fabrication::where('fab_code','=',$drawings->fab_code)->first();
 
         $copyCount =    DrawingsControlledCopy::where('drawing_no','=',$drawing->drawing_no)
                                     ->where('revision_no','=',$drawing->revision_no)
@@ -733,7 +822,11 @@ class DrawingsController extends Controller
                 ->with('employee', $employee)
                 ->with('drawings_h', $drawings_h)
                 ->with('department', $department)
-                ->with('deptx', $deptx);
+                ->with('deptx', $deptx)
+                ->with('customer', $customer)
+                // ->with('project', $project)
+                ->with('assy', $assy)
+                ->with('fab', $fab);
     }
 
     public function getDocument($id, $stat, $loc, $cc)
@@ -840,6 +933,46 @@ class DrawingsController extends Controller
     public function edit($id)
     {
         //
+    }
+
+    public function revise($id)
+    {
+        
+        $employeeSec = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
+        $docxCount = Drawing::where('created_by','=',Auth::user()->emp_no)
+                                ->count();
+        $lastDocx = str_pad($docxCount+1,3,"0",STR_PAD_LEFT);
+        $docNo =  $employeeSec->sect_code."-".$lastDocx;
+        $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
+        ->where('module','=','Drawings')
+        ->first();
+        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"masterlist":false,"approval":false}]', true));
+        $drawing = Drawing::find($id);
+        $drawings = Drawing::where('drawing_no','=',$drawing->drawing_no)
+                                ->where('revision_no','=',$drawing->revision_no)
+                                ->first();
+        
+        $revCount = Drawing::where('drawing_no','=',$drawing->drawing_no)
+                                ->count();
+
+        $customer = Customer::get();
+        $assembly = Assembly::get();
+        $fabrication = Fabrication::get();
+        $employee = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
+        
+        return view('res.drawing.revise')
+                ->with('site','res')
+                ->with('page','dcc')
+                ->with('subpage','drawings')
+                ->with('docNo',$docNo)
+                ->with('permission',$permissionx)
+                ->with('lastDoc', $lastDocx)
+                ->with('revCount', $revCount)
+                ->with('drawings', $drawings)
+                ->with('customer', $customer)
+                ->with('employee', $employee)
+                ->with('assembly', $assembly)
+                ->with('fabrication', $fabrication);
     }
 
     public function update(Request $request, $id)
@@ -982,7 +1115,7 @@ class DrawingsController extends Controller
                                     $drawings_h->part_name =           $request->input('part_name');
                                     $drawings_h->drawing_no =          $request->input('drawing_no_h');
                                     $drawings_h->revision_no =         $request->input('revision_no_h');
-                                    $drawings_h->revision_date =       $request->input('requested_date_h');
+                                    $drawings_h->revision_date =       $request->input('revision_date_h');
                                     $drawings_h->process_specs =       $request->input('process_specs_h');
                                     $drawings_h->change_description =  $request->input('change_description_h');
                                     $drawings_h->change_reason =       $request->input('change_reason_h');
@@ -1001,7 +1134,7 @@ class DrawingsController extends Controller
                                     $drawing->part_name =               $request->input('part_name');
                                     $drawing->drawing_no =              $request->input('drawing_no');
                                     $drawing->revision_no =             $request->input('revision_no');
-                                    $drawing->revision_date =           $request->input('requested_date');
+                                    $drawing->revision_date =           $request->input('revision_date');
                                     $drawing->process_specs =           $request->input('process_specs');
                                     $drawing->change_description =      $request->input('change_description');
                                     $drawing->change_reason =           $request->input('change_reason');
@@ -1055,7 +1188,7 @@ class DrawingsController extends Controller
                                     $drawings_h->part_name =           $request->input('part_name');
                                     $drawings_h->drawing_no =          $request->input('drawing_no_h');
                                     $drawings_h->revision_no =         $request->input('revision_no_h');
-                                    $drawings_h->revision_date =       $request->input('requested_date_h');
+                                    $drawings_h->revision_date =       $request->input('revision_date_h');
                                     $drawings_h->process_specs =       $request->input('process_specs_h');
                                     $drawings_h->change_description =  $request->input('change_description_h');
                                     $drawings_h->change_reason =       $request->input('change_reason_h');
@@ -1074,7 +1207,7 @@ class DrawingsController extends Controller
                                     $drawing->part_name =               $request->input('part_name');
                                     $drawing->drawing_no =              $request->input('drawing_no');
                                     $drawing->revision_no =             $request->input('revision_no');
-                                    $drawing->revision_date =           $request->input('requested_date');
+                                    $drawing->revision_date =           $request->input('revision_date');
                                     $drawing->process_specs =           $request->input('process_specs');
                                     $drawing->change_description =      $request->input('change_description');
                                     $drawing->change_reason =           $request->input('change_reason');
@@ -1200,15 +1333,15 @@ class DrawingsController extends Controller
         if($stat=='Obsolete')
         {
             $drawingcc = DrawingsControlledCopy::find($request->input('id'));
-            $drawing = Drawing::where('dpr_code','=',$drawingcc->dpr_code)
+            $drawing = Drawing::where('ecn_code','=',$drawingcc->ecn_code)
                                 ->where('revision_no','=',$drawingcc->revision_no)
                                 ->first();
-            Storage::delete('documents/obsolete/obsc_'.str_replace("documents/draft/","",$drawing->file_name)); 
+            Storage::delete('drawings/obsolete/obsc_'.str_replace("drawings/draft/","",$drawing->file_name)); 
         }
         else
         {
             $drawingcc = DrawingsControlledCopy::find($request->input('id'));
-            Storage::delete('documents/controlled/'.$drawingcc->file_name); 
+            Storage::delete('drawings/controlled/'.$drawingcc->file_name); 
         }
       
         if(DrawingsControlledCopy::destroy($drawingcc->id)){

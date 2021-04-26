@@ -38,19 +38,19 @@
                   </div> 
                    
                   <div class="input-field col s12 m3 l3">
-                    <input type="text" id="app_revision_no" name="revision_no" value="0" placeholder=" " readonly/>
+                    <input type="text" id="app_revision_no" name="revision_no" value="{{$drawings->revision_no}}" readonly/>
                     <label for="revision_no">Revision No.<sup class="red-text"></sup></label>
                   </div>
 
                   <div class="input-field col s12 m3 l3">
-                    <input type="text" id="app_revision_date" name="revision_date" value="{{date('Y-m-d')}}" readonly/>
+                    <input type="text" id="app_revision_date" name="revision_date" value="{{$drawings->revision_date}}" readonly/>
                     <label for="revision_date">Revision Date<sup class="red-text"></sup></label>
                   </div> 
                 </div>
 
                 <div class="col s12 m12 l12">                  
                   <div class="input-field col s12 m6 l6">
-                    <input type="text" id="app_cust_code" name="cust_code" value="{{$drawings->cust_code}}" readonly/>
+                    <input type="text" id="app_cust_code" name="cust_code" value="{{$customer->cust_name}}" readonly/>
                     <label for="cust_code">Customer<sup class="red-text"> </sup></label>
                   </div>
 
@@ -62,12 +62,12 @@
 
                 <div class="col s12 m12 l12">
                   <div class="input-field col s12 m4 l4">
-                    <input type="text" id="app_assy_code" name="assy_code" value="{{$drawings->assy_code}}" readonly/>
+                    <input type="text" id="app_assy_code" name="assy_code" value="{{$assy->assy_desc}}" readonly/>
                     <label for="assy_code">Assembly Description<sup class="red-text"> </sup></label>
                   </div>
                   
                   <div class="input-field col s12 m4 l4">
-                    <input type="text" id="app_fab_code" name="fab_code" value="{{$drawings->fab_code}}" readonly/>
+                    <input type="text" id="app_fab_code" name="fab_code" value="{{$fab->fab_desc}}" readonly/>
                     <label for="fab_code">Fabrication Description<sup class="red-text"> </sup></label>
                   </div>
 

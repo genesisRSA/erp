@@ -63,9 +63,7 @@
                           <select id="add_project_code" name="project_code" required>
                             <option value="" disabled selected>Choose Project</option>
                             <option value="DISSYS">DISASSY SYSTEM WITH CONVEYOR</option>
-                            {{-- @foreach ($sites as $site)
-                              <option value="{{$site->site_code}}">{{$site->site_desc}}</option>
-                            @endforeach --}}
+                             
                           </select>
                           <label for="project_code">Project Name<sup class="red-text">*</sup></label>
                       </div>

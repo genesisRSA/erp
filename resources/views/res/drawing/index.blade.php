@@ -618,7 +618,7 @@
                         return  '<span class="new badge green darken-1 white-text" data-badge-caption="">Oriented</span>';
                       break;
                       case 'Received':
-                        return  '<span class="new badge deep-orange lighten-1 white-text" data-badge-caption="">Received</span>';
+                        return  '<span class="new badge deep-green lighten-1 white-text" data-badge-caption="">Received</span>';
                       break;
                       case 'Obsolete':
                         return  '<span class="new badge black white-text" data-badge-caption="">Obsolete</span>';
@@ -636,20 +636,20 @@
                       if(row.dept_details.dept_code=='{{$employee->dept_code}}'){
                           if(row.status=='For Orientation' )
                           {
-                            return  '<a href="#!" onclick="orientCC('+data+')" class="btn-small amber darken-2 waves-effect waves-dark center-align"><i class="small material-icons">forum</i></a>    <a href="#!" onclick="deleteCC('+data+',\''+row.status+'\')" class="btn-small red darken-3 waves-effect waves-dark center-align"><i class="small material-icons">delete_forever</i></a>   <a href="#!" class="btn-small deep-orange lighten-1 waves-effect waves-dark" disabled><i class="small material-icons">assignment_turned_in</i></a> ';
+                            return  '    <a href="#!" onclick="deleteCC('+data+',\''+row.status+'\')" class="btn-small red darken-3 waves-effect waves-dark center-align"><i class="small material-icons">delete_forever</i></a>   <a href="#!" class="btn-small deep-orange lighten-1 waves-effect waves-dark" disabled><i class="small material-icons">assignment_turned_in</i></a> ';
                           } else if(row.status=='Obsolete' || row.status=='Received')  {
-                            return  '<a href="#!" class="btn-small amber darken-2 waves-effect waves-dark center-align" disabled><i class="small material-icons">forum</i></a>    <a href="#!" onclick="deleteCC('+data+',\''+row.status+'\')" class="btn-small red darken-3 waves-effect waves-dark center-align"><i class="small material-icons">delete_forever</i></a>   <a href="#!" class="btn-small deep-orange lighten-1 waves-effect waves-dark" disabled><i class="small material-icons">assignment_turned_in</i></a> ';
+                            return  '    <a href="#!" onclick="deleteCC('+data+',\''+row.status+'\')" class="btn-small red darken-3 waves-effect waves-dark center-align"><i class="small material-icons">delete_forever</i></a>   <a href="#!" class="btn-small deep-orange lighten-1 waves-effect waves-dark" disabled><i class="small material-icons">assignment_turned_in</i></a> ';
                           } else if(row.status=='Oriented')  {
-                            return  '<a href="#!" class="btn-small amber darken-2 waves-effect waves-dark center-align" disabled><i class="small material-icons">forum</i></a>    <a href="#!" onclick="deleteCC('+data+',\''+row.status+'\')" class="btn-small red darken-3 waves-effect waves-dark center-align"><i class="small material-icons">delete_forever</i></a>    <a href="#!" onclick="receiveCC('+data+')" class="btn-small deep-orange lighten-1 waves-effect waves-dark"><i class="small material-icons">assignment_turned_in</i></a>';
+                            return  '    <a href="#!" onclick="deleteCC('+data+',\''+row.status+'\')" class="btn-small red darken-3 waves-effect waves-dark center-align"><i class="small material-icons">delete_forever</i></a>    <a href="#!" onclick="receiveCC('+data+')" class="btn-small deep-orange lighten-1 waves-effect waves-dark"><i class="small material-icons">assignment_turned_in</i></a>';
                           } else {
-                            return  '<a href="#!" onclick="orientCC('+data+')" class="btn-small amber darken-2 waves-effect waves-dark center-align"><i class="small material-icons">forum</i></a>    <a href="#!" onclick="deleteCC('+data+',\''+row.status+'\')" class="btn-small red darken-3 waves-effect waves-dark center-align"><i class="small material-icons">delete_forever</i></a>   <a href="#!" onclick="receiveCC('+data+')" class="btn-small deep-orange lighten-1 waves-effect waves-dark"><i class="small material-icons">assignment_turned_in</i></a>';
+                            return  '   <a href="#!" onclick="deleteCC('+data+',\''+row.status+'\')" class="btn-small red darken-3 waves-effect waves-dark center-align"><i class="small material-icons">delete_forever</i></a>   <a href="#!" onclick="receiveCC('+data+')" class="btn-small deep-orange lighten-1 waves-effect waves-dark"><i class="small material-icons">assignment_turned_in</i></a>';
                           }
                       } else {
                           if(row.status=='For Receiving')
                           {
-                            return  '<a href="#!" onclick="orientCC('+data+')" class="btn-small amber darken-2 waves-effect waves-dark center-align"><i class="small material-icons">forum</i></a>  <a href="#!" onclick="deleteCC('+data+',\''+row.status+'\')" class="btn-small red darken-3 waves-effect waves-dark center-align"><i class="small material-icons">delete_forever</i></a> ';
+                            return  '<a href="#!" onclick="deleteCC('+data+',\''+row.status+'\')" class="btn-small red darken-3 waves-effect waves-dark center-align"><i class="small material-icons">delete_forever</i></a> ';
                           } else {
-                            return  '<a href="#!" class="btn-small amber darken-2 waves-effect waves-dark center-align" disabled><i class="small material-icons">forum</i></a>  <a href="#!" onclick="deleteCC('+data+',\''+row.status+'\')" class="btn-small red darken-3 waves-effect waves-dark center-align"><i class="small material-icons">delete_forever</i></a> ';
+                            return  '<a href="#!" onclick="deleteCC('+data+',\''+row.status+'\')" class="btn-small red darken-3 waves-effect waves-dark center-align"><i class="small material-icons">delete_forever</i></a> ';
                           }
                       }
                     @else
