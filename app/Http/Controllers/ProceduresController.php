@@ -234,7 +234,6 @@ class ProceduresController extends Controller
                         ->where('status','<>','Obsolete')
                         ->where('status','<>','Received')
                         ->where('status','<>','Oriented')
-                      
                         ->where('current_approver','=',$idx)
                         ->get();
             break;
@@ -889,7 +888,8 @@ class ProceduresController extends Controller
 
             $gate = $matrix[0]['is_gate'];
             $next_status = $matrix[0]['next_status'];
-
+            $next_app = $matrix[0]['approver_emp_no'];
+           
             $lastid = DB::table('procedures')->latest('id')->first();
             if($lastid){
                 $lastid = $lastid->id + 1;
@@ -918,7 +918,7 @@ class ProceduresController extends Controller
               $empID = $matrix[0]['approver_emp_no'];
               $lastApproval = true;
             }
-
+            
             if($status=='Approved')
             {
                 if($gate=='true')
@@ -952,6 +952,7 @@ class ProceduresController extends Controller
                     $procedure_app->status = 'Approved';
                     $procedure_app->reviewed_by = $curr_app;
                     $procedure_app->approved_by = $curr_app;
+                    
                     $matrix = [];
 
                     $revNo = $request->input('revision_no') ? $request->input('revision_no') : 0;
@@ -1057,7 +1058,7 @@ class ProceduresController extends Controller
                                     $procedure->save();
                             }
                         $procedure_app->approved_by = $curr_app;
-                    
+                        
                         $approver = Employee::where('emp_no','=',$empID)->first();
                         $maildetails = new ProcedureMailable('REISS - Procedure Approval', // subject
                                                         'procedure', // location
@@ -1083,7 +1084,7 @@ class ProceduresController extends Controller
                         array_splice($matrix,0,1);
                         $procedure_app->status = $next_status;
                         $procedure_app->reviewed_by = $curr_app;
-                    
+                        
                         $approver = Employee::where('emp_no','=',$empID)->first();
                         $maildetails = new ProcedureMailable('REISS - Procedure Approval', // subject
                                                         'procedure', // location
@@ -1128,6 +1129,7 @@ class ProceduresController extends Controller
                 $procedure_app->status = 'Rejected';
                 $procedure_app->approved_by = 'N/A';
                 $procedure_app->reviewed_by = $curr_app;
+                
                 $matrix = [];
  
                 $approver = Employee::where('emp_no','=',$empID)->first();
@@ -1144,6 +1146,7 @@ class ProceduresController extends Controller
             }
             
             $procedure_app->current_sequence = $curr_seq;
+            $procedure_app->current_approver = $empID;
             $procedure_app->matrix = json_encode($matrix);
             $procedure_app->matrix_h = json_encode($matrixh);
 

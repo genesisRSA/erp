@@ -59,12 +59,11 @@
     </li>
     <li class="no-padding">
       <ul class="collapsible collapsible-accordion">
-        <li>
+        <li @if($page=='projects') class="active" @endif>
           <a class="collapsible-header waves-effect waves-light" style="padding-left:32px;"><i class="material-icons">build_circle</i>Projects</a>
           <div class="collapsible-body">
-            <ul>
-              <li><a href="#!">Project Plans</a></li>
-              <li><a href="#!">Project List</a></li>
+            <ul>  
+              <li @if($subpage=='list') class="active" @endif><a href="{{ route('projects.index') }}">Project List</a></li>
             </ul>
           </div>
         </li>

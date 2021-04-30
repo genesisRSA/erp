@@ -44,6 +44,8 @@ Route::get('/reiss/drawing/all/{id}/{loc}','DrawingsController@all');
 Route::get('/reiss/drawing/all_revision/{id}','DrawingsController@all_revision');
 Route::get('/reiss/drawing/all_approval/{id}','DrawingsController@all_approval');
 
+Route::get('/reiss/projects/all/{id}','ProjectListController@all');
+
 Route::get('/reiss/product_category/all', 'ProductCategoriesController@all');
 Route::get('/reiss/product/all', 'ProductsController@all');
 

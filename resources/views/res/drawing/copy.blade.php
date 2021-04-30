@@ -108,12 +108,12 @@
                 <div class="row">
                   <br>
                   <div style="width:96%; 
-                              height:50%; 
+                              height:40%; 
                               z-index: 10; 
                               opacity:0.15;
                               position:absolute; 
                               text-align:center;
-                              line-height:400px;
+                              line-height:300px;
                               font-size:130px; 
                               color:blue;">
                     &nbspRSA PROPERTY
@@ -139,12 +139,12 @@
                       <table class="responsive-table highlight" id="revisions-dt" style="width: 100%">
                         <thead>
                           <tr>
-                              <th>ID</th> 
-                              <th>DPR No.</th>
-                              <th>Document Title</th>
-                              <th>Document No.</th>
-                              <th>Revision No.</th>
-                              <th>Status</th>
+                            <th>ID</th> 
+                            <th>Drawing No.</th>
+                            <th>Part Name</th>
+                            <th>ECN No.</th>
+                            <th>Revision No.</th>
+                            <th>Status</th>
                           </tr>
                         </thead>
                       </table>
@@ -276,25 +276,35 @@
           "pageLength": 15,
           "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
           "pagingType": "full",
-          "ajax": "/api/reiss/drawing/all_revision/{{$drawings->drawing_no}}",
+          "ajax": "/api/reiss/drawing/all_revision/{{Illuminate\Support\Facades\Crypt::encrypt($drawings->drawing_no)}}",
           "columns": [
               {  "data": "id" 
               
               },
               {  "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return row.dpr_code;
-                  }
+                  // if(row.status=='Approved' || row.status=='Created'){
+                  //   return '<a href="../../view/'+row.drawings.id+'/{{$loc}}">'+ row.drawing_no +'</a>';
+                  // }else{
+                  //   return row.drawing_no;
+                  // }  
+                  return row.drawing_no;
+                }
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return row.document_title;
-                  }
+                    return row.part_name;
+                }
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return '<a href="../../view/'+row.drawings.id+'/{{$loc}}">'+ row.drawing_no +'</a>';
-                  }
+                  // if(row.status=='Approved' || row.status=='Created'){
+                  //   return '<a href="../../view/'+row.drawings.id+'/{{$loc}}">'+ row.ecn_code +'</a>';
+                  // }else{
+                  //   return row.ecn_code;
+                  // }
+                  return row.ecn_code;
+                }
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {

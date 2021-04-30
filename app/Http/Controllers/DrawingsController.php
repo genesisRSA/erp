@@ -8,14 +8,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-// use App\Mail\drawingMailable;
+use App\Mail\DrawingMailable;
 use App\SitePermission;
 use App\ApproverMatrix;
 use App\Drawing;
 use App\DrawingsRevision;
 use App\DrawingsControlledCopy;
 use App\DrawingsMasterCopy;
-
 use App\Site;
 use App\Employee;
 use App\Department;
@@ -241,7 +240,6 @@ class DrawingsController extends Controller
                         ->where('status','<>','Obsolete')
                         ->where('status','<>','Received')
                         ->where('status','<>','Oriented')
-                      
                         ->where('current_approver','=',$idx)
                         ->get();
             break;
@@ -281,8 +279,10 @@ class DrawingsController extends Controller
 
     public function all_revision($id)
     {
-        $data =  DrawingsRevision::where('drawing_no','=',$id)
-                                ->with('drawings:ecn_no,id')
+        $drawing_no = Crypt::decrypt($id);
+
+        $data =  DrawingsRevision::where('drawing_no','=',$drawing_no)
+                                ->with('drawings:ecn_code,id')
                                 ->get();
                     
         return response()
@@ -935,6 +935,25 @@ class DrawingsController extends Controller
         //
     }
 
+    public function check($id,$loc)
+    {
+        $locx = $loc;
+        $drawing = Drawing::where('ecn_code','=',$id)
+                            ->where('current_approver','=',Auth::user()->emp_no)
+                            ->first();
+            
+        if($locx=='app')
+        {
+            return redirect()->route('drawing.approval', ['drawingID' => $drawing->id, 'loc' => $locx]);
+        } else {
+            return redirect()->route('drawing.view', ['drawingID' => $drawing->id, 'loc' => $locx]);
+        }
+
+
+        // 
+
+    }
+
     public function revise($id)
     {
         
@@ -1036,6 +1055,7 @@ class DrawingsController extends Controller
 
             $gate = $matrix[0]['is_gate'];
             $next_status = $matrix[0]['next_status'];
+            $next_app = $matrix[0]['approver_emp_no'];
 
             $lastid = DB::table('drawings')->latest('id')->first();
             if($lastid){
@@ -1099,15 +1119,18 @@ class DrawingsController extends Controller
                     $drawing_app->status = 'Approved';
                     $drawing_app->reviewed_by = $curr_app;
                     $drawing_app->approved_by = $curr_app;
+                    
                     $matrix = [];
 
                     $revNo = $request->input('revision_no') ? $request->input('revision_no') : 0;
                     $revNoH = $request->input('revision_no_h') ? $request->input('revision_no_h') : 0;
 
                         if($revNo>=1)
-                            {
+                            {   
+                              
                                 if($revNoH==0)
-                                {
+                                {   
+                                   
                                     $drawings_h = new DrawingsRevision();
                                     $drawings_h->ecn_code =            $request->input('ecn_code_h');
                                     $drawings_h->cust_code =           $request->input('cust_code_h');
@@ -1148,15 +1171,15 @@ class DrawingsController extends Controller
                             }
 
                     $approver = Employee::where('emp_no','=',$empID)->first();
-                    //$maildetails = new DrawingMailable('REISS - drawing Approval', // subject
-                    //                                 'drawing', // location
-                    //                                 'Approved', // next status val
-                    //                                 'filer', // who to receive
-                    //                                 $approver->emp_fname, // approver name
-                    //                                 $drawing_app->drawing_no, // drawing_no
-                    //                                 Auth::user()->employee->full_name, // full_name
-                    //                                 $remarks, // remarks
-                    //                                 $lastid); // last id + 1
+                    $maildetails = new DrawingMailable('REISS - Drawing Approval', // subject
+                                                    'drawing', // location
+                                                    'Approved', // next status val
+                                                    'filer', // who to receive
+                                                    $approver->emp_fname, // approver name
+                                                    $drawing_app->ecn_code, // ecn_code
+                                                    Auth::user()->employee->full_name, // full_name
+                                                    $remarks, // remarks
+                                                    $lastid); // last id + 1
                 }
                 else 
                 {
@@ -1176,11 +1199,12 @@ class DrawingsController extends Controller
                         $drawing_app->approved_by = $curr_app;
                         $revNo = $request->input('revision_no') ? $request->input('revision_no') : 0;
                         $revNoH = $request->input('revision_no_h') ? $request->input('revision_no_h') : 0;
-                    
+                        $test = "";
                         if($revNo>=1)
                             {
+                                $test = "revno > 1";
                                 if($revNoH==0)
-                                {
+                                {   
                                     $drawings_h = new DrawingsRevision();
                                     $drawings_h->ecn_code =            $request->input('ecn_code_h');
                                     $drawings_h->cust_code =           $request->input('cust_code_h');
@@ -1218,19 +1242,20 @@ class DrawingsController extends Controller
                                     $drawing->status =                  $status;
                                     $drawing->file_name =               $request->input('file_name');
                                     $drawing->save();
+
                             }
                         $drawing_app->approved_by = $curr_app;
-                    
+                        
                         $approver = Employee::where('emp_no','=',$empID)->first();
-                        // $maildetails = new drawingMailable('REISS - drawing Approval', // subject
-                        //                                 'drawing', // location
-                        //                                 'Approved', // next status val
-                        //                                 'filer', // who to receive
-                        //                                 $approver->emp_fname, // approver name
-                        //                                 $drawing_app->drawing_no, // drawing_no
-                        //                                 Auth::user()->employee->full_name, // full_name
-                        //                                 $remarks, // remarks
-                        //                                 $lastid); // last id + 1
+                        $maildetails = new DrawingMailable('REISS - Drawing Approval', // subject
+                                                        'drawing', // location
+                                                        'Approved', // next status val
+                                                        'filer', // who to receive
+                                                        $approver->emp_fname, // approver name
+                                                        $drawing_app->ecn_code, // drawing_no
+                                                        Auth::user()->employee->full_name, // full_name
+                                                        $remarks, // remarks
+                                                        $lastid); // last id + 1
                     }
                     else
                     {
@@ -1246,17 +1271,17 @@ class DrawingsController extends Controller
                         array_splice($matrix,0,1);
                         $drawing_app->status = $next_status;
                         $drawing_app->reviewed_by = $curr_app;
-                    
+                        
                         $approver = Employee::where('emp_no','=',$empID)->first();
-                        // $maildetails = new drawingMailable('REISS - drawing Approval', // subject
-                        //                                 'drawing', // location
-                        //                                 $next_status, // next status val
-                        //                                 'approver', // who to receive
-                        //                                 $approver->emp_fname, // approver name
-                        //                                 $drawing_app->drawing_no, // drawing_no
-                        //                                 Auth::user()->employee->full_name, // full_name
-                        //                                 $remarks, // remarks
-                        //                                 $lastid); // last id + 1
+                        $maildetails = new DrawingMailable('REISS - Drawing Approval', // subject
+                                                        'drawing', // location
+                                                        $next_status, // next status val
+                                                        'approver', // who to receive
+                                                        $approver->emp_fname, // approver name
+                                                        $drawing_app->ecn_code, // drawing_no
+                                                        Auth::user()->employee->full_name, // full_name
+                                                        $remarks, // remarks
+                                                        $lastid); // last id + 1
                     }
                 }
             }
@@ -1291,25 +1316,27 @@ class DrawingsController extends Controller
                 $drawing_app->status = 'Rejected';
                 $drawing_app->approved_by = 'N/A';
                 $drawing_app->reviewed_by = $curr_app;
+                
                 $matrix = [];
  
                 $approver = Employee::where('emp_no','=',$empID)->first();
-                //$maildetails = new DrawingMailable('REISS - Drawing Approval', // subject
-                //                                 'drawing', // location
-                //                                 'Rejected', // next status val
-                //                                 'filer', // who to receive
-                //                                 $approver->emp_fname, // approver name
-                //                                 $drawing_app->drawing_no, // drawing_no
-                //                                 Auth::user()->employee->full_name, // full_name
-                //                                 $remarks, // remarks
-                //                                 $lastid); // last id + 1
+                $maildetails = new DrawingMailable('REISS - Drawing Approval', // subject
+                                                'drawing', // location
+                                                'Rejected', // next status val
+                                                'filer', // who to receive
+                                                $approver->emp_fname, // approver name
+                                                $drawing_app->ecn_code, // drawing_no
+                                                Auth::user()->employee->full_name, // full_name
+                                                $remarks, // remarks
+                                                $lastid); // last id + 1
                 
             }
             
             $drawing_app->current_sequence = $curr_seq;
+            $drawing_app->current_approver = $empID;
             $drawing_app->matrix = json_encode($matrix);
             $drawing_app->matrix_h = json_encode($matrixh);
-
+        
             if($drawing_app->save()){
                 if($status=='Approved'){
                     // Mail::to('johnpaul.sarinas@rsa.com.ph', 'John Paul Sarinas')->send($maildetails);

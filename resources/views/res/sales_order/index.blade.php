@@ -152,7 +152,7 @@
             </div>
           </div>
           
-          <div class="row">
+          <div class="row" style="margin-bottom: 0px;">
             <div class="input-field file-field col s12 m6 l6">
                 <label class="active">Customer PO Specs <sup class="red-text">*</sup></label><br>
                 <div class="btn">
@@ -165,7 +165,7 @@
             </div>
 
             <div class="input-field col s12 m6 l6">
-              <input type="text" name="customer_po_no" id="customer_po_no" placeholder="e.g. PO-1234" required/>
+              <input type="text" name="customer_po_no" id="customer_po_no" placeholder="e.g. PO-1234" style="padding-bottom: 22px; margin-bottom: 0px;border-bottom-width: 1px;" required/>
               <label class="active">Customer PO No.<sup class="red-text">*</sup></label>
             </div>
           </div>

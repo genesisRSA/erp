@@ -119,12 +119,12 @@
                 <div class="row">
                   <br>
                   <div class="col s12 l12 m12" style="width:96%; 
-                              height:50%; 
+                              height:40%; 
                               z-index: 10; 
                               opacity:0.15;
                               position:absolute; 
                               text-align:center;
-                              line-height:400px;
+                              line-height:300px;
                               font-size:130px; 
                               color:blue;">
                     &nbspRSA PROPERTY
@@ -342,35 +342,43 @@
        
     });
 
-    var drawings = $('#revisions-dt').DataTable({
+    var drawingss = $('#revisions-dt').DataTable({
         "lengthChange": false,
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/reiss/drawing/all_revision/{{$drawings->drawing_no}}",
+        "ajax": "/api/reiss/drawing/all_revision/{{Illuminate\Support\Facades\Crypt::encrypt($drawings->drawing_no)}}",
         "columns": [
             {  "data": "id" },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                 if(row.status=='Approved'){
-                  return '<a href="../../view/'+row.drawings.id+'/{{$loc}}">'+ row.document_no +'</a>';
-                 }else{
-                  return row.document_no;
-                 }  
-                }
+                @if($loc=='cc')  
+                    return row.drawing_no;
+                @else
+                  if(row.status=='Approved' || row.status=='Created'){
+                    return '<a href="../../view/'+row.drawings.id+'/{{$loc}}">'+ row.drawing_no +'</a>';
+                  }else{
+                    return row.drawing_no;
+                  } 
+                @endif
+              }
             },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return row.document_title;
+                  return row.part_name;
                 }
             },
             {  "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  if(row.status=='Created'){
-                    return '<a href="../../view/'+row.drawings.id+'/{{$loc}}">'+ row.dpr_code +'</a>';
-                  }else{
-                    return row.dpr_code;
-                  }  
+                  @if($loc=='cc')  
+                    return row.drawing_no;
+                  @else
+                    if(row.status=='Approved' || row.status=='Created'){
+                      return '<a href="../../view/'+row.drawings.id+'/{{$loc}}">'+ row.drawing_no +'</a>';
+                    }else{
+                      return row.drawing_no;
+                    } 
+                  @endif  
                 }
             },
             {   "data": "id",

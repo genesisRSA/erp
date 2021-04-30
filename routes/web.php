@@ -145,6 +145,12 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::get('/reiss/drawing/getApproverMatrix/{id}', 'DrawingsController@getApproverMatrix');
 
     
+    Route::resource('/reiss/projects', 'ProjectListController');
+    Route::get('/reiss/projects/{site_code}/orders','ProjectListController@all_orders')->name('project.all_orders');
+    Route::get('/reiss/projects/{order_code}/allproducts','ProjectListController@all_products')->name('project.all_products');
+    Route::get('/reiss/projects/{cust_code}/count','ProjectListController@count_per_type')->name('project.count_per_type');
+    Route::get('/reiss/projects/{prod_code}/assy','ProjectListController@prod_assy')->name('project.prod_assy');
+    Route::get('/reiss/projects/{assy_code}/fab','ProjectListController@assy_fab')->name('project.assy_fab');
 
     Route::get('/reiss/dashboard/{parent}', 'ReissDashboardController@index');
 

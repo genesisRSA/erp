@@ -25,31 +25,31 @@
             @csrf
             <div class="row">
               {{-- hidden items --}}
-                <input type="hidden" name="id" id="id_app" value="{{$drawings->id}}"/>
-                <input type="hidden" name="seq" id="seq_app" value="{{$drawings->current_sequence}}"/>
-                <input type="hidden" name="appid" id="appid_app" value="{{$drawings->current_approver}}"/>
+                <input type="hidden" id="id_app"              name="id"                    value="{{$drawings->id}}"/>
+                <input type="hidden" id="seq_app"             name="seq"                   value="{{$drawings->current_sequence}}"/>
+                <input type="hidden" id="appid_app"           name="appid"                 value="{{$drawings->current_approver}}"/>
 
               @if($drawings->revision_no!=0)
-                <input type="hidden" id="ecn_code_h" name="ecn_code_h" value="{{$drawings_h->ecn_code}}"/>
-                <input type="hidden" id="cust_code_h" name="cust_code_h" value="{{$drawings_h->cust_code}}"/>
-                <input type="hidden" id="project_code_h" name="project_code_h" value="{{$drawings_h->project_code}}"/>
-                <input type="hidden" id="drawing_no_h" name="drawing_no_h" value="{{$drawings_h->drawing_no}}"/>
-                <input type="hidden" id="revision_no_h" name="revision_no_h" value="{{$drawings_h->revision_no}}"/>
-                <input type="hidden" id="revision_date_h" name="revision_date_h" value="{{$drawings_h->revision_date}}"/>
-                <input type="hidden" id="process_specs_h" name="process_specs_h" value="{{$drawings_h->process_specs}}"/>
+                <input type="hidden" id="ecn_code_h"           name="ecn_code_h"           value="{{$drawings_h->ecn_code}}"/>
+                <input type="hidden" id="cust_code_h"          name="cust_code_h"          value="{{$drawings_h->cust_code}}"/>
+                <input type="hidden" id="project_code_h"       name="project_code_h"       value="{{$drawings_h->project_code}}"/>
+                <input type="hidden" id="drawing_no_h"         name="drawing_no_h"         value="{{$drawings_h->drawing_no}}"/>
+                <input type="hidden" id="revision_no_h"        name="revision_no_h"        value="{{$drawings_h->revision_no}}"/>
+                <input type="hidden" id="revision_date_h"      name="revision_date_h"      value="{{$drawings_h->revision_date}}"/>
+                <input type="hidden" id="process_specs_h"      name="process_specs_h"      value="{{$drawings_h->process_specs}}"/>
                 <input type="hidden" id="change_description_h" name="change_description_h" value="{{$drawings_h->change_description}}"/>
-                <input type="hidden" id="change_reason_h" name="change_reason_h" value="{{$drawings_h->change_reason}}"/>
-                <input type="hidden" id="assy_code_h" name="assy_code_h" value="{{$drawings_h->assy_code}}"/>
-                <input type="hidden" id="fab_code_h" name="fab_code_h" value="{{$drawings_h->fab_code}}"/>
-                <input type="hidden" id="created_by_h" name="created_by_h" value="{{$drawings_h->created_by}}" />
-                <input type="hidden" id="approved_by_h" name="approved_by_h" value="{{$drawings_h->approved_by}}" />
-                <input type="hidden" id="status_h" name="status_h" value="{{$drawings_h->status}}"/>
-                <input type="hidden" id="file_name_h" name="file_name_h" value="{{$drawings_h->file_name}}" />
+                <input type="hidden" id="change_reason_h"      name="change_reason_h"      value="{{$drawings_h->change_reason}}"/>
+                <input type="hidden" id="assy_code_h"          name="assy_code_h"          value="{{$drawings_h->assy_code}}"/>
+                <input type="hidden" id="fab_code_h"           name="fab_code_h"           value="{{$drawings_h->fab_code}}"/>
+                <input type="hidden" id="created_by_h"         name="created_by_h"         value="{{$drawings_h->created_by}}" />
+                <input type="hidden" id="approved_by_h"        name="approved_by_h"        value="{{$drawings_h->approved_by}}" />
+                <input type="hidden" id="status_h"             name="status_h"             value="{{$drawings_h->status}}"/>
+                <input type="hidden" id="file_name_h"          name="file_name_h"          value="{{$drawings_h->file_name}}" />
               @endif
 
-                <input type="hidden" id="created_by" name="created_by" value="{{$drawings->created_by}}" />
-                <input type="hidden" id="file_name" name="file_name" value="{{$drawings->file_name}}" />
-                <input type="hidden" id="status" name="status">
+                <input type="hidden" id="created_by"           name="created_by"           value="{{$drawings->created_by}}" />
+                <input type="hidden" id="file_name"            name="file_name"            value="{{$drawings->file_name}}" />
+                <input type="hidden" id="status"               name="status">
               {{-- hidden items --}}
               <div id="drawing" name="drawing">
                 <br>
@@ -68,12 +68,12 @@
                       </div> 
                        
                       <div class="input-field col s12 m3 l3">
-                        <input type="text" id="app_revision_no" name="revision_no" value="0" placeholder=" " readonly/>
+                        <input type="text" id="app_revision_no" name="revision_no" value="{{$drawings->revision_no}}" placeholder=" " readonly/>
                         <label for="revision_no">Revision No.<sup class="red-text"></sup></label>
                       </div>
   
                       <div class="input-field col s12 m3 l3">
-                        <input type="text" id="app_revision_date" name="revision_date" value="{{date('Y-m-d')}}" readonly/>
+                        <input type="text" id="app_revision_date" name="revision_date" value="{{$drawings->revision_date}}" readonly/>
                         <label for="revision_date">Revision Date<sup class="red-text"></sup></label>
                       </div> 
                     </div>
@@ -85,24 +85,24 @@
                       </div>
   
                       <div class="input-field col s12 m6 l6">
-                        <input type="text" id="app_cust_code" name="cust_code" value="{{$drawings->project_code}}" readonly/>
+                        <input type="text" id="app_project_code" name="project_code" value="{{$drawings->project_code}}" readonly/>
                         <label for="project_code">Project Name<sup class="red-text"> </sup></label>
                       </div>
                     </div>
   
                     <div class="col s12 m12 l12">
                       <div class="input-field col s12 m4 l4">
-                        <input type="text" id="app_cust_code" name="cust_code" value="{{$drawings->assy_code}}" readonly/>
+                        <input type="text" id="app_assy_code" name="assy_code" value="{{$drawings->assy_code}}" readonly/>
                         <label for="assy_code">Assembly Description<sup class="red-text"> </sup></label>
                       </div>
                       
                       <div class="input-field col s12 m4 l4">
-                        <input type="text" id="app_cust_code" name="cust_code" value="{{$drawings->fab_code}}" readonly/>
+                        <input type="text" id="app_fab_code" name="fab_code" value="{{$drawings->fab_code}}" readonly/>
                         <label for="fab_code">Fabrication Description<sup class="red-text"> </sup></label>
                       </div>
   
                       <div class="input-field col s12 m4 l4">
-                        <input type="text" id="app_cust_code" name="cust_code" value="{{$drawings->drawing_no}}" readonly/>
+                        <input type="text" id="app_drawing_no" name="drawing_no" value="{{$drawings->drawing_no}}" readonly/>
                         <label for="drawing_no">Drawing No. / Assembly Name<sup class="red-text"></sup></label>
                       </div>
                     </div>
@@ -139,12 +139,12 @@
                         {{-- <div class="row"> --}}
                           <br>
                           <div style="width:93%; 
-                                      height:50%; 
+                                      height:40%; 
                                       z-index: 10; 
                                       opacity:0.15;
                                       position:absolute; 
                                       text-align:center;
-                                      line-height:400px;
+                                      line-height:300px;
                                       font-size:130px; 
                                       color:blue;">
                               &nbspRSA PROPERTY
@@ -172,12 +172,12 @@
                               <table class="responsive-table highlight" id="revisions-dt" style="width: 100%">
                                 <thead>
                                   <tr>
-                                      <th>ID</th> 
-                                      <th>Document No.</th>
-                                      <th>Document Title</th>
-                                      <th>DPR No.</th>
-                                      <th>Revision No.</th>
-                                      <th>Status</th>
+                                    <th>ID</th> 
+                                    <th>Drawing No.</th>
+                                    <th>Part Name</th>
+                                    <th>ECN No.</th>
+                                    <th>Revision No.</th>
+                                    <th>Status</th>
                                   </tr>
                                 </thead>
                               </table>
@@ -387,23 +387,31 @@
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/reiss/drawing/all_revision/{{$drawings->drawing_no}}",
+        "ajax": "/api/reiss/drawing/all_revision/{{Illuminate\Support\Facades\Crypt::encrypt($drawings->drawing_no)}}",
         "columns": [
           {  "data": "id" },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return '<a href="../../view/'+row.drawings.id+'/{{$loc}}">'+ row.document_no +'</a>';
-                }
+                if(row.status=='Approved' || row.status=='Created'){
+                  return '<a href="../../view/'+row.drawings.id+'/{{$loc}}">'+ row.drawing_no +'</a>';
+                }else{
+                  return row.drawing_no;
+                }  
+              }
             },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return row.document_title;
-                }
+                  return row.part_name;
+              }
             },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return row.dpr_code;
+                if(row.status=='Approved' || row.status=='Created'){
+                  return '<a href="../../view/'+row.drawings.id+'/{{$loc}}">'+ row.ecn_code +'</a>';
+                }else{
+                  return row.ecn_code;
                 }
+              }
             },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {

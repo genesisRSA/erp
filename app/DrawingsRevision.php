@@ -8,6 +8,6 @@ class DrawingsRevision extends Model
 {
     public function drawings()
     {
-        return $this->hasOne('App\Drawings', 'ecn_code', 'ecn_code');
+        return $this->hasOne('App\Drawing', 'ecn_code', 'ecn_code');
     }
 }

@@ -281,6 +281,12 @@
                       case 'Rejected':
                         return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
                       break;
+                      case 'For Approval':
+                      return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
+                      break;
+                      case 'For Review':
+                        return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
+                      break;
                     }
                     
                   }
@@ -367,13 +373,19 @@
                       case 'Rejected':
                         return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
                       break;
+                      case 'For Approval':
+                      return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
+                      break;
+                      case 'For Review':
+                        return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
+                      break;
                     }
                     
                   }
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    if(row.status=='Pending')
+                    if(row.status!='Approved')
                     {
                       return  '<a href="drawing/approval/'+row.id+'/app" class="btn-small blue darken3 waves-effect waves-dark"><i class="material-icons">rate_review</i></a>';
                     } else {

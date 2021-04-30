@@ -50,7 +50,7 @@
 
                     <div class="col s12 m12 l12">                  
                       <div class="input-field col s12 m6 l6">
-                        <select id="add_cust_code" name="cust_code" required>
+                        <select searchable="test" id="add_cust_code" name="cust_code" required>
                           <option value="" disabled selected>Choose Customer</option>
                           @foreach ($customer as $cust)
                             <option value="{{$cust->cust_code}}">{{$cust->cust_name}}</option>
