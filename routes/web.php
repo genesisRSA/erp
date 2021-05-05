@@ -131,6 +131,11 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::post('/reiss/drawing/makecopy', 'DrawingsController@makeCopy')->name('drawing.makecopy');
     Route::post('/reiss/drawing/delete', 'DrawingsController@delete')->name('drawing.delete');
     Route::get('/reiss/drawing/check/{id}/{loc}', 'DrawingsController@check');
+    Route::get('/reiss/drawing/{project_code}/project', 'DrawingsController@project')->name('drawing.project');
+    Route::get('/reiss/drawing/{project_code}/assy', 'DrawingsController@assy')->name('drawing.assy');
+    Route::get('/reiss/drawing/{project_code}/{assy_code}/fab', 'DrawingsController@fab')->name('drawing.fab');
+    Route::get('/reiss/drawing/{cust_code}/count','DrawingsController@count_per_type')->name('drawing.count_per_type');
+
     Route::get('/reiss/drawing/view/{id}/{loc}/', 'DrawingsController@view')->name('drawing.view');
     Route::get('/reiss/drawing/view_fcc/{id}/{loc}', 'DrawingsController@view_fcc')->name('drawing.view_fcc');
     Route::get('/reiss/drawing/view_cc/{id}/{loc}', 'DrawingsController@view_cc')->name('drawing.view_cc');

@@ -62,7 +62,10 @@
                       <div class="input-field col s12 m6 l6">
                           <select id="add_project_code" name="project_code" required>
                             <option value="" disabled selected>Choose Project</option>
-                            <option value="DISSYS">DISASSY SYSTEM WITH CONVEYOR</option>
+                            
+                            @foreach ($projects as $project)
+                              <option value="{{$project->project_code}}">{{$project->project_name}}</option>
+                            @endforeach
                              
                           </select>
                           <label for="project_code">Project Name<sup class="red-text">*</sup></label>
@@ -73,9 +76,9 @@
                       <div class="input-field col s12 m4 l4">
                         <select id="add_assy_code" name="assy_code" required>
                           <option value="" disabled selected>Choose Assembly</option>
-                          @foreach ($assembly as $assem)
+                          {{-- @foreach ($assembly as $assem)
                             <option value="{{$assem->assy_code}}">{{$assem->assy_desc}}</option>
-                          @endforeach
+                          @endforeach --}}
                         </select>
                         <label for="assy_code">Assembly Description<sup class="red-text">*</sup></label>
                       </div>
@@ -83,15 +86,16 @@
                       <div class="input-field col s12 m4 l4">
                         <select id="add_fab_code" name="fab_code" required>
                           <option value="" disabled selected>Choose Fabrication</option>
-                          @foreach ($fabrication as $fab)
+                          {{-- @foreach ($fabrication as $fab)
                             <option value="{{$fab->fab_code}}">{{$fab->fab_desc}}</option>
-                          @endforeach
+                          @endforeach --}}
                         </select>
                         <label for="fab_code">Fabrication Description<sup class="red-text">*</sup></label>
                       </div>
 
                       <div class="input-field col s12 m4 l4">
-                        <input type="text" id="add_drawing_no" name="drawing_no"   value="{{$docNo}}"  placeholder=" " readonly/>
+                        <input type="text" id="add_drawing_no" name="drawing_no"  placeholder=" " readonly/>
+                        {{-- <input type="text" id="add_drawing_no" name="drawing_no"   value="{{$docNo}}"  placeholder=" " readonly/> --}}
                         {{-- <input type="text" id="add_drawing_no" name="drawing_no"   value="RSA-001-A0001-1-F"  placeholder=" " readonly/> --}}
                         <label for="drawing_no">Drawing No. / Assembly Name<sup class="red-text"></sup></label>
                       </div>
@@ -180,42 +184,81 @@
   <script type="text/javascript" src="{{ asset('datatables/datatables.js') }}"></script>
   <script type="text/javascript">
 
-    var searchInput = 'add_complete_address';
-
+        var site = '{{$employee->site_code}}';
+        var project_type = "";
+        var a_count = 0;
+        var t_count = 0;
+        var cpcount = 0;
+        var acount = 0;
+        var fcount = 0;
+        
     $(document).ready(function () {
+
         $('#add_change_description').trigger('autoresize');
         $('#add_change_reason').trigger('autoresize');
-        // $('#drawing_tab').tabs('select','details');  
 
         $('#add_cust_code').on('change', function(){
-          var cust = $(this).val();
-          var assy = $('#add_assy_code').val();
-          var fab = $('#add_fab_code').val();
-          drawingNo(cust,assy,fab);
+          $.get($(this).val()+'/count', (response) => {
+              var cust = $(this).val();
+              var fab = ($('#add_fab_code').val() == null ? '' : $('#add_fab_code').val());
+              var data = response.data;
+              a_count = data.a_count;
+              t_count = data.t_count;
+              cpcount = (project_type == "" ? "" : (project_type == "A" ? a_count : t_count));
+              drawingNo(site, cust, project_type, cpcount, acount, fab);
+ 
+          });
         });
+
+        $('#add_project_code').on('change', function(){
+          $.get($(this).val()+'/assy', (response) => {
+            var data = response.data;
+            var select = '<option value="" disabled selected>Choose Assembly</option>';
+            $.each(data, function(index, row){
+              select += '<option value="'+row.assy_code+'">'+row.assy_desc+'</option>';
+              acount = index + 1;
+            });
+            $('#add_assy_code').html(select);
+            $('#add_assy_code').formSelect();
+          });
+
+          $.get($(this).val()+'/project', (response) => {
+            var data = response.data;
+            var cust = ($('#add_cust_code').val() == null ? '' : $('#add_cust_code').val());
+            var fab = ($('#add_fab_code').val() == null ? '' : $('#add_fab_code').val());
+            project_type = data.project_type;
+            cpcount = (project_type == "A" ? a_count : t_count);
+            drawingNo(site, cust, project_type, cpcount, acount, fab);
+          })
+        });
+
         $('#add_assy_code').on('change', function(){
           var assy = $(this).val();
-          var cust = $('#add_cust_code').val();
-          var fab = $('#add_fab_code').val();
-          drawingNo(cust,assy,fab);
+          var assy_len = assy.length; 
+          acount = assy.charAt(assy_len - 1);
+
+          var cust = ($('#add_cust_code').val() == null ? '' : $('#add_cust_code').val());
+          var fab = ($('#add_fab_code').val() == null ? '' : $('#add_fab_code').val());
+          drawingNo(site, cust, project_type, cpcount, acount, fab);
+
+          $.get($('#add_project_code').val()+'/'+$(this).val()+'/fab', (response) => {
+              var data = response.data;
+              var select = '<option value="" disabled selected>Choose Fabrication</option>';
+              $.each(data, function(index, row){
+                select += '<option value="'+row.fab_code+'">'+row.fab_desc+'</option>';
+                fcount = index + 1;
+              });
+              $('#add_fab_code').html(select);
+              $('#add_fab_code').formSelect();
+            });
         });
+
         $('#add_fab_code').on('change', function(){
-          var fab = $(this).val();
-          var cust = $('#add_cust_code').val();
-          var assy = $('#add_assy_code').val();
-          drawingNo(cust,assy,fab);
+          var fab = ($(this).val() == null ? '' : $(this).val());
+          var cust = ($('#add_cust_code').val() == null ? '' : $('#add_cust_code').val());
+          drawingNo(site, cust, project_type, cpcount, acount, fab);
         });
 
-        function drawingNo(cust, assy, fab){
-          var drawing_no = '{{$docNo}}';
-          var site = drawing_no.slice(0,3);
-          var count = drawing_no.slice(4,7);
-          
-          console.log (drawing_no + ' ' + site + ' ' + count + ' ' + cust + ' ' + assy + ' ' + fab);
-
-          // $('#add_drawing_no').val(site+'-'+cust+'-'+);
-        };
-        
         $.get('getApprover/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}', function(response){
  
           var AppendString = "";
@@ -255,6 +298,10 @@
 
     });
 
+    
+    const drawingNo = (site="", cust="", type="", cpcount=0, acount=0, fab="") => {
+          $('#add_drawing_no').val(site+'-'+cust+'-'+type+'000'+cpcount+'-'+acount+'-'+fab);
+    };
      
 
  

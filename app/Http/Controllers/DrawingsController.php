@@ -21,6 +21,9 @@ use App\Department;
 use App\Customer;
 use App\Assembly;
 use App\Fabrication;
+use App\Project;
+use App\ProjectAssembly;
+use App\AssemblyFab;
 use Validator;
 use Response;
 use Auth;
@@ -308,16 +311,15 @@ class DrawingsController extends Controller
 
     public function create()
     {
+        $project = Project::get();
         $customer = Customer::get();
-        $assembly = Assembly::get();
-        $fabrication = Fabrication::get();
         $employee = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
         $docxCount = Drawing::where('drawing_no','like', $employee->site_code.'%')->count();
         $docx = Drawing::distinct('part_name')->where('drawing_no','like', $employee->site_code.'%')->count('part_name');
 
         $lastDocx = str_pad($docxCount+1,3,"0",STR_PAD_LEFT);
         $LDocx = str_pad($docx+1,2,"0",STR_PAD_LEFT);
-        $docNo = "RSA-001-A0001-1-F".$LDocx;
+        $docNo = "RSA-001-A0001-1-F".$LDocx; // Site(ok), Customer(ok), Automation or Tooling count per customer (from project) (ok) , Assy Code. (RSA-001-A0001- ->(1)) las digit, F(count) 
        
         $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
         ->where('module','=','Drawings')
@@ -331,10 +333,10 @@ class DrawingsController extends Controller
                 ->with('permission',$permissionx)
                 ->with('docNo', $docNo)
                 ->with('lastDoc', $lastDocx)
+                ->with('projects', $project)
                 ->with('customer', $customer)
-                ->with('employee', $employee)
-                ->with('assembly', $assembly)
-                ->with('fabrication', $fabrication);
+                ->with('employee', $employee);
+            
     }
 
     public function store(Request $request)
@@ -726,6 +728,43 @@ class DrawingsController extends Controller
                 ->with('employee',$employee)
                 ->with('drawings', $drawing)
                 ->with('drawingx', $drawingx);
+    }
+
+    public function project($project_code)
+    {
+        return response()
+        ->json([
+            "data" => Project::where('project_code',$project_code)
+                                    ->first()
+        ]);
+    }
+    
+    public function assy($project_code)
+    {
+        return response()
+        ->json([
+            "data" => ProjectAssembly::where('project_code',$project_code)
+                                    ->get()
+        ]);
+    }
+
+    public function count_per_type($cust_code)
+    {
+        return response()
+        ->json([
+            "data" => Customer::where('cust_code','=',$cust_code)
+                                    ->first()
+        ]);
+    }
+
+    public function fab($project_code,$assy_code)
+    {
+        return response()
+        ->json([
+            "data" => AssemblyFab::where('project_code',$project_code)
+                                    ->where('assy_code',$assy_code)
+                                    ->get()
+        ]);
     }
 
     public function approval_view($id, $loc)
