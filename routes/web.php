@@ -146,12 +146,25 @@ Route::group(['middleware' => ['auth.dcs']], function() {
 
     
     Route::resource('/reiss/projects', 'ProjectListController');
-    Route::get('/reiss/projects/{site_code}/orders','ProjectListController@all_orders')->name('project.all_orders');
-    Route::get('/reiss/projects/{order_code}/allproducts','ProjectListController@all_products')->name('project.all_products');
-    Route::get('/reiss/projects/{cust_code}/count','ProjectListController@count_per_type')->name('project.count_per_type');
-    Route::get('/reiss/projects/{prod_code}/assy','ProjectListController@prod_assy')->name('project.prod_assy');
-    Route::get('/reiss/projects/{assy_code}/fab','ProjectListController@assy_fab')->name('project.assy_fab');
+    Route::post('/reiss/projects/revision', 'ProjectListController@revision')->name('projects.revision');
+    Route::get('/reiss/projects/{item_code}/item_details','ProjectListController@item_details')->name('projects.item_details');
+    Route::get('/reiss/projects/{site_code}/orders','ProjectListController@all_orders')->name('projects.all_orders');
+    Route::get('/reiss/projects/{order_code}/allproducts','ProjectListController@all_products')->name('projects.all_products');
+    Route::get('/reiss/projects/{cust_code}/count','ProjectListController@count_per_type')->name('projects.count_per_type');
+    Route::get('/reiss/projects/{prod_code}/assy','ProjectListController@prod_assy')->name('projects.prod_assy');
+    Route::get('/reiss/projects/{assy_code}/fab','ProjectListController@assy_fab')->name('projects.assy_fab');
 
+    Route::get('/reiss/projects/view/{project_code}/view_assy','ProjectListController@view_assy')->name('projects.view_assy');
+    Route::get('/reiss/projects/view/{project_code}/{assy_code}/fab','ProjectListController@view_fabs')->name('projects.view_fabs');
+    Route::get('/reiss/projects/view/{project_code}/adtl','ProjectListController@view_adtl')->name('projects.view_adtl');
+    Route::get('/reiss/projects/view/{id}', 'ProjectListController@view')->name('projects.view');
+
+    Route::get('/reiss/projects/edit/{item_code}/item_details','ProjectListController@item_details')->name('projects.item_details');
+    Route::get('/reiss/projects/edit/{project_code}/edit_assy','ProjectListController@edit_assy')->name('projects.edit_assy');
+    Route::get('/reiss/projects/edit/{project_code}/{assy_code}/fab','ProjectListController@edit_fabs')->name('projects.edit_fabs');
+    Route::get('/reiss/projects/edit/{project_code}/adtl','ProjectListController@edit_adtl')->name('projects.edit_adtl');
+    Route::get('/reiss/projects/edit/{id}', 'ProjectListController@edit')->name('projects.edit');
+    
     Route::get('/reiss/dashboard/{parent}', 'ReissDashboardController@index');
 
     // end -> jp task

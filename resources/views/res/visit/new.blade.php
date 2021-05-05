@@ -64,9 +64,9 @@
               
               <div class="row col s12 m12 l12" style="padding-right: 0px">
                 <div class="col s12 m3 l3"></div>
-                <div class="col s12 m9 l9 right-align" style="padding-right: 0px">
-                <button class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Save&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
-                <a href="{{route('visit.index')}}" class="red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Cancel</a>
+                <div class="col s12 m9 l9 right-align" style="padding-right: 0px;">
+                <button class="green waves-effect waves-light btn"  style="margin-bottom: 10px;"><i class="material-icons left">check_circle</i>Save&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+                <a href="{{route('visit.index')}}" class="red waves-effect waves-dark btn"  style="width: 120px;" ><i class="material-icons left">cancel</i>Cancel</a>
                 </div>
               </div>
 

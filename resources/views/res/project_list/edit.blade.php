@@ -9,7 +9,7 @@
 @section('content')
   <div class="row blue-text text-darken-4 white" style="border-bottom: 1px solid rgba(0,0,0,0.14);">
     <div class="col s12 m12">
-        <h4 class="title"><span class="grey-text darken-4">Projects<i class="material-icons">arrow_forward_ios</i></span><span class="grey-text darken-4">Project List<i class="material-icons">arrow_forward_ios</i></span>New Project</h4>
+        <h4 class="title"><span class="grey-text darken-4">Projects<i class="material-icons">arrow_forward_ios</i></span><span class="grey-text darken-4">Project List<i class="material-icons">arrow_forward_ios</i></span>Project View</h4>
     </div>
   </div>
  
@@ -20,19 +20,21 @@
 
         <div class="card" style="margin-top: 0px">
           <div class="card-body">
-            <form method="POST" action="{{route('projects.store')}}" enctype="multipart/form-data">
+            <form method="POST" action="{{route('projects.revision')}}" enctype="multipart/form-data">
               @csrf
 
               <div id="details" name="details">
+                <input type="hidden" id="id" name="id" value="{{$projects->id}}">
                 <div class="row">
                   <br>
                     <div class="col s12 m12 l12">
                       <div class="col s12 m12 l12">
                         <div class="input-field col s12 m4 l4">
                             <select id="site_code" name="site_code" required>
-                                 <option value="" disabled selected>Choose Site</option>
                              @foreach ($sites as $s)
-                                 <option value="{{$s->site_code}}">{{$s->site_desc}}</option>
+                                @if($projects->site_code==$s->site_code)
+                                  <option value="{{$s->site_code}}" selected disabled>{{$s->site_desc}}</option>
+                                @endif
                              @endforeach
                             </select>
                            <label for="site_code">Site<sup class="red-text">*</sup></label>
@@ -41,9 +43,10 @@
 
                         <div class="input-field col s12 m4 l4">
                             <select id="customer" name="customer" required>
-                                    <option value="" disabled selected>Choose Customer</option>
                                 @foreach ($customers as $cust)
-                                    <option value="{{$cust->cust_code}}">{{$cust->cust_name}}</option>
+                                  @if($projects->cust_code==$cust->cust_code)
+                                    <option value="{{$cust->cust_code}}" selected>{{$cust->cust_name}}</option>
+                                  @endif
                                 @endforeach
                             </select>
                             <label for="customer">Customer<sup class="red-text">*</sup></label>
@@ -54,56 +57,49 @@
                       <div class="col s12 m12 l12">
                         <div class="input-field col s12 m4 l4">
                             <select id="project_type" name="project_type" required>
-                                    <option value="" disabled selected>Choose Type</option>
-                                    <option value="A">Automation</option>
-                                    <option value="T">Tooling</option>
+                                @if($projects->project_type=="A")
+                                  <option value="A" selected>Automation</option>
+                                @else
+                                  <option value="T" selected>Tooling</option>
+                                @endif
                             </select>
                             <label for="project_type">Project Type<sup class="red-text">*</sup></label>
                             <input type="hidden" id="add_project_type" name="add_project_type">
                         </div>
                         <div class="input-field col s12 m4 l4">
-                            <input type="text" id="project_name" name="project_name" placeholder=" " required/>
+                            <input type="text" id="project_name" name="project_name" placeholder=" " value="{{$projects->project_name}}" readonly required/>
                             <label for="project_name">Project Name<sup class="red-text">*</sup></label>
                             <input type="hidden" id="add_project_name" name="add_project_name">
                         </div>
                         <div class="input-field col s12 m4 l4">
-                            <input type="text" id="project_code" name="project_code" placeholder=" " readonly required/>
+                            <input type="text" id="project_code" name="project_code" placeholder=" " value="{{$projects->project_code}}" readonly required/>
                             <label for="project_code">Project Code<sup class="red-text"></sup></label>
-                            <input type="hidden" id="add_project_code" name="add_project_code">
+                            <input type="hidden" id="add_project_code" name="add_project_code" value="{{$projects->project_code}}" >
                         </div>
                       </div>
 
                       <div class="col s12 m12 l12">
                         <div class="input-field col s12 m4 l4">
                             <select id="sales_order" name="sales_order" required>
-                                    <option value="" disabled selected>Choose Sales Order</option>
+                                    <option value="{{$projects->order_code}}" selected>{{$projects->order_code}}</option>
                             </select>
                             <label for="sales_order">Sales Order<sup class="red-text">*</sup></label>
                             <input type="hidden" id="add_sales_order" name="add_sales_order">
                         </div>
                         <div class="input-field col s12 m4 l4">
                             <select id="product" name="product" required>
-                                 <option value="" disabled selected>Choose Product</option>
+                                 <option value="{{$projects->order_code}}" disabled selected>{{$projects->prod_code}}</option>
                             </select>
                            <label for="product">Product<sup class="red-text">*</sup></label>
                            <input type="hidden" id="add_product" name="add_product">
                         </div>
                         <div class="input-field col s12 m4 l4">
-                            <input type="text" id="quantity" name="quantity" placeholder=" " readonly required/>
+                            <input type="text" id="quantity" name="quantity" placeholder=" " value="{{$projects->quantity}}" readonly required/>
                             <label for="quantity">Quantity<sup class="red-text">*</sup></label>
                             <input type="hidden" id="add_quantity" name="add_quantity">
                         </div>
                       </div>
-  
-                      <div class="row">
-                        <div class="col s12 m6 l6"></div>
-                        <div class="col s12 m3 l3 right-align" style="padding-right: 10px;padding-left: 12px;">
-                          <a id="set" href="#!" onclick="setTable();" class="blue waves-effect waves-dark btn" style="width: 100%"><i class="material-icons left">check_circle</i>Set</a>
-                        </div>
-                        <div class="col s12 m3 l3 right-align" style="padding-right: 30px;padding-left: 0px;">
-                          <a id="reset" href="#!" onclick="resetTable();" class="orange waves-effect waves-dark btn" style="width: 100%" disabled><i class="material-icons left">loop</i>Reset</a>
-                        </div>
-                      </div>
+
    
                       <div class="col s12 m12 l12 row" style="margin-bottom: 0px;">
                         <div id="assy" class="col s12 m12 l12 row" style="margin-bottom: 0px;">
@@ -114,7 +110,8 @@
                 </div>
               </div> 
               
-              <div id="details_footer" class="row" style="display: none">
+              {{-- <div id="details_footer" class="row" style="display: none"> --}}
+              <div id="details_footer" class="row">
                 <div class="col s12 m6 l6"></div>
                 <div class="col s12 m3 l3 right-align" style="padding-bottom: 30px;padding-right: 10px;padding-left: 12px;">
                   <button class="green waves-effect waves-light btn" style="width: 100%"><i class="material-icons left">check_circle</i>Save&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
@@ -313,10 +310,8 @@
         $('#add_change_description').trigger('autoresize');
         $('#add_change_reason').trigger('autoresize');
 
-        $.get('all_items', (response) => {
-          var data = response.data;
-            // console.log(data);
-        });
+        renderProductTable('{{$projects->project_code}}');
+        
     });
 
     $('#site_code').on('change', function(){
@@ -608,7 +603,7 @@
       $('#addModal').modal('close');
       switch (loc) {
         case "mfab":
-          if(checkItem(n_mfab, fab_code, loc) == false){
+          if(checkItem(n_mfab, assy_code, fab_code, loc) == false){
             n_mfab.push({"assy_code":     $('#add_assy_code').val(),
                           "fab_code":     $('#add_fab_code').val(),
                           "fab_desc":     $('#add_description').val(),
@@ -616,6 +611,8 @@
                           "width":        $('#add_item_width').val(),
                           "thickness":    $('#add_item_thickness').val(),
                           "radius":       $('#add_item_radius').val(),
+                          "po_status":    null,
+                          "rcv_status":    null,
                           "loc":          'mfab',
                         });
             renderTable(n_mfab,$('#tbl'+assy_code+'mfab tbody'),loc,assy_code);
@@ -624,7 +621,7 @@
           };
           break;
         case "mstand":
-          if(checkItem(n_mstand, item_code, loc) == false ){
+          if(checkItem(n_mstand, assy_code, item_code, loc) == false ){
             n_mstand.push({"assy_code":   $('#add_assy_code').val(),
                           "item_code":    $('#add_item_code').val(),
                           "description":  $('#add_description').val(),
@@ -633,6 +630,8 @@
                           "width":        $('#add_item_width').val(),
                           "thickness":    $('#add_item_thickness').val(),
                           "radius":       $('#add_item_radius').val(),
+                          "po_status":    null,
+                          "rcv_status":    null,
                           "loc":          'mstand',
                         });                 
             renderTable(n_mstand,$('#tbl'+assy_code+'mstand tbody'),loc,assy_code);
@@ -641,7 +640,7 @@
           };
           break;
         case "fast":
-          if(checkItem(n_fast, item_code, loc) == false ){
+          if(checkItem(n_fast, assy_code, item_code, loc) == false ){
             n_fast.push({"assy_code":      $('#add_assy_code').val(),
                           "item_code":    $('#add_item_code').val(),
                           "description":  $('#add_description').val(),
@@ -650,6 +649,8 @@
                           "width":        $('#add_item_width').val(),
                           "thickness":    $('#add_item_thickness').val(),
                           "radius":       $('#add_item_radius').val(),
+                          "po_status":    null,
+                          "rcv_status":    null,
                           "loc":          'fast',
                         });               
             renderTable(n_fast,$('#tbl'+assy_code+'fast tbody'),loc,assy_code);  
@@ -658,7 +659,7 @@
           };
           break;
         case "pneu":
-          if(checkItem(n_pneu, item_code, loc) == false ){
+          if(checkItem(n_pneu, assy_code, item_code, loc) == false ){
             n_pneu.push({"assy_code":     $('#add_assy_code').val(),
                           "item_code":    $('#add_item_code').val(),
                           "description":  $('#add_description').val(),
@@ -667,6 +668,8 @@
                           "width":        $('#add_item_width').val(),
                           "thickness":    $('#add_item_thickness').val(),
                           "radius":       $('#add_item_radius').val(),
+                          "po_status":    null,
+                          "rcv_status":    null,
                           "loc":          'pneu',
                         });             
             renderTable(n_pneu,$('#tbl'+assy_code+'pneu tbody'),loc,assy_code);
@@ -675,7 +678,7 @@
           };
             break;
         case "elec":
-          if(checkItem(n_elec, item_code, loc) == false ){
+          if(checkItem(n_elec, assy_code, item_code, loc) == false ){
             n_elec.push({"assy_code":     $('#add_assy_code').val(),
                           "item_code":    $('#add_item_code').val(),
                           "description":  $('#add_description').val(),
@@ -684,6 +687,8 @@
                           "width":        $('#add_item_width').val(),
                           "thickness":    $('#add_item_thickness').val(),
                           "radius":       $('#add_item_radius').val(),
+                          "po_status":    '',
+                          "rcv_status":    '',  
                           "loc":          'elec',
                         });         
             renderTable(n_elec,$('#tbl'+assy_code+'elec tbody'),loc,assy_code);
@@ -776,18 +781,16 @@
           footer.style.display = "none";
     };
 
-    const renderProductTable = (prod_code) => {
-      $.get(prod_code+'/assy', (response) => {
+    const renderProductTable = (project_code) => {
+      $.get(project_code+'/edit_assy', (response) => {
             var data = response.data;  
  
                         // collapsible list header
             var coll =  '<div class="col s12 l8 m8"></div>'+
                           '<div class="col s12 l2 m2 right-align">'+
-                            // '<a href="#!" onclick="assyModal();" class="btn-small green darken3 waves-effect waves-dark" style="z-index:=10;position:absolute;right:50;top: 332.5px;padding-right: 10px;padding-left: 10px;border-top-width: 10px;"><i class="white-text material-icons">add_circle</i></a>'+
-                            '<i onclick="assyModal();" class="green-text material-icons" style="z-index:=10;position:absolute;right:55;top: 337.5px;">add_circle</i>'+
+                            '<i onclick="assyModal();" class="green-text material-icons" style="z-index:=10;position:absolute;right:55;top: 280.5px;">add_circle</i>'+
                           '</div>'+
                           '<div class="col s12 l2 m2 right-align">'+
-                            '<i onclick="assyListModal();" class="amber-text material-icons" style="z-index:=10;position:absolute;left:160;top: 337.5px;">loop</i>'+
                           '</div>'+
                         '<h6 style="padding: 10px;padding-top: 10px;margin-bottom: 0em;background-color:#0d47a1;margin-top: 0px;" class="white-text"><b>Assembly List</b></h6>'+
                         // end collapsible list header
@@ -805,6 +808,7 @@
                         '<input type="hidden" name="assy_code[]" value="'+value['assy_code']+'"/>'+
                         '<input type="hidden" name="assy_desc[]" value="'+value['assy_desc']+'"/>';
                     coll += '<div class="collapsible-header">'+value['assy_code']+' - '+value['assy_desc']+'<i onclick="delAssyModal(\''+value['assy_code']+'\');" class="red-text material-icons" style="z-index:=10; position:absolute;right:38;">cancel</i></div>';
+                    // coll += '<div class="collapsible-header">'+value['assy_code']+' - '+value['assy_desc']+'</div>';
                     coll += '<div class="collapsible-body">'+
                                 '<span>'+
                                     // tabs header
@@ -926,7 +930,7 @@
                 // end collapsible list
 
                 // mech-fab table
-                $.get(value['assy_code']+'/fab', (response) => {
+                $.get(value['project_code']+'/'+value['assy_code']+'/fab', (response) => {
                     var fab = response.data;
                     var div = '<div class="col s12 m3 l3 right-align" style="padding-right: 10px;padding-left: 10px; margin-top: 10px; margin-bottom: 20px">'+
                                 '<a onclick="showModal(\'Add Mechanical Fabrication\',\''+value['assy_code']+'\');" class="teal waves-effect waves-dark btn modal-trigger" style="width: 100%"><i class="material-icons left">add_circle</i>Add Item(s)</a>'+
@@ -947,14 +951,17 @@
                                       '</thead>'+
                                     '<tbody>';
                     $.each(fab, function(index, value){
-                        div +=  '<tr>'+
+                        // if(value['po_status']!='' && value['po_status']!=null || value['rcv_status']!='' && value['rcv_status']!=null)
+                        if( value['po_status']!=null || value['rcv_status']!=null)
+                        {
+                          div +=  '<tr>'+
                                     '<td class="left-align">'+value['fab_code']+'</td>'+
                                     '<td class="left-align">'+value['fab_desc']+'</td>'+
                                     '<td class="left-align">'+value['length']+'</td>'+
                                     '<td class="left-align">'+value['width']+'</td>'+
                                     '<td class="left-align">'+value['thickness']+'</td>'+
                                     '<td class="left-align">'+value['radius']+'</td>'+
-                                    '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="delItemModal(\''+index+'\',\'mfab\',\''+value['assy_code']+'\',)"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                                    '<td><button type="button" class="btn-small red waves-effect waves-light" disabled><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
                                     '<input type="hidden" name="fab_assy_code[]" value="'+value['assy_code']+'"/>'+
                                     '<input type="hidden" name="fab_code[]" value="'+value['fab_code']+'"/>'+
                                     '<input type="hidden" name="fab_desc[]" value="'+value['fab_desc']+'"/>'+
@@ -963,16 +970,39 @@
                                     '<input type="hidden" name="fab_thickness[]" value="'+value['thickness']+'"/>'+
                                     '<input type="hidden" name="fab_radius[]" value="'+value['radius']+'"/>'+
                                 '</tr>';
-                      n_mfab.push({
-                                    "assy_code":    value['assy_code'],
-                                    "fab_code":     value['fab_code'],
-                                    "fab_desc":     value['fab_desc'],
-                                    "length":       value['length'],
-                                    "width":        value['width'],
-                                    "thickness":    value['thickness'],
-                                    "radius":       value['radius'],
-                                    "loc":          'mfab',
-                                    });
+                        }
+                        else
+                        {
+                          div +=  '<tr>'+
+                                      '<td class="left-align">'+value['fab_code']+'</td>'+
+                                      '<td class="left-align">'+value['fab_desc']+'</td>'+
+                                      '<td class="left-align">'+value['length']+'</td>'+
+                                      '<td class="left-align">'+value['width']+'</td>'+
+                                      '<td class="left-align">'+value['thickness']+'</td>'+
+                                      '<td class="left-align">'+value['radius']+'</td>'+
+                                      '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="delItemModal(\''+index+'\',\'mfab\',\''+value['assy_code']+'\',)"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                                      '<input type="hidden" name="fab_assy_code[]" value="'+value['assy_code']+'"/>'+
+                                      '<input type="hidden" name="fab_code[]" value="'+value['fab_code']+'"/>'+
+                                      '<input type="hidden" name="fab_desc[]" value="'+value['fab_desc']+'"/>'+
+                                      '<input type="hidden" name="fab_length[]" value="'+value['length']+'"/>'+
+                                      '<input type="hidden" name="fab_width[]" value="'+value['width']+'"/>'+
+                                      '<input type="hidden" name="fab_thickness[]" value="'+value['thickness']+'"/>'+
+                                      '<input type="hidden" name="fab_radius[]" value="'+value['radius']+'"/>'+
+                                  '</tr>';
+                        }
+                        
+                        n_mfab.push({
+                                      "assy_code":    value['assy_code'],
+                                      "fab_code":     value['fab_code'],
+                                      "fab_desc":     value['fab_desc'],
+                                      "length":       value['length'],
+                                      "width":        value['width'],
+                                      "thickness":    value['thickness'],
+                                      "radius":       value['radius'],
+                                      "po_status":    value['po_status'],
+                                      "rcv_status":   value['rcv_status'],
+                                      "loc":          'mfab',
+                                      });
                     });
                         div +=  '</tbody>'+
                                 '</table>'+
@@ -982,63 +1012,207 @@
                     $('#assy_tab'+value['assy_code']).tabs();
                 });
                 // end mech-fab table
+
+      
             });
 
             coll += '</ul>';
             $('#assy').html("");
             $('#assy').append(coll);
+            
+            // adtl table
+            $.get(project_code+'/adtl', (response) => {
+              var data = response.data;
+              $.each(data, function(index, value){   
+              renderItems(value['location'],
+                          value['assy_code'],
+                          value['item_code'],
+                          value['item_desc'],
+                          value['uom_code'],
+                          value['length'],
+                          value['width'],
+                          value['thickness'],
+                          value['radius'],
+                          null,
+                          null);
+              });
+            });
+            // end adtl table
+
             $('.collapsible').collapsible();
         });  
+    };
+
+    const renderItems = (loc, assy_code, item_code, item_desc, item_uom, item_length, item_width, item_thickness, item_radius, po_status, rcv_status) => {       
+      switch (loc) {
+        case "mstand":
+            n_mstand.push({"assy_code":   assy_code,
+                          "item_code":    item_code,
+                          "description":  item_desc,
+                          "uom_code":     item_uom,
+                          "length":       item_length,
+                          "width":        item_width,
+                          "thickness":    item_thickness,
+                          "radius":       item_radius,
+                          "po_status":    po_status,
+                          "rcv_status":   rcv_status,
+                          "loc":          'mstand',
+                        });                 
+            renderTable(n_mstand,$('#tbl'+assy_code+'mstand tbody'),loc,assy_code);
+          
+          break;
+        case "fast":
+            n_fast.push({"assy_code":   assy_code,
+                          "item_code":    item_code,
+                          "description":  item_desc,
+                          "uom_code":     item_uom,
+                          "length":       item_length,
+                          "width":        item_width,
+                          "thickness":    item_thickness,
+                          "radius":       item_radius,
+                          "po_status":    po_status,
+                          "rcv_status":   rcv_status,
+                          "loc":          'fast',
+                        });               
+            renderTable(n_fast,$('#tbl'+assy_code+'fast tbody'),loc,assy_code);  
+          break;
+        case "pneu":
+            n_pneu.push({"assy_code":   assy_code,
+                          "item_code":    item_code,
+                          "description":  item_desc,
+                          "uom_code":     item_uom,
+                          "length":       item_length,
+                          "width":        item_width,
+                          "thickness":    item_thickness,
+                          "radius":       item_radius,
+                          "po_status":    po_status,
+                          "rcv_status":   rcv_status,
+                          "loc":          'pneu',
+                        });             
+            renderTable(n_pneu,$('#tbl'+assy_code+'pneu tbody'),loc,assy_code);
+            break;
+        case "elec":
+            n_elec.push({"assy_code":   assy_code,
+                          "item_code":    item_code,
+                          "description":  item_desc,
+                          "uom_code":     item_uom,
+                          "length":       item_length,
+                          "width":        item_width,
+                          "thickness":    item_thickness,
+                          "radius":       item_radius,
+                          "po_status":    po_status,
+                          "rcv_status":   rcv_status,
+                          "loc":          'elec',
+                        });         
+            renderTable(n_elec,$('#tbl'+assy_code+'elec tbody'),loc,assy_code);      
+          break;
+      };
+     
     };
 
     const renderTable = (items, table, loc, assy_code) => {
       table.html("");
       if(loc=='mfab'){
         $.each(items, (index,row) => {
-        if(row.loc==loc && row.assy_code==assy_code){
-          table.append('<tr>'+
-                      '<td class="left-align">'+row.fab_code+'</td>'+
-                      '<td class="left-align">'+row.fab_desc+'</td>'+
-                      '<td class="left-align">'+row.length+'</td>'+
-                      '<td class="left-align">'+row.width+'</td>'+
-                      '<td class="left-align">'+row.thickness+'</td>'+
-                      '<td class="left-align">'+row.radius+'</td>'+
-                      '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="delItemModal(\''+index+'\',\''+loc+'\',\''+assy_code+'\',)"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
-                      '<input type="hidden" name="fab_assy_code[]" value="'+assy_code+'"/>'+
-                      '<input type="hidden" name="fab_code[]" value="'+row.fab_code+'"/>'+
-                      '<input type="hidden" name="fab_desc[]" value="'+row.fab_desc+'"/>'+
-                      '<input type="hidden" name="fab_length[]" value="'+row.length+'"/>'+
-                      '<input type="hidden" name="fab_width[]" value="'+row.width+'"/>'+
-                      '<input type="hidden" name="fab_thickness[]" value="'+row.thickness+'"/>'+
-                      '<input type="hidden" name="fab_radius[]" value="'+row.radius+'"/>'+
-                    '</tr>'
-                    );
+          if(row.loc==loc && row.assy_code==assy_code){
+            if(  row.po_status!=null ||  row.rcv_status!=null)
+            // if( row.po_status!=null ||   row.rcv_status!=null)
+            {
+              table.append('<tr>'+
+                          '<td class="left-align">'+row.fab_code+'</td>'+
+                          '<td class="left-align">'+row.fab_desc+'</td>'+
+                          '<td class="left-align">'+row.length+'</td>'+
+                          '<td class="left-align">'+row.width+'</td>'+
+                          '<td class="left-align">'+row.po_status+'</td>'+
+                          '<td class="left-align">'+row.rcv_status+'</td>'+
+                          '<td><button type="button" class="btn-small red waves-effect waves-light" disabled><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                          '<input type="hidden" name="fab_assy_code[]" value="'+assy_code+'"/>'+
+                          '<input type="hidden" name="fab_code[]" value="'+row.fab_code+'"/>'+
+                          '<input type="hidden" name="fab_desc[]" value="'+row.fab_desc+'"/>'+
+                          '<input type="hidden" name="fab_length[]" value="'+row.length+'"/>'+
+                          '<input type="hidden" name="fab_width[]" value="'+row.width+'"/>'+
+                          '<input type="hidden" name="fab_thickness[]" value="'+row.thickness+'"/>'+
+                          '<input type="hidden" name="fab_radius[]" value="'+row.radius+'"/>'+
+                          '<input type="hidden" name="fab_po_status[]" value="'+row.po_status+'"/>'+
+                          '<input type="hidden" name="fab_rcv_status[]" value="'+row.rcv_status+'"/>'+
+                        '</tr>'
+                        );
+            } else {
+              table.append('<tr>'+
+                          '<td class="left-align">'+row.fab_code+'</td>'+
+                          '<td class="left-align">'+row.fab_desc+'</td>'+
+                          '<td class="left-align">'+row.length+'</td>'+
+                          '<td class="left-align">'+row.width+'</td>'+
+                          '<td class="left-align">'+row.po_status+'</td>'+
+                          '<td class="left-align">'+row.rcv_status+'</td>'+
+                          '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="delItemModal(\''+index+'\',\''+loc+'\',\''+assy_code+'\',)"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                          '<input type="hidden" name="fab_assy_code[]" value="'+assy_code+'"/>'+
+                          '<input type="hidden" name="fab_code[]" value="'+row.fab_code+'"/>'+
+                          '<input type="hidden" name="fab_desc[]" value="'+row.fab_desc+'"/>'+
+                          '<input type="hidden" name="fab_length[]" value="'+row.length+'"/>'+
+                          '<input type="hidden" name="fab_width[]" value="'+row.width+'"/>'+
+                          '<input type="hidden" name="fab_thickness[]" value="'+row.thickness+'"/>'+
+                          '<input type="hidden" name="fab_radius[]" value="'+row.radius+'"/>'+
+                          '<input type="hidden" name="fab_po_status[]" value="'+row.po_status+'"/>'+
+                          '<input type="hidden" name="fab_rcv_status[]" value="'+row.rcv_status+'"/>'+
+                        '</tr>'
+                        );
+            }
           }
         });
       } else {
          
         $.each(items, (index,row) => {
         if(row.loc==loc && row.assy_code==assy_code){
-          table.append('<tr>'+
-                      '<td class="left-align">'+row.item_code+'</td>'+
-                      '<td class="left-align">'+row.description+'</td>'+
-                      '<td class="left-align">'+row.uom_code+'</td>'+
-                      '<td class="left-align">'+row.length+'</td>'+
-                      '<td class="left-align">'+row.width+'</td>'+
-                      '<td class="left-align">'+row.thickness+'</td>'+
-                      '<td class="left-align">'+row.radius+'</td>'+
-                      '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="delItemModal(\''+index+'\',\''+loc+'\',\''+assy_code+'\',)"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
-                      '<input type="hidden" name="item_assy_code[]" value="'+assy_code+'"/>'+
-                      '<input type="hidden" name="item_code[]" value="'+row.item_code+'"/>'+
-                      '<input type="hidden" name="item_desc[]" value="'+row.description+'"/>'+
-                      '<input type="hidden" name="item_uom[]" value="'+row.uom_code+'"/>'+
-                      '<input type="hidden" name="item_length[]" value="'+row.length+'"/>'+
-                      '<input type="hidden" name="item_width[]" value="'+row.width+'"/>'+
-                      '<input type="hidden" name="item_thickness[]" value="'+row.thickness+'"/>'+
-                      '<input type="hidden" name="item_radius[]" value="'+row.radius+'"/>'+
-                      '<input type="hidden" name="item_loc[]" value="'+loc+'"/>'+
-                    '</tr>'
-                    );
+            if( row.po_status!=null || row.rcv_status!=null)
+            // if(  row.po_status!=null ||   row.rcv_status!=null)
+            {
+              table.append('<tr>'+
+                          '<td class="left-align">'+row.item_code+'</td>'+
+                          '<td class="left-align">'+row.description+'</td>'+
+                          '<td class="left-align">'+row.uom_code+'</td>'+
+                          '<td class="left-align">'+row.length+'</td>'+
+                          '<td class="left-align">'+row.width+'</td>'+
+                          '<td class="left-align">'+row.thickness+'</td>'+
+                          '<td class="left-align">'+row.radius+'</td>'+
+                          '<td><button type="button" class="btn-small red waves-effect waves-light" disabled><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                          '<input type="hidden" name="item_assy_code[]" value="'+assy_code+'"/>'+
+                          '<input type="hidden" name="item_code[]" value="'+row.item_code+'"/>'+
+                          '<input type="hidden" name="item_desc[]" value="'+row.description+'"/>'+
+                          '<input type="hidden" name="item_uom[]" value="'+row.uom_code+'"/>'+
+                          '<input type="hidden" name="item_length[]" value="'+row.length+'"/>'+
+                          '<input type="hidden" name="item_width[]" value="'+row.width+'"/>'+
+                          '<input type="hidden" name="item_thickness[]" value="'+row.thickness+'"/>'+
+                          '<input type="hidden" name="item_radius[]" value="'+row.radius+'"/>'+
+                          '<input type="hidden" name="item_loc[]" value="'+loc+'"/>'+
+                          '<input type="hidden" name="item_po_status[]" value="'+row.po_status+'"/>'+
+                          '<input type="hidden" name="item_rcv_status[]" value="'+row.rcv_status+'"/>'+
+                        '</tr>'
+                        );
+            } else {
+              table.append('<tr>'+
+                          '<td class="left-align">'+row.item_code+'</td>'+
+                          '<td class="left-align">'+row.description+'</td>'+
+                          '<td class="left-align">'+row.uom_code+'</td>'+
+                          '<td class="left-align">'+row.length+'</td>'+
+                          '<td class="left-align">'+row.width+'</td>'+
+                          '<td class="left-align">'+row.thickness+'</td>'+
+                          '<td class="left-align">'+row.radius+'</td>'+
+                          '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="delItemModal(\''+index+'\',\''+loc+'\',\''+assy_code+'\',)"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                          '<input type="hidden" name="item_assy_code[]" value="'+assy_code+'"/>'+
+                          '<input type="hidden" name="item_code[]" value="'+row.item_code+'"/>'+
+                          '<input type="hidden" name="item_desc[]" value="'+row.description+'"/>'+
+                          '<input type="hidden" name="item_uom[]" value="'+row.uom_code+'"/>'+
+                          '<input type="hidden" name="item_length[]" value="'+row.length+'"/>'+
+                          '<input type="hidden" name="item_width[]" value="'+row.width+'"/>'+
+                          '<input type="hidden" name="item_thickness[]" value="'+row.thickness+'"/>'+
+                          '<input type="hidden" name="item_radius[]" value="'+row.radius+'"/>'+
+                          '<input type="hidden" name="item_loc[]" value="'+loc+'"/>'+
+                          '<input type="hidden" name="item_po_status[]" value="'+row.po_status+'"/>'+
+                          '<input type="hidden" name="item_rcv_status[]" value="'+row.rcv_status+'"/>'+
+                        '</tr>'
+                        );
+            }
           }
         });
       }
@@ -1228,7 +1402,7 @@
         $('#delAssyModal').modal('close');
     };
 
-
+    // function end
 
  
 

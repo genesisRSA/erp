@@ -1195,7 +1195,7 @@ class DrawingsController extends Controller
                         ]);
                         $curr_seq += 1;
                         array_splice($matrix,0,1);
-                        $drawing_app->status = $next_status;
+                        $drawing_app->status = 'Approved';
                         $drawing_app->approved_by = $curr_app;
                         $revNo = $request->input('revision_no') ? $request->input('revision_no') : 0;
                         $revNoH = $request->input('revision_no_h') ? $request->input('revision_no_h') : 0;

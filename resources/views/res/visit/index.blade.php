@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    @if($permission[0]["add"]==true)
+    @if($permission[0]["add"]==true || $permission[0]["masterlist"]==true)
         <a href="{{ route('visit.create') }}" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button"  data-position="left" data-tooltip="Add Sales Visit Details"><i class="material-icons">add</i></a>
     @endif
 

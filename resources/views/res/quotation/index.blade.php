@@ -10,7 +10,7 @@
 
     <ul id="quotation_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
       <li class="tab col s12 m4 l4"><a class="active" href="#ongoing">Sales Quotation</a></li>
-      @if($permission[0]["approval"]==true)
+      @if($permission[0]["approval"]==true || $permission[0]["masterlist"]==true)
       <li class="tab col s12 m4 l4"><a href="#approval">For Approval</a></li>
       @endif
     </ul>
@@ -33,12 +33,12 @@
             </table>
           </div>
       </div>
-      @if($permission[0]["add"]==true)
+      @if($permission[0]["add"]==true || $permission[0]["masterlist"]==true)
       <a href="#askModal" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped modal-trigger" id="add-button"  data-position="left" data-tooltip="Add Sales Quotation"><i class="material-icons">add</i></a>
       @endif
     </div>
 
-    @if($permission[0]["approval"]==true)
+    @if($permission[0]["approval"]==true || $permission[0]["masterlist"]==true)
     <div id="approval" name="approval">
         <div class="card" style="margin-top: 0px">
           <div class="card-content">
@@ -2568,7 +2568,7 @@
             {
                 "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  @if($permission[0]["view"]==true)
+                  @if($permission[0]["view"]==true || $permission[0]["masterlist"]==true)
                     return  '<a href="#" onclick="viewItem('+data+'), getApproverMatrix('+row.id+',\'v\')">'+row.quot_code+'</a>';
                   @else
                     return row.quot_code;
@@ -2642,7 +2642,7 @@
         ]
     });
 
-    @if($permission[0]["approval"]==true)
+    @if($permission[0]["approval"]==true || $permission[0]["masterlist"]==true)
     var quotapproval = $('#approval-dt').DataTable({
         "lengthChange": false,
         "pageLength": 15,

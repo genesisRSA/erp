@@ -41,7 +41,7 @@
   <script type="text/javascript" src="http://code.jquery.com/jquery-3.4.1.js"></script> 
   <script type="text/javascript" src="{{ asset('datatables/datatables.js') }}"></script>
   <script type="text/javascript">
-    var procedures = $('#projects-dt').DataTable({
+    var projects = $('#projects-dt').DataTable({
           "lengthChange": false,
           "pageLength": 15,
           "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
@@ -51,13 +51,12 @@
               {  "data": "id" },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    // return '<a href="procedure/view/'+data+'/procedures">'+ row.document_no +'</a>';
                     return row.order_code;
                   }
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return row.project_code;
+                    return '<a href="projects/view/'+data+'">'+ row.project_code +'</a>';
                   }
               },
               {  "data": "id",
@@ -110,12 +109,14 @@
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
                     
-                    if(row.status=='Created' || row.status=='Received')
-                    {
-                      return  '<a href="procedure/revise/'+row.id+'" class="btn-small amber darken3 waves-effect waves-dark"><i class="material-icons">create</i></a>';
-                    } else {
-                      return  '<a href="#!" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a>';
-                    }
+                    // if(row.status=='Created' || row.status=='Received')
+                    // {
+                    //   return  '<a href="procedure/revise/'+row.id+'" class="btn-small amber darken3 waves-effect waves-dark"><i class="material-icons">create</i></a>';
+                    // } else {
+                    //   return  '<a href="#!" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a>';
+                    // }
+
+                    return  '<a href="projects/edit/'+data+'" class="btn-small amber darken3 waves-effect waves-dark"><i class="material-icons">create</i></a>';
 
                   }
               }

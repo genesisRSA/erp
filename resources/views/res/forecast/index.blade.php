@@ -11,7 +11,7 @@
     {{-- <ul id="tabs-swipe-demo" class="tabs"> --}}
     <ul id="forecast_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
       <li class="tab col s12 m4 l4"><a class="active" href="#ongoing">Sales Forecasts</a></li>
-      @if($permission[0]["approval"]==true)
+      @if($permission[0]["approval"]==true || $permission[0]["masterlist"]==true)
       <li class="tab col s12 m4 l4"><a href="#approval">For Approval</a></li>
       @endif
     </ul>
@@ -35,12 +35,12 @@
           </div>
       </div>
       
-    @if($permission[0]["add"]==true)
+    @if($permission[0]["add"]==true || $permission[0]["masterlist"]==true)
       <a href="#addModal" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped modal-trigger" id="add-button"  onclick="getApprover('{{Auth::user()->emp_no}}','add','Sales Forecast');" data-position="left" data-tooltip="Add Sales Forecast"><i class="material-icons">add</i></a>
     @endif
     </div>
 
-    @if($permission[0]["approval"]==true)
+    @if($permission[0]["approval"]==true || $permission[0]["masterlist"]==true)
     <div id="approval" name="approval">
         <div class="card" style="margin-top: 0px">
           <div class="card-content">
@@ -1227,7 +1227,7 @@
     });
 
     
-    @if($permission[0]["approval"]==true)
+    @if($permission[0]["approval"]==true || $permission[0]["masterlist"]==true)
     var approvaldt = $('#approval-dt').DataTable({
         "lengthChange": false,
         "pageLength": 15,

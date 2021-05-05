@@ -42,6 +42,7 @@
               <option value="Sales Forecast">Sales Forecast</option>
               <option value="Sales Quotation">Sales Quotation</option>
               <option value="Sales Visit">Sales Visit</option>
+              <option value="Sales Order">Sales Order</option>
               <option value="Procedures">Procedures</option>
               <option value="Drawings">Drawings</option>
             </select>
@@ -139,6 +140,7 @@
               <option value="Sales Forecast">Sales Forecast</option>
               <option value="Sales Quotation">Sales Quotation</option>
               <option value="Sales Visit">Sales Visit</option>
+              <option value="Sales Order">Sales Order</option>
               <option value="Procedures">Procedures</option>
               <option value="Drawings">Drawings</option>
             </select>

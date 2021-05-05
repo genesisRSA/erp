@@ -27,7 +27,7 @@
               <thead>
                 <tr>
                     <th>ID</th> 
-                    <th>Drawing No.</th>
+                    <th>J.O No.</th>
                     <th>Part Name</th>
                     <th>ECN No.</th>
                   <th>Revision No.</th>
@@ -52,7 +52,7 @@
               <thead>
                 <tr>
                     <th>ID</th> 
-                    <th>Drawing No.</th>
+                    <th>J.O No.</th>
                     <th>Date Requested</th>
                     <th>Requested By</th>
                     <th>Part Name</th>
@@ -76,7 +76,7 @@
               <thead>
                 <tr>
                   <th>ID</th> 
-                  <th>Document No.</th>
+                  <th>J.O No.</th>
                   <th>Date Requested</th>
                   <th>Requested By</th>
                   <th>Document Title</th>
@@ -105,7 +105,7 @@
               <thead>
                 <tr>
                     <th>ID</th> 
-                    <th>Document No.</th>
+                    <th>J.O No.</th>
                     <th>Date Requested</th>
                     <th>Requested By</th>
                     <th>Document Title</th>
@@ -127,7 +127,7 @@
             <thead>
               <tr>
                   <th>ID</th> 
-                  <th>Document No.</th>     
+                  <th>J.O No.</th>     
                   <th>Designer</th>
                   <th>Copy Owner</th>
                   <th>Document Title</th>
