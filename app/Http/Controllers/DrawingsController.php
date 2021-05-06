@@ -453,6 +453,13 @@ class DrawingsController extends Controller
             $drawing->status = 'Created';           
             
 
+            $assyfab = AssemblyFab::where('project_code',$drawing->project_code)
+                                    ->where('assy_code',$drawing->assy_code)
+                                    ->where('fab_code',$drawing->fab_code)
+                                    ->first();
+                                    
+            $assyfab->dwg_status = date('Y-m-d H:i:s');
+        
             if($revCount>=1)
             {
                 $drawing_obs = Drawing::where('drawing_no','=',$request->input('drawing_no'))
@@ -495,6 +502,7 @@ class DrawingsController extends Controller
 
             if($master->save()){
                 $drawing->save();
+                $assyfab->save();
                 return redirect()->route('drawing.index', ['#master'])->withSuccess('Master Copy Successfully Created');
             }
         }
@@ -763,6 +771,8 @@ class DrawingsController extends Controller
         ->json([
             "data" => AssemblyFab::where('project_code',$project_code)
                                     ->where('assy_code',$assy_code)
+                                    ->where('dwg_status',null)
+                                    // ->where('dwg_status'<>null)
                                     ->get()
         ]);
     }
@@ -791,14 +801,17 @@ class DrawingsController extends Controller
     {    
         $drawing = Drawing::find($id);
         $employee = Employee::where('emp_no','=',$drawing->created_by)->first();
-        $drawings = Drawing::where('drawing_no','=',$drawing->drawing_no) 
-                                ->where('revision_no','=',$drawing->revision_no)
-                                ->where('ecn_code','=',$drawing->ecn_code)
-                                ->first();           
-        $customer = Customer::where('cust_code','=',$drawings->cust_code)->first();
-        // $project  = Project::where('project_code','=',$drawings->project_code)->first();
-        $assy = Assembly::where('assy_code','=',$drawings->assy_code)->first();
-        $fab = Fabrication::where('fab_code','=',$drawings->fab_code)->first();
+               
+        $customer = Customer::where('cust_code','=',$drawing->cust_code)->first();
+        $project  = Project::where('project_code','=',$drawing->project_code)->first();
+        $assy = ProjectAssembly::where('project_code','=',$drawing->project_code)
+                                ->where('assy_code','=',$drawing->assy_code)
+                                ->first();
+
+        $fab = AssemblyFab::where('project_code','=',$drawing->project_code)
+                            ->where('assy_code','=',$drawing->assy_code)
+                            ->where('fab_code','=',$drawing->fab_code)
+                            ->first();
                         
  
         return view('res.drawing.master')
@@ -808,9 +821,9 @@ class DrawingsController extends Controller
                 ->with('idx', $id) 
                 ->with('loc', $loc)
                 ->with('employee', $employee)
-                ->with('drawings', $drawings)
+                ->with('drawings', $drawing)
                 ->with('customer', $customer)
-                // ->with('project', $project)
+                ->with('project', $project)
                 ->with('assy', $assy)
                 ->with('fab', $fab);
  
@@ -829,9 +842,15 @@ class DrawingsController extends Controller
                                     ->first();
         $employee =     Employee::where('emp_no','=',$drawings->created_by)->first();
         $customer = Customer::where('cust_code','=',$drawings->cust_code)->first();
-        // $project  = Project::where('project_code','=',$drawings->project_code)->first();
-        $assy = Assembly::where('assy_code','=',$drawings->assy_code)->first();
-        $fab = Fabrication::where('fab_code','=',$drawings->fab_code)->first();
+        $project  = Project::where('project_code','=',$drawings->project_code)->first();
+        $assy = ProjectAssembly::where('project_code','=',$drawings->project_code)
+        ->where('assy_code','=',$drawings->assy_code)
+        ->first();
+
+        $fab = AssemblyFab::where('project_code','=',$drawings->project_code)
+            ->where('assy_code','=',$drawings->assy_code)
+            ->where('fab_code','=',$drawings->fab_code)
+            ->first();
 
         $copyCount =    DrawingsControlledCopy::where('drawing_no','=',$drawing->drawing_no)
                                     ->where('revision_no','=',$drawing->revision_no)
@@ -863,7 +882,7 @@ class DrawingsController extends Controller
                 ->with('department', $department)
                 ->with('deptx', $deptx)
                 ->with('customer', $customer)
-                // ->with('project', $project)
+                ->with('project', $project)
                 ->with('assy', $assy)
                 ->with('fab', $fab);
     }

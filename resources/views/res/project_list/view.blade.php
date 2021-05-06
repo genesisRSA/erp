@@ -986,19 +986,16 @@
                                     '<td class="left-align">'+value['thickness']+'</td>'+
                                     '<td class="left-align">'+value['radius']+'</td>'+
                                       
-                                    '<td class="left-align">'+(value['dwg_status'] == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+value['dwg_status']+'</span>')+'</td>'+
+                                    '<td class="left-align">'+(value['dwg_status'] == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : (value['dwg_status'] == "null" ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+value['dwg_status']+'</span>'))+'</td>'+
 
+                                    '<td class="left-align">'+(value['bom_status'] == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : (value['bom_status'] == "null" ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+value['bom_status']+'</span>'))+'</td>'+
 
-                                    '<td class="left-align">'+(value['bom_status'] == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+value['bom_status']+'</span>')+'</td>'+
+                                    '<td class="left-align">'+(value['pr_status'] == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : (value['pr_status'] == "null" ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+value['pr_status']+'</span>'))+'</td>'+
 
+                                    '<td class="left-align">'+(value['po_status'] == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : (value['po_status'] == "null" ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+value['po_status']+'</span>'))+'</td>'+
 
-                                    '<td class="left-align">'+(value['pr_status'] == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+value['pr_status']+'</span>')+'</td>'+
+                                    '<td class="left-align">'+(value['rcv_status'] == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : (value['rcv_status'] == "null" ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+value['rcv_status']+'</span>'))+'</td>'+
 
-
-                                    '<td class="left-align">'+(value['po_status'] == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+value['po_status']+'</span>')+'</td>'+
-
-
-                                    '<td class="left-align">'+(value['rcv_status'] == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+value['rcv_status']+'</span>')+'</td>'+
 
                                 '</tr>';
                  
@@ -1096,7 +1093,6 @@
             renderTable(n_elec,$('#tbl'+assy_code+'elec tbody'),loc,assy_code);      
           break;
       };
-     
     };
 
     const renderTable = (items, table, loc, assy_code) => {
@@ -1112,15 +1108,15 @@
                       '<td class="left-align">'+row.thickness+'</td>'+
                       '<td class="left-align">'+row.radius+'</td>'+
 
-                      '<td class="left-align">'+(row.dwg_status == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+row.dwg_status+'</span>')+'</td>'+
+                      '<td class="left-align">'+(row.dwg_status == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : (row.dwg_status == "null" ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+row.dwg_status+'</span>'))+'</td>'+
 
-                      '<td class="left-align">'+(row.bom_status == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+row.bom_status+'</span>')+'</td>'+
+                      '<td class="left-align">'+(row.bom_status == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : (row.bom_status == "null" ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+row.bom_status+'</span>'))+'</td>'+
 
-                      '<td class="left-align">'+(row.pr_status == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+row.pr_status+'</span>')+'</td>'+
+                      '<td class="left-align">'+(row.pr_status == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : (row.pr_status == "null" ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+row.pr_status+'</span>'))+'</td>'+
 
-                      '<td class="left-align">'+(row.po_status == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+row.po_status+'</span>')+'</td>'+
+                      '<td class="left-align">'+(row.po_status == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : (row.po_status == "null" ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+row.po_status+'</span>'))+'</td>'+
 
-                      '<td class="left-align">'+(row.rcv_status == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+row.rcv_status+'</span>')+'</td>'+
+                      '<td class="left-align">'+(row.rcv_status == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : (row.rcv_status == "null" ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+row.rcv_status+'</span>'))+'</td>'+
 
                     '</tr>'
                     );
@@ -1139,15 +1135,16 @@
                       '<td class="left-align">'+row.thickness+'</td>'+
                       '<td class="left-align">'+row.radius+'</td>'+
 
-                      '<td class="left-align">'+(row.dwg_status == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+row.dwg_status+'</span>')+'</td>'+
+                      '<td class="left-align">'+(row.dwg_status == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : (row.dwg_status == "null" ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+row.dwg_status+'</span>'))+'</td>'+
 
-                      '<td class="left-align">'+(row.bom_status == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+row.bom_status+'</span>')+'</td>'+
+                      '<td class="left-align">'+(row.bom_status == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : (row.bom_status == "null" ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+row.bom_status+'</span>'))+'</td>'+
 
-                      '<td class="left-align">'+(row.pr_status == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+row.pr_status+'</span>')+'</td>'+
+                      '<td class="left-align">'+(row.pr_status == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : (row.pr_status == "null" ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+row.pr_status+'</span>'))+'</td>'+
 
-                      '<td class="left-align">'+(row.po_status == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+row.po_status+'</span>')+'</td>'+
+                      '<td class="left-align">'+(row.po_status == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : (row.po_status == "null" ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+row.po_status+'</span>'))+'</td>'+
 
-                      '<td class="left-align">'+(row.rcv_status == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+row.rcv_status+'</span>')+'</td>'+
+                      '<td class="left-align">'+(row.rcv_status == null ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : (row.rcv_status == "null" ? '<span class="new badge blue white-text" data-badge-caption="">Pending</span>' : '<span class="new badge green white-text" data-badge-caption="">'+row.rcv_status+'</span>'))+'</td>'+
+
  
                     '</tr>'
                     );
@@ -1339,10 +1336,6 @@
         listItem.remove();
         $('#delAssyModal').modal('close');
     };
-
-
-
- 
 
   </script>
 

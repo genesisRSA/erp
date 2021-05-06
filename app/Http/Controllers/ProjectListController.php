@@ -61,10 +61,27 @@ class ProjectListController extends Controller
         $data = Project::where('created_by','=',$idx)
                         ->with('customers:cust_code,cust_name')
                         ->get();
+ 
+        $arr_data = array();
+        foreach($data as $datax)
+        {
+            array_push($arr_data, [
+                        "id" => Crypt::encrypt($datax["id"]),
+                        "order_code" => $datax["order_code"],
+                        "project_code" => $datax["project_code"],
+                        "project_name" => $datax["project_name"],
+                        "status" => $datax["status"],
+                        "customers" => $datax["customers"],
+            ]);
+        }
+        
 
+
+        // return $data;
+        
         return response()
         ->json([
-            "data" => $data
+            "data" => $arr_data
         ]); 
     }
 
@@ -302,7 +319,7 @@ class ProjectListController extends Controller
         $assembly = Assembly::all();
         $uom = UnitOfMeasure::all();
         $items = ItemMaster::all();
-        $project = Project::where('id', $id)->first();
+        $project = Project::where('id', Crypt::decrypt($id))->first();
         $sales = json_decode($salesorder, true);
 
         $site = Site::where('site_code','=',$employee->site_code)->get();
@@ -371,7 +388,7 @@ class ProjectListController extends Controller
         $assembly = Assembly::all();
         $uom = UnitOfMeasure::all();
         $items = ItemMaster::all();
-        $project = Project::where('id', $id)->first();
+        $project = Project::where('id', Crypt::decrypt($id))->first();
         $sales = json_decode($salesorder, true);
 
         $site = Site::where('site_code','=',$employee->site_code)->get();

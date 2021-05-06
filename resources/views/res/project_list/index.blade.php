@@ -17,7 +17,7 @@
             <table class="responsive-table highlight" id="projects-dt" style="width: 100%">
               <thead>
                 <tr>
-                    <th>ID</th> 
+                    {{-- <th>ID</th>  --}}
                     <th>Order No.</th>
                     <th>Project Code</th>
                     <th>Project Name</th>
@@ -48,7 +48,7 @@
           "pagingType": "full",
           "ajax": "/api/reiss/projects/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
           "columns": [
-              {  "data": "id" },
+              // {  "data": "id" },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
                     return row.order_code;
@@ -109,13 +109,6 @@
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
                     
-                    // if(row.status=='Created' || row.status=='Received')
-                    // {
-                    //   return  '<a href="procedure/revise/'+row.id+'" class="btn-small amber darken3 waves-effect waves-dark"><i class="material-icons">create</i></a>';
-                    // } else {
-                    //   return  '<a href="#!" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a>';
-                    // }
-
                     return  '<a href="projects/edit/'+data+'" class="btn-small amber darken3 waves-effect waves-dark"><i class="material-icons">create</i></a>';
 
                   }

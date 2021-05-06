@@ -94,14 +94,19 @@
                             <input type="hidden" id="add_quantity" name="add_quantity">
                         </div>
                       </div>
-  
-                      <div class="row">
-                        <div class="col s12 m6 l6"></div>
-                        <div class="col s12 m3 l3 right-align" style="padding-right: 10px;padding-left: 12px;">
+                      
+
+                      <div class="row col s12 m12 l12">
+                        {{-- <div class="col s12 m6 l6"></div> --}}
+                        <div class="col s12 m3 l3 left-align" style="padding-right: 10px;padding-left: 12px;">
                           <a id="set" href="#!" onclick="setTable();" class="blue waves-effect waves-dark btn" style="width: 100%"><i class="material-icons left">check_circle</i>Set</a>
                         </div>
-                        <div class="col s12 m3 l3 right-align" style="padding-right: 30px;padding-left: 0px;">
+                        <div class="col s12 m3 l3 left-align" style="padding-right: 30px;padding-left: 0px;">
                           <a id="reset" href="#!" onclick="resetTable();" class="orange waves-effect waves-dark btn" style="width: 100%" disabled><i class="material-icons left">loop</i>Reset</a>
+                        </div>
+                        <div class="col s12 m3 l3 left-align"></div>
+                        <div id="btnExit" class="col s12 m3 l3 right-align">
+                          <a href="{{route('projects.index')}}" class="red waves-effect waves-dark btn" style="width: 100%"><i class="material-icons left">keyboard_return</i>Exit</a>
                         </div>
                       </div>
    
@@ -731,9 +736,13 @@
 
           $("#set").attr('disabled','disabled');
           $("#reset").removeAttr('disabled');
+
+          $('#resetAssyModal').modal('close');
           var footer = document.getElementById("details_footer");
               footer.style.display = "block";
-              $('#resetAssyModal').modal('close');
+          var ext = document.getElementById("btnExit");
+              ext.style.display = "none";
+            
       } else {
         alert("Please fill up all project details!");
       }
@@ -774,6 +783,8 @@
       $('#assy').html("");
       var footer = document.getElementById("details_footer");
           footer.style.display = "none";
+      var ext = document.getElementById("btnExit");
+          ext.style.display = "block";
     };
 
     const renderProductTable = (prod_code) => {
@@ -1227,10 +1238,6 @@
         listItem.remove();
         $('#delAssyModal').modal('close');
     };
-
-
-
- 
 
   </script>
 

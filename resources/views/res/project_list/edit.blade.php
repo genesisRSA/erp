@@ -611,8 +611,8 @@
                           "width":        $('#add_item_width').val(),
                           "thickness":    $('#add_item_thickness').val(),
                           "radius":       $('#add_item_radius').val(),
-                          "po_status":    null,
-                          "rcv_status":    null,
+                          "po_status":    '',
+                          "rcv_status":   '',
                           "loc":          'mfab',
                         });
             renderTable(n_mfab,$('#tbl'+assy_code+'mfab tbody'),loc,assy_code);
@@ -630,8 +630,8 @@
                           "width":        $('#add_item_width').val(),
                           "thickness":    $('#add_item_thickness').val(),
                           "radius":       $('#add_item_radius').val(),
-                          "po_status":    null,
-                          "rcv_status":    null,
+                          "po_status":    '',
+                          "rcv_status":   '',
                           "loc":          'mstand',
                         });                 
             renderTable(n_mstand,$('#tbl'+assy_code+'mstand tbody'),loc,assy_code);
@@ -649,8 +649,8 @@
                           "width":        $('#add_item_width').val(),
                           "thickness":    $('#add_item_thickness').val(),
                           "radius":       $('#add_item_radius').val(),
-                          "po_status":    null,
-                          "rcv_status":    null,
+                          "po_status":    '',
+                          "rcv_status":   '',
                           "loc":          'fast',
                         });               
             renderTable(n_fast,$('#tbl'+assy_code+'fast tbody'),loc,assy_code);  
@@ -668,8 +668,8 @@
                           "width":        $('#add_item_width').val(),
                           "thickness":    $('#add_item_thickness').val(),
                           "radius":       $('#add_item_radius').val(),
-                          "po_status":    null,
-                          "rcv_status":    null,
+                          "po_status":    '',
+                          "rcv_status":   '',
                           "loc":          'pneu',
                         });             
             renderTable(n_pneu,$('#tbl'+assy_code+'pneu tbody'),loc,assy_code);
@@ -688,7 +688,7 @@
                           "thickness":    $('#add_item_thickness').val(),
                           "radius":       $('#add_item_radius').val(),
                           "po_status":    '',
-                          "rcv_status":    '',  
+                          "rcv_status":   '',  
                           "loc":          'elec',
                         });         
             renderTable(n_elec,$('#tbl'+assy_code+'elec tbody'),loc,assy_code);
@@ -951,27 +951,7 @@
                                       '</thead>'+
                                     '<tbody>';
                     $.each(fab, function(index, value){
-                        // if(value['po_status']!='' && value['po_status']!=null || value['rcv_status']!='' && value['rcv_status']!=null)
-                        if( value['po_status']!=null || value['rcv_status']!=null)
-                        {
-                          div +=  '<tr>'+
-                                    '<td class="left-align">'+value['fab_code']+'</td>'+
-                                    '<td class="left-align">'+value['fab_desc']+'</td>'+
-                                    '<td class="left-align">'+value['length']+'</td>'+
-                                    '<td class="left-align">'+value['width']+'</td>'+
-                                    '<td class="left-align">'+value['thickness']+'</td>'+
-                                    '<td class="left-align">'+value['radius']+'</td>'+
-                                    '<td><button type="button" class="btn-small red waves-effect waves-light" disabled><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
-                                    '<input type="hidden" name="fab_assy_code[]" value="'+value['assy_code']+'"/>'+
-                                    '<input type="hidden" name="fab_code[]" value="'+value['fab_code']+'"/>'+
-                                    '<input type="hidden" name="fab_desc[]" value="'+value['fab_desc']+'"/>'+
-                                    '<input type="hidden" name="fab_length[]" value="'+value['length']+'"/>'+
-                                    '<input type="hidden" name="fab_width[]" value="'+value['width']+'"/>'+
-                                    '<input type="hidden" name="fab_thickness[]" value="'+value['thickness']+'"/>'+
-                                    '<input type="hidden" name="fab_radius[]" value="'+value['radius']+'"/>'+
-                                '</tr>';
-                        }
-                        else
+                        if( value['po_status']=='' || value['po_status']==null || value['po_status']=='null' || value['rcv_status']=='' || value['rcv_status']==null || value['rcv_status']=='null' )
                         {
                           div +=  '<tr>'+
                                       '<td class="left-align">'+value['fab_code']+'</td>'+
@@ -989,6 +969,25 @@
                                       '<input type="hidden" name="fab_thickness[]" value="'+value['thickness']+'"/>'+
                                       '<input type="hidden" name="fab_radius[]" value="'+value['radius']+'"/>'+
                                   '</tr>';
+                        }
+                        else
+                        {
+                          div +=  '<tr>'+
+                                    '<td class="left-align">'+value['fab_code']+'</td>'+
+                                    '<td class="left-align">'+value['fab_desc']+'</td>'+
+                                    '<td class="left-align">'+value['length']+'</td>'+
+                                    '<td class="left-align">'+value['width']+'</td>'+
+                                    '<td class="left-align">'+value['thickness']+'</td>'+
+                                    '<td class="left-align">'+value['radius']+'</td>'+
+                                    '<td><button type="button" class="btn-small red waves-effect waves-light" disabled><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                                    '<input type="hidden" name="fab_assy_code[]" value="'+value['assy_code']+'"/>'+
+                                    '<input type="hidden" name="fab_code[]" value="'+value['fab_code']+'"/>'+
+                                    '<input type="hidden" name="fab_desc[]" value="'+value['fab_desc']+'"/>'+
+                                    '<input type="hidden" name="fab_length[]" value="'+value['length']+'"/>'+
+                                    '<input type="hidden" name="fab_width[]" value="'+value['width']+'"/>'+
+                                    '<input type="hidden" name="fab_thickness[]" value="'+value['thickness']+'"/>'+
+                                    '<input type="hidden" name="fab_radius[]" value="'+value['radius']+'"/>'+
+                                '</tr>';
                         }
                         
                         n_mfab.push({
@@ -1107,113 +1106,107 @@
             renderTable(n_elec,$('#tbl'+assy_code+'elec tbody'),loc,assy_code);      
           break;
       };
-     
     };
 
     const renderTable = (items, table, loc, assy_code) => {
       table.html("");
       if(loc=='mfab'){
         $.each(items, (index,row) => {
-          if(row.loc==loc && row.assy_code==assy_code){
-            if(  row.po_status!=null ||  row.rcv_status!=null)
-            // if( row.po_status!=null ||   row.rcv_status!=null)
+            if( row.po_status=='' || row.po_status==null || row.po_status=='null' || row.rcv_status=='' || row.rcv_status==null || row.rcv_status=='null' )
             {
               table.append('<tr>'+
-                          '<td class="left-align">'+row.fab_code+'</td>'+
-                          '<td class="left-align">'+row.fab_desc+'</td>'+
-                          '<td class="left-align">'+row.length+'</td>'+
-                          '<td class="left-align">'+row.width+'</td>'+
-                          '<td class="left-align">'+row.po_status+'</td>'+
-                          '<td class="left-align">'+row.rcv_status+'</td>'+
-                          '<td><button type="button" class="btn-small red waves-effect waves-light" disabled><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
-                          '<input type="hidden" name="fab_assy_code[]" value="'+assy_code+'"/>'+
-                          '<input type="hidden" name="fab_code[]" value="'+row.fab_code+'"/>'+
-                          '<input type="hidden" name="fab_desc[]" value="'+row.fab_desc+'"/>'+
-                          '<input type="hidden" name="fab_length[]" value="'+row.length+'"/>'+
-                          '<input type="hidden" name="fab_width[]" value="'+row.width+'"/>'+
-                          '<input type="hidden" name="fab_thickness[]" value="'+row.thickness+'"/>'+
-                          '<input type="hidden" name="fab_radius[]" value="'+row.radius+'"/>'+
-                          '<input type="hidden" name="fab_po_status[]" value="'+row.po_status+'"/>'+
-                          '<input type="hidden" name="fab_rcv_status[]" value="'+row.rcv_status+'"/>'+
-                        '</tr>'
-                        );
+                            '<td class="left-align">'+row.fab_code+'</td>'+
+                            '<td class="left-align">'+row.fab_desc+'</td>'+
+                            '<td class="left-align">'+row.length+'</td>'+
+                            '<td class="left-align">'+row.width+'</td>'+
+                            '<td class="left-align">'+row.thickness+'</td>'+
+                            '<td class="left-align">'+row.radius+'</td>'+
+                            '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="delItemModal(\''+index+'\',\''+loc+'\',\''+assy_code+'\',)"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                            '<input type="hidden" name="fab_assy_code[]" value="'+assy_code+'"/>'+
+                            '<input type="hidden" name="fab_code[]" value="'+row.fab_code+'"/>'+
+                            '<input type="hidden" name="fab_desc[]" value="'+row.fab_desc+'"/>'+
+                            '<input type="hidden" name="fab_length[]" value="'+row.length+'"/>'+
+                            '<input type="hidden" name="fab_width[]" value="'+row.width+'"/>'+
+                            '<input type="hidden" name="fab_thickness[]" value="'+row.thickness+'"/>'+
+                            '<input type="hidden" name="fab_radius[]" value="'+row.radius+'"/>'+
+                            '<input type="hidden" name="fab_po_status[]" value="'+row.po_status+'"/>'+
+                            '<input type="hidden" name="fab_rcv_status[]" value="'+row.rcv_status+'"/>'+
+                          '</tr>'
+                          );
             } else {
+  
               table.append('<tr>'+
-                          '<td class="left-align">'+row.fab_code+'</td>'+
-                          '<td class="left-align">'+row.fab_desc+'</td>'+
-                          '<td class="left-align">'+row.length+'</td>'+
-                          '<td class="left-align">'+row.width+'</td>'+
-                          '<td class="left-align">'+row.po_status+'</td>'+
-                          '<td class="left-align">'+row.rcv_status+'</td>'+
-                          '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="delItemModal(\''+index+'\',\''+loc+'\',\''+assy_code+'\',)"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
-                          '<input type="hidden" name="fab_assy_code[]" value="'+assy_code+'"/>'+
-                          '<input type="hidden" name="fab_code[]" value="'+row.fab_code+'"/>'+
-                          '<input type="hidden" name="fab_desc[]" value="'+row.fab_desc+'"/>'+
-                          '<input type="hidden" name="fab_length[]" value="'+row.length+'"/>'+
-                          '<input type="hidden" name="fab_width[]" value="'+row.width+'"/>'+
-                          '<input type="hidden" name="fab_thickness[]" value="'+row.thickness+'"/>'+
-                          '<input type="hidden" name="fab_radius[]" value="'+row.radius+'"/>'+
-                          '<input type="hidden" name="fab_po_status[]" value="'+row.po_status+'"/>'+
-                          '<input type="hidden" name="fab_rcv_status[]" value="'+row.rcv_status+'"/>'+
-                        '</tr>'
-                        );
+                            '<td class="left-align">'+row.fab_code+'</td>'+
+                            '<td class="left-align">'+row.fab_desc+'</td>'+
+                            '<td class="left-align">'+row.length+'</td>'+
+                            '<td class="left-align">'+row.width+'</td>'+
+                            '<td class="left-align">'+row.thickness+'</td>'+
+                            '<td class="left-align">'+row.radius+'</td>'+
+                            '<td><button type="button" class="btn-small red waves-effect waves-light" disabled><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                            '<input type="hidden" name="fab_assy_code[]" value="'+assy_code+'"/>'+
+                            '<input type="hidden" name="fab_code[]" value="'+row.fab_code+'"/>'+
+                            '<input type="hidden" name="fab_desc[]" value="'+row.fab_desc+'"/>'+
+                            '<input type="hidden" name="fab_length[]" value="'+row.length+'"/>'+
+                            '<input type="hidden" name="fab_width[]" value="'+row.width+'"/>'+
+                            '<input type="hidden" name="fab_thickness[]" value="'+row.thickness+'"/>'+
+                            '<input type="hidden" name="fab_radius[]" value="'+row.radius+'"/>'+
+                            '<input type="hidden" name="fab_po_status[]" value="'+row.po_status+'"/>'+
+                            '<input type="hidden" name="fab_rcv_status[]" value="'+row.rcv_status+'"/>'+
+                          '</tr>'
+                          );
             }
-          }
         });
       } else {
          
         $.each(items, (index,row) => {
-        if(row.loc==loc && row.assy_code==assy_code){
-            if( row.po_status!=null || row.rcv_status!=null)
-            // if(  row.po_status!=null ||   row.rcv_status!=null)
+            if( row.po_status=='' || row.po_status==null || row.po_status=='null' || row.rcv_status=='' || row.rcv_status==null || row.rcv_status=='null' )
             {
               table.append('<tr>'+
-                          '<td class="left-align">'+row.item_code+'</td>'+
-                          '<td class="left-align">'+row.description+'</td>'+
-                          '<td class="left-align">'+row.uom_code+'</td>'+
-                          '<td class="left-align">'+row.length+'</td>'+
-                          '<td class="left-align">'+row.width+'</td>'+
-                          '<td class="left-align">'+row.thickness+'</td>'+
-                          '<td class="left-align">'+row.radius+'</td>'+
-                          '<td><button type="button" class="btn-small red waves-effect waves-light" disabled><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
-                          '<input type="hidden" name="item_assy_code[]" value="'+assy_code+'"/>'+
-                          '<input type="hidden" name="item_code[]" value="'+row.item_code+'"/>'+
-                          '<input type="hidden" name="item_desc[]" value="'+row.description+'"/>'+
-                          '<input type="hidden" name="item_uom[]" value="'+row.uom_code+'"/>'+
-                          '<input type="hidden" name="item_length[]" value="'+row.length+'"/>'+
-                          '<input type="hidden" name="item_width[]" value="'+row.width+'"/>'+
-                          '<input type="hidden" name="item_thickness[]" value="'+row.thickness+'"/>'+
-                          '<input type="hidden" name="item_radius[]" value="'+row.radius+'"/>'+
-                          '<input type="hidden" name="item_loc[]" value="'+loc+'"/>'+
-                          '<input type="hidden" name="item_po_status[]" value="'+row.po_status+'"/>'+
-                          '<input type="hidden" name="item_rcv_status[]" value="'+row.rcv_status+'"/>'+
-                        '</tr>'
-                        );
+                            '<td class="left-align">'+row.item_code+'</td>'+
+                            '<td class="left-align">'+row.description+'</td>'+
+                            '<td class="left-align">'+row.uom_code+'</td>'+
+                            '<td class="left-align">'+row.length+'</td>'+
+                            '<td class="left-align">'+row.width+'</td>'+
+                            '<td class="left-align">'+row.thickness+'</td>'+
+                            '<td class="left-align">'+row.radius+'</td>'+
+                            '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="delItemModal(\''+index+'\',\''+loc+'\',\''+assy_code+'\',)"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                            '<input type="hidden" name="item_assy_code[]" value="'+assy_code+'"/>'+
+                            '<input type="hidden" name="item_code[]" value="'+row.item_code+'"/>'+
+                            '<input type="hidden" name="item_desc[]" value="'+row.description+'"/>'+
+                            '<input type="hidden" name="item_uom[]" value="'+row.uom_code+'"/>'+
+                            '<input type="hidden" name="item_length[]" value="'+row.length+'"/>'+
+                            '<input type="hidden" name="item_width[]" value="'+row.width+'"/>'+
+                            '<input type="hidden" name="item_thickness[]" value="'+row.thickness+'"/>'+
+                            '<input type="hidden" name="item_radius[]" value="'+row.radius+'"/>'+
+                            '<input type="hidden" name="item_loc[]" value="'+loc+'"/>'+
+                            '<input type="hidden" name="item_po_status[]" value="'+row.po_status+'"/>'+
+                            '<input type="hidden" name="item_rcv_status[]" value="'+row.rcv_status+'"/>'+
+                          '</tr>'
+                          );
             } else {
               table.append('<tr>'+
-                          '<td class="left-align">'+row.item_code+'</td>'+
-                          '<td class="left-align">'+row.description+'</td>'+
-                          '<td class="left-align">'+row.uom_code+'</td>'+
-                          '<td class="left-align">'+row.length+'</td>'+
-                          '<td class="left-align">'+row.width+'</td>'+
-                          '<td class="left-align">'+row.thickness+'</td>'+
-                          '<td class="left-align">'+row.radius+'</td>'+
-                          '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="delItemModal(\''+index+'\',\''+loc+'\',\''+assy_code+'\',)"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
-                          '<input type="hidden" name="item_assy_code[]" value="'+assy_code+'"/>'+
-                          '<input type="hidden" name="item_code[]" value="'+row.item_code+'"/>'+
-                          '<input type="hidden" name="item_desc[]" value="'+row.description+'"/>'+
-                          '<input type="hidden" name="item_uom[]" value="'+row.uom_code+'"/>'+
-                          '<input type="hidden" name="item_length[]" value="'+row.length+'"/>'+
-                          '<input type="hidden" name="item_width[]" value="'+row.width+'"/>'+
-                          '<input type="hidden" name="item_thickness[]" value="'+row.thickness+'"/>'+
-                          '<input type="hidden" name="item_radius[]" value="'+row.radius+'"/>'+
-                          '<input type="hidden" name="item_loc[]" value="'+loc+'"/>'+
-                          '<input type="hidden" name="item_po_status[]" value="'+row.po_status+'"/>'+
-                          '<input type="hidden" name="item_rcv_status[]" value="'+row.rcv_status+'"/>'+
-                        '</tr>'
-                        );
+                            '<td class="left-align">'+row.item_code+'</td>'+
+                            '<td class="left-align">'+row.description+'</td>'+
+                            '<td class="left-align">'+row.uom_code+'</td>'+
+                            '<td class="left-align">'+row.length+'</td>'+
+                            '<td class="left-align">'+row.width+'</td>'+
+                            '<td class="left-align">'+row.thickness+'</td>'+
+                            '<td class="left-align">'+row.radius+'</td>'+
+                            '<td><button type="button" class="btn-small red waves-effect waves-light" disabled><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                            '<input type="hidden" name="item_assy_code[]" value="'+assy_code+'"/>'+
+                            '<input type="hidden" name="item_code[]" value="'+row.item_code+'"/>'+
+                            '<input type="hidden" name="item_desc[]" value="'+row.description+'"/>'+
+                            '<input type="hidden" name="item_uom[]" value="'+row.uom_code+'"/>'+
+                            '<input type="hidden" name="item_length[]" value="'+row.length+'"/>'+
+                            '<input type="hidden" name="item_width[]" value="'+row.width+'"/>'+
+                            '<input type="hidden" name="item_thickness[]" value="'+row.thickness+'"/>'+
+                            '<input type="hidden" name="item_radius[]" value="'+row.radius+'"/>'+
+                            '<input type="hidden" name="item_loc[]" value="'+loc+'"/>'+
+                            '<input type="hidden" name="item_po_status[]" value="'+row.po_status+'"/>'+
+                            '<input type="hidden" name="item_rcv_status[]" value="'+row.rcv_status+'"/>'+
+                          '</tr>'
+                          );
             }
-          }
         });
       }
     };
