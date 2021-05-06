@@ -75,10 +75,6 @@ class ProjectListController extends Controller
             ]);
         }
         
-
-
-        // return $data;
-        
         return response()
         ->json([
             "data" => $arr_data

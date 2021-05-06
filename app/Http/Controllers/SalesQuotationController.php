@@ -53,7 +53,7 @@ class SalesQuotationController extends Controller
                                     ->where('module','=','Sales Quotation')
                                     ->first();
                                     
-        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"approval":false}]', true));
+        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"approval":false,"masterlist":false}]', true));
 
 
         return view('res.quotation.index')

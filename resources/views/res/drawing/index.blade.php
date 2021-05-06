@@ -26,7 +26,7 @@
             <table class="responsive-table highlight" id="drawing-dt" style="width: 100%">
               <thead>
                 <tr>
-                    <th>ID</th> 
+                    {{-- <th>ID</th>  --}}
                     <th>J.O No.</th>
                     <th>Part Name</th>
                     <th>ECN No.</th>
@@ -51,7 +51,7 @@
             <table class="responsive-table highlight" id="approval-dt" style="width: 100%">
               <thead>
                 <tr>
-                    <th>ID</th> 
+                    {{-- <th>ID</th>  --}}
                     <th>J.O No.</th>
                     <th>Date Requested</th>
                     <th>Requested By</th>
@@ -75,7 +75,7 @@
             <table class="responsive-table highlight" id="master-dt" style="width: 100%">
               <thead>
                 <tr>
-                  <th>ID</th> 
+                  {{-- <th>ID</th>  --}}
                   <th>J.O No.</th>
                   <th>Date Requested</th>
                   <th>Requested By</th>
@@ -104,7 +104,7 @@
             <table class="responsive-table highlight" id="controlled-dt" style="width: 100%">
               <thead>
                 <tr>
-                    <th>ID</th> 
+                    {{-- <th>ID</th>  --}}
                     <th>J.O No.</th>
                     <th>Date Requested</th>
                     <th>Requested By</th>
@@ -126,7 +126,7 @@
           <table class="responsive-table highlight" id="created-dt" style="width: 100%">
             <thead>
               <tr>
-                  <th>ID</th> 
+                  {{-- <th>ID</th>  --}}
                   <th>J.O No.</th>     
                   <th>Designer</th>
                   <th>Copy Owner</th>
@@ -233,7 +233,7 @@
           "pagingType": "full",
           "ajax": "/api/reiss/drawing/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/drawing",
           "columns": [
-              {  "data": "id" },
+              // {  "data": "id" },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
                     return '<a href="drawing/view/'+data+'/drawings">'+ row.drawing_no +'</a>';
@@ -315,7 +315,7 @@
           "pagingType": "full",
           "ajax": "/api/reiss/drawing/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/approval",
           "columns": [
-              {  "data": "id" },
+              // {  "data": "id" },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
                     return '<a href="drawing/view/'+row.id+'/app">'+ row.drawing_no +'</a>';
@@ -406,7 +406,7 @@
           "pagingType": "full",
           "ajax": "/api/reiss/drawing/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/master",
           "columns": [
-              {  "data": "id" },
+              // {  "data": "id" },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
                     return '<a href="drawing/view/'+row.id+'/master">'+ row.drawing_no +'</a>';
@@ -488,7 +488,7 @@
           "pagingType": "full",
           "ajax": "/api/reiss/drawing/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/forCC",
           "columns": [
-              {  "data": "id" },
+              // {  "data": "id" },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
                     return '<a href="drawing/view_fcc/'+row.id+'/controlled">'+ row.drawing_no +'</a>';
@@ -575,7 +575,7 @@
           "pagingType": "full",
           "ajax": "/api/reiss/drawing/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/cc",
           "columns": [
-              {  "data": "id" },
+              // {  "data": "id" },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
                     return '<a href="drawing/view_cc/'+row.id+'/cc">'+ row.drawing_no +'</a>'; 

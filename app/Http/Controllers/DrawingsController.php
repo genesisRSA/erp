@@ -40,12 +40,12 @@ class DrawingsController extends Controller
     public function index()
     {
         $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
-                                    ->where('module','=','Projects')
+                                    ->where('module','=','Drawings')
                                     ->first();
 
         $employee = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
 
-        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"masterlist":false,"approval":false,"projects":false}]', true));
+        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"masterlist":false,"approval":false}]', true));
 
         return view('res.drawing.index')
                 ->with('site','res')
@@ -223,20 +223,34 @@ class DrawingsController extends Controller
         $userDept = Employee::select('dept_code')->where('emp_no','=',$idx)->first();
 
         $permission = SitePermission::where('requestor','=',$idx)
-                                    ->where('module','=','drawings')
+                                    ->where('module','=','Drawings')
                                     ->first();
 
         $permissionx =  ($permission ? json_decode($permission->permission) : 
-                                    json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"masterlist":false,"approval":false,"projects":false}]'));
+                                    json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"masterlist":false,"approval":false}]'));
         
         switch($locx){
             case "drawing":
-                $data = Drawing::where('created_by','=',$idx)
+                $datax = Drawing::where('created_by','=',$idx)
                         ->get();
+
+                $data = array();
+                foreach($datax as $datax)
+                {
+                    array_push($data, [
+                                "id" => Crypt::encrypt($datax["id"]),
+                                "drawing_no" => $datax["drawing_no"],
+                                "part_name" => $datax["part_name"],
+                                "ecn_code" => $datax["ecn_code"],
+                                "revision_no" => $datax["revision_no"],
+                                "customers" => $datax["customers"],
+                                "status" => $datax["status"],
+                    ]);
+                }
                         
             break;
             case "approval":
-                $data = Drawing::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
+                $datax = Drawing::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
                         ->where('status','<>','Approved')
                         ->where('status','<>','Rejected')
                         ->where('status','<>','Created')
@@ -245,31 +259,110 @@ class DrawingsController extends Controller
                         ->where('status','<>','Oriented')
                         ->where('current_approver','=',$idx)
                         ->get();
+
+                $data = array();
+                foreach($datax as $datax)
+                {
+                    array_push($data, [
+                                "id" => Crypt::encrypt($datax["id"]),
+                                "drawing_no" => $datax["drawing_no"],
+                                "part_name" => $datax["part_name"],
+                                "ecn_code" => $datax["ecn_code"],
+                                "revision_no" => $datax["revision_no"],
+                                "revision_date" => $datax["revision_date"],
+                                    
+                                "status" => $datax["status"],
+                                "employee_details" => $datax["employee_details"],
+                                "dept_details" => $datax["dept_details"],
+                    ]);
+                }
             break;
             case "master":
-                $data = Drawing::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
+                $datax = Drawing::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
                         ->where('status','<>','Pending')
                         ->where('status','<>','For Review')
                         ->where('status','<>','Approval')
                         ->where('status','<>','Rejected')
                         ->get();
+
+                $data = array();
+                foreach($datax as $datax)
+                {
+                    array_push($data, [
+                                "id" => Crypt::encrypt($datax["id"]),
+                                "drawing_no" => $datax["drawing_no"],
+                                "part_name" => $datax["part_name"],
+                                "ecn_code" => $datax["ecn_code"],
+                                "revision_date" => $datax["revision_date"],
+                                "revision_no" => $datax["revision_no"],
+                                "status" => $datax["status"],
+                                "employee_details" => $datax["employee_details"],
+                                "dept_details" => $datax["dept_details"],
+                    ]);
+                }
             break;
             case "forCC":
-                $data = DrawingsMasterCopy::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
+                $datax = DrawingsMasterCopy::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
                         ->where('status','<>','Obsolete')
                         ->get();
+
+                $data = array();
+                foreach($datax as $datax)
+                {
+                    array_push($data, [
+                                "id" => Crypt::encrypt($datax["id"]),
+                                "drawing_no" => $datax["drawing_no"],
+                                "part_name" => $datax["part_name"],
+                                "ecn_code" => $datax["ecn_code"],
+                                "revision_no" => $datax["revision_no"],
+                                "created_at" => $datax["created_at"],
+                                "status" => $datax["status"],
+                                "employee_details" => $datax["employee_details"],
+                                "dept_details" => $datax["dept_details"],
+                    ]);
+                }
             break;
             case "cc":
                 if($permissionx[0]->masterlist==true){
-                    $data = DrawingsControlledCopy::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
+                    $datax = DrawingsControlledCopy::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
                     ->with('dept_details:dept_code,dept_desc')
                     ->get();
+
+                    $data = array();
+                    foreach($datax as $datax)
+                    {
+                        array_push($data, [
+                                    "id" => Crypt::encrypt($datax["id"]),
+                                    "drawing_no" => $datax["drawing_no"],
+                                    "part_name" => $datax["part_name"],
+                                    "ecn_code" => $datax["ecn_code"],
+                                    "copy_no" => $datax["copy_no"],
+                                    "status" => $datax["status"],
+                                    "employee_details" => $datax["employee_details"],
+                                    "dept_details" => $datax["dept_details"],
+                        ]);
+                    }
                 } else {
-                    $data = DrawingsControlledCopy::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
+                    $datax = DrawingsControlledCopy::with('employee_details:emp_no,emp_fname,emp_mname,emp_lname')
                     ->with('dept_details:dept_code,dept_desc')
                     ->where('department','=',$userDept->dept_code)
                     ->where('status','<>','Obsolete')
                     ->get();
+
+                    $data = array();
+                    foreach($datax as $datax)
+                    {
+                        array_push($data, [
+                                    "id" => Crypt::encrypt($datax["id"]),
+                                    "drawing_no" => $datax["drawing_no"],
+                                    "part_name" => $datax["part_name"],
+                                    "ecn_code" => $datax["ecn_code"],
+                                    "copy_no" => $datax["copy_no"],
+                                    "status" => $datax["status"],
+                                    "employee_details" => $datax["employee_details"],
+                                    "dept_details" => $datax["dept_details"],
+                        ]);
+                    }
                 }
             break;
         }
@@ -324,7 +417,7 @@ class DrawingsController extends Controller
         $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
         ->where('module','=','Drawings')
         ->first();
-        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"masterlist":false,"approval":false,"projects":false}]', true));
+        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"masterlist":false,"approval":false}]', true));
 
         return view('res.drawing.new')
                 ->with('site','res')
@@ -688,7 +781,7 @@ class DrawingsController extends Controller
 
     public function view($id, $loc)
     {    
-        $drawing = Drawing::find($id);
+        $drawing = Drawing::find(Crypt::decrypt($id));
         $employee = Employee::where('emp_no','=',$drawing->created_by)
                             ->first();
         return view('res.drawing.view')
@@ -702,7 +795,7 @@ class DrawingsController extends Controller
 
     public function view_fcc($id, $loc)
     {    
-        $drawingx = DrawingsMasterCopy::find($id);
+        $drawingx = DrawingsMasterCopy::find(Crypt::decrypt($id));
         $drawing = Drawing::where('drawing_no','=', $drawingx->drawing_no)
                                 ->where('ecn_code','=', $drawingx->ecn_code)
                                 ->where('revision_no','=', $drawingx->revision_no)
@@ -720,7 +813,7 @@ class DrawingsController extends Controller
 
     public function view_cc($id, $loc)
     {    
-        $drawingx = DrawingsControlledCopy::find($id);
+        $drawingx = DrawingsControlledCopy::find(Crypt::decrypt($id));
         // return $drawingx;
         $drawing = Drawing::where('drawing_no','=', $drawingx->drawing_no)
                                 ->where('ecn_code','=', $drawingx->ecn_code)
@@ -779,7 +872,7 @@ class DrawingsController extends Controller
 
     public function approval_view($id, $loc)
     {    
-        $drawing =    Drawing::find($id);
+        $drawing =    Drawing::find(Crypt::decrypt($id));
         $drawings =   Drawing::where('ecn_code','=',$drawing->ecn_code)
                                     ->where('drawing_no','=',$drawing->drawing_no)
                                     ->first();
@@ -790,7 +883,7 @@ class DrawingsController extends Controller
                 ->with('site','res')
                 ->with('page','dcc')
                 ->with('subpage','drawings')
-                ->with('idx', $id) 
+                ->with('idx', Crypt::decrypt($id)) 
                 ->with('loc', $loc)
                 ->with('employee',$employee)
                 ->with('drawings', $drawings)
@@ -798,8 +891,9 @@ class DrawingsController extends Controller
     }
 
     public function master_view($id, $loc)
-    {    
-        $drawing = Drawing::find($id);
+    {   
+        // return Crypt::decrypt($id);
+        $drawing = Drawing::find(Crypt::decrypt($id));
         $employee = Employee::where('emp_no','=',$drawing->created_by)->first();
                
         $customer = Customer::where('cust_code','=',$drawing->cust_code)->first();
@@ -813,12 +907,12 @@ class DrawingsController extends Controller
                             ->where('fab_code','=',$drawing->fab_code)
                             ->first();
                         
- 
+                            // return $drawing;
         return view('res.drawing.master')
                 ->with('site','res')
                 ->with('page','dcc')
                 ->with('subpage','drawings')
-                ->with('idx', $id) 
+                ->with('idx', Crypt::decrypt($id)) 
                 ->with('loc', $loc)
                 ->with('employee', $employee)
                 ->with('drawings', $drawing)
@@ -826,12 +920,11 @@ class DrawingsController extends Controller
                 ->with('project', $project)
                 ->with('assy', $assy)
                 ->with('fab', $fab);
- 
     }
 
     public function copy_view($id, $loc)
     {  
-        $drawing =      DrawingsMasterCopy::find($id);
+        $drawing =      DrawingsMasterCopy::find(Crypt::decrypt($id));
         $drawings =     Drawing::where('drawing_no','=',$drawing->drawing_no) 
                                     ->where('revision_no','=',$drawing->revision_no)
                                     ->where('ecn_code','=',$drawing->ecn_code)
@@ -1006,8 +1099,6 @@ class DrawingsController extends Controller
         } else {
             return redirect()->route('drawing.view', ['drawingID' => $drawing->id, 'loc' => $locx]);
         }
-
-
         // 
 
     }
@@ -1023,7 +1114,7 @@ class DrawingsController extends Controller
         $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
         ->where('module','=','Drawings')
         ->first();
-        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"masterlist":false,"approval":false,"projects":false}]', true));
+        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"masterlist":false,"approval":false}]', true));
         $drawing = Drawing::find($id);
         $drawings = Drawing::where('drawing_no','=',$drawing->drawing_no)
                                 ->where('revision_no','=',$drawing->revision_no)
