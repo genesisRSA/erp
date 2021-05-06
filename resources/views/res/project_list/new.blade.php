@@ -144,11 +144,11 @@
             <input type="hidden" id="add_assy_code" name="item_code"/>
             <input type="hidden" id="loc" name="loc"/>
 
-            <div class="input-field col s12 m3 l3">
+            <div class="input-field col s12 m3 l3" id="btn_search" style="display: none">
               <button id="add_search" type="button" onclick="searchItem();" class="blue waves-effect waves-light btn" id="btnAddSave" style="padding-right: 30px;left: 0px;"><i class="material-icons left">search</i>Search</button>
             </div>
     
-            <div class="input-field col s12 m9 l9" id="fab_code" style="display: none">
+            <div class="input-field col s12 m12 l12" id="fab_code" style="display: none">
               <input type="text" id="add_fab_code" name="fab_code" placeholder=""/>
               <label for="fab_code">Fabrication Code<sup class="red-text">*</sup></label>
             </div>
@@ -159,7 +159,7 @@
             </div>
             
             <div class="input-field col s12 m12 l12">
-              <textarea class="materialize-textarea" type="text" id="add_description" name="description" placeholder=" " style="height: 150px; border-left: 10px;  padding-left:20px;" required readonly></textarea>
+              <textarea class="materialize-textarea" type="text" id="add_description" name="description" placeholder=" " style="height: 150px; border-left: 10px;  padding-left:20px;" required ></textarea>
               <label for="icon_prefix2">Description</label>
             </div>
 
@@ -176,7 +176,7 @@
 
           <div class="row">
             <div class="input-field col s12 m6 l6">
-              <input placeholder="" name="item_length" id="add_item_length" type="number" step="0.0001" class="number validate" required readonly>
+              <input placeholder="" name="item_length" id="add_item_length" type="number" step="0.0001" class="number validate" required >
               <label for="item_length">Length<sup class="red-text"></sup></label>
               {{-- <div class="col s12 m6 left-align">
                 <label>
@@ -187,7 +187,7 @@
             </div>
 
             <div class="input-field col s12 m6 l6">
-              <input placeholder="" name="item_width" id="add_item_width" type="number" step="0.0001" class="number validate" required readonly>
+              <input placeholder="" name="item_width" id="add_item_width" type="number" step="0.0001" class="number validate" required >
               <label for="item_width">Width<sup class="red-text"></sup></label>
               {{-- <div class="col s12 m6 left-align">
                 <label>
@@ -200,7 +200,7 @@
 
           <div class="row">
             <div class="input-field col s12 m6 l6">
-              <input placeholder="" name="item_thickness" id="add_item_thickness" type="number" step="0.0001" class="number validate" required readonly>
+              <input placeholder="" name="item_thickness" id="add_item_thickness" type="number" step="0.0001" class="number validate" required >
               <label for="item_thickness">Thickness<sup class="red-text"></sup></label>
               {{-- <div class="col s12 m6 left-align">
                 <label>
@@ -210,7 +210,7 @@
               </div> --}}
             </div>
             <div class="input-field col s12 m6 l6">
-              <input placeholder="" name="item_radius" id="add_item_radius" type="number" step="0.0001" class="number validate" required readonly>
+              <input placeholder="" name="item_radius" id="add_item_radius" type="number" step="0.0001" class="number validate" required >
               <label for="item_radius">Radius<sup class="red-text">*</sup></label>
               {{-- <div class="col s12 m6 left-align">
                 <label>
@@ -390,15 +390,10 @@
         $('#quantity').val(prod_quantity.filter(prod => prod.prod_code == $(this).val())[0].quantity);
     });
 
-    $("#add_fab_code").keyup(function(event) {
-      if (event.keyCode === 13) {
-          $("#add_search").click();
-      }
-    });
-
     $("#add_item_code").keyup(function(event) {
       if (event.keyCode === 13) {
-          $("#add_search").click();
+          // $("#add_search").click();
+          searchItem();
       }
     });
 
@@ -515,14 +510,27 @@
         var y = document.getElementById("item_code");
         y.style.display = "block";
 
+        var z = document.getElementById("btn_search");
+        z.style.display = "block";
+
         var c = document.getElementById("fab_code");
         c.style.display = "none";
 
         $('#add_item_code').val('');
+
+        $('#add_description').prop('disabled', true);
         $('#add_description').val('');
+
+        $('#add_item_length').prop('disabled', true);z
         $('#add_item_length').val('');
+        
+        $('#add_item_width').prop('disabled', true);
         $('#add_item_width').val('');
+        
+        $('#add_item_thickness').prop('disabled', true);
         $('#add_item_thickness').val('');
+        
+        $('#add_item_radius').prop('disabled', true);
         $('#add_item_radius').val('');
 
        } else {
@@ -532,17 +540,27 @@
         var y = document.getElementById("item_code");
         y.style.display = "none";
 
+        var z = document.getElementById("btn_search");
+        z.style.display = "none";
+
         var c = document.getElementById("fab_code");
         c.style.display = "block";
 
         $('#add_fab_code').val('');
+      
+        $('#add_description').prop('disabled', false);
         $('#add_description').val('');
-        $('#add_uom_code option[value=""]').prop('selected', true);
-        $('#add_uom_code').formSelect();
  
+        $('#add_item_length').prop('disabled', false);
         $('#add_item_length').val('');
+
+        $('#add_item_width').prop('disabled', false);
         $('#add_item_width').val('');
+
+        $('#add_item_thickness').prop('disabled', false);
         $('#add_item_thickness').val('');
+        
+        $('#add_item_radius').prop('disabled', false);
         $('#add_item_radius').val('');
 
        }   
@@ -762,11 +780,11 @@
       $('#project_type').formSelect();
 
       $('#sales_order').prop('disabled', false);
-      $('#sales_order').val("");
+      $('#sales_order').html('<option value="" disabled selected>Choose Sales Order</option>');
       $('#sales_order').formSelect();
 
       $('#product').prop('disabled', false);
-      $('#product').val("");
+      $('#product').html('<option value="" disabled selected>Choose Product</option>');
       $('#product').formSelect();
 
       $('#project_name').prop('disabled', false);
