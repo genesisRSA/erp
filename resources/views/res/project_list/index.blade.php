@@ -17,7 +17,6 @@
             <table class="responsive-table highlight" id="projects-dt" style="width: 100%">
               <thead>
                 <tr>
-                    {{-- <th>ID</th>  --}}
                     <th>Order No.</th>
                     <th>Project Code</th>
                     <th>Project Name</th>
@@ -30,9 +29,9 @@
           </div>
         </div>
       
-      {{-- @if($permission[0]["add"]==true) --}}
+      @if($permission[0]["add"]==true)
         <a href="{{ route('projects.create') }}" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button" data-position="left" data-tooltip="Add Project"><i class="material-icons">add</i></a>
-      {{-- @endif --}}
+      @endif
     </div>
 
   </div>
@@ -56,7 +55,11 @@
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
+                    @if($permission[0]["view"]==true)
                     return '<a href="projects/view/'+data+'">'+ row.project_code +'</a>';
+                    @else
+                    return row.project_code;
+                    @endif
                   }
               },
               {  "data": "id",
@@ -108,9 +111,11 @@
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    
+                    @if($permission[0]["view"]==true)
                     return  '<a href="projects/edit/'+data+'" class="btn-small amber darken3 waves-effect waves-dark"><i class="material-icons">create</i></a>';
-
+                    @else
+                    return  '<a href="#!" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a>';
+                    @endif
                   }
               }
                   

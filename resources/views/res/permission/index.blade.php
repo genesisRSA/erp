@@ -45,6 +45,7 @@
               <option value="Sales Order">Sales Order</option>
               <option value="Procedures">Procedures</option>
               <option value="Drawings">Drawings</option>
+              <option value="Projects">Projects</option>
             </select>
             <label for="add_module">Module<sup class="red-text">*</sup></label>
           </div>
@@ -143,6 +144,7 @@
               <option value="Sales Order">Sales Order</option>
               <option value="Procedures">Procedures</option>
               <option value="Drawings">Drawings</option>
+              <option value="Projects">Projects</option>
             </select>
             <label for="module">Module<sup class="red-text">*</sup></label>
           </div>

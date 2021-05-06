@@ -40,12 +40,12 @@ class DrawingsController extends Controller
     public function index()
     {
         $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
-                                    ->where('module','=','Drawings')
+                                    ->where('module','=','Projects')
                                     ->first();
 
         $employee = Employee::where('emp_no','=',Auth::user()->emp_no)->first();
 
-        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"masterlist":false,"approval":false}]', true));
+        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"masterlist":false,"approval":false,"projects":false}]', true));
 
         return view('res.drawing.index')
                 ->with('site','res')
@@ -227,7 +227,7 @@ class DrawingsController extends Controller
                                     ->first();
 
         $permissionx =  ($permission ? json_decode($permission->permission) : 
-                                    json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"masterlist":false,"approval":false}]'));
+                                    json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"masterlist":false,"approval":false,"projects":false}]'));
         
         switch($locx){
             case "drawing":
@@ -324,7 +324,7 @@ class DrawingsController extends Controller
         $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
         ->where('module','=','Drawings')
         ->first();
-        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"masterlist":false,"approval":false}]', true));
+        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"masterlist":false,"approval":false,"projects":false}]', true));
 
         return view('res.drawing.new')
                 ->with('site','res')
@@ -1023,7 +1023,7 @@ class DrawingsController extends Controller
         $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
         ->where('module','=','Drawings')
         ->first();
-        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"masterlist":false,"approval":false}]', true));
+        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"masterlist":false,"approval":false,"projects":false}]', true));
         $drawing = Drawing::find($id);
         $drawings = Drawing::where('drawing_no','=',$drawing->drawing_no)
                                 ->where('revision_no','=',$drawing->revision_no)
