@@ -153,7 +153,7 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::resource('/reiss/projects', 'ProjectListController');
     Route::post('/reiss/projects/revision', 'ProjectListController@revision')->name('projects.revision');
     Route::get('/reiss/projects/{item_code}/item_details','ProjectListController@item_details')->name('projects.item_details');
-    Route::get('/reiss/projects/{site_code}/orders','ProjectListController@all_orders')->name('projects.all_orders');
+    Route::get('/reiss/projects/{cust_code}/orders','ProjectListController@all_orders')->name('projects.all_orders');
     Route::get('/reiss/projects/{order_code}/allproducts','ProjectListController@all_products')->name('projects.all_products');
     Route::get('/reiss/projects/{cust_code}/count','ProjectListController@count_per_type')->name('projects.count_per_type');
     Route::get('/reiss/projects/{prod_code}/assy','ProjectListController@prod_assy')->name('projects.prod_assy');

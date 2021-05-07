@@ -81,14 +81,14 @@ class ProjectListController extends Controller
         ]); 
     }
 
-    public function all_orders($site_code)
+    public function all_orders($cust_code)
     {
         return response()
         ->json([
-            "data" => SalesOrder::where('site_code',$site_code)
+            "data" => SalesOrder::where('cust_code',$cust_code)
                                 ->where('status','<>','Pending')    
                                 ->where('status','<>','Voided')    
-                                ->where('status','<>','On Going')    
+                                ->where('status','<>','ongoing')    
                                 ->get()
         ]); 
     }
@@ -262,7 +262,7 @@ class ProjectListController extends Controller
             }
 
             $order = SalesOrder::where('order_code',$request->input('add_sales_order',''))->first();
-            $order->status = 'On Going';
+            $order->status = 'ongoing';
             $order->save();
 
             // DETAILS FOR EMAIL BELOW

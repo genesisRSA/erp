@@ -1,9 +1,9 @@
 @extends('layouts.resmain')
 <style>
-   textarea.materialize-textarea
+   /* textarea.materialize-textarea
         {
             height: 30% !important; 
-        }
+        } */
 </style>
  
 @section('content')
@@ -151,7 +151,7 @@
             </div>
             
             <div class="input-field col s12 m12 l12">
-              <textarea class="materialize-textarea" type="text" id="add_description" name="description" placeholder=" " style="height: 150px; border-left: 10px;  padding-left:20px;" required readonly></textarea>
+              <textarea class="materialize-textarea" type="text" id="add_description" name="description" placeholder=" " style="height: 150px; border-left: 10px;  padding-left:20px;" required></textarea>
               <label for="icon_prefix2">Description</label>
             </div>
 
@@ -170,23 +170,11 @@
             <div class="input-field col s12 m6 l6">
               <input placeholder="" name="item_length" id="add_item_length" type="number" step="0.0001" class="number validate" required>
               <label for="item_length">Length<sup class="red-text"></sup></label>
-              {{-- <div class="col s12 m6 left-align">
-                <label>
-                    <input placeholder="e.g $"  type="checkbox" onclick="distext('add_item_length')"/>
-                      <span style="font-size: 12px">Click to set N/A</span>
-                </label>
-              </div> --}}
             </div>
 
             <div class="input-field col s12 m6 l6">
               <input placeholder="" name="item_width" id="add_item_width" type="number" step="0.0001" class="number validate" required>
               <label for="item_width">Width<sup class="red-text"></sup></label>
-              {{-- <div class="col s12 m6 left-align">
-                <label>
-                    <input placeholder="e.g $"  type="checkbox" onclick="distext('add_item_width')"/>
-                      <span style="font-size: 12px">Click to set N/A</span>
-                </label>
-              </div> --}}
             </div>
           </div>
 
@@ -194,22 +182,10 @@
             <div class="input-field col s12 m6 l6">
               <input placeholder="" name="item_thickness" id="add_item_thickness" type="number" step="0.0001" class="number validate" required>
               <label for="item_thickness">Thickness<sup class="red-text"></sup></label>
-              {{-- <div class="col s12 m6 left-align">
-                <label>
-                    <input placeholder="e.g $"  type="checkbox" onclick="distext('add_item_thickness')"/>
-                      <span style="font-size: 12px">Click to set N/A</span>
-                </label>
-              </div> --}}
             </div>
             <div class="input-field col s12 m6 l6">
               <input placeholder="" name="item_radius" id="add_item_radius" type="number" step="0.0001" class="number validate" required>
               <label for="item_radius">Radius<sup class="red-text">*</sup></label>
-              {{-- <div class="col s12 m6 left-align">
-                <label>
-                    <input placeholder="e.g $"  type="checkbox" onclick="distext('add_item_radius')"/>
-                      <span style="font-size: 12px">Click to set N/A</span>
-                </label>
-              </div> --}}
             </div>
           </div>
 
@@ -552,7 +528,6 @@
         $('#add_item_radius').prop('disabled', false);
         $('#add_item_radius').val('');
 
-
        }   
 
         $('#header').html(loc);
@@ -618,101 +593,125 @@
       var fab_code =  $('#add_fab_code').val();
       var assy_code = $('#add_assy_code').val();
       var item_code = $('#add_item_code').val();
-      $('#addModal').modal('close');
       switch (loc) {
         case "mfab":
-          if(checkItem(n_mfab, assy_code, fab_code, loc) == false){
-            n_mfab.push({"assy_code":     $('#add_assy_code').val(),
-                          "fab_code":     $('#add_fab_code').val(),
-                          "fab_desc":     $('#add_description').val(),
-                          "length":       $('#add_item_length').val(),
-                          "width":        $('#add_item_width').val(),
-                          "thickness":    $('#add_item_thickness').val(),
-                          "radius":       $('#add_item_radius').val(),
-                          "po_status":    '',
-                          "rcv_status":   '',
-                          "loc":          'mfab',
-                        });
-            renderTable(n_mfab,$('#tbl'+assy_code+'mfab tbody'),loc,assy_code);
+          if($('#add_fab_code').val() && $('#add_description').val() && $('#add_item_length').val() && $('#add_item_width').val() && $('#add_item_thickness').val() && $('#add_item_radius').val()){
+            if(checkItem(n_mfab, assy_code, fab_code, loc) == false){
+              n_mfab.push({"assy_code":     $('#add_assy_code').val(),
+                            "fab_code":     $('#add_fab_code').val(),
+                            "fab_desc":     $('#add_description').val(),
+                            "length":       $('#add_item_length').val(),
+                            "width":        $('#add_item_width').val(),
+                            "thickness":    $('#add_item_thickness').val(),
+                            "radius":       $('#add_item_radius').val(),
+                            "po_status":    '',
+                            "rcv_status":   '',
+                            "loc":          'mfab',
+                          });
+              renderTable(n_mfab,$('#tbl'+assy_code+'mfab tbody'),loc,assy_code);
+              $('#addModal').modal('close');
+            } else {
+              alert("Fabrication code already exist!");
+            };
           } else {
-            alert("Fabrication code already exist!");
-          };
+            alert("Please fill up all Mechanical Fabrication details!");
+          }
           break;
         case "mstand":
-          if(checkItem(n_mstand, assy_code, item_code, loc) == false ){
-            n_mstand.push({"assy_code":   $('#add_assy_code').val(),
-                          "item_code":    $('#add_item_code').val(),
-                          "description":  $('#add_description').val(),
-                          "uom_code":     $('#add_uom_code').val(),
-                          "length":       $('#add_item_length').val(),
-                          "width":        $('#add_item_width').val(),
-                          "thickness":    $('#add_item_thickness').val(),
-                          "radius":       $('#add_item_radius').val(),
-                          "po_status":    '',
-                          "rcv_status":   '',
-                          "loc":          'mstand',
-                        });                 
-            renderTable(n_mstand,$('#tbl'+assy_code+'mstand tbody'),loc,assy_code);
+          if($('#add_item_code').val()){
+            if(checkItem(n_mstand, assy_code, item_code, loc) == false ){
+              n_mstand.push({"assy_code":   $('#add_assy_code').val(),
+                            "item_code":    $('#add_item_code').val(),
+                            "description":  $('#add_description').val(),
+                            "uom_code":     $('#add_uom_code').val(),
+                            "length":       $('#add_item_length').val(),
+                            "width":        $('#add_item_width').val(),
+                            "thickness":    $('#add_item_thickness').val(),
+                            "radius":       $('#add_item_radius').val(),
+                            "po_status":    '',
+                            "rcv_status":   '',
+                            "loc":          'mstand',
+                          });                 
+              renderTable(n_mstand,$('#tbl'+assy_code+'mstand tbody'),loc,assy_code);
+              $('#addModal').modal('close');
+            } else {
+              alert("Item code already exist!");
+            };
           } else {
-            alert("Item code already exist!");
-          };
+            alert("Please search for item code before saving!");
+          }
           break;
         case "fast":
-          if(checkItem(n_fast, assy_code, item_code, loc) == false ){
-            n_fast.push({"assy_code":      $('#add_assy_code').val(),
-                          "item_code":    $('#add_item_code').val(),
-                          "description":  $('#add_description').val(),
-                          "uom_code":     $('#add_uom_code').val(),
-                          "length":       $('#add_item_length').val(),
-                          "width":        $('#add_item_width').val(),
-                          "thickness":    $('#add_item_thickness').val(),
-                          "radius":       $('#add_item_radius').val(),
-                          "po_status":    '',
-                          "rcv_status":   '',
-                          "loc":          'fast',
-                        });               
-            renderTable(n_fast,$('#tbl'+assy_code+'fast tbody'),loc,assy_code);  
+          if($('#add_item_code').val()){
+            if(checkItem(n_fast, assy_code, item_code, loc) == false ){
+              n_fast.push({"assy_code":      $('#add_assy_code').val(),
+                            "item_code":    $('#add_item_code').val(),
+                            "description":  $('#add_description').val(),
+                            "uom_code":     $('#add_uom_code').val(),
+                            "length":       $('#add_item_length').val(),
+                            "width":        $('#add_item_width').val(),
+                            "thickness":    $('#add_item_thickness').val(),
+                            "radius":       $('#add_item_radius').val(),
+                            "po_status":    '',
+                            "rcv_status":   '',
+                            "loc":          'fast',
+                          });               
+              renderTable(n_fast,$('#tbl'+assy_code+'fast tbody'),loc,assy_code);  
+              $('#addModal').modal('close');
+            } else {
+              alert("Item code already exist!");
+            };
           } else {
-            alert("Item code already exist!");
-          };
+            alert("Please search for item code before saving!");
+          }
           break;
         case "pneu":
-          if(checkItem(n_pneu, assy_code, item_code, loc) == false ){
-            n_pneu.push({"assy_code":     $('#add_assy_code').val(),
-                          "item_code":    $('#add_item_code').val(),
-                          "description":  $('#add_description').val(),
-                          "uom_code":     $('#add_uom_code').val(),
-                          "length":       $('#add_item_length').val(),
-                          "width":        $('#add_item_width').val(),
-                          "thickness":    $('#add_item_thickness').val(),
-                          "radius":       $('#add_item_radius').val(),
-                          "po_status":    '',
-                          "rcv_status":   '',
-                          "loc":          'pneu',
-                        });             
-            renderTable(n_pneu,$('#tbl'+assy_code+'pneu tbody'),loc,assy_code);
+          if($('#add_item_code').val()){
+            if(checkItem(n_pneu, assy_code, item_code, loc) == false ){
+              n_pneu.push({"assy_code":     $('#add_assy_code').val(),
+                            "item_code":    $('#add_item_code').val(),
+                            "description":  $('#add_description').val(),
+                            "uom_code":     $('#add_uom_code').val(),
+                            "length":       $('#add_item_length').val(),
+                            "width":        $('#add_item_width').val(),
+                            "thickness":    $('#add_item_thickness').val(),
+                            "radius":       $('#add_item_radius').val(),
+                            "po_status":    '',
+                            "rcv_status":   '',
+                            "loc":          'pneu',
+                          });             
+              renderTable(n_pneu,$('#tbl'+assy_code+'pneu tbody'),loc,assy_code);
+              $('#addModal').modal('close');
+            } else {
+              alert("Item code already exist!");
+            };
           } else {
-            alert("Item code already exist!");
-          };
-            break;
+            alert("Please search for item code before saving!");
+          }
+          break;
         case "elec":
-          if(checkItem(n_elec, assy_code, item_code, loc) == false ){
-            n_elec.push({"assy_code":     $('#add_assy_code').val(),
-                          "item_code":    $('#add_item_code').val(),
-                          "description":  $('#add_description').val(),
-                          "uom_code":     $('#add_uom_code').val(),
-                          "length":       $('#add_item_length').val(),
-                          "width":        $('#add_item_width').val(),
-                          "thickness":    $('#add_item_thickness').val(),
-                          "radius":       $('#add_item_radius').val(),
-                          "po_status":    '',
-                          "rcv_status":   '',  
-                          "loc":          'elec',
-                        });         
-            renderTable(n_elec,$('#tbl'+assy_code+'elec tbody'),loc,assy_code);
+          if($('#add_item_code').val()){
+            if(checkItem(n_elec, assy_code, item_code, loc) == false ){
+              n_elec.push({"assy_code":     $('#add_assy_code').val(),
+                            "item_code":    $('#add_item_code').val(),
+                            "description":  $('#add_description').val(),
+                            "uom_code":     $('#add_uom_code').val(),
+                            "length":       $('#add_item_length').val(),
+                            "width":        $('#add_item_width').val(),
+                            "thickness":    $('#add_item_thickness').val(),
+                            "radius":       $('#add_item_radius').val(),
+                            "po_status":    '',
+                            "rcv_status":   '',  
+                            "loc":          'elec',
+                          });         
+              renderTable(n_elec,$('#tbl'+assy_code+'elec tbody'),loc,assy_code);
+              $('#addModal').modal('close');
+            } else {
+              alert("Item code already exist!");
+            };         
           } else {
-            alert("Item code already exist!");
-          };         
+            alert("Please search for item code before saving!");
+          }
           break;
       };
     };
@@ -969,6 +968,7 @@
                                       '</thead>'+
                                     '<tbody>';
                     $.each(fab, function(index, value){
+                        console.log(value);
                         if( value['po_status']=='' || value['po_status']==null || value['po_status']=='null' || value['rcv_status']=='' || value['rcv_status']==null || value['rcv_status']=='null' )
                         {
                           div +=  '<tr>'+

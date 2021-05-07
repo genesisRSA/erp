@@ -1,9 +1,9 @@
 @extends('layouts.resmain')
 <style>
-   textarea.materialize-textarea
+   /* textarea.materialize-textarea
         {
             height: 30% !important; 
-        }
+        } */
 </style>
  
 @section('content')
@@ -102,7 +102,7 @@
                           <a id="set" href="#!" onclick="setTable();" class="blue waves-effect waves-dark btn" style="width: 100%"><i class="material-icons left">check_circle</i>Set</a>
                         </div>
                         <div class="col s12 m3 l3 left-align" style="padding-right: 30px;padding-left: 0px;">
-                          <a id="reset" href="#!" onclick="resetTable();" class="orange waves-effect waves-dark btn" style="width: 100%" disabled><i class="material-icons left">loop</i>Reset</a>
+                          <a id="reset" href="#!" onclick="resetAll();" class="orange waves-effect waves-dark btn" style="width: 100%" disabled><i class="material-icons left">loop</i>Reset</a>
                         </div>
                         <div class="col s12 m3 l3 left-align"></div>
                         <div id="btnExit" class="col s12 m3 l3 right-align">
@@ -178,23 +178,11 @@
             <div class="input-field col s12 m6 l6">
               <input placeholder="" name="item_length" id="add_item_length" type="number" step="0.0001" class="number validate" required >
               <label for="item_length">Length<sup class="red-text"></sup></label>
-              {{-- <div class="col s12 m6 left-align">
-                <label>
-                    <input placeholder="e.g $"  type="checkbox" onclick="distext('add_item_length')"/>
-                      <span style="font-size: 12px">Click to set N/A</span>
-                </label>
-              </div> --}}
             </div>
 
             <div class="input-field col s12 m6 l6">
               <input placeholder="" name="item_width" id="add_item_width" type="number" step="0.0001" class="number validate" required >
               <label for="item_width">Width<sup class="red-text"></sup></label>
-              {{-- <div class="col s12 m6 left-align">
-                <label>
-                    <input placeholder="e.g $"  type="checkbox" onclick="distext('add_item_width')"/>
-                      <span style="font-size: 12px">Click to set N/A</span>
-                </label>
-              </div> --}}
             </div>
           </div>
 
@@ -202,22 +190,10 @@
             <div class="input-field col s12 m6 l6">
               <input placeholder="" name="item_thickness" id="add_item_thickness" type="number" step="0.0001" class="number validate" required >
               <label for="item_thickness">Thickness<sup class="red-text"></sup></label>
-              {{-- <div class="col s12 m6 left-align">
-                <label>
-                    <input placeholder="e.g $"  type="checkbox" onclick="distext('add_item_thickness')"/>
-                      <span style="font-size: 12px">Click to set N/A</span>
-                </label>
-              </div> --}}
             </div>
             <div class="input-field col s12 m6 l6">
               <input placeholder="" name="item_radius" id="add_item_radius" type="number" step="0.0001" class="number validate" required >
               <label for="item_radius">Radius<sup class="red-text">*</sup></label>
-              {{-- <div class="col s12 m6 left-align">
-                <label>
-                    <input placeholder="e.g $"  type="checkbox" onclick="distext('add_item_radius')"/>
-                      <span style="font-size: 12px">Click to set N/A</span>
-                </label>
-              </div> --}}
             </div>
           </div>
 
@@ -299,6 +275,21 @@
           <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>No</a>
       </div>
     </div>
+
+    <div id="resetAll" class="modal">
+      <div class="modal-content">
+        <h4>Reset Project Details</h4>
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <p>Are you sure you want to reset <strong>All Project Details</strong>?</p>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+          <a onclick="resetTable();" class="green waves-effect waves-dark btn"><i class="material-icons left">check_circle</i>Yes</a>
+          <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>No</a>
+      </div>
+    </div>
   <!-- End of Modals -->
   <!-- SCRIPTS -->
   <script type="text/javascript" src="{{ asset('datatables/datatables.js') }}"></script>
@@ -330,16 +321,16 @@
         var type = $("#add_project_type").val() == null ? '' : $("#add_project_type").val();
         $('#add_site_code').val($(this).val());
         projectCode(site, cust, type, cpcount);
-        $.get(site+'/orders', (response) => {
-          var data = response.data;
-          var select = '<option value="" disabled selected>Choose Sales Order</option>';
-          $.each(data, function(index, row){
-            select += '<option value="'+row.order_code+'">'+row.order_code+'</option>';
-          });
+        // $.get(site+'/orders', (response) => {
+        //   var data = response.data;
+        //   var select = '<option value="" disabled selected>Choose Sales Order</option>';
+        //   $.each(data, function(index, row){
+        //     select += '<option value="'+row.order_code+'">'+row.order_code+'</option>';
+        //   });
          
-          $('#sales_order').html(select);
-          $('#sales_order').formSelect();
-        });
+        //   $('#sales_order').html(select);
+        //   $('#sales_order').formSelect();
+        // });
     });
 
     $('#customer').on('change', function(){
@@ -353,6 +344,17 @@
             var type = $("#add_project_type").val() == null ? '' : $("#add_project_type").val();
             cpcount = (type == 'A' ? a_count : t_count);
             projectCode(site, cust, type, cpcount);
+        });
+
+        $.get($(this).val()+'/orders', (response) => {
+          var data = response.data;
+          var select = '<option value="" disabled selected>Choose Sales Order</option>';
+          $.each(data, function(index, row){
+            select += '<option value="'+row.order_code+'">'+row.order_code+'</option>';
+          });
+         
+          $('#sales_order').html(select);
+          $('#sales_order').formSelect();
         });
     });
 
@@ -451,13 +453,15 @@
       $.get(id+'/item_details', (response) => {
         var data = response.data;
         if(data){
-          M.updateTextFields();
-          $('.materialize-textarea').each(function (index) {
-              M.textareaAutoResize(this);
-          });
+          // M.updateTextFields();
+          // $('.materialize-textarea').each(function (index) {
+          //     M.textareaAutoResize(this);
+          // });
+
+
 
           $('#add_description').val(data.item_desc);
-
+          M.textareaAutoResize($('#add_description'));
           if(loc!='mfab'){             
             $('#add_uom_code option[value="'+data.uom_code+'"]').prop('selected', true);
             $('#add_uom_code').prop('disabled', true);
@@ -590,6 +594,10 @@
       $('#resetAssyModal').modal('open');
     }
 
+    const resetAll = () => {
+      $('#resetAll').modal('open');
+    }
+
     const delAssyModal = (assy_code) => {
       $('#del_id').val(assy_code);
       $('#delAssyModal').modal('open');
@@ -628,10 +636,10 @@
       var fab_code =  $('#add_fab_code').val();
       var assy_code = $('#add_assy_code').val();
       var item_code = $('#add_item_code').val();
-      $('#addModal').modal('close');
       switch (loc) {
         case "mfab":
-          if(checkItem(n_mfab, fab_code, loc) == false){
+          if($('#add_fab_code').val() && $('#add_description').val() && $('#add_item_length').val() && $('#add_item_width').val() && $('#add_item_thickness').val() && $('#add_item_radius').val()){
+            if(checkItem(n_mfab, fab_code, loc) == false){
             n_mfab.push({"assy_code":     $('#add_assy_code').val(),
                           "fab_code":     $('#add_fab_code').val(),
                           "fab_desc":     $('#add_description').val(),
@@ -642,77 +650,101 @@
                           "loc":          'mfab',
                         });
             renderTable(n_mfab,$('#tbl'+assy_code+'mfab tbody'),loc,assy_code);
+            $('#addModal').modal('close');
+            } else {
+              alert("Fabrication code already exist!");
+            };
           } else {
-            alert("Fabrication code already exist!");
-          };
+            alert("Please fill up all Mechanical Fabrication details!");
+          }
           break;
         case "mstand":
-          if(checkItem(n_mstand, item_code, loc) == false ){
-            n_mstand.push({"assy_code":   $('#add_assy_code').val(),
-                          "item_code":    $('#add_item_code').val(),
-                          "description":  $('#add_description').val(),
-                          "uom_code":     $('#add_uom_code').val(),
-                          "length":       $('#add_item_length').val(),
-                          "width":        $('#add_item_width').val(),
-                          "thickness":    $('#add_item_thickness').val(),
-                          "radius":       $('#add_item_radius').val(),
-                          "loc":          'mstand',
-                        });                 
-            renderTable(n_mstand,$('#tbl'+assy_code+'mstand tbody'),loc,assy_code);
+          if($('#add_item_code').val()){
+            if(checkItem(n_mstand, item_code, loc) == false ){
+              n_mstand.push({"assy_code":   $('#add_assy_code').val(),
+                            "item_code":    $('#add_item_code').val(),
+                            "description":  $('#add_description').val(),
+                            "uom_code":     $('#add_uom_code').val(),
+                            "length":       $('#add_item_length').val(),
+                            "width":        $('#add_item_width').val(),
+                            "thickness":    $('#add_item_thickness').val(),
+                            "radius":       $('#add_item_radius').val(),
+                            "loc":          'mstand',
+                          });                 
+              renderTable(n_mstand,$('#tbl'+assy_code+'mstand tbody'),loc,assy_code);
+              $('#addModal').modal('close');
+            } else {
+              alert("Item code already exist!");
+            };
           } else {
-            alert("Item code already exist!");
-          };
+            alert("Please search for item code before saving!");
+          }
           break;
         case "fast":
-          if(checkItem(n_fast, item_code, loc) == false ){
-            n_fast.push({"assy_code":      $('#add_assy_code').val(),
-                          "item_code":    $('#add_item_code').val(),
-                          "description":  $('#add_description').val(),
-                          "uom_code":     $('#add_uom_code').val(),
-                          "length":       $('#add_item_length').val(),
-                          "width":        $('#add_item_width').val(),
-                          "thickness":    $('#add_item_thickness').val(),
-                          "radius":       $('#add_item_radius').val(),
-                          "loc":          'fast',
-                        });               
-            renderTable(n_fast,$('#tbl'+assy_code+'fast tbody'),loc,assy_code);  
+          if($('#add_item_code').val()){
+            if(checkItem(n_fast, item_code, loc) == false ){
+              n_fast.push({"assy_code":      $('#add_assy_code').val(),
+                            "item_code":    $('#add_item_code').val(),
+                            "description":  $('#add_description').val(),
+                            "uom_code":     $('#add_uom_code').val(),
+                            "length":       $('#add_item_length').val(),
+                            "width":        $('#add_item_width').val(),
+                            "thickness":    $('#add_item_thickness').val(),
+                            "radius":       $('#add_item_radius').val(),
+                            "loc":          'fast',
+                          });               
+              renderTable(n_fast,$('#tbl'+assy_code+'fast tbody'),loc,assy_code);  
+              $('#addModal').modal('close');
+            } else {
+              alert("Item code already exist!");
+            };
           } else {
-            alert("Item code already exist!");
-          };
+            alert("Please search for item code before saving!");
+          }
           break;
         case "pneu":
-          if(checkItem(n_pneu, item_code, loc) == false ){
-            n_pneu.push({"assy_code":     $('#add_assy_code').val(),
-                          "item_code":    $('#add_item_code').val(),
-                          "description":  $('#add_description').val(),
-                          "uom_code":     $('#add_uom_code').val(),
-                          "length":       $('#add_item_length').val(),
-                          "width":        $('#add_item_width').val(),
-                          "thickness":    $('#add_item_thickness').val(),
-                          "radius":       $('#add_item_radius').val(),
-                          "loc":          'pneu',
-                        });             
-            renderTable(n_pneu,$('#tbl'+assy_code+'pneu tbody'),loc,assy_code);
+          if($('#add_item_code').val()){
+            if(checkItem(n_pneu, item_code, loc) == false ){
+              n_pneu.push({"assy_code":     $('#add_assy_code').val(),
+                            "item_code":    $('#add_item_code').val(),
+                            "description":  $('#add_description').val(),
+                            "uom_code":     $('#add_uom_code').val(),
+                            "length":       $('#add_item_length').val(),
+                            "width":        $('#add_item_width').val(),
+                            "thickness":    $('#add_item_thickness').val(),
+                            "radius":       $('#add_item_radius').val(),
+                            "loc":          'pneu',
+                          });             
+              renderTable(n_pneu,$('#tbl'+assy_code+'pneu tbody'),loc,assy_code);
+              $('#addModal').modal('close');
+            } else {
+              alert("Item code already exist!");
+            };
           } else {
-            alert("Item code already exist!");
-          };
-            break;
+            alert("Please search for item code before saving!");
+          }
+          break;
         case "elec":
-          if(checkItem(n_elec, item_code, loc) == false ){
-            n_elec.push({"assy_code":     $('#add_assy_code').val(),
-                          "item_code":    $('#add_item_code').val(),
-                          "description":  $('#add_description').val(),
-                          "uom_code":     $('#add_uom_code').val(),
-                          "length":       $('#add_item_length').val(),
-                          "width":        $('#add_item_width').val(),
-                          "thickness":    $('#add_item_thickness').val(),
-                          "radius":       $('#add_item_radius').val(),
-                          "loc":          'elec',
-                        });         
-            renderTable(n_elec,$('#tbl'+assy_code+'elec tbody'),loc,assy_code);
+          if($('#add_item_code').val()){
+            if(checkItem(n_elec, item_code, loc) == false ){
+              n_elec.push({"assy_code":     $('#add_assy_code').val(),
+                            "item_code":    $('#add_item_code').val(),
+                            "description":  $('#add_description').val(),
+                            "uom_code":     $('#add_uom_code').val(),
+                            "length":       $('#add_item_length').val(),
+                            "width":        $('#add_item_width').val(),
+                            "thickness":    $('#add_item_thickness').val(),
+                            "radius":       $('#add_item_radius').val(),
+                            "loc":          'elec',
+                          });         
+              renderTable(n_elec,$('#tbl'+assy_code+'elec tbody'),loc,assy_code);
+              $('#addModal').modal('close');
+            } else {
+              alert("Item code already exist!");
+            };   
           } else {
-            alert("Item code already exist!");
-          };         
+            alert("Please search for item code before saving!");
+          }
           break;
       };
     };
@@ -760,7 +792,11 @@
               footer.style.display = "block";
           var ext = document.getElementById("btnExit");
               ext.style.display = "none";
-            
+              
+              n_mstand = [];   
+              n_fast = [];     
+              n_pneu = [];     
+              n_elec = [];   
       } else {
         alert("Please fill up all project details!");
       }
@@ -799,6 +835,8 @@
       $("#reset").attr('disabled','disabled');
       $("#set").removeAttr('disabled');
       $('#assy').html("");
+
+      $('#resetAll').modal('close');
       var footer = document.getElementById("details_footer");
           footer.style.display = "none";
       var ext = document.getElementById("btnExit");
@@ -992,6 +1030,7 @@
                                     '<input type="hidden" name="fab_thickness[]" value="'+value['thickness']+'"/>'+
                                     '<input type="hidden" name="fab_radius[]" value="'+value['radius']+'"/>'+
                                 '</tr>';
+                      n_mfab = [];
                       n_mfab.push({
                                     "assy_code":    value['assy_code'],
                                     "fab_code":     value['fab_code'],
