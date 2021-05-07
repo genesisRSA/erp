@@ -416,12 +416,9 @@
       $.get(id+'/item_details', (response) => {
         var data = response.data;
         if(data){
-          M.updateTextFields();
-          $('.materialize-textarea').each(function (index) {
-              M.textareaAutoResize(this);
-          });
-
+          
           $('#add_description').val(data.item_desc);
+          M.textareaAutoResize($('#add_description'));
 
           if(loc!='mfab'){             
             $('#add_uom_code option[value="'+data.uom_code+'"]').prop('selected', true);
