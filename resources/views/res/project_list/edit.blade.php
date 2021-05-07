@@ -585,6 +585,10 @@
       return valid;
     };
 
+    const trim = (str) => {
+      return str.replace(/^\s+|\s+$/gm,'');
+    };
+
     const addItems = () => {
       var loc = $('#loc').val();
       var fab_code =  $('#add_fab_code').val();
@@ -592,20 +596,21 @@
       var item_code = $('#add_item_code').val();
       switch (loc) {
         case "mfab":
-          if($('#add_fab_code').val() && $('#add_description').val() && $('#add_item_length').val() && $('#add_item_width').val() && $('#add_item_thickness').val() && $('#add_item_radius').val()){
+          if(trim($('#add_fab_code').val()) && 
+             trim($('#add_description').val())){
             if(checkItem(n_mfab, assy_code, fab_code, loc) == false){
               n_mfab.push({"assy_code":     $('#add_assy_code').val(),
                             "fab_code":     $('#add_fab_code').val(),
                             "fab_desc":     $('#add_description').val(),
-                            "length":       $('#add_item_length').val(),
-                            "width":        $('#add_item_width').val(),
-                            "thickness":    $('#add_item_thickness').val(),
-                            "radius":       $('#add_item_radius').val(),
-                            "po_status":    '',
-                            "rcv_status":   '',
+                            "length":       (trim($('#add_item_length').val()) == '' ? 0 : $('#add_item_length').val()),
+                            "width":        (trim($('#add_item_width').val()) == '' ? 0 : $('#add_item_width').val()),
+                            "thickness":    (trim($('#add_item_thickness').val()) == '' ? 0 : $('#add_item_thickness').val()),
+                            "radius":       (trim($('#add_item_radius').val()) == '' ? 0 : $('#add_item_radius').val()),
+                            "po_status":    null,
+                            "rcv_status":   null,
                             "loc":          'mfab',
                           });
-              renderTable(n_mfab,$('#tbl'+assy_code+'mfab tbody'),loc,assy_code);
+              renderTable(n_mfab,$('#tbl'+assy_code+'mfab tbody'),loc,assy_code,"add");
               $('#addModal').modal('close');
             } else {
               alert("Fabrication code already exist!");
@@ -615,21 +620,21 @@
           }
           break;
         case "mstand":
-          if($('#add_item_code').val()){
+          if(trim($('#add_item_code').val())){
             if(checkItem(n_mstand, assy_code, item_code, loc) == false ){
               n_mstand.push({"assy_code":   $('#add_assy_code').val(),
                             "item_code":    $('#add_item_code').val(),
                             "description":  $('#add_description').val(),
                             "uom_code":     $('#add_uom_code').val(),
-                            "length":       $('#add_item_length').val(),
-                            "width":        $('#add_item_width').val(),
-                            "thickness":    $('#add_item_thickness').val(),
-                            "radius":       $('#add_item_radius').val(),
-                            "po_status":    '',
-                            "rcv_status":   '',
+                            "length":       (trim($('#add_item_length').val()) == '' ? 0 : $('#add_item_length').val()),
+                            "width":        (trim($('#add_item_width').val()) == '' ? 0 : $('#add_item_width').val()),
+                            "thickness":    (trim($('#add_item_thickness').val()) == '' ? 0 : $('#add_item_thickness').val()),
+                            "radius":       (trim($('#add_item_radius').val()) == '' ? 0 : $('#add_item_radius').val()),
+                            "po_status":    null,
+                            "rcv_status":   null,
                             "loc":          'mstand',
                           });                 
-              renderTable(n_mstand,$('#tbl'+assy_code+'mstand tbody'),loc,assy_code);
+              renderTable(n_mstand,$('#tbl'+assy_code+'mstand tbody'),loc,assy_code,"add");
               $('#addModal').modal('close');
             } else {
               alert("Item code already exist!");
@@ -639,21 +644,21 @@
           }
           break;
         case "fast":
-          if($('#add_item_code').val()){
+          if(trim($('#add_item_code').val())){
             if(checkItem(n_fast, assy_code, item_code, loc) == false ){
               n_fast.push({"assy_code":      $('#add_assy_code').val(),
                             "item_code":    $('#add_item_code').val(),
                             "description":  $('#add_description').val(),
                             "uom_code":     $('#add_uom_code').val(),
-                            "length":       $('#add_item_length').val(),
-                            "width":        $('#add_item_width').val(),
-                            "thickness":    $('#add_item_thickness').val(),
-                            "radius":       $('#add_item_radius').val(),
-                            "po_status":    '',
-                            "rcv_status":   '',
+                            "length":       (trim($('#add_item_length').val()) == '' ? 0 : $('#add_item_length').val()),
+                            "width":        (trim($('#add_item_width').val()) == '' ? 0 : $('#add_item_width').val()),
+                            "thickness":    (trim($('#add_item_thickness').val()) == '' ? 0 : $('#add_item_thickness').val()),
+                            "radius":       (trim($('#add_item_radius').val()) == '' ? 0 : $('#add_item_radius').val()),
+                            "po_status":    null,
+                            "rcv_status":   null,
                             "loc":          'fast',
                           });               
-              renderTable(n_fast,$('#tbl'+assy_code+'fast tbody'),loc,assy_code);  
+              renderTable(n_fast,$('#tbl'+assy_code+'fast tbody'),loc,assy_code,"add");  
               $('#addModal').modal('close');
             } else {
               alert("Item code already exist!");
@@ -663,21 +668,21 @@
           }
           break;
         case "pneu":
-          if($('#add_item_code').val()){
+          if(trim($('#add_item_code').val())){
             if(checkItem(n_pneu, assy_code, item_code, loc) == false ){
               n_pneu.push({"assy_code":     $('#add_assy_code').val(),
                             "item_code":    $('#add_item_code').val(),
                             "description":  $('#add_description').val(),
                             "uom_code":     $('#add_uom_code').val(),
-                            "length":       $('#add_item_length').val(),
-                            "width":        $('#add_item_width').val(),
-                            "thickness":    $('#add_item_thickness').val(),
-                            "radius":       $('#add_item_radius').val(),
-                            "po_status":    '',
-                            "rcv_status":   '',
+                            "length":       (trim($('#add_item_length').val()) == '' ? 0 : $('#add_item_length').val()),
+                            "width":        (trim($('#add_item_width').val()) == '' ? 0 : $('#add_item_width').val()),
+                            "thickness":    (trim($('#add_item_thickness').val()) == '' ? 0 : $('#add_item_thickness').val()),
+                            "radius":       (trim($('#add_item_radius').val()) == '' ? 0 : $('#add_item_radius').val()),
+                            "po_status":    null,
+                            "rcv_status":   null,
                             "loc":          'pneu',
                           });             
-              renderTable(n_pneu,$('#tbl'+assy_code+'pneu tbody'),loc,assy_code);
+              renderTable(n_pneu,$('#tbl'+assy_code+'pneu tbody'),loc,assy_code,"add");
               $('#addModal').modal('close');
             } else {
               alert("Item code already exist!");
@@ -687,21 +692,21 @@
           }
           break;
         case "elec":
-          if($('#add_item_code').val()){
+          if(trim($('#add_item_code').val())){
             if(checkItem(n_elec, assy_code, item_code, loc) == false ){
               n_elec.push({"assy_code":     $('#add_assy_code').val(),
                             "item_code":    $('#add_item_code').val(),
                             "description":  $('#add_description').val(),
                             "uom_code":     $('#add_uom_code').val(),
-                            "length":       $('#add_item_length').val(),
-                            "width":        $('#add_item_width').val(),
-                            "thickness":    $('#add_item_thickness').val(),
-                            "radius":       $('#add_item_radius').val(),
-                            "po_status":    '',
-                            "rcv_status":   '',  
+                            "length":       (trim($('#add_item_length').val()) == '' ? 0 : $('#add_item_length').val()),
+                            "width":        (trim($('#add_item_width').val()) == '' ? 0 : $('#add_item_width').val()),
+                            "thickness":    (trim($('#add_item_thickness').val()) == '' ? 0 : $('#add_item_thickness').val()),
+                            "radius":       (trim($('#add_item_radius').val()) == '' ? 0 : $('#add_item_radius').val()),
+                            "po_status":    null,
+                            "rcv_status":   null,  
                             "loc":          'elec',
                           });         
-              renderTable(n_elec,$('#tbl'+assy_code+'elec tbody'),loc,assy_code);
+              renderTable(n_elec,$('#tbl'+assy_code+'elec tbody'),loc,assy_code,"add");
               $('#addModal').modal('close');
             } else {
               alert("Item code already exist!");
@@ -797,6 +802,11 @@
 
     const renderProductTable = (project_code) => {
       $.get(project_code+'/edit_assy', (response) => {
+            n_mfab = [];
+            n_mstand = [];   
+            n_fast = [];     
+            n_pneu = [];     
+            n_elec = [];  
             var data = response.data;  
  
                         // collapsible list header
@@ -822,7 +832,6 @@
                         '<input type="hidden" name="assy_code[]" value="'+value['assy_code']+'"/>'+
                         '<input type="hidden" name="assy_desc[]" value="'+value['assy_desc']+'"/>';
                     coll += '<div class="collapsible-header">'+value['assy_code']+' - '+value['assy_desc']+'<i onclick="delAssyModal(\''+value['assy_code']+'\');" class="red-text material-icons" style="z-index:=10; position:absolute;right:38;">cancel</i></div>';
-                    // coll += '<div class="collapsible-header">'+value['assy_code']+' - '+value['assy_desc']+'</div>';
                     coll += '<div class="collapsible-body">'+
                                 '<span>'+
                                     // tabs header
@@ -965,8 +974,7 @@
                                       '</thead>'+
                                     '<tbody>';
                     $.each(fab, function(index, value){
-                        console.log(value);
-                        if( value['po_status']=='' || value['po_status']==null || value['po_status']=='null' || value['rcv_status']=='' || value['rcv_status']==null || value['rcv_status']=='null' )
+                        if(value['po_status']==null || value['po_status']=="null" || value['rcv_status']==null || value['rcv_status']=="null")
                         {
                           div +=  '<tr>'+
                                       '<td class="left-align">'+value['fab_code']+'</td>'+
@@ -983,6 +991,11 @@
                                       '<input type="hidden" name="fab_width[]" value="'+value['width']+'"/>'+
                                       '<input type="hidden" name="fab_thickness[]" value="'+value['thickness']+'"/>'+
                                       '<input type="hidden" name="fab_radius[]" value="'+value['radius']+'"/>'+
+                                      '<input type="hidden" name="fab_dwg_status[]" value="'+value['dwg_status']+'"/>'+
+                                      '<input type="hidden" name="fab_bom_status[]" value="'+value['bom_status']+'"/>'+
+                                      '<input type="hidden" name="fab_pr_status[]" value="'+value['pr_status']+'"/>'+
+                                      '<input type="hidden" name="fab_po_status[]" value="'+value['po_status']+'"/>'+
+                                      '<input type="hidden" name="fab_rcv_status[]" value="'+value['rcv_status']+'"/>'+
                                   '</tr>';
                         }
                         else
@@ -1002,6 +1015,11 @@
                                     '<input type="hidden" name="fab_width[]" value="'+value['width']+'"/>'+
                                     '<input type="hidden" name="fab_thickness[]" value="'+value['thickness']+'"/>'+
                                     '<input type="hidden" name="fab_radius[]" value="'+value['radius']+'"/>'+
+                                    '<input type="hidden" name="fab_dwg_status[]" value="'+value['dwg_status']+'"/>'+
+                                    '<input type="hidden" name="fab_bom_status[]" value="'+value['bom_status']+'"/>'+
+                                    '<input type="hidden" name="fab_pr_status[]" value="'+value['pr_status']+'"/>'+
+                                    '<input type="hidden" name="fab_po_status[]" value="'+value['po_status']+'"/>'+
+                                    '<input type="hidden" name="fab_rcv_status[]" value="'+value['rcv_status']+'"/>'+
                                 '</tr>';
                         }
                         
@@ -1034,7 +1052,7 @@
             $('#assy').html("");
             $('#assy').append(coll);
             
-            // adtl table
+            // // adtl table
             $.get(project_code+'/adtl', (response) => {
               var data = response.data;
               $.each(data, function(index, value){   
@@ -1047,11 +1065,11 @@
                           value['width'],
                           value['thickness'],
                           value['radius'],
-                          null,
-                          null);
+                          value['po_status'],
+                          value['rcv_status']);
               });
             });
-            // end adtl table
+            // // end adtl table
 
             $('.collapsible').collapsible();
         });  
@@ -1071,9 +1089,8 @@
                           "po_status":    po_status,
                           "rcv_status":   rcv_status,
                           "loc":          'mstand',
-                        });                 
-            renderTable(n_mstand,$('#tbl'+assy_code+'mstand tbody'),loc,assy_code);
-          
+                        });     
+            renderTable(n_mstand,$('#tbl'+assy_code+'mstand tbody'),loc,assy_code,"show");
           break;
         case "fast":
             n_fast.push({"assy_code":   assy_code,
@@ -1088,7 +1105,7 @@
                           "rcv_status":   rcv_status,
                           "loc":          'fast',
                         });               
-            renderTable(n_fast,$('#tbl'+assy_code+'fast tbody'),loc,assy_code);  
+            renderTable(n_fast,$('#tbl'+assy_code+'fast tbody'),loc,assy_code,"show");  
           break;
         case "pneu":
             n_pneu.push({"assy_code":   assy_code,
@@ -1103,7 +1120,7 @@
                           "rcv_status":   rcv_status,
                           "loc":          'pneu',
                         });             
-            renderTable(n_pneu,$('#tbl'+assy_code+'pneu tbody'),loc,assy_code);
+            renderTable(n_pneu,$('#tbl'+assy_code+'pneu tbody'),loc,assy_code,"show");
             break;
         case "elec":
             n_elec.push({"assy_code":   assy_code,
@@ -1118,111 +1135,245 @@
                           "rcv_status":   rcv_status,
                           "loc":          'elec',
                         });         
-            renderTable(n_elec,$('#tbl'+assy_code+'elec tbody'),loc,assy_code);      
+            renderTable(n_elec,$('#tbl'+assy_code+'elec tbody'),loc,assy_code,"show");      
           break;
       };
     };
 
-    const renderTable = (items, table, loc, assy_code) => {
+    const renderTable = (items, table, loc, assy_code, todo) => {
       table.html("");
-      if(loc=='mfab'){
-        $.each(items, (index,row) => {
-            if( row.po_status=='' || row.po_status==null || row.po_status=='null' || row.rcv_status=='' || row.rcv_status==null || row.rcv_status=='null' )
-            {
-              table.append('<tr>'+
-                            '<td class="left-align">'+row.fab_code+'</td>'+
-                            '<td class="left-align">'+row.fab_desc+'</td>'+
-                            '<td class="left-align">'+row.length+'</td>'+
-                            '<td class="left-align">'+row.width+'</td>'+
-                            '<td class="left-align">'+row.thickness+'</td>'+
-                            '<td class="left-align">'+row.radius+'</td>'+
-                            '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="delItemModal(\''+index+'\',\''+loc+'\',\''+assy_code+'\',)"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
-                            '<input type="hidden" name="fab_assy_code[]" value="'+assy_code+'"/>'+
-                            '<input type="hidden" name="fab_code[]" value="'+row.fab_code+'"/>'+
-                            '<input type="hidden" name="fab_desc[]" value="'+row.fab_desc+'"/>'+
-                            '<input type="hidden" name="fab_length[]" value="'+row.length+'"/>'+
-                            '<input type="hidden" name="fab_width[]" value="'+row.width+'"/>'+
-                            '<input type="hidden" name="fab_thickness[]" value="'+row.thickness+'"/>'+
-                            '<input type="hidden" name="fab_radius[]" value="'+row.radius+'"/>'+
-                            '<input type="hidden" name="fab_po_status[]" value="'+row.po_status+'"/>'+
-                            '<input type="hidden" name="fab_rcv_status[]" value="'+row.rcv_status+'"/>'+
-                          '</tr>'
-                          );
-            } else {
-  
-              table.append('<tr>'+
-                            '<td class="left-align">'+row.fab_code+'</td>'+
-                            '<td class="left-align">'+row.fab_desc+'</td>'+
-                            '<td class="left-align">'+row.length+'</td>'+
-                            '<td class="left-align">'+row.width+'</td>'+
-                            '<td class="left-align">'+row.thickness+'</td>'+
-                            '<td class="left-align">'+row.radius+'</td>'+
-                            '<td><button type="button" class="btn-small red waves-effect waves-light" disabled><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
-                            '<input type="hidden" name="fab_assy_code[]" value="'+assy_code+'"/>'+
-                            '<input type="hidden" name="fab_code[]" value="'+row.fab_code+'"/>'+
-                            '<input type="hidden" name="fab_desc[]" value="'+row.fab_desc+'"/>'+
-                            '<input type="hidden" name="fab_length[]" value="'+row.length+'"/>'+
-                            '<input type="hidden" name="fab_width[]" value="'+row.width+'"/>'+
-                            '<input type="hidden" name="fab_thickness[]" value="'+row.thickness+'"/>'+
-                            '<input type="hidden" name="fab_radius[]" value="'+row.radius+'"/>'+
-                            '<input type="hidden" name="fab_po_status[]" value="'+row.po_status+'"/>'+
-                            '<input type="hidden" name="fab_rcv_status[]" value="'+row.rcv_status+'"/>'+
-                          '</tr>'
-                          );
+      if(todo=="add")
+      {
+        if(loc=='mfab'){
+          $.each(items, (index,row) => {
+            if(row.loc==loc && row.assy_code==assy_code){
+              if(row.po_status==null || row.po_status=="null" || row.rcv_status==null || row.rcv_status=="null")
+              {
+                table.append('<tr>'+
+                              '<td class="left-align">'+row.fab_code+'</td>'+
+                              '<td class="left-align">'+row.fab_desc+'</td>'+
+                              '<td class="left-align">'+row.length+'</td>'+
+                              '<td class="left-align">'+row.width+'</td>'+
+                              '<td class="left-align">'+row.thickness+'</td>'+
+                              '<td class="left-align">'+row.radius+'</td>'+
+                              '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="delItemModal(\''+index+'\',\''+loc+'\',\''+assy_code+'\',)"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                              '<input type="hidden" name="fab_assy_code[]" value="'+assy_code+'"/>'+
+                              '<input type="hidden" name="fab_code[]" value="'+row.fab_code+'"/>'+
+                              '<input type="hidden" name="fab_desc[]" value="'+row.fab_desc+'"/>'+
+                              '<input type="hidden" name="fab_length[]" value="'+row.length+'"/>'+
+                              '<input type="hidden" name="fab_width[]" value="'+row.width+'"/>'+
+                              '<input type="hidden" name="fab_thickness[]" value="'+row.thickness+'"/>'+
+                              '<input type="hidden" name="fab_radius[]" value="'+row.radius+'"/>'+
+                              '<input type="hidden" name="fab_dwg_status[]" value="null"/>'+
+                              '<input type="hidden" name="fab_bom_status[]" value="null"/>'+
+                              '<input type="hidden" name="fab_pr_status[]" value="null"/>'+
+                              '<input type="hidden" name="fab_po_status[]" value="null"/>'+
+                              '<input type="hidden" name="fab_rcv_status[]" value="null"/>'+
+                            '</tr>'
+                            );
+              } else {
+    
+                table.append('<tr>'+
+                              '<td class="left-align">'+row.fab_code+'</td>'+
+                              '<td class="left-align">'+row.fab_desc+'</td>'+
+                              '<td class="left-align">'+row.length+'</td>'+
+                              '<td class="left-align">'+row.width+'</td>'+
+                              '<td class="left-align">'+row.thickness+'</td>'+
+                              '<td class="left-align">'+row.radius+'</td>'+
+                              '<td><button type="button" class="btn-small red waves-effect waves-light" disabled><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                              '<input type="hidden" name="fab_assy_code[]" value="'+assy_code+'"/>'+
+                              '<input type="hidden" name="fab_code[]" value="'+row.fab_code+'"/>'+
+                              '<input type="hidden" name="fab_desc[]" value="'+row.fab_desc+'"/>'+
+                              '<input type="hidden" name="fab_length[]" value="'+row.length+'"/>'+
+                              '<input type="hidden" name="fab_width[]" value="'+row.width+'"/>'+
+                              '<input type="hidden" name="fab_thickness[]" value="'+row.thickness+'"/>'+
+                              '<input type="hidden" name="fab_radius[]" value="'+row.radius+'"/>'+
+                              '<input type="hidden" name="fab_dwg_status[]" value="null"/>'+
+                              '<input type="hidden" name="fab_bom_status[]" value="null"/>'+
+                              '<input type="hidden" name="fab_pr_status[]" value="null"/>'+
+                              '<input type="hidden" name="fab_po_status[]" value="null"/>'+
+                              '<input type="hidden" name="fab_rcv_status[]" value="null"/>'+
+                            '</tr>'
+                            );
+              }
             }
-        });
+          });
+        } else {
+          $.each(items, (index,row) => {
+            if(row.loc==loc && row.assy_code==assy_code){
+              if(row.po_status==null || row.po_status=="null" || row.rcv_status==null || row.rcv_status=="null")
+              {
+                table.append('<tr>'+
+                              '<td class="left-align">'+row.item_code+'</td>'+
+                              '<td class="left-align">'+row.description+'</td>'+
+                              '<td class="left-align">'+row.uom_code+'</td>'+
+                              '<td class="left-align">'+row.length+'</td>'+
+                              '<td class="left-align">'+row.width+'</td>'+
+                              '<td class="left-align">'+row.thickness+'</td>'+
+                              '<td class="left-align">'+row.radius+'</td>'+
+                              '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="delItemModal(\''+index+'\',\''+loc+'\',\''+assy_code+'\',)"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                              '<input type="hidden" name="item_assy_code[]" value="'+assy_code+'"/>'+
+                              '<input type="hidden" name="item_code[]" value="'+row.item_code+'"/>'+
+                              '<input type="hidden" name="item_desc[]" value="'+row.description+'"/>'+
+                              '<input type="hidden" name="item_uom[]" value="'+row.uom_code+'"/>'+
+                              '<input type="hidden" name="item_length[]" value="'+row.length+'"/>'+
+                              '<input type="hidden" name="item_width[]" value="'+row.width+'"/>'+
+                              '<input type="hidden" name="item_thickness[]" value="'+row.thickness+'"/>'+
+                              '<input type="hidden" name="item_radius[]" value="'+row.radius+'"/>'+
+                              '<input type="hidden" name="item_loc[]" value="'+loc+'"/>'+
+                              '<input type="hidden" name="fab_dwg_status[]" value="null"/>'+
+                              '<input type="hidden" name="fab_bom_status[]" value="null"/>'+
+                              '<input type="hidden" name="fab_pr_status[]" value="null"/>'+
+                              '<input type="hidden" name="fab_po_status[]" value="null"/>'+
+                              '<input type="hidden" name="fab_rcv_status[]" value="null"/>'+
+                            '</tr>'
+                            );
+              } else {
+                table.append('<tr>'+
+                              '<td class="left-align">'+row.item_code+'</td>'+
+                              '<td class="left-align">'+row.description+'</td>'+
+                              '<td class="left-align">'+row.uom_code+'</td>'+
+                              '<td class="left-align">'+row.length+'</td>'+
+                              '<td class="left-align">'+row.width+'</td>'+
+                              '<td class="left-align">'+row.thickness+'</td>'+
+                              '<td class="left-align">'+row.radius+'</td>'+
+                              '<td><button type="button" class="btn-small red waves-effect waves-light" disabled><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                              '<input type="hidden" name="item_assy_code[]" value="'+assy_code+'"/>'+
+                              '<input type="hidden" name="item_code[]" value="'+row.item_code+'"/>'+
+                              '<input type="hidden" name="item_desc[]" value="'+row.description+'"/>'+
+                              '<input type="hidden" name="item_uom[]" value="'+row.uom_code+'"/>'+
+                              '<input type="hidden" name="item_length[]" value="'+row.length+'"/>'+
+                              '<input type="hidden" name="item_width[]" value="'+row.width+'"/>'+
+                              '<input type="hidden" name="item_thickness[]" value="'+row.thickness+'"/>'+
+                              '<input type="hidden" name="item_radius[]" value="'+row.radius+'"/>'+
+                              '<input type="hidden" name="item_loc[]" value="'+loc+'"/>'+
+                              '<input type="hidden" name="fab_dwg_status[]" value="null"/>'+
+                              '<input type="hidden" name="fab_bom_status[]" value="null"/>'+
+                              '<input type="hidden" name="fab_pr_status[]" value="null"/>'+
+                              '<input type="hidden" name="fab_po_status[]" value="null"/>'+
+                              '<input type="hidden" name="fab_rcv_status[]" value="null"/>'+
+                            '</tr>'
+                            );
+              }
+            }
+          });
+        }
       } else {
-         
-        $.each(items, (index,row) => {
-            if( row.po_status=='' || row.po_status==null || row.po_status=='null' || row.rcv_status=='' || row.rcv_status==null || row.rcv_status=='null' )
-            {
-              table.append('<tr>'+
-                            '<td class="left-align">'+row.item_code+'</td>'+
-                            '<td class="left-align">'+row.description+'</td>'+
-                            '<td class="left-align">'+row.uom_code+'</td>'+
-                            '<td class="left-align">'+row.length+'</td>'+
-                            '<td class="left-align">'+row.width+'</td>'+
-                            '<td class="left-align">'+row.thickness+'</td>'+
-                            '<td class="left-align">'+row.radius+'</td>'+
-                            '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="delItemModal(\''+index+'\',\''+loc+'\',\''+assy_code+'\',)"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
-                            '<input type="hidden" name="item_assy_code[]" value="'+assy_code+'"/>'+
-                            '<input type="hidden" name="item_code[]" value="'+row.item_code+'"/>'+
-                            '<input type="hidden" name="item_desc[]" value="'+row.description+'"/>'+
-                            '<input type="hidden" name="item_uom[]" value="'+row.uom_code+'"/>'+
-                            '<input type="hidden" name="item_length[]" value="'+row.length+'"/>'+
-                            '<input type="hidden" name="item_width[]" value="'+row.width+'"/>'+
-                            '<input type="hidden" name="item_thickness[]" value="'+row.thickness+'"/>'+
-                            '<input type="hidden" name="item_radius[]" value="'+row.radius+'"/>'+
-                            '<input type="hidden" name="item_loc[]" value="'+loc+'"/>'+
-                            '<input type="hidden" name="item_po_status[]" value="'+row.po_status+'"/>'+
-                            '<input type="hidden" name="item_rcv_status[]" value="'+row.rcv_status+'"/>'+
-                          '</tr>'
-                          );
-            } else {
-              table.append('<tr>'+
-                            '<td class="left-align">'+row.item_code+'</td>'+
-                            '<td class="left-align">'+row.description+'</td>'+
-                            '<td class="left-align">'+row.uom_code+'</td>'+
-                            '<td class="left-align">'+row.length+'</td>'+
-                            '<td class="left-align">'+row.width+'</td>'+
-                            '<td class="left-align">'+row.thickness+'</td>'+
-                            '<td class="left-align">'+row.radius+'</td>'+
-                            '<td><button type="button" class="btn-small red waves-effect waves-light" disabled><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
-                            '<input type="hidden" name="item_assy_code[]" value="'+assy_code+'"/>'+
-                            '<input type="hidden" name="item_code[]" value="'+row.item_code+'"/>'+
-                            '<input type="hidden" name="item_desc[]" value="'+row.description+'"/>'+
-                            '<input type="hidden" name="item_uom[]" value="'+row.uom_code+'"/>'+
-                            '<input type="hidden" name="item_length[]" value="'+row.length+'"/>'+
-                            '<input type="hidden" name="item_width[]" value="'+row.width+'"/>'+
-                            '<input type="hidden" name="item_thickness[]" value="'+row.thickness+'"/>'+
-                            '<input type="hidden" name="item_radius[]" value="'+row.radius+'"/>'+
-                            '<input type="hidden" name="item_loc[]" value="'+loc+'"/>'+
-                            '<input type="hidden" name="item_po_status[]" value="'+row.po_status+'"/>'+
-                            '<input type="hidden" name="item_rcv_status[]" value="'+row.rcv_status+'"/>'+
-                          '</tr>'
-                          );
+        if(loc=='mfab'){
+          $.each(items, (index,row) => {
+            if(row.loc==loc && row.assy_code==assy_code){
+              if(row.po_status==null || row.po_status=="null" || row.rcv_status==null || row.rcv_status=="null")
+              {
+                table.append('<tr>'+
+                              '<td class="left-align">'+row.fab_code+'</td>'+
+                              '<td class="left-align">'+row.fab_desc+'</td>'+
+                              '<td class="left-align">'+row.length+'</td>'+
+                              '<td class="left-align">'+row.width+'</td>'+
+                              '<td class="left-align">'+row.thickness+'</td>'+
+                              '<td class="left-align">'+row.radius+'</td>'+
+                              '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="delItemModal(\''+index+'\',\''+loc+'\',\''+assy_code+'\',)"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                              '<input type="hidden" name="fab_assy_code[]" value="'+assy_code+'"/>'+
+                              '<input type="hidden" name="fab_code[]" value="'+row.fab_code+'"/>'+
+                              '<input type="hidden" name="fab_desc[]" value="'+row.fab_desc+'"/>'+
+                              '<input type="hidden" name="fab_length[]" value="'+row.length+'"/>'+
+                              '<input type="hidden" name="fab_width[]" value="'+row.width+'"/>'+
+                              '<input type="hidden" name="fab_thickness[]" value="'+row.thickness+'"/>'+
+                              '<input type="hidden" name="fab_radius[]" value="'+row.radius+'"/>'+
+                              '<input type="hidden" name="fab_dwg_status[]" value="'+row.dwg_status+'"/>'+
+                              '<input type="hidden" name="fab_bom_status[]" value="'+row.bom_status+'"/>'+
+                              '<input type="hidden" name="fab_pr_status[]" value="'+row.pr_status+'"/>'+
+                              '<input type="hidden" name="fab_po_status[]" value="'+row.po_status+'"/>'+
+                              '<input type="hidden" name="fab_rcv_status[]" value="'+row.rcv_status+'"/>'+
+                            '</tr>'
+                            );
+              } else {
+    
+                table.append('<tr>'+
+                              '<td class="left-align">'+row.fab_code+'</td>'+
+                              '<td class="left-align">'+row.fab_desc+'</td>'+
+                              '<td class="left-align">'+row.length+'</td>'+
+                              '<td class="left-align">'+row.width+'</td>'+
+                              '<td class="left-align">'+row.thickness+'</td>'+
+                              '<td class="left-align">'+row.radius+'</td>'+
+                              '<td><button type="button" class="btn-small red waves-effect waves-light" disabled><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                              '<input type="hidden" name="fab_assy_code[]" value="'+assy_code+'"/>'+
+                              '<input type="hidden" name="fab_code[]" value="'+row.fab_code+'"/>'+
+                              '<input type="hidden" name="fab_desc[]" value="'+row.fab_desc+'"/>'+
+                              '<input type="hidden" name="fab_length[]" value="'+row.length+'"/>'+
+                              '<input type="hidden" name="fab_width[]" value="'+row.width+'"/>'+
+                              '<input type="hidden" name="fab_thickness[]" value="'+row.thickness+'"/>'+
+                              '<input type="hidden" name="fab_radius[]" value="'+row.radius+'"/>'+
+                              '<input type="hidden" name="fab_dwg_status[]" value="'+row.dwg_status+'"/>'+
+                              '<input type="hidden" name="fab_bom_status[]" value="'+row.bom_status+'"/>'+
+                              '<input type="hidden" name="fab_pr_status[]" value="'+row.pr_status+'"/>'+
+                              '<input type="hidden" name="fab_po_status[]" value="'+row.po_status+'"/>'+
+                              '<input type="hidden" name="fab_rcv_status[]" value="'+row.rcv_status+'"/>'+
+                            '</tr>'
+                            );
+              }
             }
-        });
+          });
+        } else {
+         
+          $.each(items, (index,row) => {
+            if(row.loc==loc && row.assy_code==assy_code){
+              if(row.po_status==null || row.po_status=="null" || row.rcv_status==null || row.rcv_status=="null")
+              {
+                table.append('<tr>'+
+                              '<td class="left-align">'+row.item_code+'</td>'+
+                              '<td class="left-align">'+row.description+'</td>'+
+                              '<td class="left-align">'+row.uom_code+'</td>'+
+                              '<td class="left-align">'+row.length+'</td>'+
+                              '<td class="left-align">'+row.width+'</td>'+
+                              '<td class="left-align">'+row.thickness+'</td>'+
+                              '<td class="left-align">'+row.radius+'</td>'+
+                              '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="delItemModal(\''+index+'\',\''+loc+'\',\''+assy_code+'\',)"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                              '<input type="hidden" name="item_assy_code[]" value="'+assy_code+'"/>'+
+                              '<input type="hidden" name="item_code[]" value="'+row.item_code+'"/>'+
+                              '<input type="hidden" name="item_desc[]" value="'+row.description+'"/>'+
+                              '<input type="hidden" name="item_uom[]" value="'+row.uom_code+'"/>'+
+                              '<input type="hidden" name="item_length[]" value="'+row.length+'"/>'+
+                              '<input type="hidden" name="item_width[]" value="'+row.width+'"/>'+
+                              '<input type="hidden" name="item_thickness[]" value="'+row.thickness+'"/>'+
+                              '<input type="hidden" name="item_radius[]" value="'+row.radius+'"/>'+
+                              '<input type="hidden" name="item_loc[]" value="'+loc+'"/>'+
+                              '<input type="hidden" name="item_dwg_status[]" value="'+row.dwg_status+'"/>'+
+                              '<input type="hidden" name="item_bom_status[]" value="'+row.bom_status+'"/>'+
+                              '<input type="hidden" name="item_pr_status[]" value="'+row.pr_status+'"/>'+
+                              '<input type="hidden" name="item_po_status[]" value="'+row.po_status+'"/>'+
+                              '<input type="hidden" name="item_rcv_status[]" value="'+row.rcv_status+'"/>'+
+                            '</tr>'
+                            );
+              } else {
+                table.append('<tr>'+
+                              '<td class="left-align">'+row.item_code+'</td>'+
+                              '<td class="left-align">'+row.description+'</td>'+
+                              '<td class="left-align">'+row.uom_code+'</td>'+
+                              '<td class="left-align">'+row.length+'</td>'+
+                              '<td class="left-align">'+row.width+'</td>'+
+                              '<td class="left-align">'+row.thickness+'</td>'+
+                              '<td class="left-align">'+row.radius+'</td>'+
+                              '<td><button type="button" class="btn-small red waves-effect waves-light" disabled><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                              '<input type="hidden" name="item_assy_code[]" value="'+assy_code+'"/>'+
+                              '<input type="hidden" name="item_code[]" value="'+row.item_code+'"/>'+
+                              '<input type="hidden" name="item_desc[]" value="'+row.description+'"/>'+
+                              '<input type="hidden" name="item_uom[]" value="'+row.uom_code+'"/>'+
+                              '<input type="hidden" name="item_length[]" value="'+row.length+'"/>'+
+                              '<input type="hidden" name="item_width[]" value="'+row.width+'"/>'+
+                              '<input type="hidden" name="item_thickness[]" value="'+row.thickness+'"/>'+
+                              '<input type="hidden" name="item_radius[]" value="'+row.radius+'"/>'+
+                              '<input type="hidden" name="item_loc[]" value="'+loc+'"/>'+
+                              '<input type="hidden" name="item_dwg_status[]" value="'+row.dwg_status+'"/>'+
+                              '<input type="hidden" name="item_bom_status[]" value="'+row.bom_status+'"/>'+
+                              '<input type="hidden" name="item_pr_status[]" value="'+row.pr_status+'"/>'+
+                              '<input type="hidden" name="item_po_status[]" value="'+row.po_status+'"/>'+
+                              '<input type="hidden" name="item_rcv_status[]" value="'+row.rcv_status+'"/>'+
+                            '</tr>'
+                            );
+              }
+            }
+          });
+        }
       }
     };
 
@@ -1386,19 +1537,19 @@
           $('#delAssyItemModal').modal('close');
         switch (loc) {
           case "mfab":
-            renderTable(item_arr,$('#tbl'+assy_code+'mfab tbody'),loc,assy_code);
+            renderTable(item_arr,$('#tbl'+assy_code+'mfab tbody'),loc,assy_code,"del");
             break;
           case "mstand":
-            renderTable(item_arr,$('#tbl'+assy_code+'mstand tbody'),loc,assy_code);
+            renderTable(item_arr,$('#tbl'+assy_code+'mstand tbody'),loc,assy_code,"del");
             break;
           case "fast":
-            renderTable(item_arr,$('#tbl'+assy_code+'fast tbody'),loc,assy_code);
+            renderTable(item_arr,$('#tbl'+assy_code+'fast tbody'),loc,assy_code,"del");
             break;
           case "pneu":
-            renderTable(item_arr,$('#tbl'+assy_code+'pneu tbody'),loc,assy_code);
+            renderTable(item_arr,$('#tbl'+assy_code+'pneu tbody'),loc,assy_code,"del");
             break;
           case "elec":
-            renderTable(item_arr,$('#tbl'+assy_code+'elec tbody'),loc,assy_code);
+            renderTable(item_arr,$('#tbl'+assy_code+'elec tbody'),loc,assy_code,"del");
             break;
         };
       

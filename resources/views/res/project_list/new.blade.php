@@ -626,6 +626,10 @@
       return valid;
     };
 
+    const trim = (str) => {
+      return str.replace(/^\s+|\s+$/gm,'');
+    };
+    
     const addItems = () => {
       var loc = $('#loc').val();
       var fab_code =  $('#add_fab_code').val();
@@ -633,15 +637,16 @@
       var item_code = $('#add_item_code').val();
       switch (loc) {
         case "mfab":
-          if($('#add_fab_code').val() && $('#add_description').val() && $('#add_item_length').val() && $('#add_item_width').val() && $('#add_item_thickness').val() && $('#add_item_radius').val()){
+          if(trim($('#add_fab_code').val()) && 
+             trim($('#add_description').val())){
             if(checkItem(n_mfab, fab_code, loc) == false){
             n_mfab.push({"assy_code":     $('#add_assy_code').val(),
                           "fab_code":     $('#add_fab_code').val(),
                           "fab_desc":     $('#add_description').val(),
-                          "length":       $('#add_item_length').val(),
-                          "width":        $('#add_item_width').val(),
-                          "thickness":    $('#add_item_thickness').val(),
-                          "radius":       $('#add_item_radius').val(),
+                          "length":       (trim($('#add_item_length').val()) == '' ? 0 : $('#add_item_length').val()),
+                          "width":        (trim($('#add_item_width').val()) == '' ? 0 : $('#add_item_width').val()),
+                          "thickness":    (trim($('#add_item_thickness').val()) == '' ? 0 : $('#add_item_thickness').val()),
+                          "radius":       (trim($('#add_item_radius').val()) == '' ? 0 : $('#add_item_radius').val()),
                           "loc":          'mfab',
                         });
             renderTable(n_mfab,$('#tbl'+assy_code+'mfab tbody'),loc,assy_code);
@@ -654,16 +659,16 @@
           }
           break;
         case "mstand":
-          if($('#add_item_code').val()){
+          if(trim($('#add_item_code').val())){
             if(checkItem(n_mstand, item_code, loc) == false ){
               n_mstand.push({"assy_code":   $('#add_assy_code').val(),
                             "item_code":    $('#add_item_code').val(),
                             "description":  $('#add_description').val(),
                             "uom_code":     $('#add_uom_code').val(),
-                            "length":       $('#add_item_length').val(),
-                            "width":        $('#add_item_width').val(),
-                            "thickness":    $('#add_item_thickness').val(),
-                            "radius":       $('#add_item_radius').val(),
+                            "length":       (trim($('#add_item_length').val()) == '' ? 0 : $('#add_item_length').val()),
+                            "width":        (trim($('#add_item_width').val()) == '' ? 0 : $('#add_item_width').val()),
+                            "thickness":    (trim($('#add_item_thickness').val()) == '' ? 0 : $('#add_item_thickness').val()),
+                            "radius":       (trim($('#add_item_radius').val()) == '' ? 0 : $('#add_item_radius').val()),
                             "loc":          'mstand',
                           });                 
               renderTable(n_mstand,$('#tbl'+assy_code+'mstand tbody'),loc,assy_code);
@@ -676,16 +681,16 @@
           }
           break;
         case "fast":
-          if($('#add_item_code').val()){
+          if(trim($('#add_item_code').val())){
             if(checkItem(n_fast, item_code, loc) == false ){
               n_fast.push({"assy_code":      $('#add_assy_code').val(),
                             "item_code":    $('#add_item_code').val(),
                             "description":  $('#add_description').val(),
                             "uom_code":     $('#add_uom_code').val(),
-                            "length":       $('#add_item_length').val(),
-                            "width":        $('#add_item_width').val(),
-                            "thickness":    $('#add_item_thickness').val(),
-                            "radius":       $('#add_item_radius').val(),
+                            "length":       (trim($('#add_item_length').val()) == '' ? 0 : $('#add_item_length').val()),
+                            "width":        (trim($('#add_item_width').val()) == '' ? 0 : $('#add_item_width').val()),
+                            "thickness":    (trim($('#add_item_thickness').val()) == '' ? 0 : $('#add_item_thickness').val()),
+                            "radius":       (trim($('#add_item_radius').val()) == '' ? 0 : $('#add_item_radius').val()),
                             "loc":          'fast',
                           });               
               renderTable(n_fast,$('#tbl'+assy_code+'fast tbody'),loc,assy_code);  
@@ -698,16 +703,16 @@
           }
           break;
         case "pneu":
-          if($('#add_item_code').val()){
+          if(trim($('#add_item_code').val())){
             if(checkItem(n_pneu, item_code, loc) == false ){
               n_pneu.push({"assy_code":     $('#add_assy_code').val(),
                             "item_code":    $('#add_item_code').val(),
                             "description":  $('#add_description').val(),
                             "uom_code":     $('#add_uom_code').val(),
-                            "length":       $('#add_item_length').val(),
-                            "width":        $('#add_item_width').val(),
-                            "thickness":    $('#add_item_thickness').val(),
-                            "radius":       $('#add_item_radius').val(),
+                            "length":       (trim($('#add_item_length').val()) == '' ? 0 : $('#add_item_length').val()),
+                            "width":        (trim($('#add_item_width').val()) == '' ? 0 : $('#add_item_width').val()),
+                            "thickness":    (trim($('#add_item_thickness').val()) == '' ? 0 : $('#add_item_thickness').val()),
+                            "radius":       (trim($('#add_item_radius').val()) == '' ? 0 : $('#add_item_radius').val()),
                             "loc":          'pneu',
                           });             
               renderTable(n_pneu,$('#tbl'+assy_code+'pneu tbody'),loc,assy_code);
@@ -720,16 +725,16 @@
           }
           break;
         case "elec":
-          if($('#add_item_code').val()){
+          if(trim($('#add_item_code').val())){
             if(checkItem(n_elec, item_code, loc) == false ){
               n_elec.push({"assy_code":     $('#add_assy_code').val(),
                             "item_code":    $('#add_item_code').val(),
                             "description":  $('#add_description').val(),
                             "uom_code":     $('#add_uom_code').val(),
-                            "length":       $('#add_item_length').val(),
-                            "width":        $('#add_item_width').val(),
-                            "thickness":    $('#add_item_thickness').val(),
-                            "radius":       $('#add_item_radius').val(),
+                            "length":       (trim($('#add_item_length').val()) == '' ? 0 : $('#add_item_length').val()),
+                            "width":        (trim($('#add_item_width').val()) == '' ? 0 : $('#add_item_width').val()),
+                            "thickness":    (trim($('#add_item_thickness').val()) == '' ? 0 : $('#add_item_thickness').val()),
+                            "radius":       (trim($('#add_item_radius').val()) == '' ? 0 : $('#add_item_radius').val()),
                             "loc":          'elec',
                           });         
               renderTable(n_elec,$('#tbl'+assy_code+'elec tbody'),loc,assy_code);
@@ -840,6 +845,7 @@
 
     const renderProductTable = (prod_code) => {
       $.get(prod_code+'/assy', (response) => {
+            n_mfab = [];
             var data = response.data;  
  
                         // collapsible list header
@@ -1025,7 +1031,8 @@
                                     '<input type="hidden" name="fab_thickness[]" value="'+value['thickness']+'"/>'+
                                     '<input type="hidden" name="fab_radius[]" value="'+value['radius']+'"/>'+
                                 '</tr>';
-                      n_mfab = [];
+                     
+                       
                       n_mfab.push({
                                     "assy_code":    value['assy_code'],
                                     "fab_code":     value['fab_code'],

@@ -26,6 +26,7 @@ class CreateAssemblyAdtlItemsTable extends Migration
             $table->string('radius')->nullable();
             $table->string('location');
             $table->string('created_by');
+            $table->string('dwg_status')->nullable();
             $table->string('bom_status')->nullable();
             $table->string('pr_status')->nullable();
             $table->string('po_status')->nullable();

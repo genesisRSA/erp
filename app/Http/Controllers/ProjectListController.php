@@ -472,6 +472,9 @@ class ProjectListController extends Controller
                     $mechfab->width = $request->input('fab_width.'.$i);
                     $mechfab->thickness = $request->input('fab_thickness.'.$i);
                     $mechfab->radius = $request->input('fab_radius.'.$i);
+                    $mechfab->dwg_status = $request->input('fab_dwg_status.'.$i);
+                    $mechfab->bom_status = $request->input('fab_bom_status.'.$i);
+                    $mechfab->pr_status = $request->input('fab_pr_status.'.$i);
                     $mechfab->po_status = $request->input('fab_po_status.'.$i);
                     $mechfab->rcv_status = $request->input('fab_rcv_status.'.$i);
                     $mechfab->created_by = Auth::user()->employee->emp_no;
@@ -496,6 +499,9 @@ class ProjectListController extends Controller
                     $additem->thickness = $request->input('item_thickness.'.$i);
                     $additem->radius = $request->input('item_radius.'.$i);
                     $additem->location = $request->input('item_loc.'.$i);
+                    $mechfab->dwg_status = $request->input('item_dwg_status.'.$i);
+                    $mechfab->bom_status = $request->input('item_bom_status.'.$i);
+                    $mechfab->pr_status = $request->input('item_pr_status.'.$i);
                     $additem->po_status = $request->input('item_po_status.'.$i);
                     $additem->rcv_status = $request->input('item_rcv_status.'.$i);
                     $additem->created_by = Auth::user()->employee->emp_no;
