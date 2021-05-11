@@ -183,7 +183,7 @@ class ProjectListController extends Controller
     {
        
         $field = [
-            // 'currency_code' => 'required',
+            'assy_code' => 'required',
             // 'unit_price' => 'required',
             // 'quantity' => 'required',
             // 'total_price' => 'required',
@@ -264,6 +264,10 @@ class ProjectListController extends Controller
             $order = SalesOrder::where('order_code',$request->input('add_sales_order',''))->first();
             $order->status = 'ongoing';
             $order->save();
+
+            $customer = Customer::where('cust_code',$request->input('add_customer'))->first();
+            $request->input('add_project_type')=='A' ? $customer->a_count = $customer->a_count + 1 : $customer->t_count = $customer->t_count + 1;
+            $customer->save();
 
             // DETAILS FOR EMAIL BELOW
 
@@ -441,7 +445,7 @@ class ProjectListController extends Controller
     public function revision(Request $request)
     {
         $field = [
-            // 'currency_code' => 'required',
+            'assy_code' => 'required',
             // 'unit_price' => 'required',
             // 'quantity' => 'required',
             // 'total_price' => 'required',

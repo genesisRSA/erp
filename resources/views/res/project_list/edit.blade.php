@@ -137,7 +137,11 @@
             <input type="hidden" id="loc" name="loc"/>
 
             <div class="input-field col s12 m3 l3" id="btn_search" style="display: none">
-              <button id="add_search" type="button" onclick="searchItem();" class="blue waves-effect waves-light btn" id="btnAddSave" style="padding-right: 30px;left: 0px;"><i class="material-icons left">search</i>Search</button>
+              <button id="add_search" type="button" onclick="searchItem();" class="blue waves-effect waves-light btn"  style="padding-right: 30px;left: 0px;"><i class="material-icons left">search</i>Search</button>
+            </div>
+
+            <div class="input-field col s12 m3 l3" id="btn_reset" style="display: none">
+              <button id="add_reset" type="button" onclick="resetItem();" class="orange waves-effect waves-light btn" style="padding-right: 30px;left: 0px;"><i class="material-icons left">loop</i>Reset</button>
             </div>
     
             <div class="input-field col s12 m12 l12" id="fab_code" style="display: none">
@@ -157,7 +161,7 @@
 
             <div id="showUOM" class="input-field col s12 m6 l6" style="display: none">
               <select id="add_uom_code" name="uom_code" required disabled>
-                <option value="0" disabled selected>Choose your option</option>
+                <option value="" disabled selected>Choose your option</option>
                 @foreach ($uoms as $uom)
                   <option value="{{$uom->uom_code}}">{{$uom->uom_name}}</option>
                 @endforeach
@@ -191,7 +195,7 @@
 
         </div>
         <div class="modal-footer">
-          <button type="button" onclick="addItems();" class="green waves-effect waves-light btn" id="btnAddSave"><i class="material-icons left">check_circle</i>Save</button>
+          <button type="button" onclick="addItems();" class="green waves-effect waves-light btn" id="btnAddSave" disabled><i class="material-icons left">check_circle</i>Save</button>
           <button type="button" class="modal-close red waves-effect waves-dark btn" id="closeAddModal"><i class="material-icons left">cancel</i>Cancel</button>
         </div>
       </form>
@@ -450,6 +454,14 @@
             $('#add_item_radius').val(data.radius);
           }
 
+          var s = document.getElementById("btn_search");
+              s.style.display = "none";
+
+          var r = document.getElementById("btn_reset");
+              r.style.display = "block";
+
+          $('#btnAddSave').prop('disabled', false);
+          $('#add_item_code').prop('readonly', true);
         } else {
           $('#add_description').val("");
           $('#add_item_length').val("");
@@ -458,11 +470,41 @@
           $('#add_item_radius').val("");
           $('#add_uom_code option[value=""]').prop('selected', true);
           $('#add_uom_code').formSelect();
+
+          $('#btnAddSave').prop('disabled', true);
+          $('#add_item_code').prop('readonly', false);
+
+          var s = document.getElementById("btn_search");
+              s.style.display = "block";
+
+          var r = document.getElementById("btn_reset");
+              r.style.display = "none";
+
           alert("Item does not exist!");
         }
       });
     };
 
+    const resetItem = () => {
+          $('#add_description').val("");
+          $('#add_item_length').val("");
+          $('#add_item_width').val("");
+          $('#add_item_thickness').val("");
+          $('#add_item_radius').val("");
+          $('#add_uom_code option[value=""]').prop('selected', true);
+          $('#add_uom_code').formSelect();
+
+          $('#btnAddSave').prop('disabled', true);
+          $('#add_item_code').prop('readonly', false);
+
+          var s = document.getElementById("btn_search");
+              s.style.display = "block";
+
+          var r = document.getElementById("btn_reset");
+              r.style.display = "none";
+
+    };
+    
     const showModal = (loc, assy_code) => {
        if(loc!='Add Mechanical Fabrication')
        {
@@ -478,6 +520,10 @@
         var c = document.getElementById("fab_code");
         c.style.display = "none";
 
+        var v = document.getElementById("btn_reset");
+        v.style.display = "none";
+
+        $('#add_item_code').prop('disabled', false);
         $('#add_item_code').val('');
        
         $('#add_description').prop('disabled', true);
@@ -495,6 +541,8 @@
         $('#add_item_radius').prop('disabled', true);
         $('#add_item_radius').val('');
 
+        $('#btnAddSave').prop('disabled', true);
+
        } else {
         var x = document.getElementById("showUOM"); 
         x.style.display = "none";
@@ -507,6 +555,9 @@
 
         var c = document.getElementById("fab_code");
         c.style.display = "block";
+
+        var v = document.getElementById("btn_reset");
+        v.style.display = "none";
 
         $('#add_fab_code').val('');
 
@@ -525,6 +576,7 @@
         $('#add_item_radius').prop('disabled', false);
         $('#add_item_radius').val('');
 
+        $('#btnAddSave').prop('disabled', false);
        }   
 
         $('#header').html(loc);
@@ -720,8 +772,19 @@
 
     const addAssy = () => {
       if($('#new_assy_code').val() && $('#new_assy_desc').val()){
-        renderList($('#new_assy_code').val(), $('#new_assy_desc').val());
-        $('#assyModal').modal('close');
+        var x = assy_list.filter(assy => assy.assy_code == $('#new_assy_code').val());
+        if(x==0)
+        {
+          assy_list.push({
+                        "assy_code":$('#new_assy_code').val(),
+                        });
+          renderList($('#new_assy_code').val(), $('#new_assy_desc').val());
+          $('#assyModal').modal('close');
+          
+
+        } else {
+          alert("Assembly code already exist on the list!");
+        }
       } else {
         alert("Please fill up all assembly details!");
       }
@@ -831,6 +894,9 @@
                 coll += '<li id="'+value['assy_code']+'">'+
                         '<input type="hidden" name="assy_code[]" value="'+value['assy_code']+'"/>'+
                         '<input type="hidden" name="assy_desc[]" value="'+value['assy_desc']+'"/>';
+                    assy_list.push({
+                          "assy_code":    value['assy_code'],
+                          });
                     coll += '<div class="collapsible-header">'+value['assy_code']+' - '+value['assy_desc']+'<i onclick="delAssyModal(\''+value['assy_code']+'\');" class="red-text material-icons" style="z-index:=10; position:absolute;right:38;">cancel</i></div>';
                     coll += '<div class="collapsible-body">'+
                                 '<span>'+
