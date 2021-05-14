@@ -62,11 +62,11 @@
                       <div class="input-field col s12 m6 l6">
                           <select id="add_project_code" name="project_code" required>
                             <option value="" disabled selected>Choose Project</option>
-                            
+                            {{--                             
                             @foreach ($projects as $project)
                               <option value="{{$project->project_code}}">{{$project->project_name}}</option>
                             @endforeach
-                             
+                              --}}
                           </select>
                           <label for="project_code">Project Name<sup class="red-text">*</sup></label>
                       </div>
@@ -206,7 +206,15 @@
               t_count = data.t_count;
               cpcount = (project_type == "" ? "" : (project_type == "A" ? a_count : t_count));
               drawingNo(site, cust, project_type, cpcount, acount, fab);
- 
+          });
+          $.get($(this).val()+'/projects', (response) => {
+              var data = response.data;
+              var select = '<option value="" disabled selected>Choose Project</option>';
+              $.each(data, function(index, row){
+                select += '<option value="'+row.project_code+'">'+row.project_name+'</option>';
+              });
+              $('#add_project_code').html(select);
+              $('#add_project_code').formSelect();
           });
         });
 

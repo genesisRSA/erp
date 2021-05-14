@@ -85,20 +85,22 @@
                       </div>
   
                       <div class="input-field col s12 m6 l6">
-                        <input type="text" id="app_project_code" name="project_code" value="{{$drawings->project_code}}" readonly/>
+                        <input type="text" id="app_project_code" name="project_code" value="{{$projects->project_name}}" readonly/>
                         <label for="project_code">Project Name<sup class="red-text"> </sup></label>
                       </div>
                     </div>
   
                     <div class="col s12 m12 l12">
                       <div class="input-field col s12 m4 l4">
-                        <input type="text" id="app_assy_code" name="assy_code" value="{{$drawings->assy_code}}" readonly/>
-                        <label for="assy_code">Assembly Description<sup class="red-text"> </sup></label>
+                        <input type="hidden" id="app_assy_code" name="assy_code" value="{{$assy->assy_code}}" readonly/>
+                        <input type="text" id="assy_desc" name="assy_desc" value="{{$assy->assy_desc}}" readonly/>
+                        <label for="assy_desc">Assembly Description<sup class="red-text"> </sup></label>
                       </div>
                       
                       <div class="input-field col s12 m4 l4">
-                        <input type="text" id="app_fab_code" name="fab_code" value="{{$drawings->fab_code}}" readonly/>
-                        <label for="fab_code">Fabrication Description<sup class="red-text"> </sup></label>
+                        <input type="hidden" id="app_fab_code" name="fab_code" value="{{$fab->fab_code}}" readonly/>
+                        <input type="text" id="fab_desc" name="fab_desc" value="{{$fab->fab_desc}}" readonly/>
+                        <label for="fab_desc">Fabrication Description<sup class="red-text"> </sup></label>
                       </div>
   
                       <div class="input-field col s12 m4 l4">
@@ -172,7 +174,7 @@
                               <table class="responsive-table highlight" id="revisions-dt" style="width: 100%">
                                 <thead>
                                   <tr>
-                                    <th>ID</th> 
+                        
                                     <th>Drawing No.</th>
                                     <th>Part Name</th>
                                     <th>ECN No.</th>
@@ -287,23 +289,23 @@
           }
         }
 
-        // document.onkeydown = function(e) {
-        //       if(event.keyCode == 123) {
-        //         return false;
-        //       }
-        //       if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
-        //         return false;
-        //       }
-        //       if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
-        //         return false;
-        //       }
-        //       if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
-        //         return false;
-        //       }
-        //       if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
-        //         return false;
-        //       }
-        // }
+        document.onkeydown = function(e) {
+              if(event.keyCode == 123) {
+                return false;
+              }
+              if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){
+                return false;
+              }
+              if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){
+                return false;
+              }
+              if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)){
+                return false;
+              }
+              if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
+                return false;
+              }
+        }
 
         $.get('../../getApproverMatrix/'+{{$drawings->id}}, function(response){
           
@@ -389,11 +391,11 @@
         "pagingType": "full",
         "ajax": "/api/reiss/drawing/all_revision/{{Illuminate\Support\Facades\Crypt::encrypt($drawings->drawing_no)}}",
         "columns": [
-          {  "data": "id" },
+          
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
                 if(row.status=='Approved' || row.status=='Created'){
-                  return '<a href="../../view/'+row.drawings.id+'/{{$loc}}">'+ row.drawing_no +'</a>';
+                  return '<a href="../../view/'+row.drawings+'/{{$loc}}">'+ row.drawing_no +'</a>';
                 }else{
                   return row.drawing_no;
                 }  
@@ -407,7 +409,7 @@
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
                 if(row.status=='Approved' || row.status=='Created'){
-                  return '<a href="../../view/'+row.drawings.id+'/{{$loc}}">'+ row.ecn_code +'</a>';
+                  return '<a href="../../view/'+row.drawings+'/{{$loc}}">'+ row.ecn_code +'</a>';
                 }else{
                   return row.ecn_code;
                 }

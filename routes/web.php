@@ -132,6 +132,7 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::post('/reiss/drawing/delete', 'DrawingsController@delete')->name('drawing.delete');
     Route::get('/reiss/drawing/check/{id}/{loc}', 'DrawingsController@check');
     Route::get('/reiss/drawing/{project_code}/project', 'DrawingsController@project')->name('drawing.project');
+    Route::get('/reiss/drawing/{cust_code}/projects', 'DrawingsController@projects')->name('drawing.projects');
     Route::get('/reiss/drawing/{project_code}/assy', 'DrawingsController@assy')->name('drawing.assy');
     Route::get('/reiss/drawing/{project_code}/{assy_code}/fab', 'DrawingsController@fab')->name('drawing.fab');
     Route::get('/reiss/drawing/{cust_code}/count','DrawingsController@count_per_type')->name('drawing.count_per_type');
@@ -170,7 +171,23 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::get('/reiss/projects/edit/{project_code}/adtl','ProjectListController@edit_adtl')->name('projects.edit_adtl');
     Route::get('/reiss/projects/edit/{id}', 'ProjectListController@edit')->name('projects.edit');
     
+
+
+    Route::post('/reiss/inventory/location/patch','InventoryLocationController@patch')->name('location.patch');
+    Route::post('/reiss/inventory/location/delete', 'InventoryLocationController@delete')->name('location.delete');
+    Route::get('/reiss/inventory/location/barcodes/{id}', 'InventoryLocationController@barcodes')->name('location.barcodes');
+    Route::resource('/reiss/inventory/location','InventoryLocationController');
+   
+
+
+
+
+
     Route::get('/reiss/dashboard/{parent}', 'ReissDashboardController@index');
+
+
+
+
 
     // end -> jp task
     

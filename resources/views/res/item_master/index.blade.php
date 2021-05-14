@@ -39,7 +39,7 @@
         <h4>Add Item Master Details</h4><br><br>
 
         <div class="row">
-          <div class="input-field col s12 m4">
+          <div class="input-field col s12 m5">
             <select id="add_item_cat_code" name="item_cat_code" required>
               <option value="" disabled selected>Choose your option</option>
               @foreach ($itemcat as $ic)
@@ -48,7 +48,7 @@
             </select>
             <label for="item_cat_code">Category<sup class="red-text">*</sup></label>
           </div>
-          <div class="input-field col s12 m4">
+          <div class="input-field col s12 m5">
             <select id="add_item_subcat_code" name="item_subcat_code" required>
               {{-- <option value="" disabled selected>Choose your option</option> --}}
               {{-- @foreach ($itemsubcat as $isc)
@@ -58,14 +58,20 @@
             <label for="item_subcat_code">Sub-Category<sup class="red-text">*</sup></label>
           </div>
 
-          <div class="input-field col s12 m4">
-            <input placeholder="" name="item_code" type="text" class="validate" required>
-            <label for="item_code">Item Code<sup class="red-text">*</sup></label>
+          <div class="input-field col s12 m2">
+            <label>
+              <input type="checkbox" />
+              <span>Serialized</span>
+            </label>
           </div>
         </div>
 
         <div class="row">
-          <div class="input-field col s12 m12">
+          <div class="input-field col s12 m4">
+            <input placeholder="" name="item_code" type="text" class="validate" required>
+            <label for="item_code">Item Code<sup class="red-text">*</sup></label>
+          </div>
+          <div class="input-field col s12 m8">
             <textarea placeholder="" name="item_desc" class="materialize-textarea" required></textarea>
             <label for="item_desc">Item Description<sup class="red-text">*</sup></label>
           </div>
@@ -170,7 +176,7 @@
         <h4>Edit Item Master Details</h4><br><br>
 
         <div class="row">
-          <div class="input-field col s12 m4">
+          <div class="input-field col s12 m5">
             <input type="hidden" name="id" id="edit_id">
             <select id="edit_item_cat_code" name="item_cat_code" required>
               <option value="" disabled selected>Choose your option</option>
@@ -180,7 +186,7 @@
             </select>
             <label for="item_cat_code">Category<sup class="red-text">*</sup></label>
           </div>
-          <div class="input-field col s12 m4">
+          <div class="input-field col s12 m5">
             <select id="edit_item_subcat_code" name="item_subcat_code" required>
               <option value="" disabled selected>Choose your option</option>
               @foreach ($itemsubcat as $isc)
@@ -189,15 +195,23 @@
             </select>
             <label for="item_subcat_code">Sub-Category<sup class="red-text">*</sup></label>
           </div>
+
+          <div class="input-field col s12 m2">
+            <label>
+              <input type="checkbox" />
+              <span>Serialized</span>
+            </label>
+          </div>
+          
+        </div>
+
+        <div class="row">
           <div class="input-field col s12 m4">
             <input placeholder="" id="edit_item_code" name="item_code" type="text" class="validate" required>
             <label for="item_code">Item Code<sup class="red-text">*</sup></label>
           </div>
-        </div>
 
-        <div class="row">
-          
-          <div class="input-field col s12 m12">
+          <div class="input-field col s12 m8">
             <textarea id="edit_item_desc" name="item_desc" class="materialize-textarea" required></textarea>
             <label for="item_desc">Item Description<sup class="red-text">*</sup></label>
           </div>

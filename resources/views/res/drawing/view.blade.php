@@ -65,7 +65,7 @@
 
                   <div class="col s12 m12 l12">
                     <div class="input-field col s12 m3 l3">
-                      <input type="text" id="add_cust_code" name="cust_code" value="{{$drawings->project_code}}" readonly/>
+                      <input type="text" id="add_cust_code" name="cust_code" value="{{$projects->project_name}}" readonly/>
                       <label for="project_code">Project Name<sup class="red-text"> </sup></label>
                     </div>
 
@@ -151,7 +151,7 @@
                       <table class="responsive-table highlight" id="revisions-dt" style="width: 100%">
                         <thead>
                           <tr>
-                              <th>ID</th> 
+                              {{-- <th>ID</th>  --}}
                               <th>Drawing No.</th>
                               <th>Part Name</th>
                               <th>ECN No.</th>
@@ -349,14 +349,14 @@
         "pagingType": "full",
         "ajax": "/api/reiss/drawing/all_revision/{{Illuminate\Support\Facades\Crypt::encrypt($drawings->drawing_no)}}",
         "columns": [
-            {  "data": "id" },
+            // {  "data": "id" },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
                 @if($loc=='cc')  
                     return row.drawing_no;
                 @else
                   if(row.status=='Approved' || row.status=='Created'){
-                    return '<a href="../../view/'+row.drawings.id+'/{{$loc}}">'+ row.drawing_no +'</a>';
+                    return '<a href="../../view/'+row.drawings+'/{{$loc}}">'+ row.drawing_no +'</a>';
                   }else{
                     return row.drawing_no;
                   } 
@@ -374,7 +374,7 @@
                     return row.drawing_no;
                   @else
                     if(row.status=='Approved' || row.status=='Created'){
-                      return '<a href="../../view/'+row.drawings.id+'/{{$loc}}">'+ row.drawing_no +'</a>';
+                      return '<a href="../../view/'+row.drawings+'/{{$loc}}">'+ row.drawing_no +'</a>';
                     }else{
                       return row.drawing_no;
                     } 

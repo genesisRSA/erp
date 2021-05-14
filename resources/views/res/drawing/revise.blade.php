@@ -69,8 +69,7 @@
                     <div class="input-field col s12 m6 l6">
                         <select id="add_project_code" name="project_code" required>
                           {{-- <option value="" disabled selected>Choose Project</option> --}}
-                          <option value="DISSYS" selected>DISASSY SYSTEM WITH CONVEYOR</option>
-                           
+                            <option value="{{$projects->project_code}}">{{$projects->project_name}}</option>
                         </select>
                         <label for="project_code">Project Name<sup class="red-text">*</sup></label>
                     </div>

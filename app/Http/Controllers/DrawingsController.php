@@ -56,7 +56,8 @@ class DrawingsController extends Controller
     }
 
     public function pdf($id,$loc)
-    {
+    {   
+        // return "X";
         $locx = $loc;
         $drawing = Drawing::find($id);
         $preference = array('FitWindow' => true,'CenterWindow' => true,);
@@ -377,10 +378,24 @@ class DrawingsController extends Controller
     {
         $drawing_no = Crypt::decrypt($id);
 
-        $data =  DrawingsRevision::where('drawing_no','=',$drawing_no)
-                                ->with('drawings:ecn_code,id')
-                                ->get();
-                    
+        $datax =  DrawingsRevision::where('drawing_no','=',$drawing_no)
+                                    ->with('drawings:ecn_code,id')
+                                    ->get();
+
+                                    // return $datax;
+        $data = array();
+        foreach($datax as $datax)
+        {
+            array_push($data, [
+                        "id" => Crypt::encrypt($datax["id"]),
+                        "drawing_no" => $datax["drawing_no"],
+                        "part_name" => $datax["part_name"],
+                        "ecn_code" => $datax["ecn_code"],
+                        "revision_no" => $datax["revision_no"],
+                        "status" => $datax["status"],
+                        "drawings" => Crypt::encrypt($datax["drawings"]["id"]),
+            ]);
+        }
         return response()
         ->json([
             "data" => $data
@@ -782,15 +797,17 @@ class DrawingsController extends Controller
     public function view($id, $loc)
     {    
         $drawing = Drawing::find(Crypt::decrypt($id));
-        $employee = Employee::where('emp_no','=',$drawing->created_by)
-                            ->first();
+        $employee = Employee::where('emp_no','=',$drawing->created_by)->first();
+        $project = Project::where('project_code',$drawing->project_code)->first();
+       
         return view('res.drawing.view')
                 ->with('site','res')
                 ->with('page','dcc')
                 ->with('subpage','drawings')
                 ->with('loc', $loc)
                 ->with('employee',$employee)
-                ->with('drawings', $drawing);
+                ->with('drawings', $drawing)
+                ->with('projects', $project);
     }
 
     public function view_fcc($id, $loc)
@@ -800,27 +817,8 @@ class DrawingsController extends Controller
                                 ->where('ecn_code','=', $drawingx->ecn_code)
                                 ->where('revision_no','=', $drawingx->revision_no)
                                 ->first();
-        $employee = Employee::where('emp_no','=',$drawing->created_by)
-                                ->first();
-        return view('res.drawing.view')
-                ->with('site','res')
-                ->with('page','dcc')
-                ->with('subpage','drawings')
-                ->with('loc',$loc)
-                ->with('employee',$employee)
-                ->with('drawings', $drawing);
-    }
-
-    public function view_cc($id, $loc)
-    {    
-        $drawingx = DrawingsControlledCopy::find(Crypt::decrypt($id));
-        // return $drawingx;
-        $drawing = Drawing::where('drawing_no','=', $drawingx->drawing_no)
-                                ->where('ecn_code','=', $drawingx->ecn_code)
-                                ->where('revision_no','=', $drawingx->revision_no)
-                                ->first();
-        $employee = Employee::where('emp_no','=',$drawing->created_by)
-                                ->first();
+        $project = Project::where('project_code',$drawing->project_code)->first();
+        $employee = Employee::where('emp_no','=',$drawing->created_by)->first();
         return view('res.drawing.view')
                 ->with('site','res')
                 ->with('page','dcc')
@@ -828,7 +826,27 @@ class DrawingsController extends Controller
                 ->with('loc',$loc)
                 ->with('employee',$employee)
                 ->with('drawings', $drawing)
-                ->with('drawingx', $drawingx);
+                ->with('projects', $project);
+    }
+
+    public function view_cc($id, $loc)
+    {    
+        $drawingx = DrawingsControlledCopy::find(Crypt::decrypt($id));
+        $drawing = Drawing::where('drawing_no','=', $drawingx->drawing_no)
+                                ->where('ecn_code','=', $drawingx->ecn_code)
+                                ->where('revision_no','=', $drawingx->revision_no)
+                                ->first();
+        $project = Project::where('project_code',$drawing->project_code)->first();
+        $employee = Employee::where('emp_no','=',$drawing->created_by)->first();
+        return view('res.drawing.view')
+                ->with('site','res')
+                ->with('page','dcc')
+                ->with('subpage','drawings')
+                ->with('loc',$loc)
+                ->with('employee',$employee)
+                ->with('drawings', $drawing)
+                ->with('drawingx', $drawingx)
+                ->with('projects', $project);
     }
 
     public function project($project_code)
@@ -837,6 +855,15 @@ class DrawingsController extends Controller
         ->json([
             "data" => Project::where('project_code',$project_code)
                                     ->first()
+        ]);
+    }
+
+    public function projects($cust_code)
+    {
+        return response()
+        ->json([
+            "data" => Project::where('cust_code',$cust_code)
+                                    ->get()
         ]);
     }
     
@@ -873,12 +900,17 @@ class DrawingsController extends Controller
     public function approval_view($id, $loc)
     {    
         $drawing =    Drawing::find(Crypt::decrypt($id));
+        $project =    Project::where('project_code',$drawing->project_code)->first();
+        $assy =       Assembly::where('assy_code',$drawing->assy_code)->first();
+        $fab =        Fabrication::where('fab_code',$drawing->fab_code)->first();
+        
         $drawings =   Drawing::where('ecn_code','=',$drawing->ecn_code)
                                     ->where('drawing_no','=',$drawing->drawing_no)
                                     ->first();
         $employee =   Employee::where('emp_no','=',$drawings->created_by)->first();
         $drawings_h = Drawing::where('revision_no','=',$drawing->revision_no-1)->first();
  
+
         return view('res.drawing.approval')
                 ->with('site','res')
                 ->with('page','dcc')
@@ -887,7 +919,10 @@ class DrawingsController extends Controller
                 ->with('loc', $loc)
                 ->with('employee',$employee)
                 ->with('drawings', $drawings)
-                ->with('drawings_h', $drawings_h);
+                ->with('drawings_h', $drawings_h)
+                ->with('projects', $project)
+                ->with('assy', $assy)
+                ->with('fab', $fab);
     }
 
     public function master_view($id, $loc)
@@ -1115,11 +1150,12 @@ class DrawingsController extends Controller
         ->where('module','=','Drawings')
         ->first();
         $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"masterlist":false,"approval":false}]', true));
-        $drawing = Drawing::find($id);
+        $drawing = Drawing::find(Crypt::decrypt($id));
         $drawings = Drawing::where('drawing_no','=',$drawing->drawing_no)
                                 ->where('revision_no','=',$drawing->revision_no)
                                 ->first();
-        
+        $project = Project::where('project_code',$drawing->project_code)->first();
+        // return $project;
         $revCount = Drawing::where('drawing_no','=',$drawing->drawing_no)
                                 ->count();
 
@@ -1140,7 +1176,8 @@ class DrawingsController extends Controller
                 ->with('customer', $customer)
                 ->with('employee', $employee)
                 ->with('assembly', $assembly)
-                ->with('fabrication', $fabrication);
+                ->with('fabrication', $fabrication)
+                ->with('projects', $project);
     }
 
     public function update(Request $request, $id)

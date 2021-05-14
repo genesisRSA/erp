@@ -226,7 +226,7 @@
     }
 
 
-      var procedures = $('#drawing-dt').DataTable({
+      var drawings = $('#drawing-dt').DataTable({
           "lengthChange": false,
           "pageLength": 15,
           "aaSorting": [[ 0, "asc"],[ 2, "desc"]],

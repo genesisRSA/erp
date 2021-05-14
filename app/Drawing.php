@@ -14,4 +14,5 @@ class Drawing extends Model
     {
         return $this->hasOne('App\Employee', 'emp_no', 'created_by');
     }
+ 
 }

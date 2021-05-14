@@ -104,12 +104,13 @@
     </li>
     <li class="no-padding">
       <ul class="collapsible collapsible-accordion">
-        <li>
+        <li @if($page=='inventory') class="active" @endif>
           <a class="collapsible-header waves-effect waves-light" style="padding-left:32px;"><i class="material-icons">archive</i>Parts Preparation</a>
           <div class="collapsible-body">
             <ul>
               <li><a href="#!">Receiving</a></li>
               <li><a href="#!">Inventory List</a></li>
+              <li @if($subpage=='location') class="active" @endif><a href="{{ route('location.index') }}">Inventory Location</a></li>
               <li><a href="#!">Inventory Issuance</a></li>
               <li><a href="#!">Finish Goods</a></li>
             </ul>
