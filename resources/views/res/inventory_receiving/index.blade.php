@@ -60,7 +60,7 @@
           </div>
 
           <div class="input-field col s12 m6 l6">
-            <input id="add_delivery_date" name="delivery_date" type="text" class="datepicker" placeholder="" >
+            <input id="add_delivery_date" name="delivery_date" type="text" class="datepicker" placeholder="" required>
             <label for="delivery_date">Delivery Date<sup class="red-text">*</sup></label>
           </div>
         </div>
@@ -204,20 +204,6 @@
         </div>
     </form>
   </div> 
-
-  <div id="printModal" class="modal">
-    <div class="modal-content" style="padding-bottom: 0px;">
-      <h4>Inventory Location Barcode</h4>
-      <input type="hidden" id="id">
-      <div>
-        <object id="objectPDF" type="application/pdf" width="100%" height="280px"> 
-        </object>
-      </div> 
-    </div>
-    <div class="modal-footer" style="padding-right: 32px; padding-bottom: 4px; margin-bottom: 30px;">
-        <a href="#!" class="red waves-effect waves-dark btn" onclick="closePrint();"><i class="material-icons left">keyboard_return</i>Return</a>
-    </div>
-  </div>
 
   <!-- End of MODALS -->
 

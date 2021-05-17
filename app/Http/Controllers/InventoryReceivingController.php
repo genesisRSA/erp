@@ -87,18 +87,23 @@ class InventoryReceivingController extends Controller
                         ->withInput()
                         ->withErrors($validator);
         }else{
-        
-            $invrcv = new InventoryReceiving();
-            $invrcv->receiving_code =            Str::upper($request->input('receiving_code',''));
-            $invrcv->site_code =                 Str::upper($request->input('site_code',''));
-            $invrcv->delivery_no =               $request->input('delivery_no','');
-            $invrcv->delivery_date =             $request->input('delivery_date','');
-            $invrcv->po_no =                     $request->input('po_no','');
-            $invrcv->status =                    'Received';
-            $invrcv->created_by =                Auth::user()->emp_no;
+            
+            if($request->input('delivery_no') && $request->input('delivery_date') && $request->input('po_no'))
+            {
+                $invrcv = new InventoryReceiving();
+                $invrcv->receiving_code =            Str::upper($request->input('receiving_code',''));
+                $invrcv->site_code =                 Str::upper($request->input('site_code',''));
+                $invrcv->delivery_no =               $request->input('delivery_no','');
+                $invrcv->delivery_date =             $request->input('delivery_date','');
+                $invrcv->po_no =                     $request->input('po_no','');
+                $invrcv->status =                    'Received';
+                $invrcv->created_by =                Auth::user()->emp_no;
 
-            if($invrcv->save()){
-                return redirect()->route('receiving.index')->withSuccess('Inventory Receiving Successfully Added');
+                if($invrcv->save()){
+                    return redirect()->route('receiving.index')->withSuccess('Inventory Receiving Successfully Added');
+                }
+            } else {
+                return redirect()->route('receiving.index')->withErrors('Please fill up all the Inventory Receiving details!');
             }
         }
     }
@@ -157,18 +162,21 @@ class InventoryReceivingController extends Controller
                         ->withInput()
                         ->withErrors($validator);
         }else{
-        
-            $invrcv = InventoryReceiving::find($request->input('id'));
-            $invrcv->receiving_code =            Str::upper($request->input('receiving_code',''));
-            $invrcv->site_code =                 Str::upper($request->input('site_code',''));
-            $invrcv->delivery_no =               $request->input('delivery_no','');
-            $invrcv->delivery_date =             $request->input('delivery_date','');
-            $invrcv->po_no =                     $request->input('po_no','');
-            // $invrcv->status =                    'Received';
-            $invrcv->updated_by =                Auth::user()->emp_no;
+            if($request->input('delivery_no') && $request->input('delivery_date') && $request->input('po_no'))
+            {
+                $invrcv = InventoryReceiving::find($request->input('id'));
+                $invrcv->receiving_code =            Str::upper($request->input('receiving_code',''));
+                $invrcv->site_code =                 Str::upper($request->input('site_code',''));
+                $invrcv->delivery_no =               $request->input('delivery_no','');
+                $invrcv->delivery_date =             $request->input('delivery_date','');
+                $invrcv->po_no =                     $request->input('po_no','');
+                $invrcv->updated_by =                Auth::user()->emp_no;
 
-            if($invrcv->save()){
-                return redirect()->route('receiving.index')->withSuccess('Inventory Receiving Successfully Updated');
+                if($invrcv->save()){
+                    return redirect()->route('receiving.index')->withSuccess('Inventory Receiving Successfully Updated');
+                }
+            } else {
+                return redirect()->route('receiving.index')->withErrors('Please fill up all the Inventory Receiving details!');
             }
         }
     }
