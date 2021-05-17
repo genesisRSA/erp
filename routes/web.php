@@ -170,8 +170,6 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::get('/reiss/projects/edit/{project_code}/{assy_code}/fab','ProjectListController@edit_fabs')->name('projects.edit_fabs');
     Route::get('/reiss/projects/edit/{project_code}/adtl','ProjectListController@edit_adtl')->name('projects.edit_adtl');
     Route::get('/reiss/projects/edit/{id}', 'ProjectListController@edit')->name('projects.edit');
-    
-
 
     Route::post('/reiss/inventory/location/patch','InventoryLocationController@patch')->name('location.patch');
     Route::post('/reiss/inventory/location/delete', 'InventoryLocationController@delete')->name('location.delete');
@@ -180,7 +178,9 @@ Route::group(['middleware' => ['auth.dcs']], function() {
    
 
 
-
+    Route::post('/reiss/inventory/receiving/patch','InventoryReceivingController@patch')->name('receiving.patch');
+    Route::post('/reiss/inventory/receiving/delete', 'InventoryReceivingController@delete')->name('receiving.delete');
+    Route::resource('/reiss/inventory/receiving','InventoryReceivingController');
 
 
     Route::get('/reiss/dashboard/{parent}', 'ReissDashboardController@index');

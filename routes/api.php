@@ -47,6 +47,7 @@ Route::get('/reiss/drawing/all_approval/{id}','DrawingsController@all_approval')
 Route::get('/reiss/projects/all/{id}','ProjectListController@all');
 
 Route::get('/reiss/inventory/location/all/{id}','InventoryLocationController@all');
+Route::get('/reiss/inventory/receiving/all/{id}','InventoryReceivingController@all');
 
 Route::get('/reiss/product_category/all', 'ProductCategoriesController@all');
 Route::get('/reiss/product/all', 'ProductsController@all');

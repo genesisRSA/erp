@@ -19,7 +19,6 @@
                     <th>Name</th>
                     <th>Required Item Category</th>
                     <th>Category</th>
-                    {{-- <th>Type</th> --}}
                     <th>Action</th>
                 </tr>
               </thead>
@@ -159,6 +158,53 @@
     </form>
   </div> 
 
+  <div id="viewModal" class="modal">
+        <div class="modal-content" style="padding-bottom: 0px;">
+          <h4>Inventory Location Details</h4><br><br>
+  
+          <div class="row">
+              <input type="hidden" id="editID" name="id">
+              <div class="input-field col s12 m6 l6">
+                  <select id="view_required_item_category" name="required_item_category" required disabled>
+                      <option value="" disabled selected>Choose your option</option>
+                      @foreach ($itemcat as $ic)
+                          <option value="{{$ic->cat_code}}">{{$ic->cat_desc}}</option>
+                      @endforeach
+                  </select>
+                  <label for="required_item_category">Required Item Category<sup class="red-text">*</sup></label>
+              </div>
+  
+              <div class="input-field col s12 m6 l6">
+                  <select id="view_category" name="category" required disabled>
+                      <option value="" disabled selected>Choose your option</option>
+                      <option value="DF">Default</option>
+                      <option value="SM">Slow Moving</option>
+                      <option value="NM">Non-Moving</option>
+                      <option value="FM">Fast Moving</option>
+                  </select>
+                  <label for="category">Category<sup class="red-text">*</sup></label>
+              </div>
+              
+          </div>
+  
+          <div class="row">
+              <div class="input-field col s12 m6 l6">
+                  <input id="view_location_code" name="location_code" type="text" class="validate" placeholder="" required readonly>
+                  <label for="location_code">Location Code<sup class="red-text">*</sup></label>
+              </div>
+  
+              <div class="input-field col s12 m6 l6">
+                  <input id="view_location_name" name="location_name" type="text" class="validate" placeholder="" required readonly>
+                  <label for="location_name">Location Name<sup class="red-text">*</sup></label>
+              </div>
+          </div>
+        </div>
+  
+        <div class="modal-footer" style="padding-right: 32px; padding-bottom: 4px; margin-bottom: 30px;">
+          <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Return</a>
+        </div>
+  </div>
+
   <div id="printModal" class="modal">
     <div class="modal-content" style="padding-bottom: 0px;">
       <h4>Inventory Location Barcode</h4>
@@ -232,6 +278,19 @@
       }
   };
 
+  const viewLocation = (id) => {
+    $.get('location/'+id, (response) => {
+      var data = response.data;
+      $('#view_required_item_category option[value="'+data.required_item_category+'"]').prop('selected', true);
+      $('#view_required_item_category').formSelect();
+      $('#view_category option[value="'+data.category+'"]').prop('selected', true);
+      $('#view_category').formSelect();
+      $('#view_location_code').val(data.location_code);
+      $('#view_location_name').val(data.location_name);
+      $('#viewModal').modal('open');
+    });
+  };
+
   const editLocation = (id) => {
     $.get('location/'+id, (response) => {
       var data = response.data;
@@ -249,7 +308,7 @@
   const deleteItem = (id) => {
       $('#del_id').val(id);
       $('#deleteModal').modal('open');
-  }
+  };
 
   const printModal = (id) => {
     console.log(id);
@@ -257,7 +316,7 @@
     // $('#objectPDF').prop("data", "location/barcodes/"+id+"#toolbar=1&navpanes=0&scrollbar=1&page=1&zoom=100");
     $( "object" ).replaceWith('<object data="location/barcodes/'+id+'#toolbar=1&navpanes=0&scrollbar=1&page=1&zoom=100" type="application/pdf" width="100%" height="280px"></object>');
     $('#printModal').modal('open');
-  }
+  };
 
   const trim = (str) => {
       return str.replace(/^\s+|\s+$/gm,'');
@@ -287,7 +346,7 @@
             {  "data": "id" },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return row.location_code;
+                  return '<a href="#!" onclick="viewLocation('+data+')">'+ row.location_code; +'</a>';
                 }
             },
             {   "data": "id",

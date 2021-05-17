@@ -187,11 +187,17 @@
               M.toast({html: html+'<button class="btn-flat red-text toast-action" onclick="M.Toast.dismissAll()">DISMISS</button>'});
           @endif
           //$('.tap-target').tapTarget('open');
+          $('.datepicker').datepicker({
+            format: 'yyyy-mm-dd'
+          });
+
         });
+
+
 
       </script>
       <script type="text/javascript" src="{{ asset('js/materialize.min.js') }}"></script>
-      
+
     </body>
   </html>
         

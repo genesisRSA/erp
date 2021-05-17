@@ -39,7 +39,7 @@
         <h4>Add Item Master Details</h4><br><br>
 
         <div class="row">
-          <div class="input-field col s12 m5">
+          <div class="input-field col s12 m6">
             <select id="add_item_cat_code" name="item_cat_code" required>
               <option value="" disabled selected>Choose your option</option>
               @foreach ($itemcat as $ic)
@@ -48,21 +48,9 @@
             </select>
             <label for="item_cat_code">Category<sup class="red-text">*</sup></label>
           </div>
-          <div class="input-field col s12 m5">
-            <select id="add_item_subcat_code" name="item_subcat_code" required>
-              {{-- <option value="" disabled selected>Choose your option</option> --}}
-              {{-- @foreach ($itemsubcat as $isc)
-                <option value="{{$isc->subcat_code}}">{{$isc->subcat_desc}}</option>
-              @endforeach --}}
-            </select>
+          <div class="input-field col s12 m6">
+            <select id="add_item_subcat_code" name="item_subcat_code" required></select>
             <label for="item_subcat_code">Sub-Category<sup class="red-text">*</sup></label>
-          </div>
-
-          <div class="input-field col s12 m2">
-            <label>
-              <input type="checkbox" />
-              <span>Serialized</span>
-            </label>
           </div>
         </div>
 
@@ -78,20 +66,19 @@
         </div>
 
         <div class="row">
-          <div class="input-field col s12 m6">
+          <div class="input-field col s12 m5">
             <input placeholder="" name="oem_partno" id="add_item_oem" type="text" class="validate">
             <label for="oem_partno">OEM Part Number<sup class="red-text">(optional)</sup></label>
-            {{-- checkbox --}}
+ 
             <div class="col s12 m6 left-align">
               <label>
                   <input style="" placeholder="e.g $" type="checkbox" onclick="distext('add_item_oem')"/>
                   <span style="font-size: 12px">Click to set N/A</span>
               </label>
             </div>
-            {{-- end checkbox --}}
           </div>
 
-          <div class="input-field col s12 m6">
+          <div class="input-field col s12 m5">
             <select id="add_item_uom" name="item_uom" required>
               <option value="" disabled selected>Choose your option</option>
               @foreach ($uom as $i)
@@ -99,6 +86,14 @@
               @endforeach
             </select>
             <label for="item_uom">Unit Of Measure<sup class="red-text">*</sup></label>
+          </div>
+          
+          <div class="input-field col s12 m2">
+            <label>
+              <input type="hidden" id="add_serialized" name="serialized" value="0">
+              <input style="" placeholder="e.g $" type="checkbox" onclick="serialText('add_serialized')"/>
+              <span>Serialized</span>
+            </label>
           </div>
         </div>
 
@@ -176,7 +171,7 @@
         <h4>Edit Item Master Details</h4><br><br>
 
         <div class="row">
-          <div class="input-field col s12 m5">
+          <div class="input-field col s12 m6">
             <input type="hidden" name="id" id="edit_id">
             <select id="edit_item_cat_code" name="item_cat_code" required>
               <option value="" disabled selected>Choose your option</option>
@@ -186,7 +181,7 @@
             </select>
             <label for="item_cat_code">Category<sup class="red-text">*</sup></label>
           </div>
-          <div class="input-field col s12 m5">
+          <div class="input-field col s12 m6">
             <select id="edit_item_subcat_code" name="item_subcat_code" required>
               <option value="" disabled selected>Choose your option</option>
               @foreach ($itemsubcat as $isc)
@@ -195,14 +190,6 @@
             </select>
             <label for="item_subcat_code">Sub-Category<sup class="red-text">*</sup></label>
           </div>
-
-          <div class="input-field col s12 m2">
-            <label>
-              <input type="checkbox" />
-              <span>Serialized</span>
-            </label>
-          </div>
-          
         </div>
 
         <div class="row">
@@ -218,7 +205,7 @@
         </div>
 
         <div class="row">
-          <div class="input-field col s12 m6">
+          <div class="input-field col s12 m5">
             <input placeholder="" id="edit_item_oem" name="oem_partno" type="text" class="validate">
             <label for="oem_partno">OEM Part Number<sup class="red-text">(optional)</sup></label>
             <div class="col s12 m6 left-align">
@@ -229,7 +216,7 @@
             </div>
           </div>
        
-          <div class="input-field col s12 m6">
+          <div class="input-field col s12 m5">
             <select id="edit_item_uom" name="item_uom" required>
               <option value="" disabled selected>Choose your option</option>
               @foreach ($uom as $i)
@@ -237,6 +224,14 @@
               @endforeach
             </select>
             <label for="item_uom">Unit Of Measure<sup class="red-text">*</sup></label>
+          </div>
+
+          <div class="input-field col s12 m2">
+            <label>
+              <input type="hidden" id="edit_serialized" name="serialized">
+              <input id="serialx" style="" placeholder="e.g $" type="checkbox" onclick="serialEdit('edit_serialized')"/>
+              <span>Serialized</span>
+            </label>
           </div>
         </div>
         
@@ -454,6 +449,27 @@
         }
     })
 
+    function serialText(id)
+    {
+      if (document.getElementById(id).readonly == true ){
+        document.getElementById(id).readonly = false
+        $('#'+id).val('0');
+      } else {
+        document.getElementById(id).readonly = true
+        $('#'+id).val('1');
+      }
+    }
+
+    function serialEdit(id)
+    {
+      if ($('#'+id).val() == 1 ){
+        $('#'+id).val('0');
+      } else {
+        // document.getElementById(id).readonly = true
+        $('#'+id).val('1');
+      }
+    }
+
     function editItem(id){
         $.get('item_master/'+id, function(response){
             var data = response.data;
@@ -465,6 +481,10 @@
             $('#edit_item_code').val(data.item_code);
             $('#edit_item_desc').val(data.item_desc);
             $('#edit_item_oem').val(data.oem_partno);
+
+            $('#edit_serialized').val(data.is_serialized);
+            (data.is_serialized == 1 ? $('#serialx').prop("checked", true) : $('#serialx').prop("checked", false));
+            // (data.is_serialized == 1 ? $('#edit_serialized').prop("readonly", true) : $('#edit_serialized').prop("readonly", false));
   
             $('#edit_item_uom option[value="'+data.uom_code+'"]').prop('selected', true);
             $('#edit_item_uom').formSelect();

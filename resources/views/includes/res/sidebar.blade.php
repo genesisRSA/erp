@@ -108,7 +108,7 @@
           <a class="collapsible-header waves-effect waves-light" style="padding-left:32px;"><i class="material-icons">archive</i>Parts Preparation</a>
           <div class="collapsible-body">
             <ul>
-              <li><a href="#!">Receiving</a></li>
+              <li @if($subpage=='receiving') class="active" @endif><a href="{{ route('receiving.index') }}">Receiving</a></li>
               <li><a href="#!">Inventory List</a></li>
               <li @if($subpage=='location') class="active" @endif><a href="{{ route('location.index') }}">Inventory Location</a></li>
               <li><a href="#!">Inventory Issuance</a></li>

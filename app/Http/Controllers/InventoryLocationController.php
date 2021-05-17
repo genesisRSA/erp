@@ -19,9 +19,6 @@ use App\ItemCategory;
 use App\InventoryLocation;
 use App\InventoryLocationType;
 
-use App\Assembly;
-use App\Fabrication;
-use App\UnitOfMeasure;
 use Validator;
 use Response;
 use Auth;

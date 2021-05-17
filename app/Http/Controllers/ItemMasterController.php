@@ -94,6 +94,7 @@ class ItemMasterController extends Controller
             $itemaster->width =             $request->input('item_width','');
             $itemaster->thickness =         $request->input('item_thickness','');
             $itemaster->radius =            $request->input('item_radius','');
+            $itemaster->is_serialized =     $request->input('serialized');
 
             if($itemaster->save()){
                 return redirect()->route('item_master.index')->withSuccess('Item Master Details Successfully Added');
@@ -174,6 +175,7 @@ class ItemMasterController extends Controller
             $itemmas->width =             $request->input('item_width','');
             $itemmas->thickness =         $request->input('item_thickness','');
             $itemmas->radius =            $request->input('item_radius','');
+            $itemmas->is_serialized =     $request->input('serialized');
 
             if($itemmas->save()){
                 return redirect()->route('item_master.index')->withSuccess('Item Master Details Successfully Updated');
