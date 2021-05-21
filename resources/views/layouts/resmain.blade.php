@@ -146,7 +146,11 @@
           width: 100%;
           margin: 0 auto;
         }
-        
+
+        .datepicker-modal {
+          height: 380px !important;
+          width: 600px !important;
+        }
       </style> 
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.css" />
       <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js" ></script>

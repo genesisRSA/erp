@@ -13,10 +13,13 @@ use App\SitePermission;
 use App\Site;
 use App\Employee;
 use App\Customer;
+use App\Currency;
 use App\Product;
 use App\ItemMaster;
 use App\ItemCategory;
 
+use App\Inventory;
+use App\InventoryLog;
 use App\InventoryLocation;
 use App\InventoryLocationType;
 use App\InventoryReceiving;
@@ -28,15 +31,12 @@ use PDF;
 
 class InventoryReceivingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
- 
+        // $random = Str::upper(Str::random(25));
         $sites = Site::all();
+        $currency = Currency::all();
+        $inventoryLocation = InventoryLocation::all();
         $receivingcount = InventoryReceiving::count();
         $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
                         ->where('module','=','Projects')
@@ -47,9 +47,11 @@ class InventoryReceivingController extends Controller
         return view('res.inventory_receiving.index')
                 ->with('site','res')
                 ->with('page','inventory')
-                ->with('subpage','location')
+                ->with('subpage','receiving')
                 ->with('site', $sites) 
+                ->with('currency', $currency)
                 ->with('count', '00'.$receivingcount)
+                ->with('inventloc', $inventoryLocation)
                 ->with('permission',$permissionx);
     }
     
@@ -60,17 +62,18 @@ class InventoryReceivingController extends Controller
         ]);
     }
 
+    public function DR($dr_no)
+    {
+        return response()->json([
+            "data" => InventoryReceiving::where('delivery_no',$dr_no)->get()
+        ]);
+    }
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $field = [
@@ -87,7 +90,7 @@ class InventoryReceivingController extends Controller
                         ->withInput()
                         ->withErrors($validator);
         }else{
-            
+
             if($request->input('delivery_no') && $request->input('delivery_date') && $request->input('po_no'))
             {
                 $invrcv = new InventoryReceiving();
@@ -99,21 +102,52 @@ class InventoryReceivingController extends Controller
                 $invrcv->status =                    'Received';
                 $invrcv->created_by =                Auth::user()->emp_no;
 
+                if($request->input('itm_item_code'))
+                {
+                    for($i = 0; $i < count($request->input('itm_item_code')); $i++)
+                    {
+                        $inventory = new Inventory;
+                        $inventory->receiving_code = Str::upper($request->input('receiving_code'));
+                        
+                        $random = Str::random('100');
+ 
+                        $item = ItemMaster::where('item_code',$request->input('itm_item_code.'.$i))->first();
+                        if($item){($item->is_serialized == 1 ? $inventory->sku = $random : '' );};
+                        $inventory->item_code = $request->input('itm_item_code.'.$i);
+                        $inventory->inventory_location_code = $request->input('itm_inventory_location.'.$i);
+                        $inventory->currency_code = $request->input('itm_currency_code.'.$i);
+                        $inventory->quantity = $request->input('itm_quantity.'.$i);
+                        $inventory->unit_price = $request->input('itm_unit_price.'.$i);
+                        $inventory->total_price = $request->input('itm_total_price.'.$i);
+                        $inventory->date_received = $request->input('delivery_date');
+                        $inventory->status = 'Received';
+                        $inventory->save();
+
+                        $logs = new InventoryLog;
+                        $logs->trans_code = Str::upper($request->input('receiving_code'));
+                        $logs->trans_type = 'Receiving';
+                        $logs->status = 'Received';
+                        $logs->trans_date = date('Y-m-d H:i:s');
+                        if($item){($item->is_serialized == 1 ? $logs->sku = $random : '' );};
+                        $logs->item_code = $request->input('itm_item_code.'.$i);
+                        $logs->inventory_location_code = $request->input('itm_inventory_location.'.$i);
+                        $logs->quantity = $request->input('itm_quantity.'.$i);
+                        $logs->unit_price = $request->input('itm_unit_price.'.$i);
+                        $logs->total_price = $request->input('itm_total_price.'.$i);
+                        $logs->save();
+                    }
+                }
+
                 if($invrcv->save()){
                     return redirect()->route('receiving.index')->withSuccess('Inventory Receiving Successfully Added');
                 }
             } else {
                 return redirect()->route('receiving.index')->withErrors('Please fill up all the Inventory Receiving details!');
-            }
+            }            
+        
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         $data = InventoryReceiving::find($id);
@@ -123,24 +157,31 @@ class InventoryReceivingController extends Controller
             ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    public function getCurrentStock($item_code)
+    {
+        return response()->json([
+            "data" => Inventory::where('item_code',$item_code)
+                                ->where('status','<>','Issued')
+                                ->where('status','<>','With RTV')
+                                ->where('status','<>','Returned')
+                                ->sum('quantity')
+        ]);
+    }
+
+    public function items($rcv_code)
+    {
+        return response()->json([
+            "data" => Inventory::where('receiving_code',$rcv_code)
+                                ->with('currency:currency_code,currency_name,symbol')    
+                                ->get()
+        ]);
+    }
+
     public function edit($id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         //
@@ -172,6 +213,44 @@ class InventoryReceivingController extends Controller
                 $invrcv->po_no =                     $request->input('po_no','');
                 $invrcv->updated_by =                Auth::user()->emp_no;
 
+                if($request->input('e_itm_item_code'))
+                {
+                    $delinventory = Inventory::where('receiving_code',$request->input('receiving_code'))->delete();
+                    
+                    for($i = 0; $i < count($request->input('e_itm_item_code')); $i++)
+                    {
+                        $inventory = new Inventory;
+                        $inventory->receiving_code = Str::upper($request->input('receiving_code'));
+
+                        $random = Str::random('100');
+                        
+                        $item = ItemMaster::where('item_code',$request->input('e_itm_item_code.'.$i))->first();
+                        if($item){($item->is_serialized == 1 ? $inventory->sku = $random : '' );};
+                        $inventory->item_code = $request->input('e_itm_item_code.'.$i);
+                        $inventory->inventory_location_code = $request->input('e_itm_inventory_location.'.$i);
+                        $inventory->currency_code = $request->input('e_itm_currency_code.'.$i);
+                        $inventory->quantity = $request->input('e_itm_quantity.'.$i);
+                        $inventory->unit_price = $request->input('e_itm_unit_price.'.$i);
+                        $inventory->total_price = $request->input('e_itm_total_price.'.$i);
+                        $inventory->date_received = $request->input('delivery_date');
+                        $inventory->status = 'Received';
+                        $inventory->save();
+
+                        $logs = new InventoryLog;
+                        $logs->trans_code = Str::upper($request->input('receiving_code'));
+                        $logs->trans_type = 'Update Receiving';
+                        $logs->status = 'Received';
+                        $logs->trans_date = date('Y-m-d H:i:s');
+                        if($item){($item->is_serialized == 1 ? $logs->sku = $random : '' );};
+                        $logs->item_code = $request->input('e_itm_item_code.'.$i);
+                        $logs->inventory_location_code = $request->input('e_itm_inventory_location.'.$i);
+                        $logs->quantity = $request->input('e_itm_quantity.'.$i);
+                        $logs->unit_price = $request->input('e_itm_unit_price.'.$i);
+                        $logs->total_price = $request->input('e_itm_total_price.'.$i);
+                        $logs->save();
+                    }
+                }
+
                 if($invrcv->save()){
                     return redirect()->route('receiving.index')->withSuccess('Inventory Receiving Successfully Updated');
                 }
@@ -181,12 +260,6 @@ class InventoryReceivingController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         //

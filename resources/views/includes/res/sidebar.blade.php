@@ -111,8 +111,8 @@
               <li @if($subpage=='receiving') class="active" @endif><a href="{{ route('receiving.index') }}">Receiving</a></li>
               <li><a href="#!">Inventory List</a></li>
               <li @if($subpage=='location') class="active" @endif><a href="{{ route('location.index') }}">Inventory Location</a></li>
-              <li><a href="#!">Inventory Issuance</a></li>
-              <li><a href="#!">Finish Goods</a></li>
+              <li @if($subpage=='issuance') class="active" @endif><a href="{{ route('issuance.index') }}">Inventory Issuance</a></li>
+               <li><a href="#!">Finish Goods</a></li>
             </ul>
           </div>
         </li>

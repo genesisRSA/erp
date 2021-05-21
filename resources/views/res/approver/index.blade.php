@@ -45,7 +45,7 @@
               <option value="Sales Visit">Sales Visit</option>
               <option value="Procedures">Procedures</option>
               <option value="Drawings">Drawings</option>
-              {{-- <option value=""></option> --}}
+              <option value="Issuance">Inventory Issuance</option>
             </select>
             <label for="app_module">Module<sup class="red-text">*</sup></label>
           </div>

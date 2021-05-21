@@ -63,6 +63,7 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::post('/reiss/item_master/patch', 'ItemMasterController@patch')->name('item_master.patch');
     Route::post('/reiss/item_master/delete', 'ItemMasterController@delete')->name('item_master.delete');
     Route::get('/reiss/item_master/getSubCategory/{id}', 'ItemMasterController@getSubCategory');
+    Route::get('/reiss/item_master/getItemDetails/{item_code}', 'ItemMasterController@getItemDetails');
 
     Route::resource('/reiss/approver','ApproverMatrixController');
     Route::post('/reiss/approver/delete','ApproverMatrixController@delete')->name('approver.delete');
@@ -176,11 +177,15 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::get('/reiss/inventory/location/barcodes/{id}', 'InventoryLocationController@barcodes')->name('location.barcodes');
     Route::resource('/reiss/inventory/location','InventoryLocationController');
    
-
-
     Route::post('/reiss/inventory/receiving/patch','InventoryReceivingController@patch')->name('receiving.patch');
     Route::post('/reiss/inventory/receiving/delete', 'InventoryReceivingController@delete')->name('receiving.delete');
+    Route::get('/reiss/inventory/receiving/{dr_no}/DR', 'InventoryReceivingController@DR')->name('receiving.dr');
+    Route::get('/reiss/inventory/receiving/{rcv_code}/items', 'InventoryReceivingController@items')->name('receiving.items');
+    Route::get('/reiss/inventory/receiving/{item_code}/getCurrentStock', 'InventoryReceivingController@getCurrentStock')->name('receiving.getCurrentStock');
     Route::resource('/reiss/inventory/receiving','InventoryReceivingController');
+
+    
+    Route::resource('/reiss/inventory/issuance','InventoryIssuanceController');
 
 
     Route::get('/reiss/dashboard/{parent}', 'ReissDashboardController@index');

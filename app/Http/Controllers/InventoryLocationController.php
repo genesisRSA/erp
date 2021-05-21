@@ -69,7 +69,7 @@ class InventoryLocationController extends Controller
                     'position' => '',
                     'align' => 'C',
                     'stretch' => false,
-                    'fitwidth' => true,
+                    'fitwidth' => false,
                     'cellfitalign' => '',
                     'border' => true,
                     'hpadding' => 'auto',
