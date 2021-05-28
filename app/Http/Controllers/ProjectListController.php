@@ -88,7 +88,7 @@ class ProjectListController extends Controller
             "data" => SalesOrder::where('cust_code',$cust_code)
                                 ->where('status','<>','Pending')    
                                 ->where('status','<>','Voided')    
-                                ->where('status','<>','ongoing')    
+                                ->where('status','<>','On Going')    
                                 ->get()
         ]); 
     }
@@ -117,6 +117,16 @@ class ProjectListController extends Controller
         ->json([
             "data" => Customer::where('cust_code','=',$cust_code)
                                     ->first()
+        ]);
+    }
+
+    public function proj_per_site($site_code)
+    {
+        return response()
+        ->json([
+            "data" => Project::where('site_code',$site_code)
+                                ->where('status','<>','Pending')
+                                ->get()
         ]);
     }
 

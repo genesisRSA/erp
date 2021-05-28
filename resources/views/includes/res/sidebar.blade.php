@@ -109,7 +109,29 @@
           <div class="collapsible-body">
             <ul>
               <li @if($subpage=='receiving') class="active" @endif><a href="{{ route('receiving.index') }}">Receiving</a></li>
-              <li><a href="#!">Inventory List</a></li>
+           
+ 
+              <li class="no-padding">
+                <ul class="collapsible collapsible-accordion">
+                  <li @if($page=='inventory') class="active" @endif>
+                    <a class="collapsible-header waves-effect waves-light" style="padding-left:29px;"><i class="material-icons"></i>Returned Items</a>
+                    <div class="collapsible-body">
+                      <ul>
+                        <li @if($subpage=='return') class="active" @endif>
+                          <a href="{{ route('return.index') }}">Return to Store</a>
+                        </li>
+                        <li><a href="#!">Return to Vendor</a></li>
+                      </ul>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+
+    
+
+
+
+              <li @if($subpage=='inventory') class="active" @endif><a href="{{ route('list.index') }}">Inventory List</a></li>
               <li @if($subpage=='location') class="active" @endif><a href="{{ route('location.index') }}">Inventory Location</a></li>
               <li @if($subpage=='issuance') class="active" @endif><a href="{{ route('issuance.index') }}">Inventory Issuance</a></li>
                <li><a href="#!">Finish Goods</a></li>

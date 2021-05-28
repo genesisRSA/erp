@@ -160,32 +160,45 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::get('/reiss/projects/{cust_code}/count','ProjectListController@count_per_type')->name('projects.count_per_type');
     Route::get('/reiss/projects/{prod_code}/assy','ProjectListController@prod_assy')->name('projects.prod_assy');
     Route::get('/reiss/projects/{assy_code}/fab','ProjectListController@assy_fab')->name('projects.assy_fab');
+    Route::get('/reiss/projects/{site_code}/project','ProjectListController@proj_per_site')->name('projects.per_site');
 
     Route::get('/reiss/projects/view/{project_code}/view_assy','ProjectListController@view_assy')->name('projects.view_assy');
     Route::get('/reiss/projects/view/{project_code}/{assy_code}/fab','ProjectListController@view_fabs')->name('projects.view_fabs');
     Route::get('/reiss/projects/view/{project_code}/adtl','ProjectListController@view_adtl')->name('projects.view_adtl');
     Route::get('/reiss/projects/view/{id}', 'ProjectListController@view')->name('projects.view');
-
     Route::get('/reiss/projects/edit/{item_code}/item_details','ProjectListController@item_details')->name('projects.item_details');
     Route::get('/reiss/projects/edit/{project_code}/edit_assy','ProjectListController@edit_assy')->name('projects.edit_assy');
     Route::get('/reiss/projects/edit/{project_code}/{assy_code}/fab','ProjectListController@edit_fabs')->name('projects.edit_fabs');
     Route::get('/reiss/projects/edit/{project_code}/adtl','ProjectListController@edit_adtl')->name('projects.edit_adtl');
     Route::get('/reiss/projects/edit/{id}', 'ProjectListController@edit')->name('projects.edit');
 
+
     Route::post('/reiss/inventory/location/patch','InventoryLocationController@patch')->name('location.patch');
     Route::post('/reiss/inventory/location/delete', 'InventoryLocationController@delete')->name('location.delete');
     Route::get('/reiss/inventory/location/barcodes/{id}', 'InventoryLocationController@barcodes')->name('location.barcodes');
+    Route::get('/reiss/inventory/location/getlocation/{loc_code}','InventoryLocationController@getlocation')->name('location.getlocation');
     Route::resource('/reiss/inventory/location','InventoryLocationController');
    
     Route::post('/reiss/inventory/receiving/patch','InventoryReceivingController@patch')->name('receiving.patch');
     Route::post('/reiss/inventory/receiving/delete', 'InventoryReceivingController@delete')->name('receiving.delete');
     Route::get('/reiss/inventory/receiving/{dr_no}/DR', 'InventoryReceivingController@DR')->name('receiving.dr');
     Route::get('/reiss/inventory/receiving/{rcv_code}/items', 'InventoryReceivingController@items')->name('receiving.items');
-    Route::get('/reiss/inventory/receiving/{item_code}/getCurrentStock', 'InventoryReceivingController@getCurrentStock')->name('receiving.getCurrentStock');
+    Route::get('/reiss/inventory/receiving/{item_code}/{item_loc_code}/getCurrentStock', 'InventoryReceivingController@getCurrentStock')->name('receiving.getCurrentStock');
     Route::resource('/reiss/inventory/receiving','InventoryReceivingController');
 
-    
+    Route::post('/reiss/inventory/issuance/issue_item','InventoryIssuanceController@issue_item')->name('issuance.issue_item');
+    Route::post('/reiss/inventory/issuance/approve', 'InventoryIssuanceController@approve')->name('issuance.approve');
+    Route::post('/reiss/inventory/issuance/patch','InventoryIssuanceController@patch')->name('issuance.patch');
+    Route::get('/reiss/inventory/issuance/{trans_code}/{item_code}/item_details', 'InventoryIssuanceController@item_details')->name('issuance.item_details');
     Route::resource('/reiss/inventory/issuance','InventoryIssuanceController');
+    
+    Route::get('/reiss/inventory/list/{item_code}/item_details', 'InventoryController@item_details')->name('list.item_details');
+    Route::get('/reiss/inventory/list/{trans_code}/items', 'InventoryController@items')->name('list.items');
+    Route::get('/reiss/inventory/list/{trans_code}/voided', 'InventoryController@voided')->name('list.voided');
+    Route::resource('/reiss/inventory/list','InventoryController');
+
+    Route::post('/reiss/inventory/return/void', 'InventoryReturnController@void')->name('return.void');
+    Route::resource('/reiss/inventory/return','InventoryReturnController');
 
 
     Route::get('/reiss/dashboard/{parent}', 'ReissDashboardController@index');

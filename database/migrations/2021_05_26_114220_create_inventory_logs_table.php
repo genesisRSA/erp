@@ -22,6 +22,7 @@ class CreateInventoryLogsTable extends Migration
             $table->string('item_code');
             $table->string('sku')->nullable();
             $table->string('inventory_location_code');
+            $table->string('currency_code');
             $table->integer('quantity');
             $table->double('unit_price');
             $table->double('total_price');

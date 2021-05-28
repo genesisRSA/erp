@@ -33,7 +33,7 @@ class InventoryReceivingController extends Controller
 {
     public function index()
     {
-        // $random = Str::upper(Str::random(25));
+        // $sku\ = Str::upper(Str::random(25));
         $sites = Site::all();
         $currency = Currency::all();
         $inventoryLocation = InventoryLocation::all();
@@ -106,31 +106,35 @@ class InventoryReceivingController extends Controller
                 {
                     for($i = 0; $i < count($request->input('itm_item_code')); $i++)
                     {
-                        $inventory = new Inventory;
-                        $inventory->receiving_code = Str::upper($request->input('receiving_code'));
-                        
-                        $random = Str::random('100');
- 
+                        $sku = Str::random('100');
                         $item = ItemMaster::where('item_code',$request->input('itm_item_code.'.$i))->first();
-                        if($item){($item->is_serialized == 1 ? $inventory->sku = $random : '' );};
-                        $inventory->item_code = $request->input('itm_item_code.'.$i);
-                        $inventory->inventory_location_code = $request->input('itm_inventory_location.'.$i);
-                        $inventory->currency_code = $request->input('itm_currency_code.'.$i);
-                        $inventory->quantity = $request->input('itm_quantity.'.$i);
-                        $inventory->unit_price = $request->input('itm_unit_price.'.$i);
-                        $inventory->total_price = $request->input('itm_total_price.'.$i);
-                        $inventory->date_received = $request->input('delivery_date');
-                        $inventory->status = 'Received';
-                        $inventory->save();
+                        $item_exist = Inventory::where('item_code',$request->input('itm_item_code.'.$i))
+                                                ->where('inventory_location_code', $request->input('itm_inventory_location.'.$i))
+                                                ->first();
+                        if($item_exist)
+                        {
+                            $item_exist->quantity =  $item_exist->quantity + $request->input('itm_quantity.'.$i);
+                            $item_exist->updated_by = Auth::user()->emp_no;
+                            $item_exist->save();
+                        } else {
+                            $inventory = new Inventory;
+                            if($item){($item->is_serialized == 1 ? $inventory->sku = $sku : '' );};
+                            $inventory->item_code = $request->input('itm_item_code.'.$i);
+                            $inventory->inventory_location_code = $request->input('itm_inventory_location.'.$i);
+                            $inventory->quantity = $request->input('itm_quantity.'.$i);
+                            $inventory->created_by =  Auth::user()->emp_no;
+                            $inventory->save();
+                        }
 
                         $logs = new InventoryLog;
                         $logs->trans_code = Str::upper($request->input('receiving_code'));
                         $logs->trans_type = 'Receiving';
                         $logs->status = 'Received';
                         $logs->trans_date = date('Y-m-d H:i:s');
-                        if($item){($item->is_serialized == 1 ? $logs->sku = $random : '' );};
+                        if($item){($item->is_serialized == 1 ? $logs->sku = $sku : '' );};
                         $logs->item_code = $request->input('itm_item_code.'.$i);
                         $logs->inventory_location_code = $request->input('itm_inventory_location.'.$i);
+                        $logs->currency_code = $request->input('itm_currency_code.'.$i);
                         $logs->quantity = $request->input('itm_quantity.'.$i);
                         $logs->unit_price = $request->input('itm_unit_price.'.$i);
                         $logs->total_price = $request->input('itm_total_price.'.$i);
@@ -157,21 +161,21 @@ class InventoryReceivingController extends Controller
             ]);
     }
 
-    public function getCurrentStock($item_code)
+    public function getCurrentStock($item_code, $item_loc_code)
     {
+        $data = Inventory::where('item_code',$item_code)
+                            ->where('inventory_location_code',$item_loc_code)
+                            ->sum('quantity');
+
         return response()->json([
-            "data" => Inventory::where('item_code',$item_code)
-                                ->where('status','<>','Issued')
-                                ->where('status','<>','With RTV')
-                                ->where('status','<>','Returned')
-                                ->sum('quantity')
+            "data" => ($data ? $data : 0)
         ]);
     }
 
     public function items($rcv_code)
     {
         return response()->json([
-            "data" => Inventory::where('receiving_code',$rcv_code)
+            "data" => InventoryLog::where('trans_code',$rcv_code)
                                 ->with('currency:currency_code,currency_name,symbol')    
                                 ->get()
         ]);
@@ -215,39 +219,55 @@ class InventoryReceivingController extends Controller
 
                 if($request->input('e_itm_item_code'))
                 {
-                    $delinventory = Inventory::where('receiving_code',$request->input('receiving_code'))->delete();
                     
                     for($i = 0; $i < count($request->input('e_itm_item_code')); $i++)
                     {
-                        $inventory = new Inventory;
-                        $inventory->receiving_code = Str::upper($request->input('receiving_code'));
-
-                        $random = Str::random('100');
-                        
+                        $sku = Str::random('100');
                         $item = ItemMaster::where('item_code',$request->input('e_itm_item_code.'.$i))->first();
-                        if($item){($item->is_serialized == 1 ? $inventory->sku = $random : '' );};
-                        $inventory->item_code = $request->input('e_itm_item_code.'.$i);
-                        $inventory->inventory_location_code = $request->input('e_itm_inventory_location.'.$i);
-                        $inventory->currency_code = $request->input('e_itm_currency_code.'.$i);
-                        $inventory->quantity = $request->input('e_itm_quantity.'.$i);
-                        $inventory->unit_price = $request->input('e_itm_unit_price.'.$i);
-                        $inventory->total_price = $request->input('e_itm_total_price.'.$i);
-                        $inventory->date_received = $request->input('delivery_date');
-                        $inventory->status = 'Received';
-                        $inventory->save();
+                        $item_exist = Inventory::where('item_code',$request->input('e_itm_item_code.'.$i))
+                                                ->where('inventory_location_code', $request->input('e_itm_inventory_location.'.$i))
+                                                ->first();
+                        if($item_exist)
+                        {   
+                            $item_exist->delete();
 
-                        $logs = new InventoryLog;
-                        $logs->trans_code = Str::upper($request->input('receiving_code'));
-                        $logs->trans_type = 'Update Receiving';
-                        $logs->status = 'Received';
-                        $logs->trans_date = date('Y-m-d H:i:s');
-                        if($item){($item->is_serialized == 1 ? $logs->sku = $random : '' );};
-                        $logs->item_code = $request->input('e_itm_item_code.'.$i);
-                        $logs->inventory_location_code = $request->input('e_itm_inventory_location.'.$i);
-                        $logs->quantity = $request->input('e_itm_quantity.'.$i);
-                        $logs->unit_price = $request->input('e_itm_unit_price.'.$i);
-                        $logs->total_price = $request->input('e_itm_total_price.'.$i);
-                        $logs->save();
+                            $inventory = new Inventory;
+                            if($item){($item->is_serialized == 1 ? $inventory->sku = $sku : '' );};
+                            $inventory->item_code = $request->input('e_itm_item_code.'.$i);
+                            $inventory->inventory_location_code = $request->input('e_itm_inventory_location.'.$i);
+                            $inventory->quantity = $request->input('e_itm_quantity.'.$i);
+                            $inventory->created_by =  Auth::user()->emp_no;
+                            $inventory->save();
+                        } else {
+                            $inventory = new Inventory;
+                            if($item){($item->is_serialized == 1 ? $inventory->sku = $sku : '' );};
+                            $inventory->item_code = $request->input('e_itm_item_code.'.$i);
+                            $inventory->inventory_location_code = $request->input('e_itm_inventory_location.'.$i);
+                            $inventory->quantity = $request->input('e_itm_quantity.'.$i);
+                            $inventory->created_by =  Auth::user()->emp_no;
+                            $inventory->save();
+                        }
+
+                        $log_exist = InventoryLog::where('trans_code',$request->input('receiving_code',''))
+                                                ->where('item_code',$request->input('e_itm_item_code.'.$i))
+                                                ->where('inventory_location_code', $request->input('e_itm_inventory_location.'.$i))
+                                                ->first();
+                        if($log_exist){ } else { 
+                            $logs = new InventoryLog;
+                            $logs->trans_code = Str::upper($request->input('receiving_code'));
+                            $logs->trans_type = 'Update Receiving';
+                            $logs->status = 'Received';
+                            $logs->trans_date = date('Y-m-d H:i:s');
+                            if($item){($item->is_serialized == 1 ? $logs->sku = $sku : '' );};
+                            $logs->item_code = $request->input('e_itm_item_code.'.$i);
+                            $logs->inventory_location_code = $request->input('e_itm_inventory_location.'.$i);
+                            $logs->currency_code = $request->input('e_itm_currency_code.'.$i);
+                            $logs->quantity = $request->input('e_itm_quantity.'.$i);
+                            $logs->unit_price = $request->input('e_itm_unit_price.'.$i);
+                            $logs->total_price = $request->input('e_itm_total_price.'.$i);
+                            $logs->save();
+                        }
+                            
                     }
                 }
 

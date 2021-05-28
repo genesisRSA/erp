@@ -87,8 +87,8 @@
                       case 'Created':
                         return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
                       break;
-                      case 'For Orientation':
-                        return  '<span class="new badge deep-purple darken-1 white-text" data-badge-caption="">For Orientation</span>';
+                      case 'On Going':
+                        return  '<span class="new badge deep-purple darken-1 white-text" data-badge-caption="">On Going</span>';
                       break;
                       case 'Oriented':
                         return  '<span class="new badge green darken-1 white-text" data-badge-caption="">Oriented</span>';

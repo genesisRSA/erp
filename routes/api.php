@@ -48,10 +48,17 @@ Route::get('/reiss/projects/all/{id}','ProjectListController@all');
 
 Route::get('/reiss/inventory/location/all/{id}','InventoryLocationController@all');
 Route::get('/reiss/inventory/receiving/all/{id}','InventoryReceivingController@all');
+
 Route::get('/reiss/inventory/issuance/all/{id}','InventoryIssuanceController@all');
+Route::get('/reiss/inventory/issuance/issuance','InventoryIssuanceController@issuance');
+Route::get('/reiss/inventory/issuance/all_approval/{id}','InventoryIssuanceController@all_approval');
+
+Route::get('/reiss/inventory/list/all','InventoryController@all');
+Route::get('/reiss/inventory/return/all','InventoryReturnController@all');
 
 Route::get('/reiss/product_category/all', 'ProductCategoriesController@all');
 Route::get('/reiss/product/all', 'ProductsController@all');
 
 Route::get('/reiss/order/all/{emp_no}','SalesOrderController@all');
 Route::get('/reiss/order/all_approval/{emp_no}','SalesOrderController@all_approval');
+

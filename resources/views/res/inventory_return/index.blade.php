@@ -3,26 +3,23 @@
 @section('content')
   <div class="row blue-text text-darken-4 white" style="border-bottom: 1px solid rgba(0,0,0,0.14);">
     <div class="col s12 m12">
-        <h4 class="title"><span class="grey-text darken-4">Parts Preparation<i class="material-icons">arrow_forward_ios</i></span>Inventory Issuance</h4>
+        <h4 class="title">
+          <span class="grey-text darken-4">Parts Preparation<i class="material-icons">arrow_forward_ios</i></span>
+          <span class="grey-text darken-4">Returned Items<i class="material-icons">arrow_forward_ios</i></span>
+          Return to Store</h4>
     </div>
   </div>
   <div class="row main-content">
-    <ul id="project_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
-      <li class="tab col s12 m4 l4"><a class="active" href="#Request">Request</a></li>
-      <li class="tab col s12 m4 l4"><a class="active" href="#Issuance">Issuance</a></li>
-      <li class="tab col s12 m4 l4"><a class="active" href="#Approval">Approval</a></li>
-    </ul>
-
-    <div id="Request" name="ongoing">
+    <div id="rts" name="rts">
         <div class="card" style="margin-top: 0px">
           <div class="card-content">
             <table class="responsive-table highlight" id="request-dt" style="width: 100%">
               <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Issuance Code</th>
-                    <th>Purpose</th>
-                    <th>Project Code</th>
+                    <th>Site</th>
+                    <th>Return Code</th>
+                    <th>Reason</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -32,89 +29,30 @@
         </div>
       
       @if($permission[0]["add"]==true)
-        <a href="#!" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button" data-position="left" data-tooltip="Add Inventory Issuance" onclick="openModal();"><i class="material-icons">add</i></a>
+        <a href="#!" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button" data-position="left" data-tooltip="Add Return to Store" onclick="openModal();"><i class="material-icons">add</i></a>
       @endif
     </div>
-
-    <div id="Issuance" name="Issuance">
-        <div class="card" style="margin-top: 0px">
-          <div class="card-content">
-            <table class="responsive-table highlight" id="issuance-dt" style="width: 100%">
-              <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Issuance Code</th>
-                    <th>Requestor</th>
-                    <th>Purpose</th>
-                    <th>Project Code</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-              </thead>
-            </table>
-          </div>
-        </div>
-      
-      {{-- @if($permission[0]["add"]==true)
-        <a href="#!" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button" data-position="left" data-tooltip="Add Inventory Issuance" onclick="openModal();"><i class="material-icons">add</i></a>
-      @endif --}}
-    </div>
-
-    <div id="Approval" name="Approval">
-        <div class="card" style="margin-top: 0px">
-          <div class="card-content">
-            <table class="responsive-table highlight" id="approval-dt" style="width: 100%">
-              <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Issuance Code</th>
-                    <th>Requestor</th>
-                    <th>Purpose</th>
-                    <th>Project Code</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-              </thead>
-            </table>
-          </div>
-        </div>
-      
-     
-    </div>
-
   </div>
  
   <!-- MODALS -->
 
   <div id="addModal" class="modal">
-    <form method="POST" action="{{route('issuance.store')}}">
+    <form method="POST" action="{{route('return.store')}}">
     @csrf
       <div class="modal-content" style="padding-bottom: 0px;">
-        <h4>Add Issuance Request</h4>
-        <ul id="tabs-swipe-demo" class="tabs">
-          <li class="tab col s12 m4 l4"><a class="active" href="#issuance">Issuance Details</a></li>
-           <li class="tab col s12 m4 l4"><a href="#signatories">Signatories</a></li>
-        </ul><br>
-
-        <div id="issuance" name="issuance">
+        <h4 class="center-align">Add Return To Store</h4><br>
+          <div class="col s12 m12 l12 row">
+            <h6 style="padding: 10px;padding-top: 10px;margin-bottom: 0px;background-color:#0d47a1;border-right-width: 20px;margin-top: 0+;margin-top: 0px;margin-right: 10px;margin-left: 10px;" class="white-text"><b>Return Details</b></h6>
+          </div>
+          
           <div class="row"  style="margin-bottom: 0px;">
-              <div class="input-field col s12 m6 l6">
-                <input id="add_issuance_code" name="issuance_code" type="text" class="validate" placeholder="" value="ISS{{date('Ymd')}}-00{{$count}}" required readonly>
-                <label for="issuance_code">Issuance Code<sup class="red-text">*</sup></label>
-              </div>
+            <div class="input-field col s12 m6 l6">
+              <input id="add_return_code" name="return_code" type="text" class="validate" placeholder="" value="RTN{{date('Ymd')}}-00{{$count}}" required readonly>
+              <label for="return_code">Return Code<sup class="red-text">*</sup></label>
+            </div>
           </div>
 
           <div class="row" style="margin-bottom: 0px;">
-            <div class="input-field col s12 m6 l6">
-              <input type="hidden" name="purpose" id="purpose">
-              <select id="add_purpose" name="add_purpose" required>
-                  <option value="" disabled selected>Choose your option</option>
-                  <option value="Office Use">Office Use</option>
-                  <option value="Project">Project</option>
-              </select>
-              <label for="add_purpose">Purpose<sup class="red-text">*</sup></label>
-            </div>
-
             <div class="input-field col s12 m6 l6">
               <input type="hidden" name="site_code" id="site_code">
               <select id="add_site_code" name="add_site_code" required>
@@ -125,28 +63,15 @@
               </select>
               <label for="add_site_code">Site<sup class="red-text">*</sup></label>
             </div>
-          </div>
 
-          <div class="row" style="display: none; margin-bottom: 0px;" id="project_details">
             <div class="input-field col s12 m6 l6">
-                <input type="hidden" name="project_code" id="project_code">
-                <select id="add_project_code" name="add_project_code">
-                    <option value="" disabled selected>Choose your option</option>
-                </select>
-                <label for="add_project_code">Project Code<sup class="red-text">*</sup></label>
-              </div>
-
-              <div class="input-field col s12 m6 l6">
-                <input type="hidden" name="assy_code" id="assy_code">
-                <select id="add_assy_code" name="add_assy_code">
-                  <option value="" disabled selected>Choose your option</option>
-                </select>
-                <label for="add_assy_code">Assy Code<sup class="red-text">*</sup></label>
-              </div>
+              <textarea id="add_reason" name="reason" class="materialize-textarea" placeholder=""></textarea>
+              <label for="reason">Reason<sup class="red-text">*</sup></label>
+            </div>
           </div>
 
+        
           <div class="row col s12 m12 l12">
-           
             <div id="add_set" class="col s12 m2 l2 right-align" style="padding-right: 20px;padding-left: 10px;">
               <button id="set" type="button" onclick="setDetails('add');" class="blue waves-effect waves-light btn left-align" style="width: 100%"><i class="material-icons left">check_circle</i>Set</button>
             </div>
@@ -160,7 +85,14 @@
           <div class="col s12 m12 l12 row">
             <h6 style="padding: 10px;padding-top: 10px;margin-bottom: 0px;background-color:#0d47a1;border-right-width: 20px;margin-top: 0+;margin-top: 0px;margin-right: 10px;margin-left: 10px;" class="white-text"><b>Item Details</b></h6>
           </div>
-            
+
+          <div class="row" style="margin-bottom: 0px;">
+            <div class="input-field col s12 m6 l6">
+              <input id="add_location_code" name="location_code" type="text" class="validate" autocomplete="" placeholder="Please click here before scanning location.." disabled>
+              <label for="location_code">Location<sup class="red-text">*</sup></label>
+            </div>
+          </div>
+
           <div class="row" style="margin-bottom: 0px;">
             <div class="input-field col s12 m6 l6">
               <input type="hidden" id="add_item_desc" name="item_desc">
@@ -201,31 +133,6 @@
               </div>
             </div>
           </div>
-
-        </div>
-
-        <div id="signatories" name="signatories">
-          <div class="row">
-            <div class="col s12 m12 l12">
-              <div class="card">
-                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Current Signatories</b></h6><hr style="margin: 0px">
-                <div class="card-content" style="padding: 10px; padding-top: 0px">
-                  <table class="highlight" id="matrix-dt">
-                    <thead>
-                      <tr>
-                          <th>Sequence</th> 
-                          <th>Approver ID</th> 
-                          <th>Approver Name</th> 
-                      </tr>
-                    </thead>
-                    <tbody></tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>         
-        </div>
-
       </div>
 
       <div class="modal-footer" style="padding-right: 32px; padding-bottom: 4px; margin-bottom: 30px;">
@@ -387,42 +294,29 @@
 
   <div id="viewModal" class="modal">
     <div class="modal-content" style="padding-bottom: 0px;">
-      <h4>Inventory Issuance Details</h4> 
-      <ul id="tabs-swipe-demo" class="tabs view">
-        <li class="tab col s12 m4 l4"><a class="active" href="#view_issuance">Issuance Details</a></li>
-        <li class="tab col s12 m4 l4"><a href="#view_signatories">Signatories</a></li>
-      </ul><br>
-
-      <div id="view_issuance" name="view_issuance">
-        <div class="row">
-            <div class="input-field col s12 m6 l6">
-              <input id="view_issuance_code" name="issuance_code" type="text" class="validate" placeholder="" readonly>
-              <label class="active">Issuance Code</label>
-            </div>
+      <h4 class="center-align">Returned Item Details</h4><br>
+ 
+        <div class="row"  style="margin-bottom: 0px;">
+          <div class="input-field col s12 m6 l6">
+            <input id="view_return_code" name="return_code" type="text" class="validate" placeholder="" readonly>
+            <label for="return_code">Return Code<sup class="red-text"></sup></label>
+          </div>
+          <div class="input-field col s12 m6 l6">
+            <input id="view_site_code" name="site_code" type="text" class="validate" placeholder="" readonly>
+            <label for="site_code">Site<sup class="red-text"></sup></label>
+          </div>
         </div>
 
-        <div class="row">
-            <div class="input-field col s12 m6 l6">
-              <input id="view_site_code" name="site_code" type="text" class="validate" placeholder="" readonly>
-              <label class="active">Site</label>
-            </div>
+        <div class="row" style="margin-bottom: 0px;">
+          <div class="input-field col s12 m6 l6">
+            <textarea id="view_reason" name="reason" class="materialize-textarea" placeholder=""></textarea>
+            <label for="reason">Reason<sup class="red-text"></sup></label>
+          </div>
 
-            <div class="input-field col s12 m6 l6">
-              <input id="view_purpose" name="purpose" type="text" class="validate" placeholder="" readonly>
-              <label class="active">Purpose</label>
-            </div>
-        </div>
-
-        <div class="row" style="display: none" id="view_project_details">
-            <div class="input-field col s12 m6 l6">
-              <input id="view_project_code" name="project_code" type="text" class="validate" placeholder="" readonly>
-              <label class="active">Project</label>
-            </div>
-
-            <div class="input-field col s12 m6 l6">
-              <input id="view_assy_code" name="assy_code" type="text" class="validate" placeholder="" readonly>
-              <label class="active">Assembly</label>
-            </div>
+          <div class="input-field col s12 m6 l6">
+            <input id="view_status" name="status" type="text" class="validate" placeholder="" readonly>
+            <label for="status">Status<sup class="red-text"></sup></label>
+          </div>
         </div>
 
         <div class="row">
@@ -433,11 +327,11 @@
                 <table class="highlight" id="view-items-dt">
                   <thead>
                     <tr>
-                      <th>ID</th>
-                      <th>Item Code</th>
-                      <th>Item Description</th>
-                      <th>Quantity</th>
-                      <th>Status</th>
+                        <th>ID</th>
+                        <th>Item Code</th>
+                        <th>Item Description</th>
+                        <th>Quantity</th>
+                        <th>Action</th>
                     </tr>
                   </thead>
                   <tbody></tbody>
@@ -446,52 +340,6 @@
             </div>
           </div>
         </div>
-      </div>
-
-      <div id="view_signatories" name="view_signatories">
-        <div class="row">
-          <div class="col s12 m12 l12">
-            <div class="card">
-              <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Current Signatories</b></h6><hr style="margin: 0px">
-              <div class="card-content" style="padding: 10px; padding-top: 0px">
-                <table class="highlight" id="view-matrix-dt">
-                  <thead>
-                    <tr>
-                      <th>Sequence</th> 
-                      <th>Approver ID</th> 
-                      <th>Approver Name</th> 
-                    </tr>
-                  </thead>
-                  <tbody></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col s12 m12 l12">
-            <div class="card">
-              <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Approval History</b></h6><hr style="margin: 0px">
-              <div class="card-content" style="padding: 10px; padding-top: 0px">
-                <table class="highlight" id="view-matrix-dt-h">
-                  <thead>
-                    <tr>
-                      <th>Sequence</th> 
-                      <th>Approver Name</th> 
-                      <th>Status</th> 
-                      <th>Remarks</th> 
-                      <th>Action Date</th> 
-                    </tr>
-                  </thead>
-                  <tbody></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-      </div>
     </div>
 
     <div class="modal-footer" style="padding-right: 32px; padding-bottom: 4px; margin-bottom: 30px;">
@@ -829,11 +677,11 @@
 
   <div id="resetModal" class="modal bottom-sheet">
     <div class="modal-content">
-        <h4>Reset Issuance Request</h4><br><br>
+        <h4>Reset Return Details</h4><br><br>
         <div class="row">
             <div class="col s12 m6">
                 <input type="hidden" name="reset_loc" id="reset_loc">
-                <p>Are you sure you want to reset <strong>Issuance Request Details</strong>?</p>
+                <p>Are you sure you want to reset <strong>Return Details</strong>?</p>
             </div>
         </div>
     </div>
@@ -843,6 +691,74 @@
     </div>
   </div> 
 
+  <div id="voidModal" class="modal">
+    <form method="POST" action="{{route('return.void')}}">
+        @csrf
+        <div class="modal-content" style="padding-bottom: 0px;">
+            <h4>Void Returned Items</h4>
+            <div class="row">
+                <div class="col s12 m6">
+                    <input type="hidden" name="id" id="void_id">
+                    <p>Are you sure you want to void this <strong>Return Record</strong>?</p>
+                </div>
+            </div>
+
+            <div class="col s12 m12 l12 row">
+              <h6 style="padding: 10px;padding-top: 10px;margin-bottom: 0px;background-color:#0d47a1;border-right-width: 20px;margin-top: 0+;margin-top: 0px;margin-right: 10px;margin-left: 10px;" class="white-text"><b>Return Details</b></h6>
+            </div>
+     
+            <div class="row"  style="margin-bottom: 0px;">
+              <div class="input-field col s12 m6 l6">
+                <input id="void_return_code" name="return_code" type="text" class="validate" placeholder="" readonly>
+                <label for="return_code">Return Code<sup class="red-text"></sup></label>
+              </div>
+              <div class="input-field col s12 m6 l6">
+                <input id="void_site_code" name="site_code" type="text" class="validate" placeholder="" readonly>
+                <label for="site_code">Site<sup class="red-text"></sup></label>
+              </div>
+            </div>
+    
+            <div class="row" style="margin-bottom: 0px;">
+              <div class="input-field col s12 m6 l6">
+                <textarea id="void_reason" name="reason" class="materialize-textarea" placeholder=""></textarea>
+                <label for="reason">Reason<sup class="red-text"></sup></label>
+              </div>
+    
+              <div class="input-field col s12 m6 l6">
+                <input id="void_status" name="status" type="text" class="validate" placeholder="" readonly>
+                <label for="status">Status<sup class="red-text"></sup></label>
+              </div>
+            </div>
+    
+            <div class="row">
+              <div class="col s12 m12 l12">
+                <div class="card">
+                  <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Item List</b></h6><hr style="margin: 0px">
+                  <div class="card-content" style="padding: 10px; padding-top: 0px">
+                    <table class="highlight" id="void-items-dt">
+                      <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Item Code</th>
+                            <th>Item Description</th>
+                            <th>Quantity</th>
+                            <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <div class="modal-footer" style="padding-right: 32px; padding-bottom: 4px; margin-bottom: 30px;">
+          <button class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Yes</button>
+          <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>No</a>
+        </div>
+    </form>
+  </div>
 
   <div id="removeItemModal" class="modal">
     <div class="modal-content">
@@ -866,49 +782,50 @@
   <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
   <script type="text/javascript" src="{{ asset('datatables/datatables.js') }}"></script>
   <script type="text/javascript">
-    var issueCount = {{$count}};
+
+    var returnCount = {{$count}};
     const str = new Date().toISOString().slice(0, 10);
     var newtoday = str.replace(/[^a-zA-Z0-9]/g,"");
     var add_items = [];
     var edit_items = [];
     var view_items = [];
+    var void_items = [];
     var app_items = [];
     var iss_items = [];
 
     $(document).ready(function () {
       
-        $.get('/api/reiss/item_master/all', (response) => {
-          var data = response.data;
-          var autodata = {};
-          for(var i = 0; i < data.length; i++)
-          {
-            autodata[data[i].item_code] = 'https://icons.iconarchive.com/icons/icojam/blueberry-basic/32/check-icon.png';
-          }
+        // $.get('/api/reiss/item_master/all', (response) => {
+        //   var data = response.data;
+        //   var autodata = {};
+        //   for(var i = 0; i < data.length; i++)
+        //   {
+        //     autodata[data[i].item_code] = 'https://icons.iconarchive.com/icons/icojam/blueberry-basic/32/check-icon.png';
+        //   }
 
-          $('input#add_item_code').autocomplete({
-            data : autodata,
-          });
+        //   $('input#add_item_code').autocomplete({
+        //     data : autodata,
+        //   });
 
-          $('input#edit_item_code').autocomplete({
-            data : autodata,
-          });
+        //   $('input#edit_item_code').autocomplete({
+        //     data : autodata,
+        //   });
 
-          $('input#add_item_code').keypress(function(event) {
-              if (event.keyCode == 13) {
-                  event.preventDefault();
-              }
-          });
+        //   $('input#add_item_code').keypress(function(event) {
+        //       if (event.keyCode == 13) {
+        //           event.preventDefault();
+        //       }
+        //   });
 
-          $('input#edit_item_code').keypress(function(event) {
-              if (event.keyCode == 13) {
-                  event.preventDefault();
-              }
-          });
-        });
+        //   $('input#edit_item_code').keypress(function(event) {
+        //       if (event.keyCode == 13) {
+        //           event.preventDefault();
+        //       }
+        //   });
+        // });
 
         $('#add_site_code').on('change', function(){
           issuanceCode($(this).val(), 'add');
-          projectCode($(this).val(), 'add');
           $('#site_code').val($(this).val());
         });
         
@@ -977,7 +894,6 @@
 
         $('#edit_site_code').on('change', function(){
           issuanceCode($(this).val(), 'edit');
-          projectCode($(this).val(), 'edit');
           $('#site_code_edit').val($(this).val());
         });
         
@@ -1099,6 +1015,7 @@
         });
 
     });
+
     const FormatNumber = (number) => {
           var n = number.toString().split(".");
           n[0] = n[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -1126,215 +1043,55 @@
 
     const setDetails = (loc) => {
       if(loc=="add"){
-        if($('#add_issuance_code').val() &&
-          $('#add_purpose').val() &&  
-          $('#add_site_code').val())
+        if($('#add_return_code').val() &&
+          $('#add_reason').val())
         {
-          if($('#add_purpose').val()=='Project')
-          {
-            if( $('#add_project_code').val() &&  
-                $('#add_assy_code').val())
-            {
-              $('#btnAdd').prop('disabled', false);
-              $('#add_item_code').prop('disabled', false);
-              $('#add_quantity').prop('disabled', false);
-              $('#add_issuance_code').prop('readonly', true);
+          $('#btnAdd').prop('disabled', false);
+          $('#add_location_code').prop('disabled', false);
+          $('#add_item_code').prop('disabled', false);
+          $('#add_quantity').prop('disabled', false);
+          $('#add_reason').prop('readonly', true);
 
-              $('#add_purpose').prop('disabled', true);
-              $('#add_purpose').formSelect();
-              $('#add_site_code').prop('disabled', true);
-              $('#add_site_code').formSelect();
-              $('#add_project_code').prop('disabled', true);
-              $('#add_project_code').formSelect();
-              $('#add_assy_code').prop('disabled', true);
-              $('#add_assy_code').formSelect();
-
-              var set = document.getElementById('add_set');
-                  set.style.display = "none";
-              var reset = document.getElementById('add_reset');
-                  reset.style.display = "block";
-            } else {
-              alert('Please fill up all issuance details before setting-up items!');
-            }
-          } else {
-            $('#btnAdd').prop('disabled', false);
-            $('#add_item_code').prop('disabled', false);
-            $('#add_quantity').prop('disabled', false);
-            $('#add_issuance_code').prop('readonly', true);
-
-            $('#add_purpose').prop('disabled', true);
-            $('#add_purpose').formSelect();
-            $('#add_site_code').prop('disabled', true);
-            $('#add_site_code').formSelect();
-            $('#add_project_code').prop('disabled', true);
-            $('#add_project_code').formSelect();
-            $('#add_assy_code').prop('disabled', true);
-            $('#add_assy_code').formSelect();
-
-            var set = document.getElementById('add_set');
-                set.style.display = "none";
-            var reset = document.getElementById('add_reset');
-                reset.style.display = "block";
-          }
+          var set = document.getElementById('add_set');
+              set.style.display = "none";
+          var reset = document.getElementById('add_reset');
+              reset.style.display = "block";
         } else {
-          alert('Please fill up all issuance details before setting-up items!');
+          alert('Please fill up all return details before setting-up items!');
         }
       } else {
-        
-        if($('#edit_issuance_code').val() &&
-            $('#edit_purpose').val() &&  
-            $('#edit_site_code').val())
-        {
-          if($('#edit_purpose').val()=='Project')
-          {
-            if( $('#edit_project_code').val() &&  
-                $('#edit_assy_code').val())
-            {
-              $('#edit_btnAdd').prop('disabled', false);
-              $('#edit_item_code').prop('disabled', false);
-              $('#edit_quantity').prop('disabled', false);
-              $('#edit_issuance_code').prop('readonly', true);
-
-              $('#edit_purpose').prop('disabled', true);
-              $('#edit_purpose').formSelect();
-              $('#edit_site_code').prop('disabled', true);
-              $('#edit_site_code').formSelect();
-              $('#edit_project_code').prop('disabled', true);
-              $('#edit_project_code').formSelect();
-              $('#edit_assy_code').prop('disabled', true);
-              $('#edit_assy_code').formSelect();
-
-              var set = document.getElementById('edit_set');
-                  set.style.display = "none";
-              var reset = document.getElementById('edit_reset');
-                  reset.style.display = "block";
-            } else {
-              alert('Please fill up all issuance details before setting-up items!');
-            }
-          } else {
-            $('#edit_btnAdd').prop('disabled', false);
-            $('#edit_item_code').prop('disabled', false);
-            $('#edit_quantity').prop('disabled', false);
-            $('#edit_issuance_code').prop('readonly', true);
-
-            $('#edit_purpose').prop('disabled', true);
-            $('#edit_purpose').formSelect();
-            $('#edit_site_code').prop('disabled', true);
-            $('#edit_site_code').formSelect();
-            $('#edit_project_code').prop('disabled', true);
-            $('#edit_project_code').formSelect();
-            $('#edit_assy_code').prop('disabled', true);
-            $('#edit_assy_code').formSelect();
-
-            var set = document.getElementById('edit_set');
-                set.style.display = "none";
-            var reset = document.getElementById('edit_reset');
-                reset.style.display = "block";
-          }
-        } else {
-          alert('Please fill up all issuance details before setting-up items!');
-        }
+      
       }
     };
 
     const resetDetails = () => {
       var loc = $('#reset_loc').val();
       if(loc=="add"){
-          if($('#add_purpose').val()=='Project')
-          {
-            $('#btnAdd').prop('disabled', true);
-            $('#add_item_code').prop('disabled', true);
-            $('#add_item_code').val("");
-            $('#add_quantity').prop('disabled', true);
-            $('#add_quantity').val("");
+         
+        $('#add_site_code option[value=""]').prop('selected', true);
+        $('#add_site_code').formSelect();
+        $('#add_reason').prop('readonly', false);
+        $('#add_reason').val("");
+        $('#add_location_code').prop('disabled', true);
+        $('#add_location_code').val("");
+        $('#add_item_code').prop('disabled', true);
+        $('#add_item_code').val("");
+        $('#add_quantity').prop('disabled', true);
+        $('#add_quantity').val("");
+        
+        $('#btnAdd').prop('disabled', true);
+        var set = document.getElementById('add_set');
+            set.style.display = "block";
+        var reset = document.getElementById('add_reset');
+            reset.style.display = "none";
 
-            $('#add_purpose').prop('disabled', false);
-            $('#add_purpose').formSelect();
-            $('#add_site_code').prop('disabled', false);
-            $('#add_site_code').formSelect();
-            $('#add_project_code').prop('disabled', false);
-            $('#add_project_code').formSelect();
-            $('#add_assy_code').prop('disabled', false);
-            $('#add_assy_code').formSelect();
+        add_items = [];
+        renderItems(add_items, $('#items-dt tbody'), 'add');
+        $('#btnAddSave').prop('disabled', true);
+        $('#resetModal').modal('close');
 
-            var set = document.getElementById('add_set');
-                set.style.display = "block";
-            var reset = document.getElementById('add_reset');
-                reset.style.display = "none";
-          } else {
-            $('#btnAdd').prop('disabled', true);
-            $('#add_item_code').prop('disabled', true);
-            $('#add_item_code').val("");
-            $('#add_quantity').prop('disabled', true);
-            $('#add_quantity').val("");
-
-            $('#add_purpose').prop('disabled', false);
-            $('#add_purpose').formSelect();
-            $('#add_site_code').prop('disabled', false);
-            $('#add_site_code').formSelect();
-            $('#add_project_code').prop('disabled', false);
-            $('#add_project_code').formSelect();
-            $('#add_assy_code').prop('disabled', false);
-            $('#add_assy_code').formSelect();
-
-            var set = document.getElementById('add_set');
-                set.style.display = "block";
-            var reset = document.getElementById('add_reset');
-                reset.style.display = "none";
-          } 
-          add_items = [];
-          renderItems(add_items,$('#items-dt tbody'),'add');
-          $('#btnAddSave').prop('disabled', false);
-          $('#resetModal').modal('close');
       } else {
 
-          if($('#edit_purpose').val()=='Project')
-          {
-            if( $('#edit_project_code').val() &&  
-                $('#edit_assy_code').val())
-            {
-              $('#edit_btnAdd').prop('disabled', false);
-              $('#edit_item_code').prop('disabled', false);
-              $('#edit_quantity').prop('disabled', false);
-              $('#edit_issuance_code').prop('readonly', true);
-
-              $('#edit_purpose').prop('disabled', true);
-              $('#edit_purpose').formSelect();
-              $('#edit_site_code').prop('disabled', true);
-              $('#edit_site_code').formSelect();
-              $('#edit_project_code').prop('disabled', true);
-              $('#edit_project_code').formSelect();
-              $('#edit_assy_code').prop('disabled', true);
-              $('#edit_assy_code').formSelect();
-
-              var set = document.getElementById('edit_set');
-                  set.style.display = "none";
-              var reset = document.getElementById('edit_reset');
-                  reset.style.display = "block";
-            } else {
-              alert('Please fill up all issuance details before setting-up items!');
-            }
-          } else {
-            $('#edit_btnAdd').prop('disabled', false);
-            $('#edit_item_code').prop('disabled', false);
-            $('#edit_quantity').prop('disabled', false);
-            $('#edit_issuance_code').prop('readonly', true);
-
-            $('#edit_purpose').prop('disabled', true);
-            $('#edit_purpose').formSelect();
-            $('#edit_site_code').prop('disabled', true);
-            $('#edit_site_code').formSelect();
-            $('#edit_project_code').prop('disabled', true);
-            $('#edit_project_code').formSelect();
-            $('#edit_assy_code').prop('disabled', true);
-            $('#edit_assy_code').formSelect();
-
-            var set = document.getElementById('edit_set');
-                set.style.display = "none";
-            var reset = document.getElementById('edit_reset');
-                reset.style.display = "block";
-          }
-   
       }
     };
 
@@ -1342,19 +1099,21 @@
       if(loc=="add"){
         $('#add_item_code').val("");
         $('#add_quantity').val("");
+        $('#add_location_code').val("");
       } else {
         $('#edit_item_code').val("");
         $('#edit_quantity').val("");
+        $('#edit_location_code').val("");
       }
     };
 
     const issuanceCode = (site, loc) => {
         if(loc=='add'){
-          $('#add_issuance_code').val( site + '-ISS' + newtoday + '-00' + issueCount );
+          $('#add_return_code').val( site + '-RTN' + newtoday + '-00' + returnCount );
         } else {
-          var str = $('#edit_issuance_code').val();
+          var str = $('#edit_return_code').val();
           var count = str.substr(-3, 3);
-          $('#edit_issuance_code').val( site + '-ISS' + newtoday + '-' + count);
+          $('#edit_return_code').val( site + '-RTN' + newtoday + '-' + count);
         }
     };
 
@@ -1379,12 +1138,25 @@
     const openModal = () => {
       $('#add_site_code option[value=""]').prop('selected', true);
       $('#add_site_code').formSelect();
-      $('#add_requestor option[value=""]').prop('selected', true);
-      $('#add_requestor').formSelect();
-      $('#add_purpose option[value=""]').prop('selected', true);
-      $('#add_purpose').formSelect();
+      $('#add_reason').prop('readonly', false);
+      $('#add_reason').val("");
+      $('#add_location_code').prop('disabled', true);
+      $('#add_location_code').val("");
+      $('#add_item_code').prop('disabled', true);
+      $('#add_item_code').val("");
+      $('#add_quantity').prop('disabled', true);
+      $('#add_quantity').val("");
+      
+      $('#btnAdd').prop('disabled', true);
+      var set = document.getElementById('add_set');
+          set.style.display = "block";
+      var reset = document.getElementById('add_reset');
+          reset.style.display = "none";
+
+      add_items = [];
+      renderItems(add_items, $('#items-dt tbody'), 'add');
+      $('#btnAddSave').prop('disabled', true);
       $('#addModal').modal('open');
-      loadApprover();
     };
 
     const resetModal = (loc) => {
@@ -1475,48 +1247,75 @@
       });
     };
 
-    const viewIssuance = (id) => {
+    const viewReturn = (id) => {
       view_items = [];
       $('#viewModal').modal('open');
-      $('.tabs.view').tabs('select','view_issuance');
-      $.get('issuance/'+id, (response) => {
+      $.get('return/'+id, (response) => {
         var data = response.data[0];
-        var matrix = JSON.parse(data.matrix);
-        var matrix_h = JSON.parse(data.matrix_h);
-        if(matrix != null) renderSignatoriesTable(matrix,$('#view-matrix-dt tbody'));
-        if(matrix_h != null) renderSignatoriesTable(matrix_h,$('#view-matrix-dt-h tbody'),true);
-
-        $('#view_issuance_code').val(data.issuance_code);
+        console.log(data);
+        $('#view_id').val(id);
+        $('#view_return_code').val(data.return_code);
         $('#view_site_code').val(data.sites.site_desc);
-        $('#view_purpose').val(data.purpose);
+        $('#view_reason').val(data.reason);
+        $('#view_status').val(data.status);
 
-        if(data.purpose=='Project')
-        {
-          $('#view_project_code').val(data.projects.project_name);
-          $('#view_assy_code').val(data.assy.assy_desc);
-          var x = document.getElementById('view_project_details');
-              x.style.display = "block";
+        if(data.status == 'Returned'){
+          $.get('list/'+data.return_code+'/items', (response) => {
+            var data = response.data;
+            $.each(data, (index, row) => {
+              view_items.push({"item_code": row.item_code,
+                              "item_desc": row.item_details.item_desc,
+                              "quantity": row.quantity,
+                              "status": row.status,
+                              });
+            });
+            renderItems(view_items,$('#view-items-dt tbody'),'view');
+          });
         } else {
-          var x = document.getElementById('view_project_details');
-              x.style.display = "none";
+          $.get('list/'+data.return_code+'/voided', (response) => {
+            var data = response.data;
+            $.each(data, (index, row) => {
+              view_items.push({"item_code": row.item_code,
+                              "item_desc": row.item_details.item_desc,
+                              "quantity": row.quantity,
+                              "status": row.status,
+                              });
+            });
+            renderItems(view_items,$('#view-items-dt tbody'),'view');
+          });
         }
+      });
+    };
 
-        $.get('list/'+data.issuance_code+'/items', (response) => {
+    const voidItem = (id) => {
+      void_items = [];
+      $('#voidModal').modal('open');
+      $.get('return/'+id, (response) => {
+        var data = response.data[0];
+        // console.log(data);
+        $('#void_id').val(id);
+        $('#void_return_code').val(data.return_code);
+        $('#void_site_code').val(data.sites.site_desc);
+        $('#void_reason').val(data.reason);
+        $('#void_status').val(data.status);
+
+        $.get('list/'+data.return_code+'/items', (response) => {
           var data = response.data;
+          console.log(data);
           $.each(data, (index, row) => {
-            view_items.push({"item_code": row.item_code,
+            void_items.push({"item_code": row.item_code,
                             "item_desc": row.item_details.item_desc,
+                            "inventory_location": row.inventory_location_code,
                             "quantity": row.quantity,
                             "status": row.status,
                             });
           });
-          // calculateGrandTotal('$',view_items,$('#view_grand_total'));
-          renderItems(view_items,$('#view-items-dt tbody'),'view');
+          renderItems(void_items,$('#void-items-dt tbody'),'void');
         });
 
       });
-    };
-
+    }
+ 
     const appIssuance = (id) => {
       app_items = [];
       $('#appModal').modal('open');
@@ -1655,7 +1454,7 @@
                       '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="deleteItem(\''+index+'\',\'add\')"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
                       '<input type="hidden" name="itm_item_code[]" value="'+row.item_code+'"/>'+
                       '<input type="hidden" name="itm_quantity[]" value="'+row.quantity+'"/>'+
-                      '<input type="hidden" name="itm_inventory_location[]" value=" "/>'+
+                      '<input type="hidden" name="itm_inventory_location[]" value="'+row.location_code+'"/>'+
                       '<input type="hidden" name="itm_currency[]" value=" "/>'+
                       '<input type="hidden" name="itm_currency_code[]" value=" "/>'+
                       '<input type="hidden" name="itm_unit_price[]" value=" "/>'+
@@ -1675,7 +1474,7 @@
                       '<td><button type="button" class="btn-small red waves-effect waves-light" disabled><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
                       '<input type="hidden" name="e_itm_item_code[]" value="'+row.item_code+'"/>'+
                       '<input type="hidden" name="e_itm_quantity[]" value="'+row.quantity+'"/>'+
-                      '<input type="hidden" name="e_itm_inventory_location[]" value=" "/>'+
+                      '<input type="hidden" name="e_itm_inventory_location[]" value="'+row.location_code+'"/>'+
                       '<input type="hidden" name="e_itm_currency[]" value=" "/>'+
                       '<input type="hidden" name="e_itm_currency_code[]" value=" "/>'+
                       '<input type="hidden" name="e_itm_unit_price[]" value=" "/>'+
@@ -1739,36 +1538,41 @@
                                 '</tr>'
                               );
           }
+        } else if (loc=='void'){
+            var id = parseInt(index) + 1;
+            table.append('<tr>'+
+                                '<td class="left-align">'+id+'</td>'+
+                                '<td class="left-align">'+row.item_code+'</td>'+
+                                '<td class="left-align">'+row.item_desc+'</td>'+
+                                '<td class="left-align">'+row.quantity+'</td>'+
+                                '<td class="left-align"><span class="new badge blue white-text" data-badge-caption="">'+row.status+'</span></td>'+ 
+                                '<input type="hidden" name="vd_itm_item_code[]" value="'+row.item_code+'"/>'+
+                                '<input type="hidden" name="vd_itm_quantity[]" value="'+row.quantity+'"/>'+
+                                '<input type="hidden" name="vd_itm_inventory_location[]" value="'+row.inventory_location+'"/>'+
+                                '</tr>'
+                              );
+          
         } else {
-          var id = parseInt(index) + 1;
-          if(row.status=='Issued'){
-            table.append('<tr>'+
-                      '<td class="left-align">'+id+'</td>'+
-                      '<td class="left-align">'+row.item_code+'</td>'+
-                      '<td class="left-align">'+row.item_desc+'</td>'+
-                      '<td class="left-align">'+row.quantity+'</td>'+
-                      '<td class="left-align"><span class="new badge black white-text" data-badge-caption="">'+row.status+'</span></td>'+ 
-                      '</tr>'
-                    );
-          } else if(row.status=='Rejected'){
-            table.append('<tr>'+
-                      '<td class="left-align">'+id+'</td>'+
-                      '<td class="left-align">'+row.item_code+'</td>'+
-                      '<td class="left-align">'+row.item_desc+'</td>'+
-                      '<td class="left-align">'+row.quantity+'</td>'+
-                      '<td class="left-align"><span class="new badge red white-text" data-badge-caption="">'+row.status+'</span></td>'+ 
-                      '</tr>'
-                    );
-          } else {
-            table.append('<tr>'+
-                      '<td class="left-align">'+id+'</td>'+
-                      '<td class="left-align">'+row.item_code+'</td>'+
-                      '<td class="left-align">'+row.item_desc+'</td>'+
-                      '<td class="left-align">'+row.quantity+'</td>'+
-                      '<td class="left-align"><span class="new badge blue white-text" data-badge-caption="">'+row.status+'</span></td>'+ 
-                      '</tr>'
-                    );
-          }
+        var id = parseInt(index) + 1;
+        if(row.status=='Returned'){
+          table.append('<tr>'+
+                    '<td class="left-align">'+id+'</td>'+
+                    '<td class="left-align">'+row.item_code+'</td>'+
+                    '<td class="left-align">'+row.item_desc+'</td>'+
+                    '<td class="left-align">'+row.quantity+'</td>'+
+                    '<td class="left-align"><span class="new badge blue white-text" data-badge-caption="">'+row.status+'</span></td>'+ 
+                    '</tr>'
+                  );
+        } else {
+          table.append('<tr>'+
+                    '<td class="left-align">'+id+'</td>'+
+                    '<td class="left-align">'+row.item_code+'</td>'+
+                    '<td class="left-align">'+row.item_desc+'</td>'+
+                    '<td class="left-align">'+row.quantity+'</td>'+
+                    '<td class="left-align"><span class="new badge black white-text" data-badge-caption="">'+row.status+'</span></td>'+ 
+                    '</tr>'
+                  );
+        }
         }
       });
 
@@ -1793,11 +1597,10 @@
       var cindex = 0;
       if(loc=='add')
       {
-        if($('#add_unit_price').val() <= 0){
-        alert('Unit Price must be greater than 0!');
-        }else if($('#add_quantity').val() <= 0){
+        if($('#add_quantity').val() <= 0){
           alert('Quantity must be greater than 0!');
         }else{
+
           $.each(add_items,(index,row) => {
             if(row.item_code == $('#add_item_code').val()){
               cindex = index;
@@ -1813,7 +1616,6 @@
               add_items[cindex].quantity = parseFloat(add_items[cindex].quantity) + parseFloat(item_qty);
               renderItems(add_items,$('#items-dt tbody'),'add');
               resetItemDetails("add");
-              alert("Item stocks on store is now on safety stock level. Please advise purchasing to create a PR on this Item: "+$('#add_item_code').val());
             } else {
               add_items[cindex].quantity = parseFloat(add_items[cindex].quantity) + parseFloat($('#add_quantity').val());
               renderItems(add_items,$('#items-dt tbody'),'add');
@@ -1826,26 +1628,27 @@
             {
               add_items.push({ "item_code": $('#add_item_code').val(),
                               "item_desc": $('#add_item_desc').val(),
+                              "location_code": $('#add_location_code').val(),
                               "quantity": parseFloat($('#add_quantity').val()),
                             });
               renderItems(add_items,$('#items-dt tbody'),'add');
               resetItemDetails("add");
-              alert("Item stocks on store is now on safety stock level. Please advise purchasing to create a PR on this Item: "+$('#add_item_code').val());
             } else {
               add_items.push({ "item_code": $('#add_item_code').val(),
                               "item_desc": $('#add_item_desc').val(),
+                              "location_code": $('#add_location_code').val(),
                               "quantity": parseFloat($('#add_quantity').val()),
                               });
               renderItems(add_items,$('#items-dt tbody'),'add');
               resetItemDetails("add");
             }
+
           }
         }
-        
+
       } else if(loc=='edit') {
-        if($('#edit_unit_price').val() <= 0){
-          alert('Unit Price must be greater than 0!');
-        }else if($('#edit_quantity').val() <= 0){
+
+        if($('#edit_quantity').val() <= 0){
           alert('Quantity must be greater than 0!');
         }else{
           $.each(edit_items,(index,row) => {
@@ -1864,7 +1667,6 @@
               $('#btnEditSave').prop('disabled', false);
               renderItems(edit_items,$('#edit-items-dt tbody'),'edit');
               resetItemDetails("edit");
-              alert("Item stocks on store is now on safety stock level. Please advise purchasing to create a PR on this Item: "+$('#edit_item_code').val());
             } else {
               edit_items[cindex].quantity = parseFloat(edit_items[cindex].quantity) + parseFloat($('#edit_quantity').val());
               $('#btnEditSave').prop('disabled', false);
@@ -1876,23 +1678,26 @@
               if(safety_stock <= itm_qtys)
             {
               edit_items.push({ "item_code": $('#edit_item_code').val(),
+                                "item_desc": $('#edit_item_desc').val(),
+                                "location_code": $('#edit_location_code').val(),
                                 "quantity": parseFloat($('#edit_quantity').val()),
                               });
               $('#btnEditSave').prop('disabled', false);
               renderItems(edit_items,$('#edit-items-dt tbody'),'edit');
               resetItemDetails("edit");
-              alert("Item stocks on store is now on safety stock level. Please advise purchasing to create a PR on this Item: "+$('#edit_item_code').val());
             } else {
               edit_items.push({ "item_code": $('#edit_item_code').val(),
-                                  "quantity": parseFloat($('#edit_quantity').val()),
+                                "item_desc": $('#edit_item_desc').val(),
+                                "location_code": $('#edit_location_code').val(),
+                                "quantity": parseFloat($('#edit_quantity').val()),
                                 });
               $('#btnEditSave').prop('disabled', false);
               renderItems(edit_items,$('#edit-items-dt tbody'),'edit');
               resetItemDetails("edit");
             }
           }
-
         }
+
       }
     };
 
@@ -1951,51 +1756,29 @@
           "pageLength": 15,
           "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
           "pagingType": "full",
-          "ajax": "/api/reiss/inventory/issuance/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
+          "ajax": "/api/reiss/inventory/return/all",
           "columns": [
               {  "data": "id" },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return '<a href="#!" onclick="viewIssuance('+data+')">'+ row.issuance_code; +'</a>';
-                  }
-              },
-            
               {  "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return row.purpose;
+                    return row.sites.site_desc;
                   }
               },
-
-              { "data": "id",
-                  "render": function (data, type, row, meta) {
-                    if(row.purpose=='Project')
-                    {
-                      return row.project_code;
-                    } else {
-                      return "";
-                    }
+              {  "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return '<a href="#!" onclick="viewReturn('+data+')">'+row.return_code+'</a>';
+                  }
+              },
+              {  "data": "id",
+                  "render": function ( data, type, row, meta ) {
+                    return row.reason;
                   }
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
                     switch (row.status) {
-                      case "Pending":
-                        return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
-                        break;
-                      case "Approved":
-                        return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
-                        break;
-                      case "Rejected":
-                        return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
-                        break;
-                      case "Issued":
-                        return  '<span class="new badge purple white-text" data-badge-caption="">Issued</span>';
-                        break;
-                      case "Issued with Pending":
-                        return  '<span class="new badge grey darken-1 white-text" data-badge-caption="">Issued with Pending</span>';
-                        break;
                       case "Returned":
-                        return  '<span class="new badge amber white-text" data-badge-caption="">Returned</span>';
+                        return  '<span class="new badge blue white-text" data-badge-caption="">Returned</span>';
                         break;
                       case "Voided":
                         return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
@@ -2005,146 +1788,17 @@
               },
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    // return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editIssuance('+data+')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red waves-effect waves-light" disabled><i class="material-icons">delete</i></a>';
-
-                    if(row.status=="Pending")
-                    {
-                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editIssuance('+data+')"><i class="material-icons">create</i></a>';
+                    if(row.status=='Returned'){
+                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="voidItem('+data+')"><i class="material-icons">grid_off</i></a>';
                     } else {
-                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a>';
+                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">grid_off</i></a>';
                     }
-            
                   }
               },   
           ]
     });
+ 
 
-    var issuance = $('#issuance-dt').DataTable({
-          "lengthChange": false,
-          "pageLength": 15,
-          "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
-          "pagingType": "full",
-          "ajax": "/api/reiss/inventory/issuance/issuance",
-          "columns": [
-              {  "data": "id" },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return '<a href="#!" onclick="viewIssuance('+data+')">'+ row.issuance_code; +'</a>';
-                  }
-              },
-              {  "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return row.employee_details.full_name;;
-                  }
-              },
-              {  "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return row.purpose;
-                  }
-              },
-              { "data": "id",
-                  "render": function (data, type, row, meta) {
-                    if(row.purpose=='Project')
-                    {
-                      return row.project_code;
-                    } else {
-                      return "";
-                    }
-                  }
-              },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    switch (row.status) {
-                      case "Pending":
-                        return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
-                        break;
-                      case "Approved":
-                        return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
-                        break;
-                      case "Issued":
-                        return  '<span class="new badge purple white-text" data-badge-caption="">Issued</span>';
-                        break;
-                      case "Issued with Pending":
-                        return  '<span class="new badge grey darken-1 white-text" data-badge-caption="">Issued with Pending</span>';
-                        break;
-                      case "Returned":
-                        return  '<span class="new badge amber white-text" data-badge-caption="">Returned</span>';
-                        break;
-                      case "Voided":
-                        return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
-                        break;
-                    }
-                  }
-              },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" class="btn-small teal darken-1 waves-effect waves-dark" onclick="issIssuance('+data+')"><i class="material-icons">shopping_cart</i></a>';
-                  }
-              },   
-          ]
-    });
-
-    var approval = $('#approval-dt').DataTable({
-          "lengthChange": false,
-          "pageLength": 15,
-          "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
-          "pagingType": "full",
-          "ajax": "/api/reiss/inventory/issuance/all_approval/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
-          "columns": [
-              {  "data": "id" },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return '<a href="#!" onclick="viewIssuance('+data+')">'+ row.issuance_code; +'</a>';
-                  }
-              },
-              {  "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return row.employee_details.full_name;;
-                  }
-              },
-              {  "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return row.purpose;
-                  }
-              },
-              { "data": "id",
-                  "render": function (data, type, row, meta) {
-                    if(row.purpose=='Project')
-                    {
-                      return row.project_code;
-                    } else {
-                      return "";
-                    }
-                  }
-              },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    switch (row.status) {
-                      case "Pending":
-                        return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
-                        break;
-                      case "Approved":
-                        return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
-                        break;
-                      case "Issued":
-                        return  '<span class="new badge purple white-text" data-badge-caption="">Issued</span>';
-                        break;
-                      case "Returned":
-                        return  '<span class="new badge amber white-text" data-badge-caption="">Returned</span>';
-                        break;
-                      case "Voided":
-                        return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
-                        break;
-                    }
-                  }
-              },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="appIssuance('+data+')"><i class="material-icons">rate_review</i></a>';
-                  }
-              },   
-          ]
-    });
   </script>
     <!-- End of SCRIPTS -->
 @endsection

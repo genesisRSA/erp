@@ -16,4 +16,9 @@ class ItemMaster extends Model
     {
         return $this->hasOne('App\ItemSubCategory','subcat_code','subcat_code');
     }
+
+    public function uom_details()
+    {
+        return $this->hasOne('App\UnitOfMeasure', 'uom_code', 'uom_code');
+    }
 }

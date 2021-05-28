@@ -65,22 +65,34 @@ class InventoryLocationController extends Controller
 
     public function barcodes($id)
     {   
+        // $style = array(
+        //             'position' => '',
+        //             'align' => 'C',
+        //             'stretch' => false,
+        //             'fitwidth' => true,
+        //             'cellfitalign' => '',
+        //             'border' => false,
+        //             'hpadding' => 'auto',
+        //             'vpadding' => 'auto',
+        //             'fgcolor' => array(0,0,0),
+        //             'bgcolor' => false,
+        //             'text' => true,
+        //             'font' => 'helvetica',
+        //             'fontsize' => 6,
+        //             'stretchtext' => 4
+        //         );
+
         $style = array(
-                    'position' => '',
-                    'align' => 'C',
-                    'stretch' => false,
-                    'fitwidth' => false,
-                    'cellfitalign' => '',
-                    'border' => true,
-                    'hpadding' => 'auto',
-                    'vpadding' => 'auto',
-                    'fgcolor' => array(0,0,0),
-                    'bgcolor' => false,
-                    'text' => true,
-                    'font' => 'helvetica',
-                    'fontsize' => 8,
-                    'stretchtext' => 4
-                );
+            'border' => 2,
+            'vpadding' => 'auto',
+            'hpadding' => 'auto',
+            'fgcolor' => array(0,0,0),
+            'bgcolor' => false, //array(255,255,255)
+            'module_width' => 1, // width of a single module in points
+            'module_height' => 1 // height of a single module in points
+        );
+        
+                
         // return $id;
         $code = InventoryLocation::find($id);
                 // return $code->location_code;
@@ -98,8 +110,8 @@ class InventoryLocationController extends Controller
             PDF::setPrintFooter(false);
          
             PDF::SetFont('helvetica', '', 10);
-            PDF::write1DBarcode($code->location_code, 'C128A', '', '', '', 18, 0.4, $style, 'N');
-            
+            // PDF::write1DBarcode($code->location_code, 'C128A', '', '', '', 14, 0.4, $style, 'N');
+            PDF::write2DBarcode($code->location_code, 'QRCODE,H', 20, 30, 50, 50, $style, 'N');
             PDF::SetMargins(false, false);
         };
 
@@ -148,6 +160,14 @@ class InventoryLocationController extends Controller
             ->json([
                 "data" => $data
             ]);
+    }
+
+    public function getlocation($loc_code)
+    {
+        return response()->json([
+            "data" => InventoryLocation::
+            where('location_code',$loc_code)->first()
+        ]);
     }
  
     public function edit($id)
