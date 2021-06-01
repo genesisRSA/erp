@@ -136,17 +136,26 @@ class InventoryLocationController extends Controller
                         ->withErrors($validator);
         }else{
             if($request->input('location_name'))
-            {
-                $invloc = new InventoryLocation();
-                $invloc->location_code =            Str::upper($request->input('location_code',''));
-                $invloc->category =                 Str::upper($request->input('category',''));
-                $invloc->location_name =            $request->input('location_name','');
-                $invloc->required_item_category =   $request->input('required_item_category','');
-                $invloc->created_by =               Auth::user()->emp_no;
+            {   
+                $locexist = InventoryLocation::where('location_name',$request->input('location_name'))
+                            ->where('required_item_category',$request->input('required_item_category'))
+                            ->first();
+                if($locexist)
+                {
+                    return redirect()->route('location.index')->withErrors('Inventory location name already exist!');
+                } else {
+                    $invloc = new InventoryLocation();
+                    $invloc->location_code =            Str::upper($request->input('location_code',''));
+                    $invloc->category =                 Str::upper($request->input('category',''));
+                    $invloc->location_name =            $request->input('location_name','');
+                    $invloc->required_item_category =   $request->input('required_item_category','');
+                    $invloc->created_by =               Auth::user()->emp_no;
 
-                if($invloc->save()){
-                    return redirect()->route('location.index')->withSuccess('Inventory Location Successfully Added');
+                    if($invloc->save()){
+                        return redirect()->route('location.index')->withSuccess('Inventory Location Successfully Added');
+                    }
                 }
+       
             } else {
                 return redirect()->route('location.index')->withErrors('Please fill up all the Inventory Location details!');
             }
@@ -198,15 +207,23 @@ class InventoryLocationController extends Controller
         }else{
             if($request->input('location_name'))
             {
-                $invloc = InventoryLocation::find($request->input('id'));
-                $invloc->location_code =            Str::upper($request->input('location_code'));
-                $invloc->category =                 Str::upper($request->input('category'));
-                $invloc->location_name =            $request->input('location_name');
-                $invloc->required_item_category =   $request->input('required_item_category');
-                $invloc->updated_by =               Auth::user()->emp_no;
+                $locexist = InventoryLocation::where('location_name',$request->input('location_name'))
+                            ->where('required_item_category',$request->input('required_item_category'))
+                            ->first();
+                if($locexist)
+                {
+                    return redirect()->route('location.index')->withErrors('Inventory location name already exist!');
+                } else {
+                    $invloc = InventoryLocation::find($request->input('id'));
+                    $invloc->location_code =            Str::upper($request->input('location_code'));
+                    $invloc->category =                 Str::upper($request->input('category'));
+                    $invloc->location_name =            $request->input('location_name');
+                    $invloc->required_item_category =   $request->input('required_item_category');
+                    $invloc->updated_by =               Auth::user()->emp_no;
 
-                if($invloc->save()){
-                    return redirect()->route('location.index')->withSuccess('Inventory Location Successfully Updated');
+                    if($invloc->save()){
+                        return redirect()->route('location.index')->withSuccess('Inventory Location Successfully Updated');
+                    }
                 }
             } else { 
                 return redirect()->route('location.index')->withErrors('Please fill up all the Inventory Location details!');

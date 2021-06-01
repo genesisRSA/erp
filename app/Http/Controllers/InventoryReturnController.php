@@ -59,7 +59,8 @@ class InventoryReturnController extends Controller
         return view('res.inventory_return.index')
                 ->with('site','res')
                 ->with('page','inventory')
-                ->with('subpage','return')
+                ->with('subpage','store')
+  
                 ->with('employee',$employees)
                 ->with('projects', $project)
                 ->with('sites', $sites)
@@ -111,7 +112,7 @@ class InventoryReturnController extends Controller
 
             // return $request->input('status');
 
-            if($request->input('return_code') && $request->input('reason') && $request->input('status'))
+            if($request->input('return_code') && $request->input('reason') && $request->input('site_code'))
             {
                         $invrtn = new InventoryReturn();
                         $invrtn->return_code =           Str::upper($request->input('return_code',''));
@@ -143,6 +144,9 @@ class InventoryReturnController extends Controller
                         $upInv = Inventory::where('item_code',$request->input('itm_item_code.'.$i))
                                         ->where('inventory_location_code',$request->input('itm_inventory_location.'.$i))
                                         ->first();
+                        // return $request->input('itm_inventory_location.'.$i);
+
+
                         $upInv->quantity = $upInv->quantity + $request->input('itm_quantity.'.$i);
                         $upInv->save();
                     }

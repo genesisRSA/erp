@@ -46,6 +46,7 @@
               <option value="Procedures">Procedures</option>
               <option value="Drawings">Drawings</option>
               <option value="Issuance">Inventory Issuance</option>
+              <option value="RTV">Inventory RTV</option>
             </select>
             <label for="app_module">Module<sup class="red-text">*</sup></label>
           </div>
@@ -95,7 +96,7 @@
           <div class="col s12 m12 l12">
             <button type="button" name="btnAdd" id="btnAdd" class="blue waves-effect waves-light btn"><i class="material-icons left">add_box</i>Add Approver</button>
             <button type="button" name="btnDel" id="btnDel" class="red waves-effect waves-light btn"><i class="material-icons left">delete_sweep</i>Clear All</button>
-          </div>
+          </div> 
         </div>
 
         <div class="row">
@@ -137,10 +138,13 @@
             <select id="edit_app_module" name="edit_app_module" required>
               <option value="0" disabled selected>Choose your option</option>
               <option value="Sales Forecast">Sales Forecast</option>
+              <option value="Sales Order">Sales Order</option>
               <option value="Sales Quotation">Sales Quotation</option>
               <option value="Sales Visit">Sales Visit</option>
               <option value="Procedures">Procedures</option>
               <option value="Drawings">Drawings</option>
+              <option value="Issuance">Inventory Issuance</option>
+              <option value="RTV">Inventory RTV</option>
             </select>
             <label for="edit_app_module">Module<sup class="red-text">*</sup></label>
           </div>

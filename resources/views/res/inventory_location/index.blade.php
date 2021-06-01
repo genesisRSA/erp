@@ -207,7 +207,7 @@
 
   <div id="printModal" class="modal">
     <div class="modal-content" style="padding-bottom: 0px;">
-      <h4>Inventory Location Barcode</h4>
+      <h4>Inventory Location QR Code</h4>
       <input type="hidden" id="id">
       <div>
         <object id="objectPDF" type="application/pdf" width="100%" height="280px"> 
@@ -313,8 +313,7 @@
   const printModal = (id) => {
     console.log(id);
     $('#id').val(id);
-    // $('#objectPDF').prop("data", "location/barcodes/"+id+"#toolbar=1&navpanes=0&scrollbar=1&page=1&zoom=100");
-    $( "object" ).replaceWith('<object data="location/barcodes/'+id+'#toolbar=1&navpanes=0&scrollbar=1&page=1&zoom=100" type="application/pdf" width="100%" height="280px"></object>');
+    $( "object" ).replaceWith('<object data="location/barcodes/'+id+'#toolbar=1&navpanes=1&scrollbar=1&page=1&zoom=100" type="application/pdf" width="100%" height="280px"></object>');
     $('#printModal').modal('open');
   };
 

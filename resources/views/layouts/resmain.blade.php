@@ -30,6 +30,14 @@
             color: #ffffff;
         }
 
+        .sidenav li.active > div > ul > li > ul > li.active{
+            background-color: #0d47a1;
+        }
+
+        .sidenav li.active > div > ul > li > ul > li.active > a{
+            color: #ffffff;
+        }
+
         .sidenav li.active ul > li > a{
             color:rgba(0,0,0,0.87);
         }

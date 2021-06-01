@@ -58,7 +58,7 @@ class InventoryReceivingController extends Controller
     public function all($id)
     {
         return response()->json([
-            "data" => InventoryReceiving::get()
+            "data" => InventoryReceiving::with('sites:site_code,site_desc')->get()
         ]);
     }
 
@@ -99,6 +99,7 @@ class InventoryReceivingController extends Controller
                 $invrcv->delivery_no =               $request->input('delivery_no','');
                 $invrcv->delivery_date =             $request->input('delivery_date','');
                 $invrcv->po_no =                     $request->input('po_no','');
+                $invrcv->remarks =                   $request->input('remarks','');
                 $invrcv->status =                    'Received';
                 $invrcv->created_by =                Auth::user()->emp_no;
 
@@ -215,6 +216,7 @@ class InventoryReceivingController extends Controller
                 $invrcv->delivery_no =               $request->input('delivery_no','');
                 $invrcv->delivery_date =             $request->input('delivery_date','');
                 $invrcv->po_no =                     $request->input('po_no','');
+                $invrcv->remarks =                   $request->input('remarks','');
                 $invrcv->updated_by =                Auth::user()->emp_no;
 
                 if($request->input('e_itm_item_code'))

@@ -9,8 +9,8 @@
   <div class="row main-content">
     <ul id="project_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
       <li class="tab col s12 m4 l4"><a class="active" href="#Request">Request</a></li>
-      <li class="tab col s12 m4 l4"><a class="active" href="#Issuance">Issuance</a></li>
       <li class="tab col s12 m4 l4"><a class="active" href="#Approval">Approval</a></li>
+      <li class="tab col s12 m4 l4"><a class="active" href="#Issuance">Issuance</a></li>
     </ul>
 
     <div id="Request" name="ongoing">
@@ -640,7 +640,7 @@
     <form method="POST" action="{{route('issuance.issue_item')}}">
       @csrf
       <div class="modal-content" style="padding-bottom: 0px;">
-        <h4  class="center-align">Inventory Issuance</h4> 
+        <h4  >Inventory Issuance</h4> 
         <ul id="tabs-swipe-demo" class="tabs issue">
           <li class="tab col s12 m4 l4"><a class="active" href="#issue_issuance">Issuance Details</a></li>
           <li class="tab col s12 m4 l4"><a href="#issue_signatories">Signatories</a></li>
@@ -757,7 +757,7 @@
 
   <div id="issDetModal" class="modal">
     <div class="modal-content" style="padding-bottom: 0px;">
-      <h4 class="center-align">Item Details To Collect</h4><br>
+      <h4 >Item Details To Collect</h4><br>
         <input type="hidden" name="id" id="item_id">
 
         <div class="row" style="margin-bottom: 0px;">
@@ -846,7 +846,7 @@
 
   <div id="removeItemModal" class="modal">
     <div class="modal-content">
-      <h4  class="center-align">Remove Item</h4>
+      <h4  >Remove Item</h4>
       <div class="row">
           <div class="col s12 m12 l12">
               <input type="hidden" name="id" id="del_index">
@@ -1050,11 +1050,12 @@
           }
         });
 
-        $('#item_location_code').on('change', function(){
-          $.get('../inventory/location/getlocation/'+$('#item_location_code').val(), (response) => {
-            var data = response.data;
-            console.log(data);
-            if(data!=null)
+        $('#item_location_code').on('keyup', function(e){
+          if(e.which == 13){       
+            $.get('../inventory/location/getlocation/'+$('#item_location_code').val(), (response) => {
+              var data = response.data;
+        
+              if(data!=null)
               { 
                 $.get('receiving/'+$('#item_item_code').val()+'/'+$(this).val()+'/getCurrentStock', (response) => {
                   var current_stock = parseInt(response.data);
@@ -1071,34 +1072,12 @@
                 alert("Inventory location doesn't exist! Please re-scan inventory location.")
                 $('#btnCollect').prop('disabled', true);
               };
-          }); 
-        });
-
-        $('#item_location_code').on('keyup', function(){
-          $.get('../inventory/location/getlocation/'+$('#item_location_code').val(), (response) => {
-            var data = response.data;
-            console.log(data);
-            if(data!=null)
-              { 
-                $.get('receiving/'+$('#item_item_code').val()+'/'+$(this).val()+'/getCurrentStock', (response) => {
-                  var current_stock = parseInt(response.data);
-                  var request_qty = parseInt($('#item_quantity').val());
-                  if(current_stock < request_qty)
-                  {
-                    alert("Current stock of the item: "+$('#item_item_code').val()+" is not sufficient for the request!");
-                    $(this).val("");
-                  } else {
-                    $('#btnCollect').prop('disabled', false);
-                  }
-                });
-              }else{
-                alert("Inventory location doesn't exist! Please re-scan inventory location.")
-                $('#btnCollect').prop('disabled', true);
-              };
-          }); 
+            }); 
+          }
         });
 
     });
+    
     const FormatNumber = (number) => {
           var n = number.toString().split(".");
           n[0] = n[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");

@@ -192,7 +192,7 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::get('/reiss/inventory/issuance/{trans_code}/{item_code}/item_details', 'InventoryIssuanceController@item_details')->name('issuance.item_details');
     Route::resource('/reiss/inventory/issuance','InventoryIssuanceController');
     
-    Route::get('/reiss/inventory/list/{item_code}/item_details', 'InventoryController@item_details')->name('list.item_details');
+    Route::get('/reiss/inventory/list/{item_code}/{loc_code}/item_details', 'InventoryController@item_details')->name('list.item_details');
     Route::get('/reiss/inventory/list/{trans_code}/items', 'InventoryController@items')->name('list.items');
     Route::get('/reiss/inventory/list/{trans_code}/voided', 'InventoryController@voided')->name('list.voided');
     Route::resource('/reiss/inventory/list','InventoryController');
@@ -200,6 +200,11 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::post('/reiss/inventory/return/void', 'InventoryReturnController@void')->name('return.void');
     Route::resource('/reiss/inventory/return','InventoryReturnController');
 
+    Route::get('/reiss/inventory/rtv/{trans_code}/{item_code}/item_details', 'InventoryRTVController@item_details')->name('rtv.item_details');
+    Route::post('/reiss/inventory/rtv/rtv_item','InventoryRTVController@rtv_item')->name('rtv.rtv_item');
+    Route::post('/reiss/inventory/rtv/patch','InventoryRTVController@patch')->name('rtv.patch');
+    Route::post('/reiss/inventory/rtv/approve', 'InventoryRTVController@approve')->name('rtv.approve');
+    Route::resource('/reiss/inventory/rtv','InventoryRTVController');
 
     Route::get('/reiss/dashboard/{parent}', 'ReissDashboardController@index');
 

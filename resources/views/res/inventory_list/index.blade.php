@@ -49,7 +49,7 @@
 
   <div id="viewModal" class="modal">
     <div class="modal-content" style="padding-bottom: 0px;">
-      <h4 class="center-align">Item Details</h4><br>
+      <h4>Item Details</h4><br>
  
         <div class="row"  style="margin-bottom: 0px;">
           <div class="input-field col s12 m6 l6">
@@ -136,10 +136,11 @@
 
   });
 
-  const viewReceiving = (id) => {
-      console.log(id);
+  const viewReceiving = (id, loc) => {
+      console.log(id); 
+      console.log(loc); 
       $('#viewModal').modal('open');
-    $.get('list/'+id+'/item_details', (response) => {
+    $.get('list/'+id+'/'+loc+'/item_details', (response) => {
       var data = response.data[0];
       console.log(data);
       $('#view_item_code').val(data.item_code);
@@ -182,7 +183,7 @@
             {  "data": "id" },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return '<a href="#!" onclick="viewReceiving(\''+row.item_code+'\')">'+row.item_code+'</a>';
+                  return '<a href="#!" onclick="viewReceiving(\''+row.item_code+'\',\''+row.inventory_location_code+'\')">'+row.item_code+'</a>';
                 }
             },
             {   "data": "id",

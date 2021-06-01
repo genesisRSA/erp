@@ -68,13 +68,14 @@ class InventoryController extends Controller
         ]);
     }
 
-    public function item_details($item_code)
+    public function item_details($item_code, $loc_code)
     {
         return response()->json([
             "data" => Inventory::where('item_code',$item_code)
+                                ->where('inventory_location_code',$loc_code)
                                 ->with('item_details:item_code,item_desc,uom_code,safety_stock,maximum_stock')
                                 ->with('loctype:location_code,location_name')
-                                ->get()
+                                ->first()
         ]);
     }
 

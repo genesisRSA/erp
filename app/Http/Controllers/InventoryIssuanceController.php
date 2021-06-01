@@ -420,7 +420,7 @@ class InventoryIssuanceController extends Controller
                 }
 
                 if($inviss->save()){
-                    return redirect()->route('issuance.index')->withSuccess('Issuance Request Successfully Added');
+                    return redirect()->route('issuance.index')->withSuccess('Issuance Request Successfully Updated');
                 }
 
             } else {
