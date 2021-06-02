@@ -16,4 +16,9 @@ class InventoryRTV extends Model
     {
         return $this->hasOne('App\Employee', 'emp_no', 'requestor');
     }
+
+    public function vendors()
+    {
+        return $this->hasOne('App\Vendor', 'ven_code', 'ven_code');
+    }
 }

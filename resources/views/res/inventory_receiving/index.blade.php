@@ -567,18 +567,26 @@
               $('#add_unit_price').val() &&
               $('#add_total_price').val()
           ){
-            $.get('../item_master/getItemDetails/'+$('#add_item_code').val(), (response) => {
-              var item = response.data;
-              if(item){
-                $.get('receiving/'+item.item_code+'/'+$('#add_inventory_location').val()+'/getCurrentStock', (response) => {
-                  var current_stock = parseInt(response.data) + parseInt($('#add_quantity').val());
-                  var maximum_stock = parseInt(item.maximum_stock);
-                  addItem('add',current_stock, maximum_stock);
-                });
-              } else {
-                alert('Item code does not exist! Please the check item code before adding item details..');
-              }
-            });
+
+            if($('#add_quantity').val() % 1 != 0)
+            {
+              console.log('not allowed');
+              alert("Decimal point is not allowed! Please input whole number on quantity.");
+            } else {
+               $.get('../item_master/getItemDetails/'+$('#add_item_code').val(), (response) => {
+                var item = response.data;
+                if(item){
+                  $.get('receiving/'+item.item_code+'/'+$('#add_inventory_location').val()+'/getCurrentStock', (response) => {
+                    var current_stock = parseInt(response.data) + parseInt($('#add_quantity').val());
+                    var maximum_stock = parseInt(item.maximum_stock);
+                    addItem('add',current_stock, maximum_stock);
+                  });
+                } else {
+                  alert('Item code does not exist! Please the check item code before adding item details..');
+                }
+              });
+            }
+           
           }else{
             alert("Please fill up product details!");
           }
@@ -640,18 +648,24 @@
               $('#edit_unit_price').val() &&
               $('#edit_total_price').val()
           ){
-            $.get('../item_master/getItemDetails/'+$('#edit_item_code').val(), (response) => {
-              var item = response.data;
+            if($('#edit_quantity').val() % 1 != 0)
+            {
+              console.log('not allowed');
+              alert("Decimal point is not allowed! Please input whole number on quantity.");
+            } else {
+              $.get('../item_master/getItemDetails/'+$('#edit_item_code').val(), (response) => {
+                var item = response.data;
               if(item){
-                $.get('receiving/'+item.item_code+'/'+$('#add_inventory_location').val()+'/getCurrentStock', (response) => {
-                  var current_stock = parseInt(response.data) + parseInt($('#edit_quantity').val());
-                  var maximum_stock = parseInt(item.maximum_stock);
-                  addItem('edit',current_stock, maximum_stock);
-                });
-              } else {
-                alert('Item code does not exist! Please the check item code before adding item details..');
-              }
-            });
+                  $.get('receiving/'+item.item_code+'/'+$('#add_inventory_location').val()+'/getCurrentStock', (response) => {
+                    var current_stock = parseInt(response.data) + parseInt($('#edit_quantity').val());
+                    var maximum_stock = parseInt(item.maximum_stock);
+                    addItem('edit',current_stock, maximum_stock);
+                  });
+                } else {
+                  alert('Item code does not exist! Please the check item code before adding item details..');
+                }
+              });
+            }
           }else{
             alert("Please fill up product details!");
           }

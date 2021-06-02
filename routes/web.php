@@ -202,6 +202,7 @@ Route::group(['middleware' => ['auth.dcs']], function() {
 
     Route::get('/reiss/inventory/rtv/{trans_code}/{item_code}/item_details', 'InventoryRTVController@item_details')->name('rtv.item_details');
     Route::post('/reiss/inventory/rtv/rtv_item','InventoryRTVController@rtv_item')->name('rtv.rtv_item');
+    Route::post('/reiss/inventory/rtv/rcv_item','InventoryRTVController@rcv_item')->name('rtv.rcv_item');
     Route::post('/reiss/inventory/rtv/patch','InventoryRTVController@patch')->name('rtv.patch');
     Route::post('/reiss/inventory/rtv/approve', 'InventoryRTVController@approve')->name('rtv.approve');
     Route::resource('/reiss/inventory/rtv','InventoryRTVController');

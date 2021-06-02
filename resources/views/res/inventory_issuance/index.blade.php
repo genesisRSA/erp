@@ -169,7 +169,7 @@
             </div>
 
             <div class="input-field col s12 m6 l6">
-              <input id="add_quantity" name="quantity" type="number" class="validate" placeholder="" disabled>
+              <input id="add_quantity" name="quantity" type="number" step="0.0001" class="number validate" placeholder="" disabled>
               <label for="quantity">Quantity<sup class="red-text">*</sup></label>
             </div>
           </div>
@@ -788,6 +788,7 @@
 
         <div class="row" style="margin-bottom: 0px;">
             <div class="input-field col s12 m6 l6">
+              {{-- <input id="item_quantity" name="quantity" type="text" class="validate" placeholder=""> --}}
               <input id="item_quantity" name="quantity" type="text" class="validate" placeholder="" readonly>
               <label class="active">Quantity</label>
             </div>
@@ -797,9 +798,6 @@
               <label class="active">Unit of Measure</label>
             </div>
         </div>
-
-  
-
     </div>
 
     <div class="modal-footer" style="padding-right: 32px; padding-bottom: 4px; margin-bottom: 30px;">
@@ -842,7 +840,6 @@
         <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>No</a>
     </div>
   </div> 
-
 
   <div id="removeItemModal" class="modal">
     <div class="modal-content">
@@ -942,32 +939,38 @@
         });
         
         $('#add_unit_price').on('keyup', function(){
-          computeTotalPrice(($('#add_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#add_currency_code option:selected').text().split(" - ")[0]),parseFloat($('#add_unit_price').val()),parseFloat($('#add_quantity').val()),$('#add_total_price'));
+          computeTotalPrice(($('#add_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#add_currency_code option:selected').text().split(" - ")[0]),parseInt($('#add_unit_price').val()),parseInt($('#add_quantity').val()),$('#add_total_price'));
         });
 
         $('#add_quantity').on('keyup', function(){
-          computeTotalPrice(($('#add_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#add_currency_code option:selected').text().split(" - ")[0]),parseFloat($('#add_unit_price').val()),parseFloat($('#add_quantity').val()),$('#add_total_price'));
+          computeTotalPrice(($('#add_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#add_currency_code option:selected').text().split(" - ")[0]),parseInt($('#add_unit_price').val()),parseInt($('#add_quantity').val()),$('#add_total_price'));
         });
 
         $('#add_currency_code').on('change', function(){
-          computeTotalPrice(($('#add_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#add_currency_code option:selected').text().split(" - ")[0]),parseFloat($('#add_unit_price').val()),parseFloat($('#add_quantity').val()),$('#add_total_price'));
+          computeTotalPrice(($('#add_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#add_currency_code option:selected').text().split(" - ")[0]),parseInt($('#add_unit_price').val()),parseInt($('#add_quantity').val()),$('#add_total_price'));
         });
 
         $('#btnAdd').on('click', function(){
           if($('#add_item_code').val() && $('#add_quantity').val())
           {
-            $.get('../item_master/getItemDetails/'+$('#add_item_code').val(), (response) => {
-              var item = response.data;
-              console.log(item);
-              if(item!=null){
-                var item_qty = parseInt($('#add_quantity').val());
-                var safety_stock = parseInt(item.safety_stock);
-                $('#add_item_desc').val(item.item_desc);
-                addItem('add',item_qty, safety_stock);
-              } else {
-                alert('Item code does not exist! Please the check the item code before adding item..');
-              }
-            });
+
+            if($('#add_quantity').val() % 1 != 0)
+            {
+              alert("Decimal point is not allowed! Please input whole number on quantity.");
+            } else {
+              $.get('../item_master/getItemDetails/'+$('#add_item_code').val(), (response) => {
+                var item = response.data;
+                if(item!=null){
+                  var item_qty = parseInt($('#add_quantity').val());
+                  var safety_stock = parseInt(item.safety_stock);
+                  $('#add_item_desc').val(item.item_desc);
+                  addItem('add',item_qty, safety_stock);
+                } else {
+                  alert('Item code does not exist! Please the check the item code before adding item..');
+                }
+              });
+            }
+            
           }else{
             alert("Please fill up product details!");
           }
@@ -1018,15 +1021,15 @@
         });
 
         $('#edit_unit_price').on('keyup', function(){
-          computeTotalPrice(($('#edit_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#edit_currency_code option:selected').text().split(" - ")[0]),parseFloat($('#edit_unit_price').val()),parseFloat($('#edit_quantity').val()),$('#edit_total_price'));
+          computeTotalPrice(($('#edit_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#edit_currency_code option:selected').text().split(" - ")[0]),parseInt($('#edit_unit_price').val()),parseInt($('#edit_quantity').val()),$('#edit_total_price'));
         });
 
         $('#edit_quantity').on('keyup', function(){
-          computeTotalPrice(($('#edit_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#edit_currency_code option:selected').text().split(" - ")[0]),parseFloat($('#edit_unit_price').val()),parseFloat($('#edit_quantity').val()),$('#edit_total_price'));
+          computeTotalPrice(($('#edit_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#edit_currency_code option:selected').text().split(" - ")[0]),parseInt($('#edit_unit_price').val()),parseInt($('#edit_quantity').val()),$('#edit_total_price'));
         });
 
         $('#edit_currency_code').on('change', function(){
-          computeTotalPrice(($('#edit_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#edit_currency_code option:selected').text().split(" - ")[0]),parseFloat($('#edit_unit_price').val()),parseFloat($('#edit_quantity').val()),$('#edit_total_price'));
+          computeTotalPrice(($('#edit_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#edit_currency_code option:selected').text().split(" - ")[0]),parseInt($('#edit_unit_price').val()),parseInt($('#edit_quantity').val()),$('#edit_total_price'));
         });
 
         $('#edit_btnAdd').on('click', function(){
@@ -1091,13 +1094,13 @@
     
     const computeTotalPrice = (symbol = '$', unit_price = 0, quantity = 0, input_total) => {
       const total = unit_price * quantity;
-      input_total.val(symbol+" "+FormatNumber(total ? parseFloat(total) : 0));
+      input_total.val(symbol+" "+FormatNumber(total ? parseInt(total) : 0));
     };
 
     const calculateGrandTotal = (symbol, products, field_grand_total) => {
         var grand_total = 0.0;
         $.each(products,(index,row) => {
-            grand_total = parseFloat(grand_total) + parseFloat(row.total_price);
+            grand_total = parseInt(grand_total) + parseInt(row.total_price);
         });
 
         field_grand_total.val(symbol+" "+FormatNumber(grand_total));
@@ -1616,6 +1619,7 @@
           index = index - 1;
 
       iss_items[index].inventory_location = $('#item_location_code').val();
+      // iss_items[index].quantity = $('#item_quantity').val();
       iss_items[index].is_check = true;
       renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
       $('#issDetModal').modal('close');
@@ -1772,7 +1776,7 @@
       var cindex = 0;
       if(loc=='add')
       {
-        if($('#add_unit_price').val() <= 0){
+        if(parseInt($('#add_unit_price').val()) <= 0){
         alert('Unit Price must be greater than 0!');
         }else if($('#add_quantity').val() <= 0){
           alert('Quantity must be greater than 0!');
@@ -1789,12 +1793,12 @@
               var itm_qtys = parseInt(item_qty) + parseInt(add_items[cindex].quantity);
             if(safety_stock <= itm_qtys)
             {
-              add_items[cindex].quantity = parseFloat(add_items[cindex].quantity) + parseFloat(item_qty);
+              add_items[cindex].quantity = parseInt(add_items[cindex].quantity) + parseInt(item_qty);
               renderItems(add_items,$('#items-dt tbody'),'add');
               resetItemDetails("add");
-              alert("Item stocks on store is now on safety stock level. Please advise purchasing to create a PR on this Item: "+$('#add_item_code').val());
+              // alert("Item stocks on store is now on safety stock level. Please advise purchasing to create a PR on this Item.");
             } else {
-              add_items[cindex].quantity = parseFloat(add_items[cindex].quantity) + parseFloat($('#add_quantity').val());
+              add_items[cindex].quantity = parseInt(add_items[cindex].quantity) + parseInt($('#add_quantity').val());
               renderItems(add_items,$('#items-dt tbody'),'add');
               resetItemDetails("add");
             }
@@ -1805,15 +1809,15 @@
             {
               add_items.push({ "item_code": $('#add_item_code').val(),
                               "item_desc": $('#add_item_desc').val(),
-                              "quantity": parseFloat($('#add_quantity').val()),
+                              "quantity": parseInt($('#add_quantity').val()),
                             });
               renderItems(add_items,$('#items-dt tbody'),'add');
               resetItemDetails("add");
-              alert("Item stocks on store is now on safety stock level. Please advise purchasing to create a PR on this Item: "+$('#add_item_code').val());
+              // alert("Item stocks on store is now on safety stock level. Please advise purchasing to create a PR on this Item.");
             } else {
               add_items.push({ "item_code": $('#add_item_code').val(),
                               "item_desc": $('#add_item_desc').val(),
-                              "quantity": parseFloat($('#add_quantity').val()),
+                              "quantity": parseInt($('#add_quantity').val()),
                               });
               renderItems(add_items,$('#items-dt tbody'),'add');
               resetItemDetails("add");
@@ -1839,13 +1843,13 @@
               var itm_qtys = parseInt(item_qty) + parseInt(edit_items[cindex].quantity);
             if(safety_stock <= itm_qtys)
             {
-              edit_items[cindex].quantity = parseFloat(edit_items[cindex].quantity) + parseFloat($('#edit_quantity').val());
+              edit_items[cindex].quantity = parseInt(edit_items[cindex].quantity) + parseInt($('#edit_quantity').val());
               $('#btnEditSave').prop('disabled', false);
               renderItems(edit_items,$('#edit-items-dt tbody'),'edit');
               resetItemDetails("edit");
-              alert("Item stocks on store is now on safety stock level. Please advise purchasing to create a PR on this Item: "+$('#edit_item_code').val());
+              // alert("Item stocks on store is now on safety stock level. Please advise purchasing to create a PR on this Item.");
             } else {
-              edit_items[cindex].quantity = parseFloat(edit_items[cindex].quantity) + parseFloat($('#edit_quantity').val());
+              edit_items[cindex].quantity = parseInt(edit_items[cindex].quantity) + parseInt($('#edit_quantity').val());
               $('#btnEditSave').prop('disabled', false);
               renderItems(edit_items,$('#edit-items-dt tbody'),'edit');
               resetItemDetails("edit");
@@ -1855,15 +1859,15 @@
               if(safety_stock <= itm_qtys)
             {
               edit_items.push({ "item_code": $('#edit_item_code').val(),
-                                "quantity": parseFloat($('#edit_quantity').val()),
+                                "quantity": parseInt($('#edit_quantity').val()),
                               });
               $('#btnEditSave').prop('disabled', false);
               renderItems(edit_items,$('#edit-items-dt tbody'),'edit');
               resetItemDetails("edit");
-              alert("Item stocks on store is now on safety stock level. Please advise purchasing to create a PR on this Item: "+$('#edit_item_code').val());
+              // alert("Item stocks on store is now on safety stock level. Please advise purchasing to create a PR on this Item.");
             } else {
               edit_items.push({ "item_code": $('#edit_item_code').val(),
-                                  "quantity": parseFloat($('#edit_quantity').val()),
+                                  "quantity": parseInt($('#edit_quantity').val()),
                                 });
               $('#btnEditSave').prop('disabled', false);
               renderItems(edit_items,$('#edit-items-dt tbody'),'edit');
@@ -1967,6 +1971,14 @@
                       case "Rejected":
                         return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
                         break;
+
+                      case 'For Approval':
+                        return  '<span class="new badge yellow black-text" data-badge-caption="">For Approval</span>';
+                        break;
+                      case 'For Review':
+                        return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
+                        break;
+
                       case "Issued":
                         return  '<span class="new badge purple white-text" data-badge-caption="">Issued</span>';
                         break;
@@ -2104,6 +2116,12 @@
                         break;
                       case "Approved":
                         return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
+                        break;
+                      case 'For Approval':
+                        return  '<span class="new badge yellow black-text" data-badge-caption="">For Approval</span>';
+                        break;
+                      case 'For Review':
+                        return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
                         break;
                       case "Issued":
                         return  '<span class="new badge purple white-text" data-badge-caption="">Issued</span>';

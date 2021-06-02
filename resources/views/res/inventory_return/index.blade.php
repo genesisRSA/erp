@@ -862,15 +862,15 @@
         });
         
         $('#add_unit_price').on('keyup', function(){
-          computeTotalPrice(($('#add_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#add_currency_code option:selected').text().split(" - ")[0]),parseFloat($('#add_unit_price').val()),parseFloat($('#add_quantity').val()),$('#add_total_price'));
+          computeTotalPrice(($('#add_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#add_currency_code option:selected').text().split(" - ")[0]),parseInt($('#add_unit_price').val()),parseInt($('#add_quantity').val()),$('#add_total_price'));
         });
 
         $('#add_quantity').on('keyup', function(){
-          computeTotalPrice(($('#add_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#add_currency_code option:selected').text().split(" - ")[0]),parseFloat($('#add_unit_price').val()),parseFloat($('#add_quantity').val()),$('#add_total_price'));
+          computeTotalPrice(($('#add_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#add_currency_code option:selected').text().split(" - ")[0]),parseInt($('#add_unit_price').val()),parseInt($('#add_quantity').val()),$('#add_total_price'));
         });
 
         $('#add_currency_code').on('change', function(){
-          computeTotalPrice(($('#add_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#add_currency_code option:selected').text().split(" - ")[0]),parseFloat($('#add_unit_price').val()),parseFloat($('#add_quantity').val()),$('#add_total_price'));
+          computeTotalPrice(($('#add_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#add_currency_code option:selected').text().split(" - ")[0]),parseInt($('#add_unit_price').val()),parseInt($('#add_quantity').val()),$('#add_total_price'));
         });
 
         $('#add_item_code').on('blur', function(){
@@ -885,17 +885,24 @@
         $('#btnAdd').on('click', function(){
           if($('#add_item_code').val() && $('#add_quantity').val())
           {
-            $.get('../item_master/getItemDetails/'+$('#add_item_code').val(), (response) => {
-              var item = response.data;
-              if(item!=null){
-                var item_qty = parseInt($('#add_quantity').val());
-                var maximum_stock = parseInt(item.maximum_stock);
-                $('#add_item_desc').val(item.item_desc);
-                addItem('add',item_qty, maximum_stock); 
-              } else {
-                alert('Item code does not exist! Please the check the item code before adding item..');
-              }
-            });
+            if($('#add_quantity').val() % 1 != 0)
+            {
+              alert("Decimal point is not allowed! Please input whole number on quantity.");
+            } else {
+              $.get('../item_master/getItemDetails/'+$('#add_item_code').val(), (response) => {
+                var item = response.data;
+                if(item!=null){
+                  $.get('receiving/'+$('#add_item_code').val()+'/'+$('#add_location_code').val()+'/getCurrentStock', (response) => {
+                    var current_stock = parseInt(response.data) + parseInt($('#add_quantity').val());
+                    var maximum_stock = parseInt(item.maximum_stock);
+                    $('#add_item_desc').val(item.item_desc);
+                    addItem('add',current_stock, maximum_stock); 
+                  });
+                } else {
+                  alert('Item code does not exist! Please the check the item code before adding item..');
+                }
+              });
+            }
           }else{
             alert("Please fill up product details!");
           }
@@ -945,33 +952,39 @@
         });
 
         $('#edit_unit_price').on('keyup', function(){
-          computeTotalPrice(($('#edit_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#edit_currency_code option:selected').text().split(" - ")[0]),parseFloat($('#edit_unit_price').val()),parseFloat($('#edit_quantity').val()),$('#edit_total_price'));
+          computeTotalPrice(($('#edit_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#edit_currency_code option:selected').text().split(" - ")[0]),parseInt($('#edit_unit_price').val()),parseInt($('#edit_quantity').val()),$('#edit_total_price'));
         });
 
         $('#edit_quantity').on('keyup', function(){
-          computeTotalPrice(($('#edit_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#edit_currency_code option:selected').text().split(" - ")[0]),parseFloat($('#edit_unit_price').val()),parseFloat($('#edit_quantity').val()),$('#edit_total_price'));
+          computeTotalPrice(($('#edit_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#edit_currency_code option:selected').text().split(" - ")[0]),parseInt($('#edit_unit_price').val()),parseInt($('#edit_quantity').val()),$('#edit_total_price'));
         });
 
         $('#edit_currency_code').on('change', function(){
-          computeTotalPrice(($('#edit_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#edit_currency_code option:selected').text().split(" - ")[0]),parseFloat($('#edit_unit_price').val()),parseFloat($('#edit_quantity').val()),$('#edit_total_price'));
+          computeTotalPrice(($('#edit_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#edit_currency_code option:selected').text().split(" - ")[0]),parseInt($('#edit_unit_price').val()),parseInt($('#edit_quantity').val()),$('#edit_total_price'));
         });
 
         $('#edit_btnAdd').on('click', function(){
           if($('#edit_item_code').val() &&
               $('#edit_quantity').val()  
           ){
-            $.get('../item_master/getItemDetails/'+$('#edit_item_code').val(), (response) => {
-              var item = response.data;
-              if(item!=null){
-                $.get('receiving/'+item.item_code+'/'+$('#edit_inventory_location').val()+'/getCurrentStock', (response) => {
-                  var item_qty = parseInt($('#edit_quantity').val());
-                  var safety_stock = parseInt(item.safety_stock);
-                  addItem('edit',item_qty, safety_stock);
-                });
-              } else {
-                alert('Item code does not exist! Please the check item code before adding item details..');
-              }
-            });
+            if($('#edit_quantity').val() % 1 != 0)
+            {
+              console.log('not allowed');
+              alert("Decimal point is not allowed! Please input whole number on quantity.");
+            } else {
+              $.get('../item_master/getItemDetails/'+$('#edit_item_code').val(), (response) => {
+                var item = response.data;
+                if(item!=null){
+                  $.get('receiving/'+$('#edit_item_code').val()+'/'+$('#edit_location_code').val()+'/getCurrentStock', (response) => {
+                    var current_stock = parseInt(response.data) + parseInt($('#edit_quantity').val());
+                    var maximum_stock = parseInt(item.maximum_stock);
+                    addItem('edit',item_qty, maximum_stock);
+                  });
+                } else {
+                  alert('Item code does not exist! Please the check item code before adding item details..');
+                }
+              });
+            }
           }else{
             alert("Please fill up product details!");
           }
@@ -1040,13 +1053,13 @@
     
     const computeTotalPrice = (symbol = '$', unit_price = 0, quantity = 0, input_total) => {
       const total = unit_price * quantity;
-      input_total.val(symbol+" "+FormatNumber(total ? parseFloat(total) : 0));
+      input_total.val(symbol+" "+FormatNumber(total ? parseInt(total) : 0));
     };
 
     const calculateGrandTotal = (symbol, products, field_grand_total) => {
         var grand_total = 0.0;
         $.each(products,(index,row) => {
-            grand_total = parseFloat(grand_total) + parseFloat(row.total_price);
+            grand_total = parseInt(grand_total) + parseInt(row.total_price);
         });
 
         field_grand_total.val(symbol+" "+FormatNumber(grand_total));
@@ -1601,13 +1614,12 @@
       $('#removeItemModal').modal('open');
     };
 
-    const addItem = (loc, item_qty = 0, safety_stock = 0) => {
+    const addItem = (loc, current_stock = 0, maximum_stock = 0) => {
       var found = false;
       var cindex = 0;
 
       $.get('list/'+$('#add_item_code').val()+'/'+$('#add_location_code').val()+'/item_details', (response) => {
         var datax = response.data;
- 
         if(datax!=null)
         {
           if(loc=='add')
@@ -1624,14 +1636,28 @@
               });
 
               if(found){
-                  add_items[cindex].quantity = parseFloat(add_items[cindex].quantity) + parseFloat(item_qty);
+                  var current_stocks = parseInt(current_stock) + parseInt(add_items[cindex].quantity);
+                  if(current_stocks > maximum_stock)
+                  {
+                    alert("You're above the maximum stock level of the item!");
+                  } else  if(current_stocks == maximum_stock) {
+                    alert("You reach the maximum stock level of the item!");
+                  } 
+                  add_items[cindex].quantity = parseInt(add_items[cindex].quantity) + parseInt($('#add_quantity').val());
                   renderItems(add_items,$('#items-dt tbody'),'add');
                   resetItemDetails("add");
               }else{
+                  var current_stocks = parseInt(current_stock);
+                  if(current_stocks > maximum_stock)
+                  {
+                    alert("You're above the maximum stock level of the item!");
+                  } else  if(current_stocks == maximum_stock) {
+                    alert("You reach the maximum stock level of the item!");
+                  } 
                   add_items.push({ "item_code": $('#add_item_code').val(),
                                   "item_desc": $('#add_item_desc').val(),
                                   "location_code": $('#add_location_code').val(),
-                                  "quantity": parseFloat($('#add_quantity').val()),
+                                  "quantity": parseInt($('#add_quantity').val()),
                                 });
                   renderItems(add_items,$('#items-dt tbody'),'add');
                   resetItemDetails("add");
@@ -1652,23 +1678,34 @@
               });
 
               if(found){
- 
-                  edit_items[cindex].quantity = parseFloat(edit_items[cindex].quantity) + parseFloat($('#edit_quantity').val());
+                  var current_stocks = parseInt(current_stock) + parseInt(edit_items[cindex].quantity);
+                  if(current_stocks > maximum_stock)
+                  {
+                    alert("You're above the maximum stock level of the item!");
+                  } else  if(current_stocks == maximum_stock) {
+                    alert("You reach the maximum stock level of the item!");
+                  } 
+                  edit_items[cindex].quantity = parseInt(edit_items[cindex].quantity) + parseInt($('#edit_quantity').val());
                   $('#btnEditSave').prop('disabled', false);
                   renderItems(edit_items,$('#edit-items-dt tbody'),'edit');
                   resetItemDetails("edit");
  
               }else{
- 
+                  var current_stocks = parseInt(current_stock);
+                  if(current_stocks > maximum_stock)
+                  {
+                    alert("You're above the maximum stock level of the item!");
+                  } else  if(current_stocks == maximum_stock) {
+                    alert("You reach the maximum stock level of the item!");
+                  } 
                   edit_items.push({ "item_code": $('#edit_item_code').val(),
                                     "item_desc": $('#edit_item_desc').val(),
                                     "location_code": $('#edit_location_code').val(),
-                                    "quantity": parseFloat($('#edit_quantity').val()),
+                                    "quantity": parseInt($('#edit_quantity').val()),
                                   });
                   $('#btnEditSave').prop('disabled', false);
                   renderItems(edit_items,$('#edit-items-dt tbody'),'edit');
                   resetItemDetails("edit");
- 
               }
             }
 

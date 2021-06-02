@@ -14,6 +14,7 @@ use App\Site;
 use App\Employee;
 use App\ApproverMatrix;
 use App\Customer;
+use App\Vendor;
 use App\Currency;
 use App\Product;
 use App\ItemMaster;
@@ -33,6 +34,7 @@ use Validator;
 use Response;
 use Auth;
 use PDF;
+use Image;
 class InventoryRTVController extends Controller
 {
     /**
@@ -43,6 +45,7 @@ class InventoryRTVController extends Controller
     public function index()
     {
         $sites = Site::all();
+        $vendors = Vendor::all();
         $currency = Currency::all();
         $inventoryLocation = InventoryLocation::all();
         $returnCount = InventoryRTV::count();
@@ -63,6 +66,7 @@ class InventoryRTVController extends Controller
                 ->with('subpage','vendor')
   
                 ->with('employee',$employees)
+                ->with('vendor',$vendors)
                 ->with('projects', $project)
                 ->with('sites', $sites)
                 ->with('count', $returnCount)
@@ -100,6 +104,17 @@ class InventoryRTVController extends Controller
         return response()->json([
             "data" => InventoryRTV::where('status','Approved')
                                     ->with('employee_details:emp_no,emp_fname,emp_lname')
+                                    ->with('sites:site_code,site_desc')
+                                    ->get()
+        ]);
+    }
+
+    public function all_receiving()
+    {
+        return response()->json([
+            "data" => InventoryRTV::where('status','RTV')
+                                    ->with('employee_details:emp_no,emp_fname,emp_lname')
+                                    ->with('vendors:ven_code,ven_name')
                                     ->with('sites:site_code,site_desc')
                                     ->get()
         ]);
@@ -214,6 +229,7 @@ class InventoryRTVController extends Controller
             "data" => InventoryRTV::where('id','=',$id)
                                 ->with('employee_details:emp_no,emp_fname,emp_lname')
                                 ->with('sites:site_code,site_desc')
+                                ->with('vendors:ven_code,ven_name')
                                 ->get()
         ]);
     }
@@ -344,12 +360,12 @@ class InventoryRTVController extends Controller
                 }
 
                 // Inventory Issuance details update
-                if($item_count == $check_count){
                     $invrtv = InventoryRTV::where('rtv_code',$request->input('rtv_code'))->first();
+                    $invrtv->ven_code = $request->input('vendor');
+                if($item_count == $check_count){
                     $invrtv->status =               'RTV';
                     $invrtv->updated_by =           Auth::user()->emp_no;
                 } else {
-                    $invrtv = InventoryRTV::where('rtv_code',$request->input('rtv_code'))->first();
                     $invrtv->status =               'RTV with Pending';
                     $invrtv->updated_by =           Auth::user()->emp_no;
                 }
@@ -397,6 +413,80 @@ class InventoryRTVController extends Controller
                 if($invrtv->save()){
                     return redirect()->route('rtv.index')->withSuccess('Return to Vendor Successfully Processed');
                 }
+        }
+    }
+
+    public function rcv_item(Request $request)
+    {
+        $field = [
+            // 'item_cat_code' => 'required',
+            // 'item_subcat_code' => 'required',
+            // 'item_code' => 'required|unique:item_masters',
+            // 'oem_partno' => 'unique:item_masters',
+        ];
+
+        $validator = Validator::make($request->all(), $field);
+        
+        if ($validator->fails()) {
+            return redirect()->route('issuance.index')
+                        ->withInput()
+                        ->withErrors($validator);
+        }else{
+
+            // Inventory Issuance details update
+            $invrtv = InventoryRTV::where('rtv_code',$request->get('rtv_code'))->first();
+            $invrtv->status = 'Received';
+            $invrtv->received_by = $request->get('received_by');
+            $invrtv->received_date = date('Y-m-d H:i:s');
+
+            $signature = str_replace('-','',$invrtv->rtv_code);
+            
+            $image = Image::make($request->get('imgBase64'));
+            $image->save('../storage/app/documents/signatures/'.$invrtv->rtv_code.'.jpg'); 
+            
+            // if($request->input('i_itm_item_code'))
+            // {  
+            //     for($i = 0; $i < count($request->input('i_itm_item_code')); $i++)
+            //     {
+            //         // Inventory logs update
+            //         $logx = InventoryLog::where('trans_code',$request->input('rtv_code'))
+            //                             ->where('item_code',$request->input('i_itm_item_code.'.$i))
+            //                             ->first();
+
+            //         // return $logx;
+
+            //         if($request->input('i_itm_inventory_location.'.$i) != null)
+            //         {
+            //             // Inventory update
+            //             $inv = Inventory::where('item_code',$request->input('i_itm_item_code.'.$i))
+            //                             ->where('inventory_location_code',$request->input('i_itm_inventory_location.'.$i))
+            //                             ->first();
+            //             $inv->quantity = $inv->quantity - $request->input('i_itm_quantity.'.$i);
+            //             $inv->updated_by =  Auth::user()->emp_no;
+            //             $inv->save();
+
+
+            //             $logs = new InventoryLog;
+            //             $logs->trans_code =              $logx->trans_code;
+            //             $logs->trans_type =              'RTV';
+            //             $logs->status =                  'Return to Vendor';
+            //             $logs->trans_date =              date('Y-m-d H:i:s');
+            //             $logs->item_code =               $request->input('i_itm_item_code.'.$i);
+            //             $logs->quantity =                $request->input('i_itm_quantity.'.$i);
+
+            //             $logs->sku =                     $logx->sku;
+            //             $logs->inventory_location_code = $request->input('i_itm_inventory_location.'.$i);
+            //             $logs->currency_code =           $logx->currency_code;
+            //             $logs->unit_price =              $logx->unit_price;
+            //             $logs->total_price =             $logx->total_price;
+            //             $logs->save();
+            //         }  
+            //     }
+            // }
+            
+            if($invrtv->save()){
+                return redirect()->route('rtv.index')->withSuccess('Item Successfully Received by Vendor!');
+            }
         }
     }
 

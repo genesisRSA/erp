@@ -1,5 +1,25 @@
 @extends('layouts.resmain')
 
+<style>
+  .e-signature-pad {
+      position: relative;
+      display: -ms-flexbox;
+      -ms-flex-direction: column;
+      width: 100%;
+      height: 100%;
+      max-width: 1000px;
+      max-height: 315px;
+      border: 1px solid #e8e8e8;
+      background-color: #fff;
+      /* box-shadow: 0 3px 20px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.08) inset; */
+      border-radius: 15px;
+      padding: 20px;
+  }
+  .txt-center {
+      text-align: -webkit-center;
+  }
+</style>
+
 @section('content')
   <div class="row blue-text text-darken-4 white" style="border-bottom: 1px solid rgba(0,0,0,0.14);">
     <div class="col s12 m12">
@@ -12,8 +32,9 @@
   <div class="row main-content">
     <ul id="project_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
       <li class="tab col s12 m4 l4"><a class="active" href="#Return">Return Item</a></li>
-      <li class="tab col s12 m4 l4"><a class="active" href="#Approval">Approval</a></li>
-      <li class="tab col s12 m4 l4"><a class="active" href="#Process">Process</a></li>
+      <li class="tab col s12 m4 l4"><a href="#Approval">Approval</a></li>
+      <li class="tab col s12 m4 l4"><a href="#Process">Process</a></li>
+      <li class="tab col s12 m4 l4"><a href="#Receiving">Receiving</a></li>
     </ul>
 
     <div id="Return" name="Return">
@@ -77,8 +98,28 @@
           </table>
         </div>
       </div>
-  </div>
+    </div>
 
+    <div id="Receiving" name="Receiving">
+      <div class="card" style="margin-top: 0px">
+        <div class="card-content">
+          <table class="responsive-table highlight" id="receiving-dt" style="width: 100%">
+            <thead>
+              <tr>
+                  <th>ID</th>
+                  <th>Vendor</th>
+                  <th>Return Code</th>
+                  <th>Requestor</th>
+                  <th>Reason</th>
+                  <th>Status</th>
+                  <th>Action</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+    </div>
+    
   </div>
  
   <!-- MODALS -->
@@ -587,31 +628,44 @@
         </ul><br>
 
         <div id="process" name="process">
-          <div class="row">
-              <div class="input-field col s12 m6 l6">
-                <input id="process_rtv_code" name="rtv_code" type="text" class="validate" placeholder="" readonly>
-                <label class="active">Return to Vendor Code</label>
-              </div>
+          <div class="row" style="margin-bottom: 0px;">
+            <div class="input-field col s12 m6 l6">
+              <input id="process_rtv_code" name="rtv_code" type="text" class="validate" placeholder="" readonly>
+              <label class="active">Return to Vendor Code</label>
+            </div>
 
-              <div class="input-field col s12 m6 l6">
-                <input id="process_requestor" name="requestor" type="text" class="validate" placeholder="" readonly>
-                <label class="active">Requestor</label>
-              </div>
+            <div class="input-field col s12 m6 l6">
+              <input id="process_site_code" name="site_code" type="text" class="validate" placeholder="" readonly>
+              <label class="active">Site</label>
+            </div>
           </div>
 
-          <div class="row">
-              <div class="input-field col s12 m6 l6">
-                <input id="process_site_code" name="site_code" type="text" class="validate" placeholder="" readonly>
-                <label class="active">Site</label>
-              </div>
+          <div class="row" style="margin-bottom: 0px;">
+            <div class="input-field col s12 m6 l6">
+              <input id="process_requestor" name="requestor" type="text" class="validate" placeholder="" readonly>
+              <label class="active">Returned By</label>
+            </div>
 
-              <div class="input-field col s12 m6 l6">
-                <input id="process_reason" name="reason" type="text" class="validate" placeholder="" readonly>
-                <label class="active">Purpose</label>
-              </div>
+            <div class="input-field col s12 m6 l6">
+              <input id="process_reason" name="reason" type="text" class="validate" placeholder="" readonly>
+              <label class="active">Purpose</label>
+            </div>
           </div>
 
-          <div class="row">
+          <div class="row" style="margin-bottom: 0px;">
+            <div class="input-field col s12 m6 l6">
+              <select id="process_vendor" name="vendor" required>
+                <option value="" disabled selected>Choose your option</option>
+                @foreach ($vendor as $vendors)
+                  <option value="{{$vendors->ven_code}}">{{$vendors->ven_name}}</option>
+                @endforeach
+              </select>
+              <label for="add_site_code">Vendor<sup class="red-text"></sup></label>
+            </div>
+          </div>
+
+
+          <div class="row" style="margin-bottom: 0px;">
             <div class="col s12 m12 l12">
               <div class="card">
                 <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Item List</b></h6><hr style="margin: 0px">
@@ -731,6 +785,83 @@
       <button class="red waves-effect waves-light btn" id="btnColCan" onclick="issItemsCan();"><i class="material-icons left">cancel</i>Cancel</button>
     </div>
   </div>
+
+  <div id="receiveModal" class="modal">
+ <form method="POST" action="{{route('rtv.rcv_item')}}">
+      @csrf
+      <div class="modal-content" style="padding-bottom: 0px;">
+        <h4>Receiving Item Details</h4><br>
+        <div class="card-body">
+
+            <div class="row"  style="margin-bottom: 0px;">
+              <div class="input-field col s12 m6 l6">
+                <input id="rtv_code" name="rtv_code" type="text" class="" placeholder="" readonly >
+                <label for="rtv_code">Return to Vendor Code<sup class="red-text"></sup></label>
+              </div>
+            </div>
+            <div class="row"  style="margin-bottom: 0px;">
+              <div class="input-field col s12 m6 l6">
+                <input id="rtv_vendor" name="vendor" type="text" class="" placeholder="" readonly >
+                <label for="vendor">Vendor<sup class="red-text"></sup></label>
+              </div>
+
+              <div class="input-field col s12 m6 l6">
+                <input id="rtv_received_by" name="received_by" type="text" class="validate" placeholder="Please input receiver name here.." required>
+                <label for="received_by">Received By<sup class="red-text">*</sup></label>
+              </div>
+            </div>
+
+            <div class="row" style="margin-bottom: 0px;">
+              <div class="col s12 m12 l12">
+                <div class="card">
+                  <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Item List</b></h6><hr style="margin: 0px">
+                  <div class="card-content" style="padding: 10px; padding-top: 0px">
+                    <table class="highlight" id="rcv-items-dt">
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Item Code</th>
+                          <th>Item Description</th>
+                          <th>Quantity</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+      
+            <div id="signature-pad" class="e-signature-pad">
+              <label for="rcv_signature_pad" style="font-size: 18px">Signature:</label>
+              <div class="e-signature-pad--body">
+                  <canvas id="e-signature-pad" 
+                          name="rcv_signature_pad" 
+                          style="width: 100%; 
+                                height: 250px;       
+                             max-width: 1000px;
+                             max-height: 315px;">
+                  </canvas>
+              </div>
+              <div class="signature-pad--footer txt-center">
+                  <div class="signature-pad--actions txt-center">
+                      <div class="col s12 m4 l4 left-align"> 
+                          <button type="button" class="blue waves-effect waves-light btn" data-action="clear"><i class="material-icons left">layers_clear</i>Clear</button>
+                      </div>
+                      <br>
+                    </div>
+                </div>
+            </div>
+       
+        </div>
+      <div class="modal-footer" style="padding-right: 32px; padding-bottom: 4px; margin-bottom: 30px;">
+        <button type="button" class="green waves-effect waves-light btn" id="btnReceive" onclick="receive();" disabled><i class="material-icons left">check_circle</i>Receive</button>
+        <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Cancel</a>
+      </div>
+    </form>
+  </div>
   
   <div id="deleteModal" class="modal bottom-sheet">
     <form method="POST" action="{{route('location.delete')}}">
@@ -789,6 +920,9 @@
     <!-- SCRIPTS -->
   <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
   <script type="text/javascript" src="{{ asset('datatables/datatables.js') }}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+
   <script type="text/javascript">
     var issueCount = {{$count}};
     const str = new Date().toISOString().slice(0, 10);
@@ -798,8 +932,27 @@
     var view_items = [];
     var app_items = [];
     var proc_items = [];
+    var rcv_items = [];
+
+    var wrapper = document.getElementById("signature-pad");
+    var clearButton = wrapper.querySelector("[data-action=clear]");
+    var changeColorButton = wrapper.querySelector("[data-action=change-color]");
+    var savePNGButton = wrapper.querySelector("[data-action=save-png]");
+    var saveJPGButton = wrapper.querySelector("[data-action=save-jpg]");
+    var saveSVGButton = wrapper.querySelector("[data-action=save-svg]");
+    var canvas = wrapper.querySelector("canvas");
+    var signaturePad = new SignaturePad(canvas, {
+        backgroundColor: 'rgb(255, 255, 255)'
+    });
 
     $(document).ready(function () {
+
+        if(localStorage.getItem("Status"))
+        {
+          var html = '<i class="material-icons left">info</i><span>'+localStorage.getItem("Status")+'</span>';
+          M.toast({html: html+'<button class="btn-flat red-text toast-action" onclick="M.Toast.dismissAll()">DISMISS</button>'});
+          localStorage.clear();
+        }
       
         $.get('/api/reiss/item_master/all', (response) => {
           var data = response.data;
@@ -851,18 +1004,24 @@
         $('#btnAdd').on('click', function(){
           if($('#add_item_code').val() && $('#add_quantity').val())
           {
-            $.get('../item_master/getItemDetails/'+$('#add_item_code').val(), (response) => {
-              var item = response.data;
-              console.log(item);
-              if(item!=null){
-                var item_qty = parseInt($('#add_quantity').val());
-                var safety_stock = parseInt(item.safety_stock);
-                $('#add_item_desc').val(item.item_desc);
-                addItem('add',item_qty, safety_stock);
-              } else {
-                alert('Item code does not exist! Please the check the item code before adding item..');
-              }
-            });
+            if($('#add_quantity').val() % 1 != 0)
+            {
+              console.log('not allowed');
+              alert("Decimal point is not allowed! Please input whole number on quantity.");
+            } else {
+              $.get('../item_master/getItemDetails/'+$('#add_item_code').val(), (response) => {
+                var item = response.data;
+                console.log(item);
+                if(item!=null){
+                  var item_qty = parseInt($('#add_quantity').val());
+                  var safety_stock = parseInt(item.safety_stock);
+                  $('#add_item_desc').val(item.item_desc);
+                  addItem('add',item_qty, safety_stock);
+                } else {
+                  alert('Item code does not exist! Please the check the item code before adding item..');
+                }
+              });
+            }
           }else{
             alert("Please fill up product details!");
           }
@@ -922,6 +1081,19 @@
                   $('#btnCollect').prop('disabled', true);
                 };
             }); 
+          }
+        });
+
+
+        $('#rtv_received_by').on('keyup', function(){
+          console.log($(this).val().length);
+          if($(this).val().length > 0)
+          {
+            if(trim($(this).val())){
+              $('#btnReceive').prop('disabled', false);
+            }
+          } else {
+            $('#btnReceive').prop('disabled', true);
           }
         });
 
@@ -1158,20 +1330,34 @@
         $('#view_rtv_code').val(data.rtv_code);
         $('#view_site_code').val(data.sites.site_desc);
         $('#view_reason').val(data.reason);
-
-        $.get('list/'+data.rtv_code+'/items', (response) => {
-          var data = response.data;
-          $.each(data, (index, row) => {
-            view_items.push({"item_code": row.item_code,
-                            "item_desc": row.item_details.item_desc,
-                            "quantity": row.quantity,
-                            "status": row.status,
-                            });
+        
+        if(data.status=="RTV"){
+          $.get('list/'+data.rtv_code+'/items', (response) => {
+            var data = response.data;
+            $.each(data, (index, row) => {
+              if(row.status=='Return to Vendor'){
+                view_items.push({"item_code": row.item_code,
+                                "item_desc": row.item_details.item_desc,
+                                "quantity": row.quantity,
+                                "status": row.status,
+                                });
+              }
+            });
+            renderItems(view_items,$('#view-items-dt tbody'),'view');
           });
- 
-          renderItems(view_items,$('#view-items-dt tbody'),'view');
-        });
-
+        } else {
+          $.get('list/'+data.rtv_code+'/items', (response) => {
+            var data = response.data;
+            $.each(data, (index, row) => {
+                view_items.push({"item_code": row.item_code,
+                                "item_desc": row.item_details.item_desc,
+                                "quantity": row.quantity,
+                                "status": row.status,
+                                });
+            });
+            renderItems(view_items,$('#view-items-dt tbody'),'view');
+          });
+        }
       });
     };
 
@@ -1277,6 +1463,34 @@
       $('#prepareModal').modal('close');
     };
 
+    const receiveRTV = (id) => {
+      rcv_items = [];
+      $('#receiveModal').modal('open');
+      $.get('rtv/'+id, (response) => {
+        var data = response.data[0];
+        $('#rtv_code').val(data.rtv_code);
+        $('#rtv_vendor').val(data.vendors.ven_name);
+   
+        $.get('list/'+data.rtv_code+'/items', (response) => {
+          var datax = response.data;
+          $.each(datax, (index, row) => {
+            if(row.status=='Return to Vendor'){
+                  rcv_items.push({"trans_code": row.trans_code,
+                            "item_code": row.item_code,
+                            "item_desc": row.item_details.item_desc,
+                            "quantity": row.quantity,
+                            "status": row.status,
+                            "is_check": false,
+                            "inventory_location": row.inventory_location_code,
+                            });
+            }
+          });
+          renderItems(rcv_items,$('#rcv-items-dt tbody'),'rcv');
+        });
+
+      });
+    }
+
     const renderItems = (items, table, loc) => {
       table.html("");
       $.each(items, (index, row) => {
@@ -1317,6 +1531,16 @@
                       '<input type="hidden" name="e_itm_total_price[]" value=" "/>'+
                       '</tr>'
                     );
+        } else if(loc=='rcv'){
+          var id = parseInt(index) + 1;
+          table.append('<tr>'+
+                    '<td class="left-align">'+id+'</td>'+
+                    '<td class="left-align">'+row.item_code+'</td>'+
+                    '<td class="left-align">'+row.item_desc+'</td>'+
+                    '<td class="left-align">'+row.quantity+'</td>'+
+                    '<td class="left-align">'+row.status+'</td>'+
+                    '</tr>'
+                  );
         } else if(loc=='issue'){
           var id = parseInt(index) + 1;
           if( row.status=="Issued"){
@@ -1577,6 +1801,42 @@
       }
     };
 
+    const receive = () => {
+      var canvas = document.getElementById('e-signature-pad');
+      var rtv_code = $('#rtv_code').val();
+      var received_by = $('#rtv_received_by').val();
+      var dataURL = canvas.toDataURL();
+      $.ajax({
+        type: "POST",
+        url: "/reiss/inventory/rtv/rcv_item",
+        data: { 
+          "_token": "{{ csrf_token() }}",
+          "imgBase64": dataURL,
+          "rtv_code": rtv_code,
+          "received_by": received_by,
+        }
+      }).done(function(data) {
+        if (data) {
+            localStorage.setItem("Status","Item Successfully Received by the Vendor!")
+            window.location.reload(); 
+        }
+      });
+    }
+
+    function resizeCanvas() {
+        var ratio =  Math.max(window.devicePixelRatio || 1, 1);
+        canvas.width = canvas.offsetWidth * ratio;
+        canvas.height = canvas.offsetHeight * ratio;
+        canvas.getContext("2d").scale(ratio, ratio);
+        signaturePad.clear();
+    }
+
+    window.onresize = resizeCanvas;
+
+    clearButton.addEventListener("click", function (event) {
+        signaturePad.clear();
+    });
+
   var request = $('#return-dt').DataTable({
         "lengthChange": false,
         "pageLength": 15,
@@ -1610,6 +1870,15 @@
                       break;
                     case "RTV":
                       return  '<span class="new badge purple white-text" data-badge-caption="">Returned to Vendor</span>';
+                      break;
+                    case "Received":
+                      return  '<span class="new badge teal white-text" data-badge-caption="">Received by Vendor</span>';
+                      break;
+                    case 'For Approval':
+                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Approval</span>';
+                      break;
+                    case 'For Review':
+                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
                       break;
                     case "Issued":
                       return  '<span class="new badge purple white-text" data-badge-caption="">Issued</span>';
@@ -1681,6 +1950,12 @@
                     case "Issued":
                       return  '<span class="new badge purple white-text" data-badge-caption="">Issued</span>';
                       break;
+                    case 'For Approval':
+                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Approval</span>';
+                      break;
+                    case 'For Review':
+                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
+                      break;
                     case "Returned":
                       return  '<span class="new badge amber white-text" data-badge-caption="">Returned</span>';
                       break;
@@ -1741,6 +2016,12 @@
                     case "Issued":
                       return  '<span class="new badge purple white-text" data-badge-caption="">Issued</span>';
                       break;
+                    case 'For Approval':
+                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Approval</span>';
+                      break;
+                    case 'For Review':
+                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
+                      break;
                     case "Issued with Pending":
                       return  '<span class="new badge grey darken-1 white-text" data-badge-caption="">Issued with Pending</span>';
                       break;
@@ -1756,6 +2037,54 @@
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
                   return  '<a href="#" class="btn-small teal darken-1 waves-effect waves-dark" onclick="processRTV('+data+')"><i class="material-icons">shopping_cart</i></a>';
+                }
+            },   
+        ]
+  });
+
+  var receiving = $('#receiving-dt').DataTable({
+        "lengthChange": false,
+        "pageLength": 15,
+        "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+        "pagingType": "full",
+        "ajax": "/api/reiss/inventory/rtv/all_receiving",
+        "columns": [
+            {  "data": "id" },
+            {  "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.vendors.ven_name;
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return '<a href="#!" onclick="viewRTV('+data+')">'+ row.rtv_code; +'</a>';
+                }
+            },
+            {  "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.employee_details.full_name;;
+                }
+            },
+            {  "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.reason;
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  switch (row.status) {
+                    case "RTV":
+                      return  '<span class="new badge green white-text" data-badge-caption="">For Receiving</span>';
+                      break;
+                    case "Returned":
+                      return  '<span class="new badge amber white-text" data-badge-caption="">Returned</span>';
+                      break;
+                  }
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return  '<a href="#" class="btn-small teal darken-1 waves-effect waves-dark" onclick="receiveRTV('+data+')"><i class="material-icons">assignment_turned_in</i></a>';
                 }
             },   
         ]
