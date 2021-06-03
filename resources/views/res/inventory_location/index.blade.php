@@ -215,6 +215,7 @@
       </div> 
     </div>
     <div class="modal-footer" style="padding-right: 32px; padding-bottom: 4px; margin-bottom: 30px;">
+        <input type="button" id="bt" onclick="print()" value="Print PDF" />
         <a href="#!" class="red waves-effect waves-dark btn" onclick="closePrint();"><i class="material-icons left">keyboard_return</i>Return</a>
     </div>
   </div>
@@ -311,7 +312,6 @@
   };
 
   const printModal = (id) => {
-    console.log(id);
     $('#id').val(id);
     $( "object" ).replaceWith('<object data="location/barcodes/'+id+'#toolbar=1&navpanes=1&scrollbar=1&page=1&zoom=100" type="application/pdf" width="100%" height="280px"></object>');
     $('#printModal').modal('open');
@@ -334,6 +334,12 @@
   const closePrint = () => {
     $('#printModal').modal('close');
   }; 
+
+  let print = () => {
+    	let objFra = document.getElementById('myFrame');
+        objFra.contentWindow.focus();
+        objFra.contentWindow.print();
+    }
 
   var locations = $('#location-dt').DataTable({
         "lengthChange": false,

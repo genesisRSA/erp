@@ -50,7 +50,7 @@
         <div id="receiving" name="receiving">
           <div class="row">
             <div class="input-field col s12 m6 l6">
-              <input id="add_receiving_code" name="receiving_code" type="text" class="validate" placeholder="" value="-RCV{{date('Ymd')}}-{{$count}}" required readonly>
+              <input id="add_receiving_code" name="receiving_code" type="text" class="validate" placeholder="" value="'{{$employee->site_code}}'-RCV{{date('Ymd')}}-{{$count}}" required readonly>
               <label for="receiving_code">Receiving Code<sup class="red-text">*</sup></label>
             </div>
           </div>
@@ -58,9 +58,10 @@
           <div class="row">
             <div class="input-field col s12 m6 l6">
               <select id="add_site_code" name="site_code" required>
-                <option value="" disabled selected>Choose your option</option>
                 @foreach ($site as $sites)
-                  <option value="{{$sites->site_code}}">{{$sites->site_desc}}</option>
+                  @if($sites->site_code == $employee->site_code)
+                  <option value="{{$sites->site_code}}" disabled selected>{{$sites->site_desc}}</option>
+                  @endif
                 @endforeach
               </select>
               <label for="site_code">Site<sup class="red-text">*</sup></label>
@@ -145,6 +146,8 @@
           <div class="row" style="margin-bottom: 0px;">
             <div class="input-field col s12 m6 l6 left-align">
               <button type="button" class="blue waves-effect waves-light btn right-align" id="btnAdd"><i class="material-icons left">add_circle</i>Add Item</button>
+          
+              <button type="button" class="orange waves-effect waves-light btn right-align" id="btnReset" onclick="resetDetails('add');" disabled><i class="material-icons left">loop</i>Reset</button>
             </div>
           </div>
 
@@ -303,6 +306,8 @@
           <div class="row" style="margin-bottom: 0px;">
             <div class="input-field col s12 m6 l6 left-align">
               <button type="button" class="blue waves-effect waves-light btn right-align" id="edit_btnAdd"><i class="material-icons left">add_circle</i>Add Item</button>
+
+              <button type="button" class="orange waves-effect waves-light btn right-align" id="edit_btnReset" onclick="resetDetails('edit');" disabled><i class="material-icons left">loop</i>Reset</button>
             </div>
           </div>
 
@@ -466,6 +471,22 @@
     </div>
   </div>
 
+  <div id="resetModal" class="modal">
+    <div class="modal-content">
+      <h4>Reset Item Details</h4>
+      <div class="row">
+          <div class="col s12 m12 l12">
+              <input type="hidden" name="loc" id="reset_loc">
+              <p>Are you sure you want to reset all <strong>Item Details</strong>?</p>
+          </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+        <a onclick="resetItemDetails();" class="green waves-effect waves-dark btn"><i class="material-icons left">check_circle</i>Yes</a>
+        <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>No</a>
+    </div>
+  </div>
+
   <!-- End of MODALS -->
 
     <!-- SCRIPTS -->
@@ -510,7 +531,7 @@
               }
           });
         });
-
+ 
         $('#add_site_code').on('change', function(){
           deliveryCode($(this).val(),'add');
         });
@@ -523,6 +544,7 @@
             });
           }
           $('#add_item_code').prop('disabled', true);
+          $('#btnReset').prop('disabled', false);
         });
 
         $('#add_inventory_location').on('change', function(){
@@ -606,6 +628,7 @@
             });
           }
           $('#edit_item_code').prop('disabled', true);
+          $('#edit_btnReset').prop('disabled', false);
         });
 
         $('#edit_inventory_location').on('change', function(){
@@ -671,6 +694,8 @@
           }
         });
 
+
+        console.log('{{$employee->site_code}}');
     });
 
     const FormatNumber = (number) => {
@@ -705,8 +730,7 @@
             {
                 alert("You're not allowed to receive late deliveries!");
             } else {
-              if(trim($('#add_site_code').val()) && 
-                trim($('#add_delivery_date').val()) && 
+              if(trim($('#add_delivery_date').val()) && 
                 trim($('#add_delivery_no').val()) && 
                 trim($('#add_po_no').val()))
               {
@@ -812,27 +836,40 @@
       input_total.val(symbol+" "+FormatNumber(total ? parseFloat(total) : 0));
     };
 
-    const resetItemDetails = (loc) => {
+    const resetItemDetails = () => {
+      var loc = $('#reset_loc').val();
       if(loc=="add"){
         $('#add_inventory_location').val("");
         $('#add_inventory_location').formSelect();
         $('#add_currency_code').val("");
         $('#add_currency_code').formSelect();
+        
+        $('#add_item_code').prop('disabled', false);
         $('#add_item_code').val("");
+
         $('#add_quantity').val("");
         $('#add_unit_price').val("");
         $('#add_total_price').val("");
+
+        $('#btnReset').prop('disabled', true);
+        $('#resetModal').modal('close');
       } else {
         $('#edit_inventory_location').val("");
         $('#edit_inventory_location').formSelect();
         $('#edit_currency_code').val("");
         $('#edit_currency_code').formSelect();
+  
+        $('#edit_item_code').prop('disabled', false);
         $('#edit_item_code').val("");
+
         $('#edit_quantity').val("");
         $('#edit_unit_price').val("");
         $('#edit_total_price').val("");
+        
+        $('#edit_btnReset').prop('disabled', true);
+        $('#resetModal').modal('close');
       }
-    }
+    };
 
     const addItem = (loc, current_stock = 0, maximum_stock = 0) => {
       var found = false;
@@ -971,7 +1008,7 @@
 
         }
       }
-    }
+    };
 
     const removeItem = () => {
         var index = $('#del_index').val();
@@ -997,9 +1034,9 @@
       $('.tabs').tabs('select', 'receiving');
 
       $('#btnAddSave').prop('disabled', true);
-      $('#add_site_code option[value=""]').prop('selected', true);
-      $('#add_site_code').formSelect();
-      $('#add_receiving_code').val('-RCV{{date('Ymd')}}-{{$count}}');
+      // $('#add_site_code option[value=""]').prop('selected', true);
+      // $('#add_site_code').formSelect();
+      $('#add_receiving_code').val('{{$employee->site_code}}-RCV{{date('Ymd')}}-{{$count}}');
       $('#add_delivery_date').val("");
       $('#add_delivery_no').val("");
       $('#add_po_no').val("");
@@ -1085,6 +1122,11 @@
           renderItems(view_items,$('#view_items-dt tbody'),'view');
         });
       });
+    };
+
+    const resetDetails = (loc) => {
+      $('#reset_loc').val(loc);
+      $('#resetModal').modal('open');
     };
 
     const trim = (str) => {

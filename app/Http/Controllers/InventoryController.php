@@ -68,6 +68,17 @@ class InventoryController extends Controller
         ]);
     }
 
+    public function items_issued($trans_code)
+    {
+        return response()->json([
+            "data" => InventoryLog::select(DB::raw('item_code, SUM(quantity) as issued_qty'))
+                                ->where('trans_code',$trans_code)
+                                ->where('status','=','Issued with Pending')
+                                ->groupBy('item_code')
+                                ->get()
+        ]);
+    }
+
     public function item_details($item_code, $loc_code)
     {
         return response()->json([

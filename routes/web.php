@@ -194,6 +194,7 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     
     Route::get('/reiss/inventory/list/{item_code}/{loc_code}/item_details', 'InventoryController@item_details')->name('list.item_details');
     Route::get('/reiss/inventory/list/{trans_code}/items', 'InventoryController@items')->name('list.items');
+    Route::get('/reiss/inventory/list/{trans_code}/items_issued', 'InventoryController@items_issued')->name('list.items_issued');
     Route::get('/reiss/inventory/list/{trans_code}/voided', 'InventoryController@voided')->name('list.voided');
     Route::resource('/reiss/inventory/list','InventoryController');
 

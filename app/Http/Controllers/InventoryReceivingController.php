@@ -44,6 +44,7 @@ class InventoryReceivingController extends Controller
 
         $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"approval":false,"masterlist":false}]', true));
 
+        $employees = Employee::where('emp_no',Auth::user()->emp_no)->first();
         return view('res.inventory_receiving.index')
                 ->with('site','res')
                 ->with('page','inventory')
@@ -52,13 +53,18 @@ class InventoryReceivingController extends Controller
                 ->with('currency', $currency)
                 ->with('count', '00'.$receivingcount)
                 ->with('inventloc', $inventoryLocation)
-                ->with('permission',$permissionx);
+                ->with('permission',$permissionx)
+                ->with('employee',$employees);
     }
     
     public function all($id)
     {
+        $idx = Crypt::decrypt($id);
+        $employee = Employee::where('emp_no', $idx)->first();
         return response()->json([
-            "data" => InventoryReceiving::with('sites:site_code,site_desc')->get()
+            "data" => InventoryReceiving::where('site_code',$employee->site_code)
+                                        ->with('sites:site_code,site_desc')
+                                        ->get()
         ]);
     }
 

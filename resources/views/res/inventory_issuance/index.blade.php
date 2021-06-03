@@ -689,7 +689,9 @@
                         <th>ID</th>
                         <th>Item Code</th>
                         <th>Item Description</th>
-                        <th>Quantity</th>
+                        <th>Request Qty.</th>
+                        <th>Remaining Qty.</th>
+                        <th>Issuance Qty.</th>
                         <th>Status</th>
                         <th>Action</th>
                       </tr>
@@ -761,43 +763,53 @@
         <input type="hidden" name="id" id="item_id">
 
         <div class="row" style="margin-bottom: 0px;">
-          <div class="input-field col s12 m6 l6">
+          <div class="input-field col s12 m4 l4">
+            <input type="hidden" name="item_status" id="item_status">
             <input type="hidden" name="location_code" id="location_code">
-            {{-- <select id="item_location_code" name="item_location_code" required>
-                    <option value="" disabled selected>Choose your option</option>
-                    @foreach ($inventloc as $invl)
-                        <option value="{{$invl->location_code}}">{{$invl->location_name}}</option>      
-                    @endforeach
-                </select>
-            --}}
             <input id="item_location_code" name="item_location_code" type="text" class="validate" placeholder="Click here before scanning location..">
             <label for="item_location_code">Inventory Location<sup class="red-text">*</sup></label>
           </div>
+
+          <div class="input-field col s12 m4 l4">
+            <input id="item_location_name" name="item_location_name" type="text"  placeholder="" readonly>
+            <label for="item_location_name">Location Name<sup class="red-text">*</sup></label>
+          </div>
+
         </div>
 
-        <div class="row" style="margin-bottom: 0px;">
-            <div class="input-field col s12 m6 l6">
-              <input id="item_item_code" name="item_code" type="text" class="validate" placeholder="" readonly>
+        <div id="item_details" class="row" style="margin-bottom: 0px; display:none">
+            <div class="input-field col s12 m4 l4">
+              <input id="item_item_code" name="item_code" type="text" placeholder="" readonly>
               <label class="active">Item Code</label>
             </div>
-            <div class="input-field col s12 m6 l6">
-              <input id="item_item_desc" name="item_desc" type="text" class="validate" placeholder="" readonly>
+            <div class="input-field col s12 m4 l4">
+              <input id="item_item_desc" name="item_desc" type="text" placeholder="" readonly>
               <label class="active">Item Description</label>
-            </div>
-        </div>
-
-        <div class="row" style="margin-bottom: 0px;">
-            <div class="input-field col s12 m6 l6">
-              {{-- <input id="item_quantity" name="quantity" type="text" class="validate" placeholder=""> --}}
-              <input id="item_quantity" name="quantity" type="text" class="validate" placeholder="" readonly>
-              <label class="active">Quantity</label>
-            </div>
-
-            <div class="input-field col s12 m6 l6">
-              <input id="item_uom" name="uom" type="text" class="validate" placeholder="" readonly>
+            </div> 
+            <div class="input-field col s12 m4 l4">
+              <input id="item_uom" name="uom" type="text" placeholder="" readonly>
               <label class="active">Unit of Measure</label>
             </div>
         </div>
+
+        <div id="item_qty" class="row" style="margin-bottom: 0px; display:none">
+            <div class="input-field col s12 m4 l4">
+              <input id="item_quantity" name="quantity" type="number" placeholder="" readonly>
+              <label class="active">Request Quantity</label>
+            </div>
+
+            <div class="input-field col s12 m4 l4">
+              <input type="hidden" name="item_qty_rem" id="item_qty_rem">
+              <input id="item_quantity_rem" name="quantity_rem" type="number" placeholder="" value="0" readonly>
+              <label class="active">Remaining Quantity</label>
+            </div>
+
+            <div class="input-field col s12 m4 l4">
+              <input id="item_quantity_iss" name="quantity_iss" type="number" class="validate" placeholder="0">
+              <label class="active">Issuance Quantity<sup class="red-text">*</sup></label>
+            </div>
+        </div>
+ 
     </div>
 
     <div class="modal-footer" style="padding-right: 32px; padding-bottom: 4px; margin-bottom: 30px;">
@@ -871,6 +883,7 @@
     var view_items = [];
     var app_items = [];
     var iss_items = [];
+    var all_iss_items = [];
 
     $(document).ready(function () {
       
@@ -1057,7 +1070,7 @@
           if(e.which == 13){       
             $.get('../inventory/location/getlocation/'+$('#item_location_code').val(), (response) => {
               var data = response.data;
-        
+              $('#item_location_name').val(data.location_name);
               if(data!=null)
               { 
                 $.get('receiving/'+$('#item_item_code').val()+'/'+$(this).val()+'/getCurrentStock', (response) => {
@@ -1069,6 +1082,11 @@
                     $(this).val("");
                   } else {
                     $('#btnCollect').prop('disabled', false);
+                    var x = document.getElementById('item_details');
+                        x.style.display = "block";
+
+                    var y = document.getElementById('item_qty');
+                        y.style.display = "block";
                   }
                 });
               }else{
@@ -1077,6 +1095,45 @@
               };
             }); 
           }
+        });
+ 
+
+
+        $('#item_quantity_iss').on('keyup', function(){
+
+          if($('#item_status') == 'Pending'){
+            if($('#item_quantity_iss').val() % 1 != 0){
+              alert("Decimal point is not allowed! Please input whole number on quantity.");
+              $(this).val("");
+              $('#item_quantity_rem').val(0);
+            } else {
+              if( parseInt($('#item_quantity_iss').val()) <= parseInt($('#item_quantity').val()) )
+              {
+                $('#item_quantity_rem').val(parseInt($('#item_quantity').val()) - parseInt($('#item_quantity_iss').val()))
+              } else {
+                alert("You're not allowed to issue above the requested quantity!");
+                $(this).val("");
+                $('#item_quantity_rem').val(0);
+              }
+            }
+          } else {
+            if($('#item_quantity_iss').val() % 1 != 0){
+              alert("Decimal point is not allowed! Please input whole number on quantity.");
+              $(this).val("");
+              $('#item_quantity_rem').val(parseInt($('#item_qty_rem').val()));
+            } else {
+              if(parseInt($('#item_quantity_iss').val()) <= parseInt($('#item_qty_rem').val()))
+              {
+                $('#item_quantity_rem').val(parseInt($('#item_qty_rem').val()) - parseInt($('#item_quantity_iss').val()))
+              } else {
+                alert("You're not allowed to issue above the requested quantity!");
+                $(this).val("");
+                $('#item_quantity_rem').val(parseInt($('#item_qty_rem').val()));
+              }
+            }
+          }
+
+      
         });
 
     });
@@ -1545,6 +1602,7 @@
 
     const issIssuance = (id) => {
       iss_items = [];
+      all_iss_items = [];
       $('#issueModal').modal('open');
       $('.tabs.issue').tabs('select','issue_issuance');
       $.get('issuance/'+id, (response) => {
@@ -1572,32 +1630,67 @@
         $.get('list/'+data.issuance_code+'/items', (response) => {
           var datax = response.data;
           $.each(datax, (index, row) => {
-            iss_items.push({"trans_code": data.issuance_code,
-                            "item_code": row.item_code,
-                            "item_desc": row.item_details.item_desc,
-                            "quantity": row.quantity,
-                            "status": row.status,
-                            "is_check": false,
-                            "inventory_location": row.inventory_location_code,
-                            });
+            if(row.status == 'Pending'){
+              iss_items.push({"trans_code": data.issuance_code,
+                          "item_code": row.item_code,
+                          "item_desc": row.item_details.item_desc,
+                          "req_qty": row.quantity,
+                          "rem_qty": 0, // must be requested quantity - issued quantity
+                          "iss_qty": 0, // summary of issued quantity Status: Issued with Pending
+                          "status": row.status,
+                          "is_check": false,
+                          "inventory_location": row.inventory_location_code,
+                          });
+            } 
           });
-          // calculateGrandTotal('$',issue_items,$('#issue_grand_total'));
-          renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
+     
         });
+
+        $.get('list/'+data.issuance_code+'/items_issued', (response) => {
+          var datax = response.data;
+          $.each(datax, (index, row) => {
+            all_iss_items.push({"item_code": row.item_code,
+                                "iss_qty": row.issued_qty, 
+                          });
+            });
+
+            iss_items.forEach(item => {
+              var issued = all_iss_items.filter(item2 => item2.item_code == item.item_code);
+              if(issued)
+              {
+                item.iss_qty = issued[0].iss_qty;
+                item.rem_qty = item.req_qty - item.iss_qty; 
+              }
+            })
+
+            renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
+        });
+
 
       });
     };
 
-    const issItems = (trans_code, item_code, id) => {
+    const issItems = (trans_code, item_code, item_rem = 0, id) => {
       $('#issDetModal').modal('open');
       $.get('issuance/'+trans_code+'/'+item_code+'/item_details', (response) => {
         var data = response.data;
+          item_rem > 0 ? $('#item_status').val('Issued with Pending') : $('#item_status').val('Pending');
           $('#item_id').val(id);
           $('#item_item_code').val(data.item_code);
           $('#item_item_desc').val(data.item_details.item_desc);
           $('#item_uom').val(data.item_details.uom_code);
           $('#item_quantity').val(data.quantity);
           $('#item_location_code').val("");
+
+          $('#item_qty_rem').val(item_rem);
+          $('#item_quantity_rem').val(item_rem);
+          
+          $('#item_quantity_iss').val("");
+          var x = document.getElementById('item_details');
+              x.style.display = "none";
+
+          var y = document.getElementById('item_qty');
+              y.style.display = "none";
           $('#btnCollect').prop('disabled', true);
       });
     };
@@ -1608,6 +1701,8 @@
 
       id = id - 1;
       iss_items[id].inventory_location = "";
+      // iss_items[id].rem_qty = 0;
+      // iss_items[id].iss_qty = 0;
       iss_items[id].is_check = false;
       renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
 
@@ -1615,14 +1710,37 @@
     };
 
     const collectItem = () => {
-      var index = $('#item_id').val();
-          index = index - 1;
+      if($('#item_status') == 'Pending'){
+        if(trim($('#item_location_code').val()) && trim($('#item_quantity_iss').val()))
+        {
+          var index = $('#item_id').val();
+              index = index - 1;
 
-      iss_items[index].inventory_location = $('#item_location_code').val();
-      // iss_items[index].quantity = $('#item_quantity').val();
-      iss_items[index].is_check = true;
-      renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
-      $('#issDetModal').modal('close');
+          iss_items[index].inventory_location = $('#item_location_code').val();
+          iss_items[index].rem_qty = $('#item_quantity_rem').val();
+          iss_items[index].iss_qty = $('#item_quantity_iss').val();
+          iss_items[index].is_check = true;
+          renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
+          $('#issDetModal').modal('close');
+        } else {
+          alert('Please fill-up all details to collect!')
+        }
+      } else {
+        if(trim($('#item_location_code').val()) && trim($('#item_quantity_iss').val()))
+        {
+          var index = $('#item_id').val();
+              index = index - 1;
+
+          iss_items[index].inventory_location = $('#item_location_code').val();
+          iss_items[index].rem_qty = $('#item_quantity_rem').val();
+          iss_items[index].iss_qty = parseInt(iss_items[index].iss_qty) + parseInt($('#item_quantity_iss').val());
+          iss_items[index].is_check = true;
+          renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
+          $('#issDetModal').modal('close');
+        } else {
+          alert('Please fill-up all details to collect!')
+        }
+      }
     };
 
     const renderItems = (items, table, loc) => {
@@ -1672,11 +1790,15 @@
                                 '<td class="left-align">'+id+'</td>'+
                                 '<td class="left-align">'+row.item_code+'</td>'+
                                 '<td class="left-align">'+row.item_desc+'</td>'+
-                                '<td class="left-align">'+row.quantity+'</td>'+
+                                '<td class="left-align">'+row.req_qty+'</td>'+
+                                '<td class="left-align">'+row.rem_qty+'</td>'+
+                                '<td class="left-align">'+row.iss_qty+'</td>'+
                                 '<td class="left-align"><span class="new badge black white-text" data-badge-caption="">'+row.status+'</span></td>'+ 
                                 '<td class="left-align"><p><label><input id="'+id+'" class="filled-in" checked="checked" type="checkbox" value="'+id+'" disabled/><span></span></label></p></td>'+
                                 '<input type="hidden" name="i_itm_item_code[]" value="'+row.item_code+'"/>'+
-                                '<input type="hidden" name="i_itm_quantity[]" value="'+row.quantity+'"/>'+
+                                '<input type="hidden" name="i_itm_quantity[]" value="'+row.req_qty+'"/>'+
+                                '<input type="hidden" name="i_itm_quantity_rem[]" value="'+row.rem_qty+'"/>'+
+                                '<input type="hidden" name="i_itm_quantity_iss[]" value="'+row.iss_qty+'"/>'+
                                 '<input type="hidden" name="i_itm_inventory_location[]" value="'+row.inventory_location+'"/>'+
                                 '<input type="hidden" name="i_itm_currency[]" value=" "/>'+
                                 '<input type="hidden" name="i_itm_currency_code[]" value=" "/>'+
@@ -1684,18 +1806,20 @@
                                 '<input type="hidden" name="i_itm_total_price[]" value=" "/>'+
                                 '</tr>'
                               );
-              // $('#btnIssue').prop('disabled', false);
           } else if (row.is_check==true) {
             table.append('<tr>'+
                                 '<td class="left-align">'+id+'</td>'+
                                 '<td class="left-align">'+row.item_code+'</td>'+
                                 '<td class="left-align">'+row.item_desc+'</td>'+
-                                '<td class="left-align">'+row.quantity+'</td>'+
+                                '<td class="left-align">'+row.req_qty+'</td>'+
+                                '<td class="left-align">'+row.rem_qty+'</td>'+
+                                '<td class="left-align">'+row.iss_qty+'</td>'+
                                 '<td class="left-align"><span class="new badge blue white-text" data-badge-caption="">'+row.status+'</span></td>'+ 
-                                // '<td class="left-align"><p><label><input id="'+id+'" class="filled-in" checked="checked" type="checkbox" value="'+id+'" disabled/><span></span></label></p></td>'+
-                                '<td class="left-align"><p><label><input id="'+id+'" class="filled-in" checked="checked" type="checkbox" value="'+id+'"  onclick="issItems(\''+row.trans_code+'\',\''+row.item_code+'\','+id+')"/><span></span></label></p></td>'+
+                                '<td class="left-align"><p><label><input id="'+id+'" class="filled-in" checked="checked" type="checkbox" value="'+id+'"  onclick="issItems(\''+row.trans_code+'\',\''+row.item_code+'\',\''+row.rem_qty+'\','+id+')"/><span></span></label></p></td>'+
                                 '<input type="hidden" name="i_itm_item_code[]" value="'+row.item_code+'"/>'+
-                                '<input type="hidden" name="i_itm_quantity[]" value="'+row.quantity+'"/>'+
+                                '<input type="hidden" name="i_itm_quantity[]" value="'+row.req_qty+'"/>'+
+                                '<input type="hidden" name="i_itm_quantity_rem[]" value="'+row.rem_qty+'"/>'+
+                                '<input type="hidden" name="i_itm_quantity_iss[]" value="'+row.iss_qty+'"/>'+
                                 '<input type="hidden" name="i_itm_inventory_location[]" value="'+row.inventory_location+'"/>'+
                                 '<input type="hidden" name="i_itm_currency[]" value=" "/>'+
                                 '<input type="hidden" name="i_itm_currency_code[]" value=" "/>'+
@@ -1709,11 +1833,15 @@
                                 '<td class="left-align">'+id+'</td>'+
                                 '<td class="left-align">'+row.item_code+'</td>'+
                                 '<td class="left-align">'+row.item_desc+'</td>'+
-                                '<td class="left-align">'+row.quantity+'</td>'+
+                                '<td class="left-align">'+row.req_qty+'</td>'+
+                                '<td class="left-align">'+row.rem_qty+'</td>'+
+                                '<td class="left-align">'+row.iss_qty+'</td>'+
                                 '<td class="left-align"><span class="new badge blue white-text" data-badge-caption="">'+row.status+'</span></td>'+ 
-                                '<td class="left-align"><p><label><input id="'+id+'" class="with-gap" type="checkbox" value="'+id+'" onclick="issItems(\''+row.trans_code+'\',\''+row.item_code+'\','+id+')"/><span></span></label></p></td>'+
+                                '<td class="left-align"><p><label><input id="'+id+'" class="with-gap" type="checkbox" value="'+id+'" onclick="issItems(\''+row.trans_code+'\',\''+row.item_code+'\',\''+row.rem_qty+'\','+id+')"/><span></span></label></p></td>'+
                                 '<input type="hidden" name="i_itm_item_code[]" value="'+row.item_code+'"/>'+
-                                '<input type="hidden" name="i_itm_quantity[]" value="'+row.quantity+'"/>'+
+                                '<input type="hidden" name="i_itm_quantity[]" value="'+row.req_qty+'"/>'+
+                                '<input type="hidden" name="i_itm_quantity_rem[]" value="'+row.rem_qty+'"/>'+
+                                '<input type="hidden" name="i_itm_quantity_iss[]" value="'+row.iss_qty+'"/>'+
                                 '<input type="hidden" name="i_itm_inventory_location[]" value="'+row.inventory_location+'"/>'+
                                 '<input type="hidden" name="i_itm_currency[]" value=" "/>'+
                                 '<input type="hidden" name="i_itm_currency_code[]" value=" "/>'+
