@@ -449,6 +449,31 @@ class InventoryIssuanceController extends Controller
                         ->withErrors($validator);
         }else{
 
+                $check_count = 0;
+                $item_count = count($request->input('i_itm_item_code'));
+
+                for($i = 0; $i < count($request->input('i_itm_item_code')); $i++)
+                {
+                    if($request->input('i_itm_quantity.'.$i) == $request->input('i_itm_quantity_iss.'.$i))
+                    {
+                        $check_count += 1;
+                    }
+                }
+
+                // return $item_count;
+                // return $check_count;
+
+                // Inventory Issuance details update
+                if($item_count == $check_count){
+                    $inviss = InventoryIssuance::where('issuance_code',$request->input('issuance_code'))->first();
+                    $inviss->status =               'Issued';
+                    $inviss->updated_by =           Auth::user()->emp_no;
+                } else {
+                    $inviss = InventoryIssuance::where('issuance_code',$request->input('issuance_code'))->first();
+                    $inviss->status =               'Issued with Pending';
+                    $inviss->updated_by =           Auth::user()->emp_no;
+                }
+
                 if($request->input('i_itm_item_code'))
                 {  
                     for($i = 0; $i < count($request->input('i_itm_item_code')); $i++)
@@ -463,11 +488,13 @@ class InventoryIssuanceController extends Controller
                             // check if all request is issued
                             if($request->input('i_itm_quantity_rem.'.$i) == 0)
                             {
+
+
                                 // Inventory update all issued based on request
                                 $inv = Inventory::where('item_code',$request->input('i_itm_item_code.'.$i))
                                 ->where('inventory_location_code',$request->input('i_itm_inventory_location.'.$i))
                                 ->first();
-                                $inv->quantity = $inv->quantity - $request->input('i_itm_quantity.'.$i);
+                                $inv->quantity = $inv->quantity - $request->input('i_itm_quantity_tbi.'.$i);
                                 $inv->updated_by =  Auth::user()->emp_no;
                                 $inv->save();
 
@@ -476,12 +503,30 @@ class InventoryIssuanceController extends Controller
                                 $logs->inventory_location_code = $request->input('i_itm_inventory_location.'.$i);
                                 $logs->save();
 
+                                if($request->input('i_itm_quantity_tbi.'.$i) > 0)
+                                {
+                                    $logs = new InventoryLog;
+                                    $logs->trans_code =              Str::upper($request->input('issuance_code'));
+                                    $logs->trans_type =              'Issuance';
+                                    $logs->status =                  'Issued with Pending';
+                                    $logs->trans_date =              date('Y-m-d H:i:s');
+                                    $logs->item_code =               $request->input('i_itm_item_code.'.$i);
+                                    $logs->quantity =                $request->input('i_itm_quantity_tbi.'.$i);
+                                    $logs->inventory_location_code = $request->input('i_itm_inventory_location.'.$i);
+            
+                                    $logs->sku =                     "";
+                                    $logs->currency_code =           "";
+                                    $logs->unit_price =              "";
+                                    $logs->total_price =             "";
+                                    $logs->save();
+                                }
+
                             } else {
                                 // Inventory update with remaining request
                                 $inv = Inventory::where('item_code',$request->input('i_itm_item_code.'.$i))
                                 ->where('inventory_location_code',$request->input('i_itm_inventory_location.'.$i))
                                 ->first();
-                                $inv->quantity = $inv->quantity - $request->input('i_itm_quantity.'.$i);
+                                $inv->quantity = $inv->quantity - $request->input('i_itm_quantity_tbi.'.$i);
                                 $inv->updated_by =  Auth::user()->emp_no;
                                 $inv->save();
 
@@ -492,7 +537,7 @@ class InventoryIssuanceController extends Controller
                                 $logs->status =                  'Issued with Pending';
                                 $logs->trans_date =              date('Y-m-d H:i:s');
                                 $logs->item_code =               $request->input('i_itm_item_code.'.$i);
-                                $logs->quantity =                $request->input('i_itm_quantity_iss.'.$i);
+                                $logs->quantity =                $request->input('i_itm_quantity_tbi.'.$i);
                                 $logs->inventory_location_code = $request->input('i_itm_inventory_location.'.$i);
         
                                 $logs->sku =                     "";
@@ -510,27 +555,6 @@ class InventoryIssuanceController extends Controller
                     }
                 }
                 
-                $check_count = 0;
-                $item_count = count($request->input('i_itm_item_code'));
-
-                for($i = 0; $i < count($request->input('i_itm_item_code')); $i++)
-                {
-                    if($request->input('i_itm_inventory_location.'.$i) != null)
-                    {
-                        $check_count += 1;
-                    }
-                }
-
-                // Inventory Issuance details update
-                if($item_count == $check_count){
-                    $inviss = InventoryIssuance::where('issuance_code',$request->input('issuance_code'))->first();
-                    $inviss->status =               'Issued';
-                    $inviss->updated_by =           Auth::user()->emp_no;
-                } else {
-                    $inviss = InventoryIssuance::where('issuance_code',$request->input('issuance_code'))->first();
-                    $inviss->status =               'Issued with Pending';
-                    $inviss->updated_by =           Auth::user()->emp_no;
-                }
 
                 if($inviss->save()){
                     return redirect()->route('issuance.index')->withSuccess('Issuance Request Successfully Added');

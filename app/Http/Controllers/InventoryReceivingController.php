@@ -97,7 +97,9 @@ class InventoryReceivingController extends Controller
                         ->withErrors($validator);
         }else{
 
-            if($request->input('delivery_no') && $request->input('delivery_date') && $request->input('po_no'))
+            // return $request->input('site_code');
+
+            if($request->input('receiving_code') && $request->input('delivery_no') && $request->input('delivery_date') && $request->input('po_no'))
             {
                 $invrcv = new InventoryReceiving();
                 $invrcv->receiving_code =            Str::upper($request->input('receiving_code',''));
@@ -232,35 +234,20 @@ class InventoryReceivingController extends Controller
                     {
                         $sku = Str::random('100');
                         $item = ItemMaster::where('item_code',$request->input('e_itm_item_code.'.$i))->first();
-                        $item_exist = Inventory::where('item_code',$request->input('e_itm_item_code.'.$i))
-                                                ->where('inventory_location_code', $request->input('e_itm_inventory_location.'.$i))
-                                                ->first();
-                        if($item_exist)
-                        {   
-                            $item_exist->delete();
-
-                            $inventory = new Inventory;
-                            if($item){($item->is_serialized == 1 ? $inventory->sku = $sku : '' );};
-                            $inventory->item_code = $request->input('e_itm_item_code.'.$i);
-                            $inventory->inventory_location_code = $request->input('e_itm_inventory_location.'.$i);
-                            $inventory->quantity = $request->input('e_itm_quantity.'.$i);
-                            $inventory->created_by =  Auth::user()->emp_no;
-                            $inventory->save();
-                        } else {
-                            $inventory = new Inventory;
-                            if($item){($item->is_serialized == 1 ? $inventory->sku = $sku : '' );};
-                            $inventory->item_code = $request->input('e_itm_item_code.'.$i);
-                            $inventory->inventory_location_code = $request->input('e_itm_inventory_location.'.$i);
-                            $inventory->quantity = $request->input('e_itm_quantity.'.$i);
-                            $inventory->created_by =  Auth::user()->emp_no;
-                            $inventory->save();
-                        }
 
                         $log_exist = InventoryLog::where('trans_code',$request->input('receiving_code',''))
                                                 ->where('item_code',$request->input('e_itm_item_code.'.$i))
                                                 ->where('inventory_location_code', $request->input('e_itm_inventory_location.'.$i))
                                                 ->first();
+                        // return $log_exist;
+
                         if($log_exist){ } else { 
+                            $item = Inventory::where('item_code',$request->input('e_itm_item_code.'.$i))
+                                        ->where('inventory_location_code', $request->input('e_itm_inventory_location.'.$i))
+                                        ->first();
+                            $item->quantity = $item->quantity + $request->input('e_itm_quantity.'.$i);
+                            $item->save();
+
                             $logs = new InventoryLog;
                             $logs->trans_code = Str::upper($request->input('receiving_code'));
                             $logs->trans_type = 'Update Receiving';

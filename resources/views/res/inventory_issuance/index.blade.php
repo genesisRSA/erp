@@ -1075,7 +1075,7 @@
               { 
                 $.get('receiving/'+$('#item_item_code').val()+'/'+$(this).val()+'/getCurrentStock', (response) => {
                   var current_stock = parseInt(response.data);
-                  var request_qty = parseInt($('#item_quantity').val());
+                  var request_qty = parseInt($('#item_quantity_rem').val());
                   if(current_stock < request_qty)
                   {
                     alert("Current stock of the item: "+$('#item_item_code').val()+" is not sufficient for the request!");
@@ -1098,42 +1098,43 @@
         });
  
 
-
+        
         $('#item_quantity_iss').on('keyup', function(){
-
-          if($('#item_status') == 'Pending'){
-            if($('#item_quantity_iss').val() % 1 != 0){
-              alert("Decimal point is not allowed! Please input whole number on quantity.");
-              $(this).val("");
-              $('#item_quantity_rem').val(0);
-            } else {
-              if( parseInt($('#item_quantity_iss').val()) <= parseInt($('#item_quantity').val()) )
-              {
-                $('#item_quantity_rem').val(parseInt($('#item_quantity').val()) - parseInt($('#item_quantity_iss').val()))
-              } else {
-                alert("You're not allowed to issue above the requested quantity!");
+          if($(this).val()){
+            if($('#item_status').val() == 'Pending'){
+              if($('#item_quantity_iss').val() % 1 != 0){
+                alert("Decimal point is not allowed! Please input whole number on quantity.");
                 $(this).val("");
                 $('#item_quantity_rem').val(0);
+              } else {
+                if( parseInt($('#item_quantity_iss').val()) <= parseInt($('#item_quantity').val()) )
+                {
+                  $('#item_quantity_rem').val(parseInt($('#item_quantity').val()) - parseInt($('#item_quantity_iss').val()))
+                } else {
+                  alert("You're not allowed to issue above the requested quantity!");
+                  $(this).val("");
+                  $('#item_quantity_rem').val(0);
+                }
+              }
+            } else {
+              if($('#item_quantity_iss').val() % 1 != 0){
+                alert("Decimal point is not allowed! Please input whole number on quantity.");
+                $(this).val("");
+                $('#item_quantity_rem').val(parseInt($('#item_qty_rem').val()));
+              } else {
+                if(parseInt($('#item_quantity_iss').val()) <= parseInt($('#item_qty_rem').val()))
+                {
+                  $('#item_quantity_rem').val(parseInt($('#item_qty_rem').val()) - parseInt($('#item_quantity_iss').val()))
+                } else {
+                  alert("You're not allowed to issue above the requested quantity!");
+                  $(this).val("");
+                  $('#item_quantity_rem').val(parseInt($('#item_qty_rem').val()));
+                }
               }
             }
           } else {
-            if($('#item_quantity_iss').val() % 1 != 0){
-              alert("Decimal point is not allowed! Please input whole number on quantity.");
-              $(this).val("");
-              $('#item_quantity_rem').val(parseInt($('#item_qty_rem').val()));
-            } else {
-              if(parseInt($('#item_quantity_iss').val()) <= parseInt($('#item_qty_rem').val()))
-              {
-                $('#item_quantity_rem').val(parseInt($('#item_qty_rem').val()) - parseInt($('#item_quantity_iss').val()))
-              } else {
-                alert("You're not allowed to issue above the requested quantity!");
-                $(this).val("");
-                $('#item_quantity_rem').val(parseInt($('#item_qty_rem').val()));
-              }
-            }
+            $('#item_quantity_rem').val(parseInt($('#item_qty_rem').val()));
           }
-
-      
         });
 
     });
@@ -1541,15 +1542,27 @@
         }
 
         $.get('list/'+data.issuance_code+'/items', (response) => {
-          var data = response.data;
-          $.each(data, (index, row) => {
-            view_items.push({"item_code": row.item_code,
-                            "item_desc": row.item_details.item_desc,
-                            "quantity": row.quantity,
-                            "status": row.status,
-                            });
-          });
-          // calculateGrandTotal('$',view_items,$('#view_grand_total'));
+          var datax = response.data;
+          if(data.status=='Issued'){
+            $.each(datax, (index, row) => {
+              if(row.status=='Issued'){
+                view_items.push({"item_code": row.item_code,
+                              "item_desc": row.item_details.item_desc,
+                              "quantity": row.quantity,
+                              "status": row.status,
+                              });
+              }
+            });
+          } else {
+            $.each(datax, (index, row) => {
+              view_items.push({"item_code": row.item_code,
+                              "item_desc": row.item_details.item_desc,
+                              "quantity": row.quantity,
+                              "status": row.status,
+                              });
+            });
+          }
+    
           renderItems(view_items,$('#view-items-dt tbody'),'view');
         });
 
@@ -1637,36 +1650,54 @@
                           "req_qty": row.quantity,
                           "rem_qty": 0, // must be requested quantity - issued quantity
                           "iss_qty": 0, // summary of issued quantity Status: Issued with Pending
+                          "tbi_qty": 0,
                           "status": row.status,
                           "is_check": false,
                           "inventory_location": row.inventory_location_code,
                           });
-            } 
-          });
-     
-        });
-
-        $.get('list/'+data.issuance_code+'/items_issued', (response) => {
-          var datax = response.data;
-          $.each(datax, (index, row) => {
-            all_iss_items.push({"item_code": row.item_code,
-                                "iss_qty": row.issued_qty, 
+            } else if(row.status == 'Issued'){
+              iss_items.push({"trans_code": data.issuance_code,
+                          "item_code": row.item_code,
+                          "item_desc": row.item_details.item_desc,
+                          "req_qty": row.quantity,
+                          "rem_qty": 0, 
+                          "iss_qty": row.quantity,
+                          "tbi_qty": 0,
+                          "status": row.status,
+                          "is_check": false,
+                          "inventory_location": row.inventory_location_code,
                           });
-            });
+            }
+          });
 
-            iss_items.forEach(item => {
-              var issued = all_iss_items.filter(item2 => item2.item_code == item.item_code);
-              if(issued)
-              {
-                item.iss_qty = issued[0].iss_qty;
-                item.rem_qty = item.req_qty - item.iss_qty; 
-              }
-            })
-
+ 
+          if(data.status=="Approved"){
             renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
+          } else {
+            $.get('list/'+data.issuance_code+'/items_issued', (response) => {
+              var datax = response.data;
+              $.each(datax, (index, row) => {
+                all_iss_items.push({"item_code": row.item_code,
+                                  "iss_qty": row.issued_qty, 
+                });
+              });
+
+              console.log(iss_items);
+              console.log(all_iss_items);
+
+              iss_items.forEach(item => {
+                var issued = all_iss_items.filter(item2 => item2.item_code == item.item_code);
+                console.log(issued);
+                if(issued.length > 0)
+                {
+                  item.iss_qty = issued[0].iss_qty;
+                  item.rem_qty = item.req_qty - item.iss_qty; 
+                }
+              })
+              renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
+            });
+          };
         });
-
-
       });
     };
 
@@ -1681,6 +1712,7 @@
           $('#item_uom').val(data.item_details.uom_code);
           $('#item_quantity').val(data.quantity);
           $('#item_location_code').val("");
+          $('#item_location_name').val("");
 
           $('#item_qty_rem').val(item_rem);
           $('#item_quantity_rem').val(item_rem);
@@ -1711,7 +1743,7 @@
 
     const collectItem = () => {
       if($('#item_status') == 'Pending'){
-        if(trim($('#item_location_code').val()) && trim($('#item_quantity_iss').val()))
+        if(trim($('#item_location_code').val()) && trim($('#item_quantity_iss').val()) && trim($('#item_quantity_iss').val()) > 0)
         {
           var index = $('#item_id').val();
               index = index - 1;
@@ -1719,6 +1751,9 @@
           iss_items[index].inventory_location = $('#item_location_code').val();
           iss_items[index].rem_qty = $('#item_quantity_rem').val();
           iss_items[index].iss_qty = $('#item_quantity_iss').val();
+
+          iss_items[index].tbi_qty = $('#item_quantity_iss').val();
+          
           iss_items[index].is_check = true;
           renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
           $('#issDetModal').modal('close');
@@ -1726,7 +1761,7 @@
           alert('Please fill-up all details to collect!')
         }
       } else {
-        if(trim($('#item_location_code').val()) && trim($('#item_quantity_iss').val()))
+        if(trim($('#item_location_code').val()) && trim($('#item_quantity_iss').val()) && trim($('#item_quantity_iss').val()) > 0)
         {
           var index = $('#item_id').val();
               index = index - 1;
@@ -1734,6 +1769,7 @@
           iss_items[index].inventory_location = $('#item_location_code').val();
           iss_items[index].rem_qty = $('#item_quantity_rem').val();
           iss_items[index].iss_qty = parseInt(iss_items[index].iss_qty) + parseInt($('#item_quantity_iss').val());
+          iss_items[index].tbi_qty = $('#item_quantity_iss').val();
           iss_items[index].is_check = true;
           renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
           $('#issDetModal').modal('close');
@@ -1791,14 +1827,15 @@
                                 '<td class="left-align">'+row.item_code+'</td>'+
                                 '<td class="left-align">'+row.item_desc+'</td>'+
                                 '<td class="left-align">'+row.req_qty+'</td>'+
-                                '<td class="left-align">'+row.rem_qty+'</td>'+
-                                '<td class="left-align">'+row.iss_qty+'</td>'+
+                                '<td class="left-align">0</td>'+
+                                '<td class="left-align">'+row.req_qty+'</td>'+
                                 '<td class="left-align"><span class="new badge black white-text" data-badge-caption="">'+row.status+'</span></td>'+ 
                                 '<td class="left-align"><p><label><input id="'+id+'" class="filled-in" checked="checked" type="checkbox" value="'+id+'" disabled/><span></span></label></p></td>'+
                                 '<input type="hidden" name="i_itm_item_code[]" value="'+row.item_code+'"/>'+
                                 '<input type="hidden" name="i_itm_quantity[]" value="'+row.req_qty+'"/>'+
                                 '<input type="hidden" name="i_itm_quantity_rem[]" value="'+row.rem_qty+'"/>'+
                                 '<input type="hidden" name="i_itm_quantity_iss[]" value="'+row.iss_qty+'"/>'+
+                                '<input type="hidden" name="i_itm_quantity_tbi[]" value="'+row.tbi_qty+'"/>'+
                                 '<input type="hidden" name="i_itm_inventory_location[]" value="'+row.inventory_location+'"/>'+
                                 '<input type="hidden" name="i_itm_currency[]" value=" "/>'+
                                 '<input type="hidden" name="i_itm_currency_code[]" value=" "/>'+
@@ -1820,6 +1857,7 @@
                                 '<input type="hidden" name="i_itm_quantity[]" value="'+row.req_qty+'"/>'+
                                 '<input type="hidden" name="i_itm_quantity_rem[]" value="'+row.rem_qty+'"/>'+
                                 '<input type="hidden" name="i_itm_quantity_iss[]" value="'+row.iss_qty+'"/>'+
+                                '<input type="hidden" name="i_itm_quantity_tbi[]" value="'+row.tbi_qty+'"/>'+
                                 '<input type="hidden" name="i_itm_inventory_location[]" value="'+row.inventory_location+'"/>'+
                                 '<input type="hidden" name="i_itm_currency[]" value=" "/>'+
                                 '<input type="hidden" name="i_itm_currency_code[]" value=" "/>'+
@@ -1842,6 +1880,7 @@
                                 '<input type="hidden" name="i_itm_quantity[]" value="'+row.req_qty+'"/>'+
                                 '<input type="hidden" name="i_itm_quantity_rem[]" value="'+row.rem_qty+'"/>'+
                                 '<input type="hidden" name="i_itm_quantity_iss[]" value="'+row.iss_qty+'"/>'+
+                                '<input type="hidden" name="i_itm_quantity_tbi[]" value="'+row.tbi_qty+'"/>'+
                                 '<input type="hidden" name="i_itm_inventory_location[]" value="'+row.inventory_location+'"/>'+
                                 '<input type="hidden" name="i_itm_currency[]" value=" "/>'+
                                 '<input type="hidden" name="i_itm_currency_code[]" value=" "/>'+

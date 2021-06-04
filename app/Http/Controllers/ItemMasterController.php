@@ -128,6 +128,18 @@ class ItemMasterController extends Controller
             ]);
     }
 
+    public function getItemDetailsLoc($item_code, $item_cat)
+    {
+        //
+        $data = ItemMaster::where('item_code',$item_code)
+                        ->where('cat_code',$item_cat)
+                        ->first();
+        return response()
+            ->json([
+                "data" => $data
+            ]);
+    }
+
     public function getSubCategory($id)
     {
         $data = ItemSubCategory::where('cat_code',$id)->get();

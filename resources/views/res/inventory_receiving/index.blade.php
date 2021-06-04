@@ -60,7 +60,7 @@
               <select id="add_site_code" name="site_code" required>
                 @foreach ($site as $sites)
                   @if($sites->site_code == $employee->site_code)
-                  <option value="{{$sites->site_code}}" disabled selected>{{$sites->site_desc}}</option>
+                  <option value="{{$sites->site_code}}" selected>{{$sites->site_desc}}</option>
                   @endif
                 @endforeach
               </select>
@@ -68,7 +68,8 @@
             </div>
 
             <div class="input-field col s12 m6 l6">
-              <input id="add_delivery_date" name="delivery_date" type="text" class="datepicker" placeholder="" required>
+              <input id="add_delivery_date" name="delivery_date" type="text"  placeholder="" value="{{date('Y-m-d')}}" readonly>
+
               <label for="delivery_date">Delivery Date<sup class="red-text">*</sup></label>
             </div>
           </div>
@@ -96,21 +97,28 @@
 
         <div id="items" name="items">
           <div class="row" style="margin-bottom: 0px;">
-            <div class="input-field col s12 m6 l6">
-              <input id="add_item_code" name="item_code" type="text" class="validate" autocomplete="" placeholder="">
-              <span id="add_current_stock" name="add_current_stock" class="badge" style="font-size: 12px">Current Stock: 0</span>
-              <label for="item_code">Item Code<sup class="red-text">*</sup></label>
-              
+            <div class="input-field col s12 m6 l6"> 
+              <input id="add_inventory_location" name="inventory_location" type="text" placeholder="Click here before scanning location..">
+              <label for="inventory_location">Inventory Location<sup class="red-text">*</sup></label>
             </div>
 
             <div class="input-field col s12 m6 l6">
-              <select id="add_inventory_location" name="inventory_location">
-                <option value="" disabled selected>Choose your option</option>
-                @foreach ($inventloc as $inventlocs)
-                  <option value="{{$inventlocs->location_code}}">{{$inventlocs->location_name}}</option>
-                @endforeach
-              </select>
-              <label for="inventory_location">Inventory Location<sup class="red-text">*</sup></label>
+              <input type="hidden" id="add_loc_cat" name="loc_cat">
+              <input id="add_inventory_name" name="inventory_name" type="text" placeholder="" readonly>
+              <label for="inventory_name">Location Name<sup class="red-text"></sup></label>
+            </div>
+          </div>
+          
+          <div class="row" style="margin-bottom: 0px;">
+            <div class="input-field col s12 m6 l6">
+              <input id="add_item_code" name="item_code" type="text" autocomplete="" placeholder="">
+              <span id="add_current_stock" name="add_current_stock" class="badge" style="font-size: 12px">Current Stock: 0</span>
+              <label for="item_code">Item Code<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m6 l6">
+              <input id="add_item_desc" name="item_desc" type="text" placeholder="" readonly>
+              <label for="item_desc">Description<sup class="red-text"></sup></label>
             </div>
           </div>
 
@@ -220,16 +228,17 @@
           <div class="row">
             <div class="input-field col s12 m6 l6">
               <select id="edit_site_code" name="site_code" required>
-                <option value="" disabled selected>Choose your option</option>
                 @foreach ($site as $sites)
-                  <option value="{{$sites->site_code}}">{{$sites->site_desc}}</option>
+                  @if($sites->site_code == $employee->site_code)
+                  <option value="{{$sites->site_code}}" selected>{{$sites->site_desc}}</option>
+                  @endif
                 @endforeach
               </select>
               <label for="site_code">Site<sup class="red-text">*</sup></label>
             </div>
 
             <div class="input-field col s12 m6 l6">
-              <input id="edit_delivery_date" name="delivery_date" type="text" class="datepicker" placeholder="" required>
+              <input id="edit_delivery_date" name="delivery_date" type="text" placeholder="" readonly>
               <label for="delivery_date">Delivery Date<sup class="red-text">*</sup></label>
             </div>
           </div>
@@ -257,20 +266,28 @@
 
         <div id="edit_items" name="edit_items">
           <div class="row" style="margin-bottom: 0px;">
+            <div class="input-field col s12 m6 l6"> 
+              <input id="edit_inventory_location" name="inventory_location" type="text" placeholder="Click here before scanning location..">
+              <label for="inventory_location">Inventory Location<sup class="red-text">*</sup></label>
+            </div>
+
             <div class="input-field col s12 m6 l6">
-              <input id="edit_item_code" name="item_code" type="text" class="validate" autocomplete="" placeholder="">
+              <input type="hidden" id="edit_loc_cat" name="loc_cat">
+              <input id="edit_inventory_name" name="inventory_name" type="text" placeholder="" readonly>
+              <label for="inventory_name">Location Name<sup class="red-text"></sup></label>
+            </div>
+          </div>
+          
+          <div class="row" style="margin-bottom: 0px;">
+            <div class="input-field col s12 m6 l6">
+              <input id="edit_item_code" name="item_code" type="text" autocomplete="" placeholder="">
               <span id="edit_current_stock" name="edit_current_stock" class="badge" style="font-size: 12px">Current Stock: 0</span>
               <label for="item_code">Item Code<sup class="red-text">*</sup></label>
             </div>
 
             <div class="input-field col s12 m6 l6">
-              <select id="edit_inventory_location" name="inventory_location">
-                <option value="" disabled selected>Choose your option</option>
-                @foreach ($inventloc as $inventlocs)
-                  <option value="{{$inventlocs->location_code}}">{{$inventlocs->location_name}}</option>
-                @endforeach
-              </select>
-              <label for="inventory_location">Inventory Location<sup class="red-text">*</sup></label>
+              <input id="edit_item_desc" name="item_desc" type="text" placeholder="" readonly>
+              <label for="item_desc">Description<sup class="red-text"></sup></label>
             </div>
           </div>
 
@@ -536,25 +553,64 @@
           deliveryCode($(this).val(),'add');
         });
 
+
+        $('#add_inventory_location').on('keyup', function(e){
+          if(e.which == 13){       
+            $.get('../inventory/location/getlocation/'+$('#add_inventory_location').val(), (response) => {
+              var data = response.data;
+              if(data != null){
+                $('#add_inventory_name').val(data.location_name);
+                $('#add_loc_cat').val(data.required_item_category);
+                $('#add_inventory_location').prop('disabled', true);
+                $('#add_inventory_name').prop('disabled', true);
+                $('#add_item_code').prop('disabled', false);
+                $('#add_item_desc').prop('disabled', false);
+
+                $('#btnReset').prop('disabled', false);
+              } else {
+                alert("Inventory location does not exist! Please check and re-scan location.")
+                $('#add_loc_cat').val("");
+                $('#add_inventory_location').val("");
+                $('#add_inventory_location').prop('disabled', false);
+                $('#add_inventory_name').val("");
+                $('#add_inventory_name').prop('disabled', false);
+                $('#add_item_code').prop('disabled', true);
+                $('#add_item_desc').prop('disabled', true);
+
+                $('#btnReset').prop('disabled', true);
+              }
+            }); 
+          }
+        });
+
         $('#add_item_code').on('blur', function(){
           if($('#add_inventory_location').val())
           {
-            $.get('receiving/'+$('#add_item_code').val()+'/'+$('#add_inventory_location').val()+'/getCurrentStock', (response) => {
-              $('#add_current_stock').html('Current Stock: '+response.data);
+            $.get('../item_master/getItemDetailsLoc/'+$('#add_item_code').val()+'/'+$('#add_loc_cat').val(), (response) => {
+              var data = response.data;
+              if(data)
+              {
+                $.get('receiving/'+$('#add_item_code').val()+'/'+$('#add_inventory_location').val()+'/getCurrentStock', (response) => {
+                  if(response.data)
+                  {
+                    $('#add_current_stock').html('Current Stock: '+response.data);
+                  }
+                });
+                $('#add_item_code').prop('disabled', true);
+                $('#add_item_desc').prop('disabled', true);
+                $('#add_item_desc').val(data.item_desc);
+              } else {
+                alert("Item does not exist on the scanned location! Please check and re-scan item.")
+                $('#add_item_code').val("")
+                $('#add_item_code').prop('disabled', false);
+                $('#add_item_desc').val("")
+                $('#add_item_desc').prop('disabled', false);
+                $('#add_current_stock').html('Current Stock: 0');
+              }
             });
           }
-          $('#add_item_code').prop('disabled', true);
-          $('#btnReset').prop('disabled', false);
         });
 
-        $('#add_inventory_location').on('change', function(){
-          if($('#add_item_code').val())
-          {
-            $.get('receiving/'+$('#add_item_code').val()+'/'+$('#add_inventory_location').val()+'/getCurrentStock', (response) => {
-              $('#add_current_stock').html('Current Stock: '+response.data);
-            });
-          }
-        });
 
         $('#add_unit_price').on('keyup', function(){
           this.value = this.value.replace(/[^0-9\.]/g,'');
@@ -592,7 +648,6 @@
 
             if($('#add_quantity').val() % 1 != 0)
             {
-              console.log('not allowed');
               alert("Decimal point is not allowed! Please input whole number on quantity.");
             } else {
                $.get('../item_master/getItemDetails/'+$('#add_item_code').val(), (response) => {
@@ -620,22 +675,59 @@
           deliveryCode($(this).val(),'edit');
         });
 
+        $('#edit_inventory_location').on('keyup', function(e){
+          if(e.which == 13){       
+            $.get('../inventory/location/getlocation/'+$('#edit_inventory_location').val(), (response) => {
+              var data = response.data;
+              if(data != null){
+                $('#edit_inventory_name').val(data.location_name);
+                $('#edit_loc_cat').val(data.required_item_category);
+                $('#edit_inventory_location').prop('disabled', true);
+                $('#edit_inventory_name').prop('disabled', true);
+                $('#edit_item_code').prop('disabled', false);
+                $('#edit_item_desc').prop('disabled', false);
+
+                $('#edit_btnReset').prop('disabled', false);
+              } else {
+                alert("Inventory location does not exist! Please check and re-scan location.")
+                $('#edit_loc_cat').val("");
+                $('#edit_inventory_location').val("");
+                $('#edit_inventory_location').prop('disabled', false);
+                $('#edit_inventory_name').val("");
+                $('#edit_inventory_name').prop('disabled', false);
+                $('#edit_item_code').prop('disabled', true);
+                $('#edit_item_desc').prop('disabled', true);
+
+                $('#edit_btnReset').prop('disabled', true);
+              }
+            }); 
+          }
+        });
+
         $('#edit_item_code').on('blur', function(){
           if($('#edit_inventory_location').val())
           {
-            $.get('receiving/'+$('#edit_item_code').val()+'/'+$('#edit_inventory_location').val()+'/getCurrentStock', (response) => {
-              $('#edit_current_stock').html('Current Stock: '+response.data);
-            });
-          }
-          $('#edit_item_code').prop('disabled', true);
-          $('#edit_btnReset').prop('disabled', false);
-        });
-
-        $('#edit_inventory_location').on('change', function(){
-          if($('#edit_item_code').val())
-          {
-            $.get('receiving/'+$('#edit_item_code').val()+'/'+$('#edit_inventory_location').val()+'/getCurrentStock', (response) => {
-              $('#edit_current_stock').html('Current Stock: '+response.data);
+            $.get('../item_master/getItemDetailsLoc/'+$('#edit_item_code').val()+'/'+$('#edit_loc_cat').val(), (response) => {
+              var data = response.data;
+              if(data)
+              {
+                $.get('receiving/'+$('#edit_item_code').val()+'/'+$('#edit_inventory_location').val()+'/getCurrentStock', (response) => {
+                  if(response.data)
+                  {
+                    $('#edit_current_stock').html('Current Stock: '+response.data);
+                  }
+                });
+                $('#edit_item_code').prop('disabled', true);
+                $('#edit_item_desc').prop('disabled', true);
+                $('#edit_item_desc').val(data.item_desc);
+              } else {
+                alert("Item does not exist on the scanned location! Please check and re-scan item.")
+                $('#edit_item_code').val("")
+                $('#edit_item_code').prop('disabled', false);
+                $('#edit_item_desc').val("")
+                $('#edit_item_desc').prop('disabled', false);
+                $('#edit_current_stock').html('Current Stock: 0');
+              }
             });
           }
         });
@@ -673,13 +765,12 @@
           ){
             if($('#edit_quantity').val() % 1 != 0)
             {
-              console.log('not allowed');
               alert("Decimal point is not allowed! Please input whole number on quantity.");
             } else {
               $.get('../item_master/getItemDetails/'+$('#edit_item_code').val(), (response) => {
                 var item = response.data;
               if(item){
-                  $.get('receiving/'+item.item_code+'/'+$('#add_inventory_location').val()+'/getCurrentStock', (response) => {
+                  $.get('receiving/'+item.item_code+'/'+$('#edit_inventory_location').val()+'/getCurrentStock', (response) => {
                     var current_stock = parseInt(response.data) + parseInt($('#edit_quantity').val());
                     var maximum_stock = parseInt(item.maximum_stock);
                     addItem('edit',current_stock, maximum_stock);
@@ -695,7 +786,7 @@
         });
 
 
-        console.log('{{$employee->site_code}}');
+
     });
 
     const FormatNumber = (number) => {
@@ -724,7 +815,6 @@
           {
             alert('Delivery no. already exist! Please check DR before proceeding..');
           } else {
-
             var currentDate = "{{date('Y-m-d')}}";
             if(currentDate > trim($('#add_delivery_date').val()))
             {
@@ -836,16 +926,25 @@
       input_total.val(symbol+" "+FormatNumber(total ? parseFloat(total) : 0));
     };
 
-    const resetItemDetails = () => {
-      var loc = $('#reset_loc').val();
-      if(loc=="add"){
+    const resetItemDetails = (loc = "") => {
+        var locx = (loc == "" ? $('#reset_loc').val() : loc);
+        console.log(locx);
+      if(locx=="add"){
+        $('#add_inventory_location').prop('disabled', false);
         $('#add_inventory_location').val("");
-        $('#add_inventory_location').formSelect();
+
+        $('#add_inventory_name').prop('disabled', false);
+        $('#add_inventory_name').val("");
+        $('#add_loc_cat').val("");
+        
+        $('#add_item_code').prop('disabled', true);
+        $('#add_item_code').val("");
+
+        $('#add_item_desc').prop('disabled', true);
+        $('#add_item_desc').val("");
+        
         $('#add_currency_code').val("");
         $('#add_currency_code').formSelect();
-        
-        $('#add_item_code').prop('disabled', false);
-        $('#add_item_code').val("");
 
         $('#add_quantity').val("");
         $('#add_unit_price').val("");
@@ -854,13 +953,21 @@
         $('#btnReset').prop('disabled', true);
         $('#resetModal').modal('close');
       } else {
+        $('#edit_inventory_location').prop('disabled', false);
         $('#edit_inventory_location').val("");
-        $('#edit_inventory_location').formSelect();
-        $('#edit_currency_code').val("");
-        $('#edit_currency_code').formSelect();
-  
+
+        $('#edit_inventory_name').prop('disabled', false);
+        $('#edit_inventory_name').val("");
+        $('#edit_loc_cat').val("");
+
         $('#edit_item_code').prop('disabled', false);
         $('#edit_item_code').val("");
+
+        $('#edit_item_desc').prop('disabled', false);
+        $('#edit_item_desc').val("");
+ 
+        $('#edit_currency_code').val("");
+        $('#edit_currency_code').formSelect();
 
         $('#edit_quantity').val("");
         $('#edit_unit_price').val("");
@@ -950,19 +1057,28 @@
 
           if(found){
             alert("You're not allowed to add quantity of the said item! Please create another receiving to add it on inventory.");
+            $('#edit_inventory_location').prop('disabled', false);
+            $('#edit_inventory_location').val("");
+
+            $('#edit_inventory_name').prop('disabled', false);
+            $('#edit_inventory_name').val("");
+            $('#edit_loc_cat').val("");
+
             $('#edit_item_code').prop('disabled', false);
             $('#edit_item_code').val("");
+
+            $('#edit_item_desc').prop('disabled', false);
+            $('#edit_item_desc').val("");
+            
             $('#edit_quantity').prop('disabled', false);
             $('#edit_quantity').val("");
             $('#edit_unit_price').prop('disabled', false);
-            $('#edit_unit_price').val("");
- 
+            $('#edit_unit_price').val(""); 
             $('#edit_total_price').val("");
 
-            $('#edit_inventory_location option[value=""]').prop('selected', true);
-            $('#edit_inventory_location').prop('disabled', false);
-            $('#edit_currency_code option[value=""]').prop('selected', true);
-            $('#edit_currency_code').prop('disabled', false);
+            $('#edit_currency_code').val("");
+            $('#edit_currency_code').formSelect();
+            
 
           }else{
               var current_stocks = parseInt(current_stock);
@@ -1037,7 +1153,7 @@
       // $('#add_site_code option[value=""]').prop('selected', true);
       // $('#add_site_code').formSelect();
       $('#add_receiving_code').val('{{$employee->site_code}}-RCV{{date('Ymd')}}-{{$count}}');
-      $('#add_delivery_date').val("");
+      // $('#add_delivery_date').val("");
       $('#add_delivery_no').val("");
       $('#add_po_no').val("");
       add_items = []

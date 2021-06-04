@@ -64,6 +64,7 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::post('/reiss/item_master/delete', 'ItemMasterController@delete')->name('item_master.delete');
     Route::get('/reiss/item_master/getSubCategory/{id}', 'ItemMasterController@getSubCategory');
     Route::get('/reiss/item_master/getItemDetails/{item_code}', 'ItemMasterController@getItemDetails');
+    Route::get('/reiss/item_master/getItemDetailsLoc/{item_code}/{item_cat}', 'ItemMasterController@getItemDetailsLoc');
 
     Route::resource('/reiss/approver','ApproverMatrixController');
     Route::post('/reiss/approver/delete','ApproverMatrixController@delete')->name('approver.delete');
