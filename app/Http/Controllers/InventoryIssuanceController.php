@@ -19,6 +19,7 @@ use App\Product;
 use App\ItemMaster;
 use App\ItemCategory;
 use App\UnitOfMeasure;
+use App\UOMConversion;
 
 use App\Project;
 use App\Inventory;
@@ -34,11 +35,7 @@ use PDF;
 
 class InventoryIssuanceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+  
     public function index()
     {      
         $sites = Site::all();
@@ -46,7 +43,7 @@ class InventoryIssuanceController extends Controller
         $inventoryLocation = InventoryLocation::all();
         $issuanceCount = InventoryIssuance::count();
  
-        $employees = Employee::orderBy('emp_lname')->get();
+        $employees = Employee::where('emp_no', Auth::user()->emp_no)->first();
         $project = Project::where('status','<>','Pending')->get();
 
         $uom = UnitOfMeasure::all();
@@ -65,6 +62,7 @@ class InventoryIssuanceController extends Controller
                 ->with('sites', $sites)
                 ->with('count', $issuanceCount)
                 ->with('currency', $currency)
+                ->with('uoms', $uom)
                 ->with('inventloc', $inventoryLocation)
                 ->with('permission',$permissionx);
     }
@@ -138,7 +136,7 @@ class InventoryIssuanceController extends Controller
                         ->withErrors($validator);
         }else{
 
-            if($request->input('issuance_code') && $request->input('site_code') && $request->input('purpose'))
+            if($request->input('issuance_code') &&  $request->input('purpose'))
             {
                         $inviss = new InventoryIssuance();
                         $inviss->issuance_code =    Str::upper($request->input('issuance_code',''));
@@ -185,6 +183,7 @@ class InventoryIssuanceController extends Controller
                         $logs->status =                  'Pending';
                         $logs->trans_date =              date('Y-m-d H:i:s');
                         $logs->item_code =               $request->input('itm_item_code.'.$i);
+                        $logs->uom_code =                $request->input('itm_uom_code.'.$i);
                         $logs->quantity =                $request->input('itm_quantity.'.$i);
 
                         $logs->sku =                     "";
@@ -207,12 +206,6 @@ class InventoryIssuanceController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         return response()
@@ -221,28 +214,16 @@ class InventoryIssuanceController extends Controller
                                             ->with('sites:site_code,site_desc')
                                             ->with('projects:project_code,project_name')
                                             ->with('assy:assy_code,assy_desc')
+                                            ->with('employee_details:emp_no,emp_fname,emp_lname')
                                             ->get()
             ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         //
     }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+ 
     public function update(Request $request, $id)
     {
         //
@@ -370,11 +351,10 @@ class InventoryIssuanceController extends Controller
                         ->withErrors($validator);
         }else{
 
-            if($request->input('issuance_code') && $request->input('site_code') && $request->input('purpose'))
+            if($request->input('issuance_code') && $request->input('purpose'))
             {
                         $inviss = InventoryIssuance::find($request->input('id'));
                         $inviss->issuance_code =        Str::upper($request->input('issuance_code',''));
-                        $inviss->site_code =            Str::upper($request->input('site_code',''));
                         $inviss->requestor =            Auth::user()->emp_no;
                         $inviss->status =               'Pending';
                         $inviss->created_by =           Auth::user()->emp_no;
@@ -410,6 +390,7 @@ class InventoryIssuanceController extends Controller
                         $logs->status =                  'Pending';
                         $logs->trans_date =              date('Y-m-d H:i:s');
                         $logs->item_code =               $request->input('e_itm_item_code.'.$i);
+                        $logs->uom_code =                $request->input('e_itm_uom_code.'.$i);
                         $logs->quantity =                $request->input('e_itm_quantity.'.$i);
 
                         $logs->sku =                     "";
@@ -454,14 +435,11 @@ class InventoryIssuanceController extends Controller
 
                 for($i = 0; $i < count($request->input('i_itm_item_code')); $i++)
                 {
-                    if($request->input('i_itm_quantity.'.$i) == $request->input('i_itm_quantity_iss.'.$i))
+                    if($request->input('i_itm_quantity_rem.'.$i) == 0)
                     {
                         $check_count += 1;
                     }
                 }
-
-                // return $item_count;
-                // return $check_count;
 
                 // Inventory Issuance details update
                 if($item_count == $check_count){
@@ -481,6 +459,7 @@ class InventoryIssuanceController extends Controller
                                 $logs = InventoryLog::where('trans_code',$request->input('issuance_code'))
                                                     ->where('item_code',$request->input('i_itm_item_code.'.$i))
                                                     ->first();
+                                // return $request->input('i_itm_iss_uom.'.$i);
                                 $logs->trans_date = date('Y-m-d H:i:s');
                         // check if with location and other details collection
                         if($request->input('i_itm_inventory_location.'.$i) != null)
@@ -488,23 +467,24 @@ class InventoryIssuanceController extends Controller
                             // check if all request is issued
                             if($request->input('i_itm_quantity_rem.'.$i) == 0)
                             {
-
-
-                                // Inventory update all issued based on request
-                                $inv = Inventory::where('item_code',$request->input('i_itm_item_code.'.$i))
-                                ->where('inventory_location_code',$request->input('i_itm_inventory_location.'.$i))
-                                ->first();
-                                $inv->quantity = $inv->quantity - $request->input('i_itm_quantity_tbi.'.$i);
-                                $inv->updated_by =  Auth::user()->emp_no;
-                                $inv->save();
-
-                    
-                                $logs->status =                  'Issued';
-                                $logs->inventory_location_code = $request->input('i_itm_inventory_location.'.$i);
-                                $logs->save();
-
                                 if($request->input('i_itm_quantity_tbi.'.$i) > 0)
                                 {
+                                    // get convertion value to -> then divide to issue qty
+                                    $conv_to = UOMConversion::find($request->input('i_itm_conv_id.'.$i));
+                                    $conv_to_deduct = $request->input('i_itm_quantity_tbi.'.$i) / $conv_to->uom_to_value;
+
+                                    // Inventory update all issued based on request
+                                    $inv = Inventory::where('item_code',$request->input('i_itm_item_code.'.$i))
+                                    ->where('inventory_location_code',$request->input('i_itm_inventory_location.'.$i))
+                                    ->first();
+                                    $inv->quantity = $inv->quantity - $conv_to_deduct;
+                                    $inv->updated_by =  Auth::user()->emp_no;
+                                    $inv->save();
+
+                                    $logs->status =                  'Issued';
+                                    $logs->inventory_location_code = $request->input('i_itm_inventory_location.'.$i);
+                                    $logs->save();
+                                    
                                     $logs = new InventoryLog;
                                     $logs->trans_code =              Str::upper($request->input('issuance_code'));
                                     $logs->trans_type =              'Issuance';
@@ -513,12 +493,16 @@ class InventoryIssuanceController extends Controller
                                     $logs->item_code =               $request->input('i_itm_item_code.'.$i);
                                     $logs->quantity =                $request->input('i_itm_quantity_tbi.'.$i);
                                     $logs->inventory_location_code = $request->input('i_itm_inventory_location.'.$i);
+                                    $logs->uom_conv_id =             $request->input('i_itm_conv_id.'.$i);
+                                    $logs->uom_code =                Str::upper($request->input('i_itm_iss_uom.'.$i));
             
                                     $logs->sku =                     "";
                                     $logs->currency_code =           "";
                                     $logs->unit_price =              "";
                                     $logs->total_price =             "";
                                     $logs->save();
+                                } else {
+                                    return redirect()->route('issuance.index')->withError('Issuance quantity is not allowed! Please check re-issue item');
                                 }
 
                             } else {
@@ -526,25 +510,38 @@ class InventoryIssuanceController extends Controller
                                 $inv = Inventory::where('item_code',$request->input('i_itm_item_code.'.$i))
                                 ->where('inventory_location_code',$request->input('i_itm_inventory_location.'.$i))
                                 ->first();
-                                $inv->quantity = $inv->quantity - $request->input('i_itm_quantity_tbi.'.$i);
-                                $inv->updated_by =  Auth::user()->emp_no;
-                                $inv->save();
 
-                                // create new log
-                                $logs = new InventoryLog;
-                                $logs->trans_code =              Str::upper($request->input('issuance_code'));
-                                $logs->trans_type =              'Issuance';
-                                $logs->status =                  'Issued with Pending';
-                                $logs->trans_date =              date('Y-m-d H:i:s');
-                                $logs->item_code =               $request->input('i_itm_item_code.'.$i);
-                                $logs->quantity =                $request->input('i_itm_quantity_tbi.'.$i);
-                                $logs->inventory_location_code = $request->input('i_itm_inventory_location.'.$i);
-        
-                                $logs->sku =                     "";
-                                $logs->currency_code =           "";
-                                $logs->unit_price =              "";
-                                $logs->total_price =             "";
-                                $logs->save();
+                                if($inv)
+                                {
+                                    // get convertion value to -> then divide to issue qty
+                                    $conv_to = UOMConversion::find($request->input('i_itm_conv_id.'.$i));
+                                    $conv_to_deduct = $request->input('i_itm_quantity_tbi.'.$i) / $conv_to->uom_to_value;
+
+                                    $inv->quantity = $inv->quantity - $conv_to_deduct;
+                                    $inv->updated_by =  Auth::user()->emp_no;
+                                    $inv->save();
+
+                                    // create new log
+                                    $logs = new InventoryLog;
+                                    $logs->trans_code =              Str::upper($request->input('issuance_code'));
+                                    $logs->trans_type =              'Issuance';
+                                    $logs->status =                  'Issued with Pending';
+                                    $logs->trans_date =              date('Y-m-d H:i:s');
+                                    $logs->item_code =               $request->input('i_itm_item_code.'.$i);
+                                    $logs->quantity =                $request->input('i_itm_quantity_tbi.'.$i);
+                                    $logs->inventory_location_code = $request->input('i_itm_inventory_location.'.$i);
+                                    $logs->uom_conv_id =             $request->input('i_itm_conv_id.'.$i);
+                                    $logs->uom_code =                Str::upper($request->input('i_itm_iss_uom.'.$i));
+            
+                                    $logs->sku =                     "";
+                                    $logs->currency_code =           "";
+                                    $logs->unit_price =              "";
+                                    $logs->total_price =             "";
+                                    $logs->save();
+                                } else {
+                                    return redirect()->route('issuance.index')->withError('Item does not exist on the scanned location. Please check and re-scan!');
+                                }
+
                             }
                  
                         } else {
@@ -555,13 +552,10 @@ class InventoryIssuanceController extends Controller
                     }
                 }
                 
-
                 if($inviss->save()){
                     return redirect()->route('issuance.index')->withSuccess('Issuance Request Successfully Added');
                 }
 
-           
-        
         }
     }
 

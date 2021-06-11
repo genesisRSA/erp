@@ -104,6 +104,8 @@ class InventoryReceivingController extends Controller
                 $invrcv = new InventoryReceiving();
                 $invrcv->receiving_code =            Str::upper($request->input('receiving_code',''));
                 $invrcv->site_code =                 Str::upper($request->input('site_code',''));
+                $invrcv->invoice_no =                $request->input('invoice_no','');
+                $invrcv->invoice_date =              $request->input('invoice_date','');
                 $invrcv->delivery_no =               $request->input('delivery_no','');
                 $invrcv->delivery_date =             $request->input('delivery_date','');
                 $invrcv->po_no =                     $request->input('po_no','');
@@ -221,6 +223,8 @@ class InventoryReceivingController extends Controller
                 $invrcv = InventoryReceiving::find($request->input('id'));
                 $invrcv->receiving_code =            Str::upper($request->input('receiving_code',''));
                 $invrcv->site_code =                 Str::upper($request->input('site_code',''));
+                $invrcv->invoice_no =                $request->input('invoice_no','');
+                $invrcv->invoice_date =              $request->input('invoice_date','');
                 $invrcv->delivery_no =               $request->input('delivery_no','');
                 $invrcv->delivery_date =             $request->input('delivery_date','');
                 $invrcv->po_no =                     $request->input('po_no','');

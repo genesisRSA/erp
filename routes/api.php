@@ -19,6 +19,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 //RGC ENT SYS
 Route::get('/reiss/uom/all', 'UOMController@all');
+Route::get('/reiss/uom_conversion/all', 'UOMConversionController@all');
+
 Route::get('/reiss/currency/all', 'CurrenciesController@all');
 Route::get('/reiss/payment_term/all', 'PaymentTermsController@all');
 Route::get('/reiss/customer/all', 'CustomersController@all');

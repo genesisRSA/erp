@@ -162,6 +162,7 @@
               <li><a href="#!">Accounts</a></li>
               <li @if($subpage=='currency') class="active" @endif><a href="{{ route('currency.index')}}">Currencies</a></li>
               <li @if($subpage=='uom') class="active" @endif><a href="{{ route('uom.index')}}">Units</a></li>
+              <li @if($subpage=='uom_conversion') class="active" @endif><a href="{{ route('uom_conversion.index')}}">Units Conversion</a></li>
               <li @if($subpage=='payment_term') class="active" @endif><a href="{{ route('payment_term.index')}}">Payment Terms</a></li>
             </ul>
           </div>

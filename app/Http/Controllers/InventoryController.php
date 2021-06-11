@@ -64,6 +64,7 @@ class InventoryController extends Controller
                                 ->where('status','<>','Voided')
                                 ->with('currency:currency_code,currency_name,symbol')   
                                 ->with('item_details:item_code,item_desc') 
+                                // ->with()
                                 ->get()
         ]);
     }
@@ -71,10 +72,12 @@ class InventoryController extends Controller
     public function items_issued($trans_code)
     {
         return response()->json([
-            "data" => InventoryLog::select(DB::raw('item_code, SUM(quantity) as issued_qty'))
+            "data" => InventoryLog::select(DB::raw('item_code, uom_conv_id, uom_code, SUM(quantity) as issued_qty'))
                                 ->where('trans_code',$trans_code)
                                 ->where('status','=','Issued with Pending')
                                 ->groupBy('item_code')
+                                ->groupBy('uom_code')
+                                ->groupBy('uom_conv_id')
                                 ->get()
         ]);
     }

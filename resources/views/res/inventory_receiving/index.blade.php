@@ -17,8 +17,8 @@
                     <th>ID</th>
                     <th>Site</th>
                     <th>Receiving Code</th>
+                    <th>Invoice No.</th>
                     <th>Delivery No.</th>
-                    <th>Delivery Date</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -48,14 +48,14 @@
         </ul><br>
         
         <div id="receiving" name="receiving">
-          <div class="row">
+          <div class="row" style="margin-bottom: 0px;">
             <div class="input-field col s12 m6 l6">
               <input id="add_receiving_code" name="receiving_code" type="text" class="validate" placeholder="" value="'{{$employee->site_code}}'-RCV{{date('Ymd')}}-{{$count}}" required readonly>
               <label for="receiving_code">Receiving Code<sup class="red-text">*</sup></label>
             </div>
           </div>
 
-          <div class="row">
+          <div class="row" style="margin-bottom: 0px;">
             <div class="input-field col s12 m6 l6">
               <select id="add_site_code" name="site_code" required>
                 @foreach ($site as $sites)
@@ -69,12 +69,23 @@
 
             <div class="input-field col s12 m6 l6">
               <input id="add_delivery_date" name="delivery_date" type="text"  placeholder="" value="{{date('Y-m-d')}}" readonly>
-
               <label for="delivery_date">Delivery Date<sup class="red-text">*</sup></label>
             </div>
           </div>
 
-          <div class="row">
+          <div class="row" style="margin-bottom: 0px;">
+            <div class="input-field col s12 m6 l6">
+              <input id="add_invoice_no" name="invoice_no" type="text" class="validate" placeholder="" required>
+              <label for="invoice_no">Invoice No.<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m6 l6">
+              <input id="add_invoice_date" name="invoice_date" type="text" class="datepicker" placeholder="" required>
+              <label for="invoice_date">Invoice Date<sup class="red-text">*</sup></label>
+            </div>
+          </div>
+
+          <div class="row" style="margin-bottom: 0px;">
             <div class="input-field col s12 m6 l6">
               <input id="add_delivery_no" name="delivery_no" type="text" class="validate" placeholder="" required>
               <label for="delivery_no">Delivery No.<sup class="red-text">*</sup></label>
@@ -217,7 +228,7 @@
         </ul><br>
         
         <div id="edit_receiving" name="edit_receiving">
-          <div class="row">
+          <div class="row" style="margin-bottom: 0px;">
             <div class="input-field col s12 m6 l6">
               <input type="hidden" id="edit_id" name="id">
               <input id="edit_receiving_code" name="receiving_code" type="text" class="validate" placeholder="" value="-RCV{{date('Ymd')}}-{{$count}}" required readonly>
@@ -225,7 +236,7 @@
             </div>
           </div>
 
-          <div class="row">
+          <div class="row" style="margin-bottom: 0px;">
             <div class="input-field col s12 m6 l6">
               <select id="edit_site_code" name="site_code" required>
                 @foreach ($site as $sites)
@@ -243,14 +254,26 @@
             </div>
           </div>
 
-          <div class="row">
+          <div class="row" style="margin-bottom: 0px;">
             <div class="input-field col s12 m6 l6">
-              <input id="edit_delivery_no" name="delivery_no" type="text" class="validate" placeholder="" required readonly>
+              <input id="edit_invoice_no" name="invoice_no" type="text" placeholder="" required readonly>
+              <label for="invoice_no">Invoice No.<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m6 l6">
+              <input id="edit_invoice_date" name="invoice_date" type="text" placeholder="" required readonly>
+              <label for="invoice_date">Invoice Date<sup class="red-text">*</sup></label>
+            </div>
+          </div>
+
+          <div class="row" style="margin-bottom: 0px;">
+            <div class="input-field col s12 m6 l6">
+              <input id="edit_delivery_no" name="delivery_no" type="text" placeholder="" required readonly>
               <label for="delivery_no">Delivery No.<sup class="red-text">*</sup></label>
             </div>
 
             <div class="input-field col s12 m6 l6">
-              <input id="edit_po_no" name="po_no" type="text" class="validate" placeholder="" required readonly>
+              <input id="edit_po_no" name="po_no" type="text" placeholder="" required readonly>
               <label for="po_no">P.O No.<sup class="red-text">*</sup></label>
             </div>
           </div>
@@ -380,14 +403,14 @@
 
         <div class="row" style="margin-bottom: 0px;"> 
           <div class="input-field col s12 m6 l6">
-            <input id="view_receiving_code" name="receiving_code" type="text" class="validate" placeholder="" required readonly>
+            <input id="view_receiving_code" name="receiving_code" type="text" placeholder="" readonly>
             <label for="receiving_code">Receiving Code<sup class="red-text"></sup></label>
           </div>
         </div>
 
         <div class="row" style="margin-bottom: 0px;">
           <div class="input-field col s12 m6 l6">
-            <select id="view_site_code" name="site_code" required disabled>
+            <select id="view_site_code" name="site_code">
               <option value="" disabled selected>Choose your option</option>
               @foreach ($site as $sites)
                 <option value="{{$sites->site_code}}">{{$sites->site_desc}}</option>
@@ -397,26 +420,38 @@
           </div>
 
           <div class="input-field col s12 m6 l6">
-            <input id="view_delivery_date" name="delivery_date" type="text" class="datepicker" placeholder="" required disabled>
+            <input id="view_delivery_date" name="delivery_date" type="text" placeholder="" readonly>
             <label for="delivery_date">Delivery Date<sup class="red-text"></sup></label>
           </div>
         </div>
 
         <div class="row" style="margin-bottom: 0px;">
           <div class="input-field col s12 m6 l6">
-            <input id="view_delivery_no" name="delivery_no" type="text" class="validate" placeholder="" required readonly>
+            <input id="view_invoice_no" name="invoice_no" type="text" placeholder="" readonly>
+            <label for="invoice_no">Invoice No.<sup class="red-text"></sup></label>
+          </div>
+
+          <div class="input-field col s12 m6 l6">
+            <input id="view_invoice_date" name="invoice_date" type="text" placeholder="" readonly>
+            <label for="invoice_date">Invoice Date<sup class="red-text"></sup></label>
+          </div>
+        </div>
+
+        <div class="row" style="margin-bottom: 0px;">
+          <div class="input-field col s12 m6 l6">
+            <input id="view_delivery_no" name="delivery_no" type="text" placeholder="" readonly>
             <label for="delivery_no">Delivery No.<sup class="red-text"></sup></label>
           </div>
 
           <div class="input-field col s12 m6 l6">
-            <input id="view_po_no" name="po_no" type="text" class="validate" placeholder="" required readonly>
+            <input id="view_po_no" name="po_no" type="text" placeholder="" required readonly>
             <label for="po_no">P.O No.<sup class="red-text"></sup></label>
           </div>
         </div>
 
         <div class="row" style="margin-bottom: 0px;">
           <div class="input-field col s12 m12 l12">
-            <textarea class="materialize-textarea" type="text" id="view_remarks" name="remarks" placeholder="Please input remarks here.." style="height: 150px; border-left: 10px; border-color: black; padding-left:20px;" disabled></textarea>
+            <textarea class="materialize-textarea" type="text" id="view_remarks" name="remarks" placeholder="Please input remarks here.." style="height: 150px; border-left: 10px; border-color: black; padding-left:20px;" readonly></textarea>
             <label for="remarks">Remarks<sup class="red-text"></sup></label>
           </div>   
         </div>
@@ -510,7 +545,6 @@
   <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
   <script type="text/javascript" src="{{ asset('datatables/datatables.js') }}"></script>
   <script type="text/javascript">
-
     var delCount = {{$count}};
     const str = new Date().toISOString().slice(0, 10);
     var newtoday = str.replace(/[^a-zA-Z0-9]/g,"");
@@ -553,10 +587,9 @@
           deliveryCode($(this).val(),'add');
         });
 
-
         $('#add_inventory_location').on('keyup', function(e){
           if(e.which == 13){       
-            $.get('../inventory/location/getlocation/'+$('#add_inventory_location').val(), (response) => {
+            $.get('../inventory/location/getlocation/'+trim($('#add_inventory_location').val()), (response) => {
               var data = response.data;
               if(data != null){
                 $('#add_inventory_name').val(data.location_name);
@@ -610,7 +643,6 @@
             });
           }
         });
-
 
         $('#add_unit_price').on('keyup', function(){
           this.value = this.value.replace(/[^0-9\.]/g,'');
@@ -677,7 +709,7 @@
 
         $('#edit_inventory_location').on('keyup', function(e){
           if(e.which == 13){       
-            $.get('../inventory/location/getlocation/'+$('#edit_inventory_location').val(), (response) => {
+            $.get('../inventory/location/getlocation/'+trim($('#edit_inventory_location').val()), (response) => {
               var data = response.data;
               if(data != null){
                 $('#edit_inventory_name').val(data.location_name);
@@ -820,8 +852,10 @@
             {
                 alert("You're not allowed to receive late deliveries!");
             } else {
-              if(trim($('#add_delivery_date').val()) && 
+              if(trim($('#add_invoice_no').val()) && 
+                trim($('#add_invoice_date').val()) && 
                 trim($('#add_delivery_no').val()) && 
+                trim($('#add_delivery_date').val()) && 
                 trim($('#add_po_no').val()))
               {
                 $('#'+tab).removeClass("disabled");   
@@ -835,7 +869,8 @@
           }
         });  
       } else {
-            if(trim($('#edit_site_code').val()) && 
+            if(trim($('#edit_invoice_no').val()) && 
+              trim($('#edit_invoice_date').val()) && 
               trim($('#edit_delivery_date').val()) && 
               trim($('#edit_delivery_no').val()) && 
               trim($('#edit_po_no').val()))
@@ -1176,8 +1211,11 @@
         $('#edit_site_code').formSelect();
         
         $('#edit_receiving_code').val(data.receiving_code);
-        $('#edit_delivery_date').val(data.delivery_date);
+        $('#edit_invoice_no').val(data.invoice_no);
+        $('#edit_invoice_date').val(data.invoice_date);
+
         $('#edit_delivery_no').val(data.delivery_no);
+        $('#edit_delivery_date').val(data.delivery_date);
         $('#edit_po_no').val(data.po_no);
         $('#edit_remarks').val(data.remarks);
 
@@ -1213,8 +1251,10 @@
         $('#view_site_code').formSelect();
   
         $('#view_receiving_code').val(data.receiving_code);
-        $('#view_delivery_date').val(data.delivery_date);
+        $('#view_invoice_no').val(data.invoice_no);
+        $('#view_invoice_date').val(data.invoice_date);
         $('#view_delivery_no').val(data.delivery_no);
+        $('#view_delivery_date').val(data.delivery_date);
         $('#view_po_no').val(data.po_no);
         $('#view_remarks').html(data.remarks);
         
@@ -1270,12 +1310,12 @@
            
               {   "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return row.delivery_no;
+                    return row.invoice_no;
                   }
               },
               {  "data": "id",
                   "render": function ( data, type, row, meta ) {
-                    return row.delivery_date;
+                    return row.delivery_no;
                   }
               },
               {   "data": "id",

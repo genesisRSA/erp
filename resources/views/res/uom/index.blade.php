@@ -14,6 +14,7 @@
             <thead>
               <tr>
                   <th>ID</th> 
+                  <th>Type</th>
                   <th>Name</th>
                   <th>Code</th>
                   <th>Action</th>
@@ -33,13 +34,25 @@
     <form method="POST" action="{{route('uom.store')}}">
     @csrf
       <div class="modal-content">
-        <h4>Add Unit</h4><br><br>
+        <h4>Add Unit</h4><br>
         <div class="row">
-          <div class="input-field col s12 m6">
+          <div class="input-field col s12 m6 l6">
+            <select id="add_uom_type" name="uom_type">
+              <option value="" selected disabled>Choose your option</option>
+              <option value="Area">Area</option>
+              <option value="Length">Length</option>
+              <option value="Weight">Weight</option>
+              <option value="Volume">Volume</option>
+            </select>
+            <label for="uom_type">UOM Type <sup class="red-text">*</sup></label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12 m6 l6">
             <input placeholder="e.g Meter, Kilogram" name="uom_name" type="text" class="validate" required>
             <label for="uom_name">UOM Name <sup class="red-text">*</sup></label>
           </div>
-          <div class="input-field col s12 m6">
+          <div class="input-field col s12 m6 l6">
             <input placeholder="e.g m, kg" name="uom_code" type="text" class="validate" required>
             <label for="uom_code">UOM Code <sup class="red-text">*</sup></label>
           </div>
@@ -126,6 +139,7 @@
         "ajax": "/api/reiss/uom/all",
         "columns": [
             {  "data": "id" },
+            {  "data": "uom_type" },
             {  "data": "uom_name" },
             {  "data": "uom_code" },
             {

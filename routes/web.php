@@ -26,6 +26,14 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::post('/reiss/uom/patch', 'UOMController@patch')->name('uom.patch');
     Route::post('/reiss/uom/delete', 'UOMController@delete')->name('uom.delete');
 
+    Route::resource('/reiss/uom_conversion', 'UOMConversionController');
+    Route::get('/reiss/uom_conversion/uoms_per_type/{type}','UOMConversionController@getUOMperType');
+    Route::get('/reiss/uom_conversion/conversions/{code}','UOMConversionController@getUOMconversion');
+    Route::get('/reiss/uom_conversion/rev_convert/{from}/{to}','UOMConversionController@getReverseConvert');
+    Route::get('/reiss/uom_conversion/conv_values/{id}','UOMConversionController@getConversionValue');
+    Route::post('/reiss/uom_conversion/patch', 'UOMConversionController@patch')->name('uom_conversion.patch');
+    Route::post('/reiss/uom_conversion/delete', 'UOMConversionController@delete')->name('uom_conversion.delete');
+
     Route::resource('/reiss/currency', 'CurrenciesController');
     Route::post('/reiss/currency/patch', 'CurrenciesController@patch')->name('currency.patch');
     Route::post('/reiss/currency/delete', 'CurrenciesController@delete')->name('currency.delete');
