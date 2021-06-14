@@ -1302,13 +1302,13 @@
         });
         
         $('#item_quantity_iss').on('keyup', function(){
-          if($(this).val()){
+          if($(this).val() > 0){
             if($('#item_status').val() == 'Pending'){
 
                      $.get('../uom_conversion/rev_convert/'+$('#item_iss_uom').html()+'/'+$('#item_rqst_uom').html(), (response) => {
+  
                       var convert_val = response.data.uom_to_value;
                           convert_val = parseFloat(convert_val) * parseFloat($(this).val());
-                          
                       var check_qty = parseFloat($('#item_quantity').val()) - parseFloat(convert_val);
                       if( check_qty >= 0){
                         $('#item_quantity_rem').val(parseFloat($('#item_quantity').val()) - parseFloat(convert_val));
@@ -1325,10 +1325,9 @@
                     var conv_value = parseFloat($(this).val()) * parseFloat($('#item_to_value').val())
                       rem_stock = parseFloat($('#item_cs').val()) - parseFloat(conv_value);
                     $.get('../uom_conversion/rev_convert/'+$('#item_iss_uom').html()+'/'+$('#item_rqst_uom').html(), (response) => {
-                      
+    
                       var convert_val = response.data.uom_to_value;
                           convert_val = parseFloat(convert_val) * parseFloat($(this).val());
-
                       var check_qty = parseFloat($('#item_qty_rem').val()) - parseFloat(convert_val);
                       if( check_qty >= 0){
                         $('#item_quantity_rem').val(parseFloat($('#item_qty_rem').val()) - parseFloat(convert_val));
@@ -1341,7 +1340,11 @@
 
             }
           } else {
-            $('#item_quantity_rem').val(parseInt($('#item_qty_rem').val()));
+            if($(this).val()){
+              alert('Issuance quantity must be greater than zero!');
+              $('#item_quantity_iss').val("");
+              $('#item_quantity_rem').val(parseInt($('#item_qty_rem').val()));
+            }  
           }
         });
  
@@ -1696,7 +1699,7 @@
       iss_list = []
       $.get('list/'+trim($('#issue_issuance_code').val())+'/items', (response) => {
           var datax = response.data;
-    
+          console.log(datax);
           $.each(datax, (index, row) => {
             if(row.status == 'Pending'){
               iss_items.push({"trans_code": trim($('#issue_issuance_code').val()),
@@ -1733,7 +1736,7 @@
                           "item_desc": row.item_details.item_desc,
                           "req_qty": row.quantity,
                           "uom_code": row.uom_code,
-                          "rem_qty": 0, 
+                          "rem_qty": row.rem_qty,
                           "iss_qty": row.quantity,
                           "tbi_qty": 0,
                           "status": row.status,
@@ -2320,9 +2323,7 @@
                             "iss_index": index,
                           });
             renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
-
           } else {
-            
             iss_items[index].iss_index = index;
             iss_items[index].inventory_location = $('#item_location_code').val();
             iss_items[index].rem_qty = $('#item_quantity_rem').val();
@@ -2639,7 +2640,12 @@
         } else {
 
           iss_items[item_index].inventory_location = "";
-          iss_items[item_index].rem_qty = 0;
+          // if(){
+
+          // } else {
+
+          // }
+            iss_items[item_index].rem_qty = parseFloat(iss_items[item_index].rem_qty) + parseFloat(iss_list[index].tbi_qty);
           iss_items[item_index].iss_qty = 0;
           iss_items[item_index].tbi_qty = 0;
           iss_items[item_index].conv_id = "";
@@ -2650,14 +2656,10 @@
           iss_list.splice(index,1);
           renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
 
-          if(iss_list.length > 0){
-            $('#btnIssReset').prop('disabled', false);
-            $('#btnIssue').prop('disabled', false);
-          } else {
-            $('#btnIssReset').prop('disabled', true);
-            $('#btnIssue').prop('disabled', true);
-          }
+          $('#btnIssReset').prop('disabled', true);
+          $('#btnIssue').prop('disabled', true);
           $('#removeItemModal').modal('close');
+
         }
     };
 

@@ -56,14 +56,46 @@ class UOMConversionController extends Controller
             return back()->withInput()
                         ->withErrors($validator);
         }else{
-            $uom = new UOMConversion();
-            $uom->uom_cnv_type = $request->input('uom_cnv_type','');
-            $uom->uom_cnv_name = $request->input('uom_cnv_name','');
-            $uom->uom_from = $request->input('uom_from','');
-            $uom->uom_from_value = $request->input('uom_from_value','');
-            $uom->uom_to = $request->input('uom_to','');
-            $uom->uom_to_value = $request->input('uom_to_value','');
- 
+
+            $uomExist = UOMConversion::where('uom_from','=',$request->input('uom_from'))
+                                    ->where('uom_to','=',$request->input('uom_to')) 
+                                    ->first();
+
+            if($uomExist == null){
+                $uomOneToOneExist = UOMConversion::where('uom_from','=',$request->input('uom_from'))
+                                    ->where('uom_to','=',$request->input('uom_from')) 
+                                    ->first();
+                if($uomOneToOneExist == null){
+                    $uomOneToOne = new UOMConversion();
+                    $uomOneToOne->uom_cnv_type = $request->input('uom_cnv_type','');
+                    $uomName = explode(" ", $request->input('uom_cnv_name',''));
+                    $uomOneToOne->uom_cnv_name = $uomName[0].' to '.$uomName[0];
+                    $uomOneToOne->uom_from = $request->input('uom_from','');
+                    $uomOneToOne->uom_from_value = $request->input('uom_from_value','');
+                    $uomOneToOne->uom_to = $request->input('uom_from','');
+                    $uomOneToOne->uom_to_value = $request->input('uom_from_value','');
+                    $uomOneToOne->save();
+    
+                    $uom = new UOMConversion();
+                    $uom->uom_cnv_type = $request->input('uom_cnv_type','');
+                    $uom->uom_cnv_name = $request->input('uom_cnv_name','');
+                    $uom->uom_from = $request->input('uom_from','');
+                    $uom->uom_from_value = $request->input('uom_from_value','');
+                    $uom->uom_to = $request->input('uom_to','');
+                    $uom->uom_to_value = $request->input('uom_to_value','');
+                } else {
+                    $uom = new UOMConversion();
+                    $uom->uom_cnv_type = $request->input('uom_cnv_type','');
+                    $uom->uom_cnv_name = $request->input('uom_cnv_name','');
+                    $uom->uom_from = $request->input('uom_from','');
+                    $uom->uom_from_value = $request->input('uom_from_value','');
+                    $uom->uom_to = $request->input('uom_to','');
+                    $uom->uom_to_value = $request->input('uom_to_value','');
+                }
+            } else {
+                return redirect()->route('uom_conversion.index')->withErrors('Unit Conversion Already Exist!');
+            }
+            
             if($uom->save()){
                 return redirect()->route('uom_conversion.index')->withSuccess('Unit Conversion Successfully Added');
             }

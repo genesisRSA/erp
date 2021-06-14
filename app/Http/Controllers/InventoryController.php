@@ -64,7 +64,6 @@ class InventoryController extends Controller
                                 ->where('status','<>','Voided')
                                 ->with('currency:currency_code,currency_name,symbol')   
                                 ->with('item_details:item_code,item_desc') 
-                                // ->with()
                                 ->get()
         ]);
     }

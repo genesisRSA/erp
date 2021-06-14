@@ -49,8 +49,8 @@
           </div>
 
           <div class="input-field col s12 m6">
-            <input placeholder="e.g Meter to Kilometer" id="add_uom_cnv_name" name="uom_cnv_name" type="text" class="validate" required>
-            <label for="uom_cnv_name">Conversion Name<sup class="red-text">*</sup></label>
+            <input placeholder=" " id="add_uom_cnv_name" name="uom_cnv_name" type="text" class="validate" required readonly>
+            <label for="uom_cnv_name">Conversion Name<sup class="red-text"></sup></label>
           </div>
         </div>
 
@@ -62,7 +62,7 @@
             <label for="uom_from">From<sup class="red-text">*</sup></label>
           </div>
           <div class="input-field col s12 m6">
-            <input placeholder="" id="add_uom_from_value" name="uom_from_value" type="number" step="0.00000001" class="validate" required>
+            <input placeholder="" id="add_uom_from_value" name="uom_from_value" type="number" step="0.00000001" value="1" class="validate" required readonly>
             <label for="uom_from_value">Value<sup class="red-text">*</sup></label>
           </div>
         </div>
@@ -120,7 +120,7 @@
           <label for="uom_from">From<sup class="red-text">*</sup></label>
         </div>
         <div class="input-field col s12 m6">
-          <input placeholder="" id="edit_uom_from_value" name="uom_from_value" type="number" class="validate" required>
+          <input placeholder="" id="edit_uom_from_value" name="uom_from_value" type="number" class="validate" value="1" required readonly>
           <label for="uom_from_value">Value<sup class="red-text">*</sup></label>
         </div>
       </div>
@@ -188,6 +188,36 @@
         });
       });
 
+      $('#add_uom_from').on('change', function(){
+        var from_text = $('#add_uom_from option:selected').text();
+        var to_text = $('#add_uom_to option:selected').text();
+
+        var from = $(this).val() ? from_text : ""; 
+        var to = $('#add_uom_to').val() ? to_text : "";
+        
+        $('#add_uom_cnv_name').val(from + " to " + to);
+      });
+
+      $('#add_uom_to').on('change', function(){
+        var from_text = $('#add_uom_from option:selected').text();
+        var to_text = $('#add_uom_to option:selected').text();
+
+        var from = $('#add_uom_from').val() ? from_text : ""; 
+        var to = $(this).val() ? to_text : "";
+        $('#add_uom_cnv_name').val(from + " to " + to);
+      });
+
+      $('#add_uom_to_value').on('keyup', function(){
+          if($(this).val() > 0){ 
+          } else {
+            if($(this).val()){
+              alert('Conversion quantity must be greater than zero!');
+              $(this).val("");
+            }
+          }
+      });
+
+
       $('#edit_uom_cnv_type').on('change', function(){
         $.get('uom_conversion/uoms_per_type/'+$(this).val(), (response) => {
           var data = response.data;
@@ -200,6 +230,35 @@
           $('#edit_uom_to').html(select);
           $('#edit_uom_to').formSelect();
         });
+      });
+
+      $('#edit_uom_from').on('change', function(){
+        var from_text = $('#edit_uom_from option:selected').text();
+        var to_text = $('#edit_uom_to option:selected').text();
+
+        var from = $(this).val() ? from_text : ""; 
+        var to = $('#edit_uom_to').val() ? to_text : "";
+        
+        $('#edit_uom_cnv_name').val(from + " to " + to);
+      });
+
+      $('#edit_uom_to').on('change', function(){
+        var from_text = $('#edit_uom_from option:selected').text();
+        var to_text = $('#edit_uom_to option:selected').text();
+
+        var from = $('#edit_uom_from').val() ? from_text : ""; 
+        var to = $(this).val() ? to_text : "";
+        $('#edit_uom_cnv_name').val(from + " to " + to);
+      });
+
+      $('edit_uom_to_value').on('keyup', function(){
+          if($(this).val() > 0){ 
+          } else {
+            if($(this).val()){
+              alert('Conversion quantity must be greater than zero!');
+              $(this).val("");
+            }
+          }
       });
     });
 
