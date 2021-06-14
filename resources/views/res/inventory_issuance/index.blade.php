@@ -1301,8 +1301,8 @@
           }
         });
         
-        $('#item_quantity_iss').on('keyup', function(){
-          if($(this).val() > 0){
+        $('#item_quantity_iss').on('blur', function(){
+          if(parseFloat($(this).val()) > 0){
             if($('#item_status').val() == 'Pending'){
 
                      $.get('../uom_conversion/rev_convert/'+$('#item_iss_uom').html()+'/'+$('#item_rqst_uom').html(), (response) => {
