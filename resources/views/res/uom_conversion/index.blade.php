@@ -27,7 +27,7 @@
     </div>
   </div>
 
-  <a href="#addModal" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped modal-trigger" id="add-button" data-position="left" data-tooltip="Add Unit Conversion"><i class="material-icons">add</i></a>
+  <a href="#!" onclick="addModal();" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button" data-position="left" data-tooltip="Add Unit Conversion"><i class="material-icons">add</i></a>
  
   <!-- MODALS -->
 
@@ -49,7 +49,7 @@
           </div>
 
           <div class="input-field col s12 m6">
-            <input placeholder=" " id="add_uom_cnv_name" name="uom_cnv_name" type="text" class="validate" required readonly>
+            <input placeholder=" " id="add_uom_cnv_name" name="uom_cnv_name" type="text" required readonly>
             <label for="uom_cnv_name">Conversion Name<sup class="red-text"></sup></label>
           </div>
         </div>
@@ -62,7 +62,7 @@
             <label for="uom_from">From<sup class="red-text">*</sup></label>
           </div>
           <div class="input-field col s12 m6">
-            <input placeholder="" id="add_uom_from_value" name="uom_from_value" type="number" step="0.00000001" value="1" class="validate" required readonly>
+            <input placeholder="" id="add_uom_from_value" name="uom_from_value" type="number" step="0.00000001" value="1" required readonly>
             <label for="uom_from_value">Value<sup class="red-text">*</sup></label>
           </div>
         </div>
@@ -75,14 +75,14 @@
             <label for="uom_to">To<sup class="red-text">*</sup></label>
           </div>
           <div class="input-field col s12 m6">
-            <input placeholder="" id="add_uom_to_value" name="uom_to_value" type="number" step="0.00000001" class="validate" required>
+            <input placeholder="" id="add_uom_to_value" name="uom_to_value" type="number" required>
             <label for="uom_to_value">Value<sup class="red-text">*</sup></label>
           </div>
         </div>
       </div>
 
       <div class="modal-footer">
-        <button class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Save</button>
+        <button id="btnAdd_Save" class="green waves-effect waves-light btn" disabled><i class="material-icons left">check_circle</i>Save</button>
         <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left" style="margin-right: 30px;">cancel</i>Cancel</a>
       </div>
     </form>
@@ -107,7 +107,7 @@
         </div>
 
         <div class="input-field col s12 m6">
-          <input placeholder="e.g Meter to Kilometer" id="edit_uom_cnv_name" name="uom_cnv_name" type="text" class="validate" required>
+          <input placeholder="e.g Meter to Kilometer" id="edit_uom_cnv_name" name="uom_cnv_name" type="text" required>
           <label for="uom_cnv_name">Conversion Name<sup class="red-text">*</sup></label>
         </div>
       </div>
@@ -120,7 +120,7 @@
           <label for="uom_from">From<sup class="red-text">*</sup></label>
         </div>
         <div class="input-field col s12 m6">
-          <input placeholder="" id="edit_uom_from_value" name="uom_from_value" type="number" class="validate" value="1" required readonly>
+          <input placeholder="" id="edit_uom_from_value" name="uom_from_value" type="number" value="1" required readonly>
           <label for="uom_from_value">Value<sup class="red-text">*</sup></label>
         </div>
       </div>
@@ -133,14 +133,14 @@
           <label for="uom_to">To<sup class="red-text">*</sup></label>
         </div>
         <div class="input-field col s12 m6">
-          <input placeholder="" id="edit_uom_to_value" name="uom_to_value" type="number" step="0.00001" class="validate" required>
+          <input placeholder="" id="edit_uom_to_value" name="uom_to_value" type="number" step="0.00000001"  required>
           <label for="uom_to_value">Value<sup class="red-text">*</sup></label>
         </div>
       </div>
 
     </div>
     <div class="modal-footer">
-      <button class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Save</button>
+      <button id="btnEdit_Save" class="green waves-effect waves-light btn" disabled><i class="material-icons left">check_circle</i>Save</button>
       <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left" style="margin-right: 30px;">cancel</i>Cancel</a>
     </div>
     </form>
@@ -207,11 +207,13 @@
         $('#add_uom_cnv_name').val(from + " to " + to);
       });
 
-      $('#add_uom_to_value').on('keyup', function(){
-          if($(this).val() > 0){ 
+      $('#add_uom_to_value').on('blur', function(){
+          if(parseFloat($(this).val()) > 0){ 
+              $('#btnAdd_Save').prop('disabled', false);
           } else {
             if($(this).val()){
               alert('Conversion quantity must be greater than zero!');
+              $('#btnAdd_Save').prop('disabled', true);
               $(this).val("");
             }
           }
@@ -251,15 +253,18 @@
         $('#edit_uom_cnv_name').val(from + " to " + to);
       });
 
-      $('edit_uom_to_value').on('keyup', function(){
-          if($(this).val() > 0){ 
+      $('#edit_uom_to_value').on('blur', function(){
+          if(parseFloat($(this).val()) > 0){ 
+            $('#btnEdit_Save').prop('disabled', false);
           } else {
             if($(this).val()){
               alert('Conversion quantity must be greater than zero!');
+              $('#btnEdit_Save').prop('disabled', true);
               $(this).val("");
             }
           }
       });
+
     });
 
     function editItem(id){
@@ -301,6 +306,22 @@
         $('#edit_uom_to').formSelect();
 
       });
+    };
+
+    const addModal = () => {
+      $('#add_uom_cnv_type option[value=""]').prop('selected', true);
+      $('#add_uom_cnv_type').formSelect();
+
+      $('#add_uom_from option[value=""]').prop('selected', true);
+      $('#add_uom_from').formSelect();
+
+      $('#add_uom_to option[value=""]').prop('selected', true);
+      $('#add_uom_to').formSelect();
+
+      $('#add_uom_cnv_name').val("");
+      $('#add_uom_to_value').val("");
+
+      $('#addModal').modal('open');
     };
 
     var uom_dt = $('#uom_conversion_dt').DataTable({
