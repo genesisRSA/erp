@@ -2161,9 +2161,6 @@
                   if(issued.length > 0)
                   {
                     if(issued[index].conv_id != null){
-                      console.log(issued[index].iss_uom);
-                      console.log(item.uom_code);
-
                       if(issued[index].iss_uom == item.uom_code){
 
                         $.get('../uom_conversion/conv_values/'+issued[index].conv_id, (response) => { 
@@ -2639,26 +2636,29 @@
           if(add_items.length  == 0 ){ $('#btnAddSave').prop('disabled', true); }
         } else {
 
-          iss_items[item_index].inventory_location = "";
-          // if(){
+          $.get('../item_master/getItemDetails/'+trim(iss_list[index].item_code), (response) => { 
+            if(response.data.uom_code == iss_list[index].uom_code){
+              iss_items[item_index].rem_qty = parseFloat(iss_items[item_index].rem_qty) + parseFloat(iss_list[index].tbi_qty);
+            } else {
+              
+            }
 
-          // } else {
+            iss_items[item_index].inventory_location = "";
+            iss_items[item_index].iss_qty = 0;
+            iss_items[item_index].tbi_qty = 0;
+            iss_items[item_index].conv_id = "";
+            iss_items[item_index].iss_uom = "";
+            iss_items[item_index].is_check = false;
+            renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
 
-          // }
-            iss_items[item_index].rem_qty = parseFloat(iss_items[item_index].rem_qty) + parseFloat(iss_list[index].tbi_qty);
-          iss_items[item_index].iss_qty = 0;
-          iss_items[item_index].tbi_qty = 0;
-          iss_items[item_index].conv_id = "";
-          iss_items[item_index].iss_uom = "";
-          iss_items[item_index].is_check = false;
-          renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
+            iss_list.splice(index,1);
+            renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
 
-          iss_list.splice(index,1);
-          renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
+            $('#btnIssReset').prop('disabled', true);
+            $('#btnIssue').prop('disabled', true);
+            $('#removeItemModal').modal('close');
 
-          $('#btnIssReset').prop('disabled', true);
-          $('#btnIssue').prop('disabled', true);
-          $('#removeItemModal').modal('close');
+          });
 
         }
     };
