@@ -207,8 +207,9 @@
         $('#add_uom_cnv_name').val(from + " to " + to);
       });
 
-      $('#add_uom_to_value').on('blur', function(){
-          if(parseFloat($(this).val()) > 0){ 
+      $('#add_uom_to_value').on('keyup', function(){
+        if($(this).val() != null ){
+          if(parseFloat($(this).val()) >= 0){
               $('#btnAdd_Save').prop('disabled', false);
           } else {
             if($(this).val()){
@@ -217,6 +218,7 @@
               $(this).val("");
             }
           }
+        }
       });
 
 
@@ -253,8 +255,9 @@
         $('#edit_uom_cnv_name').val(from + " to " + to);
       });
 
-      $('#edit_uom_to_value').on('blur', function(){
-          if(parseFloat($(this).val()) > 0){ 
+      $('#edit_uom_to_value').on('keyup', function(){
+        if($(this).val() != null ){
+          if(parseFloat($(this).val()) >= 0){
             $('#btnEdit_Save').prop('disabled', false);
           } else {
             if($(this).val()){
@@ -263,6 +266,7 @@
               $(this).val("");
             }
           }
+        }
       });
 
     });
