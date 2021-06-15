@@ -1276,7 +1276,7 @@
                       $('#item_cs').val(current_stock);
                       
                       var request_qty = parseInt($('#item_quantity_rem').val()); // need to convert based on conversion id before checking if sufficient for the request.
-                      $('#btnCollect').prop('disabled', false);
+                      // $('#btnCollect').prop('disabled', false);
                       $('#btnItemReset').prop('disabled', false);
                       $(this).prop('readonly', true);
                       var x = document.getElementById('item_details');
@@ -1307,47 +1307,49 @@
               if($('#item_status').val() == 'Pending'){
 
                       $.get('../uom_conversion/rev_convert/'+$('#item_iss_uom').html()+'/'+$('#item_rqst_uom').html(), (response) => {
-    
                         var convert_val = response.data.uom_to_value;
                             convert_val = parseFloat(convert_val) * parseFloat($(this).val());
                         var check_qty = parseFloat($('#item_quantity').val()) - parseFloat(convert_val);
                         if( check_qty >= 0){
                           $('#item_quantity_rem').val(parseFloat($('#item_quantity').val()) - parseFloat(convert_val));
+                          $('#btnCollect').prop('disabled', false);
                         } else {
-                          alert('Issuance quantity exceed to requested quantity!');
+                          $('#btnCollect').prop('disabled', true);
                           $('#item_quantity_iss').val("");
                           $('#item_quantity_rem').val(0);
                           $('#item_qty_rem').val(0);
+                          alert('Issuance quantity exceed to requested quantity!');
                         }
                       });
 
               } else {
 
-                      var conv_value = parseFloat($(this).val()) * parseFloat($('#item_to_value').val())
-                        rem_stock = parseFloat($('#item_cs').val()) - parseFloat(conv_value);
                       $.get('../uom_conversion/rev_convert/'+$('#item_iss_uom').html()+'/'+$('#item_rqst_uom').html(), (response) => {
-      
                         var convert_val = response.data.uom_to_value;
                             convert_val = parseFloat(convert_val) * parseFloat($(this).val());
                         var check_qty = parseFloat($('#item_qty_rem').val()) - parseFloat(convert_val);
                         if( check_qty >= 0){
                           $('#item_quantity_rem').val(parseFloat($('#item_qty_rem').val()) - parseFloat(convert_val));
+                          $('#btnCollect').prop('disabled', false);
                         } else {
-                          alert('Issuance quantity exceed to requested quantity!');
+                          $('#btnCollect').prop('disabled', true);
                           $('#item_quantity_iss').val("");
                           $('#item_quantity_rem').val(0);
+                          alert('Issuance quantity exceed to requested quantity!');
                         }
                       });
 
               }
             } else {
               if($(this).val()){
-                alert('Issuance quantity must be greater than zero!');
+                $('#btnCollect').prop('disabled', true);
                 $('#item_quantity_iss').val("");
                 $('#item_quantity_rem').val(parseInt($('#item_qty_rem').val()));
+                alert('Issuance quantity must be greater than zero!');
               }  
             }
           } else {
+            $('#btnCollect').prop('disabled', true);
             $('#item_quantity_rem').val(0);
             $('#item_qty_rem').val(0);
           }
