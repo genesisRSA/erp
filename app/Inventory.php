@@ -25,4 +25,9 @@ class Inventory extends Model
     {
         return $this->hasOne('App\InventoryLocation', 'location_code', 'inventory_location_code');
     }
+
+    public function uoms()
+    {
+        return $this->hasOne('App\UnitOfMeasure', 'uom_code', 'uom_code');
+    }
 }

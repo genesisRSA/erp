@@ -51,7 +51,7 @@ class InventoryController extends Controller
     {
         return response()->json([
             "data" => Inventory::with('loctype:location_code,location_name')
-                                ->with('item_details:item_code,item_desc,uom_code,safety_stock,maximum_stock')
+                                ->with('item_details:item_code,item_desc,uom_code,safety_stock,maximum_stock,warning_level')
                                 ->get()
         ]);
     }
@@ -86,8 +86,9 @@ class InventoryController extends Controller
         return response()->json([
             "data" => Inventory::where('item_code',$item_code)
                                 ->where('inventory_location_code',$loc_code)
-                                ->with('item_details:item_code,item_desc,uom_code,safety_stock,maximum_stock')
+                                ->with('item_details:item_code,item_desc,uom_code,cat_code,safety_stock,maximum_stock,warning_level,length,width,thickness,radius')
                                 ->with('loctype:location_code,location_name')
+                                // ->with(DB::select())
                                 ->first()
         ]);
     }

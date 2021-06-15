@@ -815,7 +815,7 @@
           </div>
           <div class="row col s12 m8 l8 right-align">
             <button class="green waves-effect waves-light btn" id="btnIssue" disabled><i class="material-icons left">check_circle</i>Issue</button>
-            <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Cancel</a>
+            <a href="#!" class="modal-close red waves-effect waves-dark btn" onclick="cancelIss();"><i class="material-icons left">cancel</i>Cancel</a>
           </div>
         </div>
       </div>
@@ -1012,9 +1012,12 @@
   <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
   <script type="text/javascript" src="{{ asset('datatables/datatables.js') }}"></script>
   <script type="text/javascript">
+  
     var issueCount = {{$count}};
     const str = new Date().toISOString().slice(0, 10);
     var newtoday = str.replace(/[^a-zA-Z0-9]/g,"");
+
+    var convert_values = 0;
     
     var add_items = [];
     var edit_items = [];
@@ -1026,7 +1029,6 @@
     
 
     $(document).ready(function () {
-      
       
         $.get('/api/reiss/item_master/all', (response) => {
           var data = response.data;
@@ -1302,13 +1304,18 @@
         });
         
         $('#item_quantity_iss').on('keyup', function(){
-          if(trim($(this).val()) != null ){
+          if(trim($(this).val()) != null){
             if(parseFloat($(this).val()) >= 0){
               if($('#item_status').val() == 'Pending'){
 
-                      $.get('../uom_conversion/rev_convert/'+$('#item_iss_uom').html()+'/'+$('#item_rqst_uom').html(), (response) => {
-                        var convert_val = response.data.uom_to_value;
-                            convert_val = parseFloat(convert_val) * parseFloat($(this).val());
+                      // $.get('../uom_conversion/rev_convert/'+$('#item_iss_uom').html()+'/'+$('#item_rqst_uom').html(), (response) => {
+
+                      //   console.log($('#item_iss_uom').html());
+                      //   console.log($('#item_rqst_uom').html());
+                      //   console.log(response.data);
+
+                        // var convert_val = response.data.uom_to_value;
+                        var convert_val = parseFloat(convert_values) * parseFloat($(this).val());
                         var check_qty = parseFloat($('#item_quantity').val()) - parseFloat(convert_val);
                         if( check_qty >= 0){
                           $('#item_quantity_rem').val(parseFloat($('#item_quantity').val()) - parseFloat(convert_val));
@@ -1320,13 +1327,13 @@
                           $('#item_qty_rem').val(0);
                           alert('Issuance quantity exceed to requested quantity!');
                         }
-                      });
+                      // });
 
               } else {
 
-                      $.get('../uom_conversion/rev_convert/'+$('#item_iss_uom').html()+'/'+$('#item_rqst_uom').html(), (response) => {
-                        var convert_val = response.data.uom_to_value;
-                            convert_val = parseFloat(convert_val) * parseFloat($(this).val());
+                      // $.get('../uom_conversion/rev_convert/'+$('#item_iss_uom').html()+'/'+$('#item_rqst_uom').html(), (response) => {
+                      //   var convert_val = response.data.uom_to_value;
+                        var convert_val = parseFloat(convert_values) * parseFloat($(this).val());
                         var check_qty = parseFloat($('#item_qty_rem').val()) - parseFloat(convert_val);
                         if( check_qty >= 0){
                           $('#item_quantity_rem').val(parseFloat($('#item_qty_rem').val()) - parseFloat(convert_val));
@@ -1337,7 +1344,7 @@
                           $('#item_quantity_rem').val(0);
                           alert('Issuance quantity exceed to requested quantity!');
                         }
-                      });
+                      // });
 
               }
             } else {
@@ -1365,8 +1372,9 @@
             $('#item_conv_id').val($(this).val());
             
             $('#item_quantity_iss').val("");
-            var qty = parseInt($('#item_item_qty').val()) * parseFloat($('#item_to_value').val());
-            var n = qty.toFixed(7);
+            $.get('../uom_conversion/rev_convert/'+$('#item_iss_uom').html()+'/'+$('#item_rqst_uom').html(), (response) => {
+              convert_values = response.data.uom_to_value;
+            });
           });
         });
 
@@ -1829,6 +1837,13 @@
       loadApprover();
     };
 
+    const cancelIss = () => {
+      iss_items = [];
+      iss_list = [];
+      all_iss_items = [];
+      $('#issueModal').modal('close');
+    }
+
     const resetModal = (loc) => {
       $('#reset_loc').val(loc);
       $('#resetModal').modal('open');
@@ -2064,8 +2079,6 @@
       iss_items = [];
       iss_list = [];
       all_iss_items = [];
-      $('#issueModal').modal('open');
-      $('.tabs.issue').tabs('select','issue_issuance');
       $.get('issuance/'+id, (response) => {
         var data = response.data[0];
         var matrix = JSON.parse(data.matrix);
@@ -2204,13 +2217,13 @@
               renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
             });
           };
-          
+          $('#issueModal').modal('open');
+          $('.tabs.issue').tabs('select','issue_issuance');
         });
       });
     };
 
     const issItems = (trans_code, item_code, item_rem = 0, id) => {
-      $('#issDetModal').modal('open');
       $.get('issuance/'+trans_code+'/'+item_code+'/item_details', (response) => {
         var data = response.data;
           item_rem > 0 ? $('#item_status').val('Issued with Pending') : $('#item_status').val('Pending');
@@ -2218,7 +2231,7 @@
           $('#item_trans_code').val(trans_code);
           $('#item_item_code').val(data.item_code);
           $('#item_item_desc').val(data.item_details.item_desc);
-
+          
           $('#item_location_code').prop('readonly', false);
           $('#item_location_code').val("");
           $('#item_location_name').val("");
@@ -2228,51 +2241,59 @@
           $('#item_qty_rem').val(item_rem);
           $('#item_quantity_rem').val(item_rem);
           $('#item_quantity_iss').val("");
-
+          
           $('#item_rqst_uom').html(data.uom_code.toLowerCase());
           $('#item_rqst_uom').val(data.uom_code.toLowerCase());
           $('#item_qty_uom').html(data.uom_code.toLowerCase());
-
+          
           $.get('../item_master/getItemDetails/'+data.item_code, (response) => {
             var item = response.data;
-  
-              $.get('../uom_conversion/conversions/'+item.uom_code, (response) => {
-                var datax = response.data;
-                var select = '<option value="" disabled>Choose your option</option>';
-                $.each(datax, (index,row) => {
-                    if(row.uom_details.uom_code == data.uom_code){
-                      select += '<option value="'+row.id+'" selected>'+row.uom_details.uom_name+'</option>';
-
-                      $.get('../uom_conversion/conv_values/'+row.id, (response) => {
+            
+            $.get('../uom_conversion/conversions/'+item.uom_code, (response) => {
+              var datax = response.data;
+              var select = '<option value="" disabled>Choose your option</option>';
+              $.each(datax, (index,row) => {
+                if(row.uom_details.uom_code == data.uom_code){
+                  select += '<option value="'+row.id+'" selected>'+row.uom_details.uom_name+'</option>';
+                  
+                  $.get('../uom_conversion/conv_values/'+row.id, (response) => {
                         $('#item_from_value').val(response.data.uom_from_value);  
                         $('#item_to_value').val(response.data.uom_to_value);
                         
                         $('#item_iss_uom').html(response.data.uom_to.toLowerCase());
                         $('#item_uom_code').val(response.data.uom_to.toLowerCase());
                         $('#item_conv_id').val(row.id);
-            
+                                   
+                        $.get('../uom_conversion/rev_convert/'+$('#item_iss_uom').html()+'/'+$('#item_rqst_uom').html(), (response) => {
+                          convert_values = response.data.uom_to_value;
+                        }); 
                       });
-
+                      
                     } else {
                       select += '<option value="'+row.id+'">'+row.uom_details.uom_name+'</option>';
                     }
+                  });
+                  $('#item_uom').html(select);
+                  $('#item_uom').formSelect();
+
+       
                 });
-                $('#item_uom').html(select);
-                $('#item_uom').formSelect();
+
               });
-          });
 
-          var x = document.getElementById('item_details');
+              
+              var x = document.getElementById('item_details');
               x.style.display = "none";
-          var y = document.getElementById('item_qty');
+              var y = document.getElementById('item_qty');
               y.style.display = "none";
-          var z = document.getElementById('item_pend');
+              var z = document.getElementById('item_pend');
               z.style.display = "none";
-          $('#btnCollect').prop('disabled', true);
-          $('#btnItemReset').prop('disabled', true);
-      });
+              $('#btnCollect').prop('disabled', true);
+              $('#btnItemReset').prop('disabled', true);
+              $('#issDetModal').modal('open');
+            });
     };
-
+      
     const issItemsCan = () => {
       var id = $('#item_id').val();
       var status = $('#item_status').val();

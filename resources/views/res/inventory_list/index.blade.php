@@ -29,9 +29,11 @@
                     <th>Description</th>
                     <th>Location</th>
                     <th>Unit of Measure</th>
-                    <th>Quantity</th>
+                    <th>Current Stock</th>
                     <th>Safety Stock</th>
                     <th>Maximum Stock</th>
+                    <th>Warning Level</th>
+                    <th></th>
                 </tr>
               </thead>
             </table>
@@ -53,50 +55,85 @@
  
         <div class="row"  style="margin-bottom: 0px;">
           <div class="input-field col s12 m6 l6">
-            <input id="view_item_code" name="item_code" type="text" class="validate" placeholder="" readonly>
+            <input id="view_item_code" name="item_code" type="text" class="" placeholder="" readonly>
             <label for="item_code">Item Code<sup class="red-text"></sup></label>
           </div>
           <div class="input-field col s12 m6 l6">
-            <input id="view_item_desc" name="item_desc" type="text" class="validate" placeholder="" readonly>
+            <textarea id="view_item_desc" name="item_desc" class="materialize-textarea" placeholder="" readonly></textarea>
             <label for="item_desc">Description<sup class="red-text"></sup></label>
           </div>
         </div>
 
         <div class="row" style="margin-bottom: 0px;">
           <div class="input-field col s12 m6 l6">
-            <input id="" name="" type="text" class="validate" placeholder="to be completed.." readonly>
-            <label for=""><sup class="red-text"></sup></label>
+            <input id="view_location_code" name="location_code" type="text" class="" placeholder="" readonly>
+            <label for="location_code">Location Code<sup class="red-text"></sup></label>
           </div>
 
           <div class="input-field col s12 m6 l6">
-            <input id="" name="" type="text" class="validate" placeholder="to be completed.." readonly>
-            <label for=""><sup class="red-text"></sup></label>
+            <input id="view_inventory_location" name="inventory_location" type="text" class="" placeholder="" readonly>
+            <label for="inventory_location">Location Name<sup class="red-text"></sup></label>
+          </div>
+        </div>
+        
+
+        <div class="row" style="margin-bottom: 0px;">
+          <div class="input-field col s12 m6 l6">
+            <input id="view_uom" name="uom" type="text" class="" placeholder="" readonly>
+            <label for="uom">Unit of Measure<sup class="red-text"></sup></label>
+          </div>
+
+          <div class="input-field col s12 m6 l6">
+            <input id="view_current_stock" name="current_stock" type="text" class="" placeholder="" readonly>
+            <label for="current_stock">Current Stock(s)<sup class="red-text"></sup></label>
           </div>
         </div>
 
         <div class="row" style="margin-bottom: 0px;">
-          <div class="input-field col s12 m6 l6">
-            <input id="" name="" type="text" class="validate" placeholder="to be completed.." readonly>
-            <label for=""><sup class="red-text"></sup></label>
+          <div class="input-field col s12 m4 l4">
+            <input id="view_safety_stock" name="safety_stock" type="text" class="" placeholder="" readonly>
+            <label for="safety_stock">Safety Stock(s)<sup class="red-text"></sup></label>
           </div>
 
-          <div class="input-field col s12 m6 l6">
-            <input id="" name="" type="text" class="validate" placeholder="to be completed.." readonly>
-            <label for=""><sup class="red-text"></sup></label>
+          <div class="input-field col s12 m4 l4">
+            <input id="view_maximum_stock" name="maximum_stock" type="text" class="" placeholder="" readonly>
+            <label for="maximum_stock">Maximum Stock(s)<sup class="red-text"></sup></label>
+          </div>
+
+          <div class="input-field col s12 m4 l4">
+            <input id="view_warning_level" name="warning_level" type="text" class="" placeholder="" readonly>
+            <label for="warning_level">Warning Level<sup class="red-text"></sup></label>
           </div>
         </div>
 
-        <div class="row" style="margin-bottom: 0px;">
-          <div class="input-field col s12 m6 l6">
-            <input id="" name="" type="text" class="validate" placeholder="to be completed.." readonly>
-            <label for=""><sup class="red-text"></sup></label>
-          </div>
 
-          <div class="input-field col s12 m6 l6">
-            <input id="" name="" type="text" class="validate" placeholder="to be completed.." readonly>
-            <label for=""><sup class="red-text"></sup></label>
+        <div id="fab_details" style="display: none">
+          <div class="row" style="margin-bottom: 0px;">
+            <div class="input-field col s12 m6 l6">
+              <input id="fab_length" name="length" type="text" class="" placeholder="" readonly>
+              <label for="length">Length<sup class="red-text"></sup></label>
+            </div>
+  
+            <div class="input-field col s12 m6 l6">
+              <input id="fab_width" name="width" type="text" class="" placeholder="" readonly>
+              <label for="width">Width<sup class="red-text"></sup></label>
+            </div>
+          </div>
+  
+          <div class="row" style="margin-bottom: 0px;">
+            <div class="input-field col s12 m6 l6">
+              <input id="fab_thickness" name="thickness" type="text" class="" placeholder="" readonly>
+              <label for="thickness">Thickness<sup class="red-text"></sup></label>
+            </div>
+  
+            <div class="input-field col s12 m6 l6">
+              <input id="fab_radius" name="radius" type="text" class="" placeholder="" readonly>
+              <label for="radius">Radius<sup class="red-text"></sup></label>
+            </div>
           </div>
         </div>
+
+ 
 
     </div>
 
@@ -137,15 +174,33 @@
   });
 
   const viewReceiving = (id, loc) => {
-      console.log(id); 
-      console.log(loc); 
-      $('#viewModal').modal('open');
+    $('#viewModal').modal('open');
     $.get('list/'+id+'/'+loc+'/item_details', (response) => {
-      var data = response.data[0];
-      console.log(data);
+      var data = response.data;
       $('#view_item_code').val(data.item_code);
       $('#view_item_desc').val(data.item_details.item_desc);
-      // $('#view_item_desc').val(data.item_details.item_desc);
+      $('#view_location_code').val(data.loctype.location_code);
+      $('#view_inventory_location').val(data.loctype.location_name);
+      $('#view_current_stock').val(data.quantity ? data.quantity : 0);
+      $('#view_uom').val(data.item_details.uom_code ? data.item_details.uom_code : 0);
+      $('#view_safety_stock').val(data.item_details.safety_stock ? data.item_details.safety_stock : 0);
+      $('#view_maximum_stock').val(data.item_details.maximum_stock ? data.item_details.maximum_stock : 0);
+      $('#view_warning_level').val(data.item_details.warning_level ? data.item_details.warning_level : 0);
+
+      if(data.item_details.cat_code == "FAB"){
+        var x = document.getElementById("fab_details");
+            x.style.display = "block";
+      
+        $('#fab_length').val(data.item_details.length ? data.item_details.length : 0);
+        $('#fab_width').val(data.item_details.width ? data.item_details.width : 0);
+        $('#fab_thickness').val(data.item_details.thickness ? data.item_details.thickness : 0);
+        $('#fab_radius').val(data.item_details.radius ? data.item_details.radius : 0);
+
+      } else {
+        var x = document.getElementById("fab_details");
+            x.style.display = "none";
+      }
+
     });
   };
 
@@ -203,7 +258,7 @@
             },
             {  "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return row.quantity;
+                  return '<p class="green-text" style="background-color: white">'+row.quantity+'</p>';
                 }
             },
             {  "data": "id",
@@ -214,6 +269,16 @@
             {  "data": "id",
                 "render": function ( data, type, row, meta ) {
                   return row.item_details.maximum_stock;
+                }
+            },
+            {  "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.item_details.warning_level;
+                }
+            },
+            {  "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return '<a><i class="material-icons">create</i></a>'
                 }
             },
         ]
