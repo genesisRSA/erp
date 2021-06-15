@@ -677,6 +677,7 @@
         <div id="issue_issuance" name="issue_issuance">
           <div class="row" style="margin-bottom: 0px">
               <div class="input-field col s12 m6 l6">
+                <input type="hidden" name="issue_status" id="issue_status">
                 <input id="issue_issuance_code" name="issuance_code" type="text" placeholder="" readonly>
                 <label class="active">Issuance Code</label>
               </div>
@@ -1115,10 +1116,14 @@
             {
               $('#add_item_desc').val(data.item_desc);
               $.get('../uom_conversion/conversions/'+data.uom_code, (response) => {
-                var data = response.data;
-                var select = '<option value="" disabled selected>Choose your option</option>';
-                $.each(data, (index,row) => {
+                var datax = response.data;
+                var select = '<option value="" disabled>Choose your option</option>';
+                $.each(datax, (index,row) => {
+                  if(data.uom_code == row.uom_to){
+                    select += '<option value="'+row.uom_details.uom_code+'" selected>'+row.uom_details.uom_name+'</option>';
+                  } else {
                     select += '<option value="'+row.uom_details.uom_code+'">'+row.uom_details.uom_name+'</option>';
+                  }
                 });
                 $('#add_uom_code').html(select);
                 $('#add_uom_code').formSelect();
@@ -1221,10 +1226,14 @@
             {
               $('#edit_item_desc').val(data.item_desc);
               $.get('../uom_conversion/conversions/'+data.uom_code, (response) => {
-                var data = response.data;
+                var datax = response.data;
                 var select = '<option value="" disabled selected>Choose your option</option>';
-                $.each(data, (index,row) => {
+                $.each(datax, (index,row) => {
+                  if(data.uom_code == row.uom_to){
+                    select += '<option value="'+row.uom_details.uom_code+'" selected>'+row.uom_details.uom_name+'</option>';
+                  } else {
                     select += '<option value="'+row.uom_details.uom_code+'">'+row.uom_details.uom_name+'</option>';
+                  }
                 });
                 $('#edit_uom_code').html(select);
                 $('#edit_uom_code').formSelect();
@@ -1710,13 +1719,16 @@
     };
 
     const resetIss = () => {
+      status = $('#issue_status').val();
+      issuance_code = $('#issue_issuance_code').val();
       iss_items = [];
       iss_list = []
+      all_iss_items = [];
       $.get('list/'+trim($('#issue_issuance_code').val())+'/items', (response) => {
           var datax = response.data;
           console.log(datax);
           $.each(datax, (index, row) => {
-            if(row.status == 'Pending'){
+            if (row.status == 'Pending') {
               iss_items.push({"trans_code": trim($('#issue_issuance_code').val()),
                           "item_code": row.item_code,
                           "item_desc": row.item_details.item_desc,
@@ -1732,7 +1744,7 @@
                           "is_check": false,
                           "inventory_location": row.inventory_location_code,
                           });
-            } else if(row.status == 'Issued'){
+            } else if(row.status == 'Issued') {
               iss_items.push({"trans_code": trim($('#issue_issuance_code').val()),
                           "item_code": row.item_code,
                           "item_desc": row.item_details.item_desc,
@@ -1745,7 +1757,7 @@
                           "is_check": false,
                           "inventory_location": row.inventory_location_code,
                           });
-            } else if(row.status == 'Issued with Pending'){
+            } else if(row.status == 'Issued with Pending') {
               iss_list.push({"trans_code": trim($('#issue_issuance_code').val()),
                           "item_code": row.item_code,
                           "item_desc": row.item_details.item_desc,
@@ -1758,12 +1770,68 @@
                           "iss_date": row.trans_date,
                           "is_check": false,
                           "inventory_location": row.inventory_location_code,
-                          });
+                        });
             }
           });
 
-          renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
-          renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
+          if(status=="Approved"){
+            renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
+            renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
+          } else {
+            $.get('list/'+issuance_code+'/items_issued', (response) => {
+              var datax = response.data;
+              $.each(datax, (index, row) => {
+                all_iss_items.push({"item_code": row.item_code,
+                                  "iss_qty": row.issued_qty, 
+                                  "iss_uom": row.uom_code,
+                                  "conv_id": row.uom_conv_id,
+                });
+              });
+ 
+              iss_items.forEach(item => {
+                var issued = all_iss_items.filter(item2 => item2.item_code == item.item_code);
+                var issue_qty = 0;
+                for (let index = 0; index < issued.length; index++) {
+
+                  if(issued.length > 0)
+                  {
+                    if(issued[index].conv_id != null){
+                      if(issued[index].iss_uom == item.uom_code){
+
+                        $.get('../uom_conversion/conv_values/'+issued[index].conv_id, (response) => { 
+                          var value_to = response.data.uom_to_value;
+                          var converted_value = parseFloat(issued[index].iss_qty) / parseFloat(value_to);
+                          
+                          issue_qty = issue_qty + (value_to * converted_value);
+                          item.conv_id = issued[0].conv_id;
+                          item.rem_qty = parseFloat(item.req_qty) - parseFloat(issue_qty);
+                          renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
+                        });
+
+                      } else {
+
+                        $.get('../uom_conversion/rev_convert/'+issued[index].iss_uom+'/'+item.uom_code, (response) => { 
+                          var value_to = response.data.uom_to_value;
+                          var converted_value = parseFloat(issued[index].iss_qty) * parseFloat(value_to);
+
+                          issue_qty = issue_qty + converted_value;
+                          item.conv_id = issued[0].conv_id;
+                          item.rem_qty = parseFloat(item.req_qty) - parseFloat(issue_qty);
+                          renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
+                        });
+
+                      }
+
+                    } else {
+                      renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
+                    }
+                  }
+                }
+              });
+              renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
+            });
+          };
+ 
           $('#btnIssue').prop('disabled', true);
           $('#btnIssReset').prop('disabled', true);
           $('#resetIssModal').modal('close');
@@ -2079,6 +2147,9 @@
       iss_items = [];
       iss_list = [];
       all_iss_items = [];
+      $('#issueModal').modal('open');
+      $('.tabs.issue').tabs('select','issue_issuance');
+
       $.get('issuance/'+id, (response) => {
         var data = response.data[0];
         var matrix = JSON.parse(data.matrix);
@@ -2088,12 +2159,11 @@
 
         $('#btnIssue').prop('disabled', true);
         $('#btnIssReset').prop('disabled', true);
-
-
         $('#issue_issuance_code').val(data.issuance_code);
         $('#issue_requestor').val(data.employee_details.full_name);
         $('#issue_site_code').val(data.sites.site_desc);
         $('#issue_purpose').val(data.purpose);
+        $('#issue_status').val(data.status);
 
         if(data.purpose=='Project')
         {
@@ -2213,12 +2283,10 @@
                   }
                 }
               });
-            
               renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
             });
           };
-          $('#issueModal').modal('open');
-          $('.tabs.issue').tabs('select','issue_issuance');
+
         });
       });
     };
@@ -2603,6 +2671,7 @@
                         '<td class="left-align">'+row.uom_code+'</td>'+
                         '<td class="left-align">'+row.iss_qty+'</td>'+
                         '<td class="left-align">'+row.iss_date+'</td>'+
+                        '<td><button type="button" class="btn-small red waves-effect waves-light" disabled><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
                         '<input type="hidden" name="itm_item_code[]" value="'+row.item_code+'"/>'+
                         '<input type="hidden" name="itm_quantity[]" value="'+row.iss_qty+'"/>'+
                         '<input type="hidden" name="itm_uom_code[]" value="'+row.uom_code+'"/>'+
@@ -2665,25 +2734,46 @@
         } else {
 
           $.get('../item_master/getItemDetails/'+trim(iss_list[index].item_code), (response) => { 
-            if(response.data.uom_code == iss_list[index].uom_code){
+            if(iss_items[item_index].uom_code == iss_list[index].uom_code){
               iss_items[item_index].rem_qty = parseFloat(iss_items[item_index].rem_qty) + parseFloat(iss_list[index].tbi_qty);
+              iss_items[item_index].inventory_location = "";
+              iss_items[item_index].iss_qty = 0;
+              iss_items[item_index].tbi_qty = 0;
+              iss_items[item_index].conv_id = "";
+              iss_items[item_index].iss_uom = "";
+              iss_items[item_index].is_check = false;
+              renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
+
+              iss_list.splice(index,1);
+              renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
+
             } else {
-              
+
+              $.get('../uom_conversion/rev_convert/'+iss_list[index].uom_code+'/'+iss_items[item_index].uom_code, (response) => { 
+                var index2 = $('#del_index').val();
+                iss_items[item_index].rem_qty = parseFloat(iss_items[item_index].rem_qty) + (parseFloat(iss_list[index2].tbi_qty) * parseFloat(response.data.uom_to_value));
+                iss_items[item_index].inventory_location = "";
+                iss_items[item_index].iss_qty = 0;
+                iss_items[item_index].tbi_qty = 0;
+                iss_items[item_index].conv_id = "";
+                iss_items[item_index].iss_uom = "";
+                iss_items[item_index].is_check = false;
+                renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
+
+                iss_list.splice(index,1);
+                renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
+              });
+
+            }
+           
+            if(iss_list.length > 0){
+              $('#btnIssReset').prop('disabled', false);
+              $('#btnIssue').prop('disabled', false);
+            } else {
+              $('#btnIssReset').prop('disabled', true);
+              $('#btnIssue').prop('disabled', true);
             }
 
-            iss_items[item_index].inventory_location = "";
-            iss_items[item_index].iss_qty = 0;
-            iss_items[item_index].tbi_qty = 0;
-            iss_items[item_index].conv_id = "";
-            iss_items[item_index].iss_uom = "";
-            iss_items[item_index].is_check = false;
-            renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
-
-            iss_list.splice(index,1);
-            renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
-
-            $('#btnIssReset').prop('disabled', true);
-            $('#btnIssue').prop('disabled', true);
             $('#removeItemModal').modal('close');
 
           });

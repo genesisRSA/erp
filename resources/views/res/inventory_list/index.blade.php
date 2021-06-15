@@ -258,7 +258,7 @@
             },
             {  "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return '<p class="green-text" style="background-color: white">'+row.quantity+'</p>';
+                  return '<p class="red-text" style="background-color: white">'+row.quantity+'</p>';
                 }
             },
             {  "data": "id",
@@ -278,7 +278,7 @@
             },
             {  "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return '<a><i class="material-icons">create</i></a>'
+                  return '<a><i class="material-icons red-text">priority_high</i></a>'
                 }
             },
         ]
