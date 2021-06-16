@@ -1312,63 +1312,65 @@
           }
         });
         
-        $('#item_quantity_iss').on('keyup', function(){
-          if(trim($(this).val()) != null){
-            if(parseFloat($(this).val()) >= 0){
-              if($('#item_status').val() == 'Pending'){
+        $('#item_quantity_iss').on('keyup', function(e){
+          // if(e.which == 13){       
+            if(trim($(this).val()) != null){
+              if(parseFloat($(this).val()) >= 0){
+                if($('#item_status').val() == 'Pending'){
 
-                      // $.get('../uom_conversion/rev_convert/'+$('#item_iss_uom').html()+'/'+$('#item_rqst_uom').html(), (response) => {
+                        // $.get('../uom_conversion/rev_convert/'+$('#item_iss_uom').html()+'/'+$('#item_rqst_uom').html(), (response) => {
 
-                      //   console.log($('#item_iss_uom').html());
-                      //   console.log($('#item_rqst_uom').html());
-                      //   console.log(response.data);
+                        //   console.log($('#item_iss_uom').html());
+                        //   console.log($('#item_rqst_uom').html());
+                        //   console.log(response.data);
 
-                        // var convert_val = response.data.uom_to_value;
-                        var convert_val = parseFloat(convert_values) * parseFloat($(this).val());
-                        var check_qty = parseFloat($('#item_quantity').val()) - parseFloat(convert_val);
-                        if( check_qty >= 0){
-                          $('#item_quantity_rem').val(parseFloat($('#item_quantity').val()) - parseFloat(convert_val));
-                          $('#btnCollect').prop('disabled', false);
-                        } else {
-                          $('#btnCollect').prop('disabled', true);
-                          $('#item_quantity_iss').val("");
-                          $('#item_quantity_rem').val(0);
-                          $('#item_qty_rem').val(0);
-                          alert('Issuance quantity exceed to requested quantity!');
-                        }
-                      // });
+                          // var convert_val = response.data.uom_to_value;
+                          var convert_val = parseFloat(convert_values) * parseFloat($(this).val());
+                          var check_qty = parseFloat($('#item_quantity').val()) - parseFloat(convert_val);
+                          if( check_qty >= 0){
+                            $('#item_quantity_rem').val(parseFloat($('#item_quantity').val()) - parseFloat(convert_val));
+                            $('#btnCollect').prop('disabled', false);
+                          } else {
+                            $('#btnCollect').prop('disabled', true);
+                            $('#item_quantity_iss').val("");
+                            $('#item_quantity_rem').val(0);
+                            $('#item_qty_rem').val(0);
+                            alert('Issuance quantity exceed to requested quantity!');
+                          }
+                        // });
 
+                } else {
+
+                        // $.get('../uom_conversion/rev_convert/'+$('#item_iss_uom').html()+'/'+$('#item_rqst_uom').html(), (response) => {
+                        //   var convert_val = response.data.uom_to_value;
+                          var convert_val = parseFloat(convert_values) * parseFloat($(this).val());
+                          var check_qty = parseFloat($('#item_qty_rem').val()) - parseFloat(convert_val);
+                          if( check_qty >= 0){
+                            $('#item_quantity_rem').val(parseFloat($('#item_qty_rem').val()) - parseFloat(convert_val));
+                            $('#btnCollect').prop('disabled', false);
+                          } else {
+                            $('#btnCollect').prop('disabled', true);
+                            $('#item_quantity_iss').val("");
+                            $('#item_quantity_rem').val(0);
+                            alert('Issuance quantity exceed to requested quantity!');
+                          }
+                        // });
+
+                }
               } else {
-
-                      // $.get('../uom_conversion/rev_convert/'+$('#item_iss_uom').html()+'/'+$('#item_rqst_uom').html(), (response) => {
-                      //   var convert_val = response.data.uom_to_value;
-                        var convert_val = parseFloat(convert_values) * parseFloat($(this).val());
-                        var check_qty = parseFloat($('#item_qty_rem').val()) - parseFloat(convert_val);
-                        if( check_qty >= 0){
-                          $('#item_quantity_rem').val(parseFloat($('#item_qty_rem').val()) - parseFloat(convert_val));
-                          $('#btnCollect').prop('disabled', false);
-                        } else {
-                          $('#btnCollect').prop('disabled', true);
-                          $('#item_quantity_iss').val("");
-                          $('#item_quantity_rem').val(0);
-                          alert('Issuance quantity exceed to requested quantity!');
-                        }
-                      // });
-
+                if($(this).val()){
+                  $('#btnCollect').prop('disabled', true);
+                  $('#item_quantity_iss').val("");
+                  $('#item_quantity_rem').val(parseInt($('#item_qty_rem').val()));
+                  alert('Issuance quantity must be greater than zero!');
+                }  
               }
             } else {
-              if($(this).val()){
-                $('#btnCollect').prop('disabled', true);
-                $('#item_quantity_iss').val("");
-                $('#item_quantity_rem').val(parseInt($('#item_qty_rem').val()));
-                alert('Issuance quantity must be greater than zero!');
-              }  
+              $('#btnCollect').prop('disabled', true);
+              $('#item_quantity_rem').val(0);
+              $('#item_qty_rem').val(0);
             }
-          } else {
-            $('#btnCollect').prop('disabled', true);
-            $('#item_quantity_rem').val(0);
-            $('#item_qty_rem').val(0);
-          }
+          // }
         });
  
         $('#item_uom').on('change', function(){
@@ -2386,132 +2388,156 @@
       if($('#item_status').val() == 'Pending'){
         if(trim($('#item_location_code').val()) && trim($('#item_quantity_iss').val()) && trim($('#item_quantity_iss').val()) > 0)
         {
-          var index = $('#item_id').val();
-              index = index - 1;
- 
-          if($('#item_from_value').val() == $('#item_to_value').val()){
-            iss_items[index].iss_index = index;
-            iss_items[index].inventory_location = $('#item_location_code').val();
-            iss_items[index].rem_qty = $('#item_quantity_rem').val();
-            iss_items[index].iss_qty = parseFloat($('#item_quantity_iss').val());
-            iss_items[index].tbi_qty = $('#item_quantity_iss').val();
-            iss_items[index].conv_id = $('#item_conv_id').val();
-            iss_items[index].iss_uom = $('#item_iss_uom').html().toUpperCase();
-            iss_items[index].is_check = true;
-            renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
+          var convert_val = parseFloat(convert_values) * parseFloat($('#item_quantity_iss').val());
+          var check_qty = parseFloat($('#item_quantity').val()) - parseFloat(convert_val);
+          if( check_qty >= 0)
+          {
 
-            iss_list.push({"trans_code": $('#item_trans_code').val(),
-                            "item_code": $('#item_item_code').val(),
-                            "item_desc": $('#item_item_desc').val(),
-                            "req_qty": $('#item_quantity').val(),
-                            "uom_code": $('#item_iss_uom').html().toUpperCase(),
-                            "rem_qty": $('#item_quantity_rem').val(), 
-                            "iss_qty": parseFloat($('#item_quantity_iss').val()),
-                            "tbi_qty": parseFloat($('#item_quantity_iss').val()),
-                            "conv_id": $('#item_conv_id').val(),
-                            "status": 'Pending',
-                            "iss_date": "{{date('Y-m-d H:i:s')}}",
-                            "is_check": false,
-                            "inventory_location": $('#item_location_code').val(),
-                            "iss_index": index,
-                          });
-            renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
-          } else {
-            iss_items[index].iss_index = index;
-            iss_items[index].inventory_location = $('#item_location_code').val();
-            iss_items[index].rem_qty = $('#item_quantity_rem').val();
-            iss_items[index].iss_qty = parseFloat($('#item_quantity_iss').val());
-            iss_items[index].tbi_qty = $('#item_quantity_iss').val();
-            iss_items[index].conv_id = $('#item_conv_id').val();
-            iss_items[index].iss_uom = $('#item_iss_uom').html().toUpperCase();
-            iss_items[index].is_check = true;
-            renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
+            var index = $('#item_id').val();
+                index = index - 1;
+  
+            if($('#item_from_value').val() == $('#item_to_value').val()){
+              iss_items[index].iss_index = index;
+              iss_items[index].inventory_location = $('#item_location_code').val();
+              iss_items[index].rem_qty = $('#item_quantity_rem').val();
+              iss_items[index].iss_qty = parseFloat($('#item_quantity_iss').val());
+              iss_items[index].tbi_qty = $('#item_quantity_iss').val();
+              iss_items[index].conv_id = $('#item_conv_id').val();
+              iss_items[index].iss_uom = $('#item_iss_uom').html().toUpperCase();
+              iss_items[index].is_check = true;
+              renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
+
+              iss_list.push({"trans_code": $('#item_trans_code').val(),
+                              "item_code": $('#item_item_code').val(),
+                              "item_desc": $('#item_item_desc').val(),
+                              "req_qty": $('#item_quantity').val(),
+                              "uom_code": $('#item_iss_uom').html().toUpperCase(),
+                              "rem_qty": $('#item_quantity_rem').val(), 
+                              "iss_qty": parseFloat($('#item_quantity_iss').val()),
+                              "tbi_qty": parseFloat($('#item_quantity_iss').val()),
+                              "conv_id": $('#item_conv_id').val(),
+                              "status": 'Pending',
+                              "iss_date": "{{date('Y-m-d H:i:s')}}",
+                              "is_check": false,
+                              "inventory_location": $('#item_location_code').val(),
+                              "iss_index": index,
+                            });
+              renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
+            } else {
+              iss_items[index].iss_index = index;
+              iss_items[index].inventory_location = $('#item_location_code').val();
+              iss_items[index].rem_qty = $('#item_quantity_rem').val();
+              iss_items[index].iss_qty = parseFloat($('#item_quantity_iss').val());
+              iss_items[index].tbi_qty = $('#item_quantity_iss').val();
+              iss_items[index].conv_id = $('#item_conv_id').val();
+              iss_items[index].iss_uom = $('#item_iss_uom').html().toUpperCase();
+              iss_items[index].is_check = true;
+              renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
+              
+              iss_list.push({"trans_code": $('#item_trans_code').val(),
+                              "item_code": $('#item_item_code').val(),
+                              "item_desc": $('#item_item_desc').val(),
+                              "req_qty": $('#item_quantity').val(),
+                              "uom_code": $('#item_iss_uom').html().toUpperCase(),
+                              "rem_qty": $('#item_quantity_rem').val(), 
+                              "iss_qty": parseFloat($('#item_quantity_iss').val()),
+                              "tbi_qty": parseFloat($('#item_quantity_iss').val()),
+                              "conv_id": $('#item_conv_id').val(),
+                              "status": 'Pending',
+                              "iss_date": "{{date('Y-m-d H:i:s')}}",
+                              "is_check": false,
+                              "inventory_location": $('#item_location_code').val(),
+                              "iss_index": index,
+                            });
+              renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
+            }
             
-            iss_list.push({"trans_code": $('#item_trans_code').val(),
-                            "item_code": $('#item_item_code').val(),
-                            "item_desc": $('#item_item_desc').val(),
-                            "req_qty": $('#item_quantity').val(),
-                            "uom_code": $('#item_iss_uom').html().toUpperCase(),
-                            "rem_qty": $('#item_quantity_rem').val(), 
-                            "iss_qty": parseFloat($('#item_quantity_iss').val()),
-                            "tbi_qty": parseFloat($('#item_quantity_iss').val()),
-                            "conv_id": $('#item_conv_id').val(),
-                            "status": 'Pending',
-                            "iss_date": "{{date('Y-m-d H:i:s')}}",
-                            "is_check": false,
-                            "inventory_location": $('#item_location_code').val(),
-                            "iss_index": index,
-                          });
-            renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
+            $('#issDetModal').modal('close');
+
+          } else {
+            $('#btnCollect').prop('disabled', true);
+            $('#item_quantity_iss').val("");
+            $('#item_quantity_rem').val(0);
+            $('#item_qty_rem').val(0);
+            alert('Issuance quantity exceed to requested quantity!');
           }
-          
-          $('#issDetModal').modal('close');
         } else {
           alert('Please fill-up all details to collect!')
         }
       } else {
         if(trim($('#item_location_code').val()) && trim($('#item_quantity_iss').val()) && trim($('#item_quantity_iss').val()) > 0)
         {
-          var index = $('#item_id').val();
-              index = index - 1;
+          var convert_val = parseFloat(convert_values) * parseFloat($('#item_quantity_iss').val());
+          console.log(convert_val);
+          var check_qty = parseFloat($('#item_qty_rem').val()) - parseFloat(convert_val);
+          if( check_qty >= 0)
+          {
+            var index = $('#item_id').val();
+                index = index - 1;
 
-          if($('#item_from_value').val() == $('#item_to_value').val()){
-            iss_items[index].iss_index = index;
-            iss_items[index].inventory_location = $('#item_location_code').val();
-            iss_items[index].rem_qty = $('#item_quantity_rem').val();
-            iss_items[index].iss_qty = parseFloat(iss_items[index].iss_qty) + parseFloat($('#item_quantity_iss').val());
-            iss_items[index].tbi_qty = $('#item_quantity_iss').val();
-            iss_items[index].conv_id = $('#item_conv_id').val();
-            iss_items[index].iss_uom = $('#item_iss_uom').html().toUpperCase();
-            iss_items[index].is_check = true;
-            renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
+            if($('#item_from_value').val() == $('#item_to_value').val()){
+              iss_items[index].iss_index = index;
+              iss_items[index].inventory_location = $('#item_location_code').val();
+              iss_items[index].rem_qty = $('#item_quantity_rem').val();
+              iss_items[index].iss_qty = parseFloat(iss_items[index].iss_qty) + parseFloat($('#item_quantity_iss').val());
+              iss_items[index].tbi_qty = $('#item_quantity_iss').val();
+              iss_items[index].conv_id = $('#item_conv_id').val();
+              iss_items[index].iss_uom = $('#item_iss_uom').html().toUpperCase();
+              iss_items[index].is_check = true;
+              renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
 
-            iss_list.push({"trans_code": $('#item_trans_code').val(),
-                            "item_code": $('#item_item_code').val(),
-                            "item_desc": $('#item_item_desc').val(),
-                            "req_qty": $('#item_quantity').val(),
-                            "uom_code": $('#item_iss_uom').html().toUpperCase(),
-                            "rem_qty": $('#item_quantity_rem').val(), 
-                            "iss_qty": parseFloat($('#item_quantity_iss').val()),
-                            "tbi_qty": parseFloat($('#item_quantity_iss').val()),
-                            "conv_id": $('#item_conv_id').val(),
-                            "status": 'Pending',
-                            "iss_date": "{{date('Y-m-d H:i:s')}}",
-                            "is_check": false,
-                            "inventory_location": $('#item_location_code').val(),
-                            "iss_index": index,
-                          });
-            renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
+              iss_list.push({"trans_code": $('#item_trans_code').val(),
+                              "item_code": $('#item_item_code').val(),
+                              "item_desc": $('#item_item_desc').val(),
+                              "req_qty": $('#item_quantity').val(),
+                              "uom_code": $('#item_iss_uom').html().toUpperCase(),
+                              "rem_qty": $('#item_quantity_rem').val(), 
+                              "iss_qty": parseFloat($('#item_quantity_iss').val()),
+                              "tbi_qty": parseFloat($('#item_quantity_iss').val()),
+                              "conv_id": $('#item_conv_id').val(),
+                              "status": 'Pending',
+                              "iss_date": "{{date('Y-m-d H:i:s')}}",
+                              "is_check": false,
+                              "inventory_location": $('#item_location_code').val(),
+                              "iss_index": index,
+                            });
+              renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
+            } else {
+              iss_items[index].iss_index = index;
+              iss_items[index].inventory_location = $('#item_location_code').val();
+              iss_items[index].rem_qty = $('#item_quantity_rem').val();
+              iss_items[index].iss_qty = parseFloat(iss_items[index].iss_qty) + parseFloat($('#item_quantity_iss').val());
+              iss_items[index].tbi_qty = $('#item_quantity_iss').val();
+              iss_items[index].conv_id = $('#item_conv_id').val();
+              iss_items[index].iss_uom = $('#item_iss_uom').html().toUpperCase();
+              iss_items[index].is_check = true;
+              renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
+
+              iss_list.push({"trans_code": $('#item_trans_code').val(),
+                              "item_code": $('#item_item_code').val(),
+                              "item_desc": $('#item_item_desc').val(),
+                              "req_qty": $('#item_quantity').val(),
+                              "uom_code": $('#item_iss_uom').html().toUpperCase(),
+                              "rem_qty": $('#item_quantity_rem').val(), 
+                              "iss_qty": parseFloat($('#item_quantity_iss').val()),
+                              "tbi_qty": parseFloat($('#item_quantity_iss').val()),
+                              "conv_id": $('#item_conv_id').val(),
+                              "status": 'Pending',
+                              "iss_date": "{{date('Y-m-d H:i:s')}}",
+                              "is_check": false,
+                              "inventory_location": $('#item_location_code').val(),
+                              "iss_index": index,
+                            });
+              renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
+            }
+
+            $('#issDetModal').modal('close');
           } else {
-            iss_items[index].iss_index = index;
-            iss_items[index].inventory_location = $('#item_location_code').val();
-            iss_items[index].rem_qty = $('#item_quantity_rem').val();
-            iss_items[index].iss_qty = parseFloat(iss_items[index].iss_qty) + parseFloat($('#item_quantity_iss').val());
-            iss_items[index].tbi_qty = $('#item_quantity_iss').val();
-            iss_items[index].conv_id = $('#item_conv_id').val();
-            iss_items[index].iss_uom = $('#item_iss_uom').html().toUpperCase();
-            iss_items[index].is_check = true;
-            renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
-
-            iss_list.push({"trans_code": $('#item_trans_code').val(),
-                            "item_code": $('#item_item_code').val(),
-                            "item_desc": $('#item_item_desc').val(),
-                            "req_qty": $('#item_quantity').val(),
-                            "uom_code": $('#item_iss_uom').html().toUpperCase(),
-                            "rem_qty": $('#item_quantity_rem').val(), 
-                            "iss_qty": parseFloat($('#item_quantity_iss').val()),
-                            "tbi_qty": parseFloat($('#item_quantity_iss').val()),
-                            "conv_id": $('#item_conv_id').val(),
-                            "status": 'Pending',
-                            "iss_date": "{{date('Y-m-d H:i:s')}}",
-                            "is_check": false,
-                            "inventory_location": $('#item_location_code').val(),
-                            "iss_index": index,
-                          });
-            renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
+            $('#btnCollect').prop('disabled', true);
+            $('#item_quantity_iss').val("");
+            $('#item_quantity_rem').val(0);
+            alert('Issuance quantity exceed to requested quantity!');
           }
-
-          $('#issDetModal').modal('close');
         } else {
           alert('Please fill-up all details to collect!')
         }
