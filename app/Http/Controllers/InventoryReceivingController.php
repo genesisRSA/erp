@@ -39,7 +39,7 @@ class InventoryReceivingController extends Controller
         $inventoryLocation = InventoryLocation::all();
         $receivingcount = InventoryReceiving::count();
         $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
-                        ->where('module','=','Projects')
+                        ->where('module','=','Issuance')
                         ->first();
 
         $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"approval":false,"masterlist":false}]', true));

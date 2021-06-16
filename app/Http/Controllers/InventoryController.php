@@ -41,10 +41,17 @@ class InventoryController extends Controller
      */
     public function index()
     {
+        $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
+        ->where('module','=','Issuance')
+        ->first();
+
+        $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"approval":false,"masterlist":false}]', true));
+
         return view('res.inventory_list.index')
                 ->with('site','res')
                 ->with('page','inventory')
-                ->with('subpage','inventory');
+                ->with('subpage','inventory')
+                ->with('permission',$permissionx);
     }
 
     public function all()

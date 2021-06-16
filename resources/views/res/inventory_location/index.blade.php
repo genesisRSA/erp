@@ -26,7 +26,7 @@
           </div>
         </div>
       
-      @if($permission[0]["add"]==true)
+      @if($permission[0]["add"]==true || $permission[0]["masterlist"]==true)
         <a href="#!" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button" data-position="left" data-tooltip="Add Inventory Location" onclick="openModal();"><i class="material-icons">add</i></a>
       @endif
     </div>
@@ -351,7 +351,11 @@
             {  "data": "id" },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return '<a href="#!" onclick="viewLocation('+data+')">'+ row.location_code; +'</a>';
+                  @if($permission[0]["view"]==true || $permission[0]["masterlist"]==true)
+                    return '<a href="#!" onclick="viewLocation('+data+')">'+ row.location_code +'</a>';
+                  @else
+                    return row.location_code;
+                  @endif
                 }
             },
             {   "data": "id",
@@ -384,7 +388,11 @@
             },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editLocation('+data+')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem('+data+')"><i class="material-icons">delete</i></a> <a href="#" class="btn-small blue waves-effect waves-light" onclick="printModal('+data+')"><i class="material-icons">print</i></a>';
+                  @if($permission[0]["masterlist"]==true)
+                    return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editLocation('+data+')"><i class="material-icons">create</i></a> <a href="#" class="btn-small red waves-effect waves-light" onclick="deleteItem('+data+')"><i class="material-icons">delete</i></a> <a href="#" class="btn-small blue waves-effect waves-light" onclick="printModal('+data+')"><i class="material-icons">print</i></a>';
+                  @else
+                    return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a> <a href="#" class="btn-small red waves-effect waves-light" disabled><i class="material-icons">delete</i></a> <a href="#" class="btn-small blue waves-effect waves-light" disabled><i class="material-icons">print</i></a>';
+                  @endif
                 }
             },   
         ]

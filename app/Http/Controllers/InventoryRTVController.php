@@ -56,9 +56,14 @@ class InventoryRTVController extends Controller
         $uom = UnitOfMeasure::all();
 
         $permission = SitePermission::where('requestor','=',Auth::user()->emp_no)
-                        ->where('module','=','Projects')
+                        ->where('module','=','RTV')
                         ->first();
         $permissionx =  ($permission ? json_decode($permission->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"approval":false,"masterlist":false}]', true));
+
+        $receiving = SitePermission::where('requestor','=',Auth::user()->emp_no)
+                        ->where('module','=','RTV Receiving')
+                        ->first();
+        $receivingx =  ($receiving ? json_decode($receiving->permission, true) : json_decode('[{"add":false,"edit":false,"view":false,"delete":false,"void":false,"approval":false,"masterlist":false}]', true));
 
         return view('res.inventory_rtv.index')
                 ->with('site','res')
@@ -72,7 +77,8 @@ class InventoryRTVController extends Controller
                 ->with('count', $returnCount)
                 ->with('currency', $currency)
                 ->with('inventloc', $inventoryLocation)
-                ->with('permission',$permissionx);
+                ->with('permission',$permissionx)
+                ->with('receiving',$receivingx);
     }
 
     public function all($id)

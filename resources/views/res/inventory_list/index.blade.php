@@ -10,16 +10,6 @@
 
     <div id="ongoing" name="ongoing">
         <div class="card" style="margin-top: 0px">
-
-          {{-- <div class="col s3 m3 l3 left-align" style="
-          margin-top: 60px;
-          margin-left: 20px;
-      ">
-            <span   multiple="true">Location:</span>
-            <select multiple="true" id="officeFltr">
-            </select>
-          </div> --}}
-        
           <div class="card-content">
             <table class="responsive-table highlight" id="inventory-dt" style="width: 100%">
               <thead>
@@ -29,20 +19,17 @@
                     <th>Description</th>
                     <th>Location</th>
                     <th>Unit of Measure</th>
-                    <th>Current Stock</th>
                     <th>Safety Stock</th>
                     <th>Maximum Stock</th>
                     <th>Warning Level</th>
-                    <th></th>
+                    <th>Quantity</th>
+                    <th>Status</th>
                 </tr>
               </thead>
             </table>
           </div>
         </div>
       
-      {{-- @if($permission[0]["add"]==true)
-        <a href="#!" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button" data-position="left" data-tooltip="Add Receiving" onclick="openModal();"><i class="material-icons">add</i></a>
-      @endif --}}
     </div>
 
   </div>
@@ -157,22 +144,6 @@
   var edit_items = [];
   var view_items = [];
 
-  $(document).ready(function () {
-
-    // $('#officeFltr').on('change', function(){
-    // 	var search = [];
-      
-    //   $.each($('#officeFltr option:selected'), function(){
-    //   		search.push($(this).val());
-    //   });
-      
-    //   search = search.join('|');
-    //   table.column(2).search(search, true, false).draw();  
-    // });
-
-
-  });
-
   const viewReceiving = (id, loc) => {
     $('#viewModal').modal('open');
     $.get('list/'+id+'/'+loc+'/item_details', (response) => {
@@ -205,30 +176,22 @@
   };
 
   var inventory = $('#inventory-dt').DataTable({
-        dom: 'Bfrtip',
-        "buttons": [
-          {
-            text: "Export to Excel",
-            extend: 'excelHtml5',
-            title: 'REISS - Inventory Report' 
-          },
-          {
-            text: "Export to PDF",
-            extend: 'pdfHtml5',
-            title: 'REISS - Inventory Report'
-          }
-        ],
-        // initComplete: function () {
-        //   this.api().columns([3]).every( function () {
-        //     var column = this;
-        //     var select = $("#officeFltr"); 
-        //     column.data().each( function ( d ) {
-        //       select.append( '<option value="'+d+'">'+d+'</option>' )
-        //     } );
-        //   } );
-        //   $("#officeFltr").formSelect();
-        // }, 
-        
+        @if($permission[0]["masterlist"]==true)
+          dom: 'Bfrtip',
+          "buttons": [
+            {
+              text: "Export to Excel",
+              extend: 'excelHtml5',
+              title: 'REISS - Inventory Report' 
+            },
+            {
+              text: "Export to PDF",
+              extend: 'pdfHtml5',
+              title: 'REISS - Inventory Report'
+            }
+          ],
+        @endif
+
         "lengthChange": false,
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
@@ -238,7 +201,11 @@
             {  "data": "id" },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return '<a href="#!" onclick="viewReceiving(\''+row.item_code+'\',\''+row.inventory_location_code+'\')">'+row.item_code+'</a>';
+                  @if($permission[0]["view"]==true || $permission[0]["masterlist"]==true)
+                    return '<a href="#!" onclick="viewReceiving(\''+row.item_code+'\',\''+row.inventory_location_code+'\')">'+row.item_code+'</a>';
+                  @else
+                    return row.item_code;
+                  @endif
                 }
             },
             {   "data": "id",
@@ -256,11 +223,7 @@
                   return row.item_details.uom_code;
                 }
             },
-            {  "data": "id",
-                "render": function ( data, type, row, meta ) {
-                  return '<p class="red-text" style="background-color: white">'+row.quantity+'</p>';
-                }
-            },
+          
             {  "data": "id",
                 "render": function ( data, type, row, meta ) {
                   return row.item_details.safety_stock;
@@ -276,9 +239,27 @@
                   return row.item_details.warning_level;
                 }
             },
+
             {  "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return '<a><i class="material-icons red-text">priority_high</i></a>'
+                  if(row.quantity >= row.item_details.safety_stock){
+                    return '<p class="green-text">'+row.quantity.toFixed(5)+'</p>';
+                  } else if(row.quantity <= row.item_details.safety_stock){
+                    return '<p class="orange-text">'+row.quantity.toFixed(5)+'</p>';
+                  } else if(row.quantity < row.item_details.warning_level) {
+                    return '<p class="red-text">'+row.quantity.toFixed(5)+'</p>';
+                  } 
+                }
+            },
+            {  "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  if(row.quantity >= row.item_details.safety_stock){
+                    return '<i class="material-icons green-text">arrow_drop_up</i>';
+                  } else if(row.quantity <= row.item_details.safety_stock){
+                    return '<i class="material-icons orange-text">import_export</i>';
+                  } else if(row.quantity < row.item_details.warning_level) {
+                    return '<i class="material-icons red-text">arrow_drop_down</i>';
+                  } 
                 }
             },
         ]

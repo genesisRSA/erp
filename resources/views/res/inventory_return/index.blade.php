@@ -28,7 +28,7 @@
           </div>
         </div>
       
-      @if($permission[0]["add"]==true)
+      @if($permission[0]["add"]==true || $permission[0]["masterlist"]==true)
         <a href="#!" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button" data-position="left" data-tooltip="Add Return to Store" onclick="openModal();"><i class="material-icons">add</i></a>
       @endif
     </div>
@@ -37,7 +37,7 @@
   <!-- MODALS -->
 
   <div id="addModal" class="modal">
-    <form method="POST" action="{{route('return.store')}}">
+    <form id="addReturn" method="POST" action="{{route('return.store')}}">
     @csrf
       <div class="modal-content" style="padding-bottom: 0px;">
         <h4 >Add Return To Store</h4><br>
@@ -88,23 +88,30 @@
 
           <div class="row" style="margin-bottom: 0px;">
             <div class="input-field col s12 m6 l6">
-              <input id="add_location_code" name="location_code" type="text" class="validate" autocomplete="" placeholder="Please click here before scanning location.." disabled>
-              <label for="location_code">Location<sup class="red-text">*</sup></label>
+              <input id="add_location_code" name="location_code" type="text" placeholder="Please click here before scanning location.." disabled>
+              <input type="hidden" name="location_cat" id="add_location_cat">
+              <label for="location_code">Inventory Location<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m6 l6">
+              <input id="add_location_name" name="location_name" type="text" placeholder="" readonly>
+              <label for="location_name">Location Name<sup class="red-text"></sup></label>
             </div>
           </div>
 
           <div class="row" style="margin-bottom: 0px;">
             <div class="input-field col s12 m6 l6">
               <input type="hidden" id="add_item_desc" name="item_desc">
-              <input id="add_item_code" name="item_code" type="text" class="validate" autocomplete="" placeholder="" disabled>
-              <span id="add_max_stock" name="add_max_stock" class="badge">Maximum Stock: 0</span>
+              <input id="add_item_code" name="item_code" type="text" placeholder="" disabled>
+              <span id="add_max_stock" name="add_max_stock" class="badge" style="font-size: 12px">Maximum Stock: 0</span>
         
               <label for="item_code">Item Code<sup class="red-text">*</sup></label>
             </div>
 
             <div class="input-field col s12 m6 l6">
-              <input id="add_quantity" name="quantity" type="number" class="validate" placeholder="" disabled>
+              <input id="add_quantity" name="quantity" type="number" placeholder="" disabled>
               <label for="quantity">Quantity<sup class="red-text">*</sup></label>
+              <span id="add_current_stock" name="add_current_stock" class="badge" style="font-size: 12px">Current Stock: 0</span>
             </div>
           </div>
 
@@ -139,7 +146,7 @@
       </div>
 
       <div class="modal-footer" style="padding-right: 32px; padding-bottom: 4px; margin-bottom: 30px;">
-        <button class="green waves-effect waves-light btn" id="btnAddSave" disabled><i class="material-icons left">check_circle</i>Save</button>
+        <button type="button" class="green waves-effect waves-light btn" id="btnAddSave" disabled><i class="material-icons left">check_circle</i>Save</button>
         <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Cancel</a>
       </div>
     </form>
@@ -831,55 +838,45 @@
           issuanceCode($(this).val(), 'add');
           $('#site_code').val($(this).val());
         });
-        
-        $('#add_purpose').on('change', function(){
-          if($(this).val()=='Project')
-          {
-            var x = document.getElementById('project_details');
-              x.style.display = "block";
-          } else {
-            var x = document.getElementById('project_details');
-              x.style.display = "none";
+
+        $('#add_location_code').on('keyup', function(e){
+          if(e.which == 13){ 
+            $.get('../inventory/location/getlocation/'+trim($(this).val()), (response) => {
+              var data = response.data;
+              if(data != null){
+                $('#add_location_name').val(data.location_name);
+                $('#add_location_cat').val(data.required_item_category);
+                $('#add_item_code').prop('disabled', false);
+                $(this).prop('disabled', true);
+              } else {
+                alert("Inventory location doesn't exist! Please re-scan inventory location.")
+                $(this).val("");
+                $('#add_location_name').val("");
+              }
+            }); 
           }
-          $('#purpose').val($(this).val());
-        });
-
-        $('#add_project_code').on('change', function(){
-          $.get('../projects/view/'+$(this).val()+'/view_assy', (response) => {
-            var data = response.data;
-            var select = '<option value="" disabled selected>Choose your option</option>';
-            $.each(data, (index,row) => {
-                select += '<option value="'+row.assy_code+'">'+row.assy_desc+'</option>';
-            });
-            $('#add_assy_code').html(select);
-            $('#add_assy_code').formSelect();
-          });
-          $('#project_code').val($(this).val());
-        });
-        
-        $('#add_assy_code').on('change', function(){
-          $('#assy_code').val($(this).val());
-        });
-        
-        $('#add_unit_price').on('keyup', function(){
-          computeTotalPrice(($('#add_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#add_currency_code option:selected').text().split(" - ")[0]),parseInt($('#add_unit_price').val()),parseInt($('#add_quantity').val()),$('#add_total_price'));
-        });
-
-        $('#add_quantity').on('keyup', function(){
-          computeTotalPrice(($('#add_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#add_currency_code option:selected').text().split(" - ")[0]),parseInt($('#add_unit_price').val()),parseInt($('#add_quantity').val()),$('#add_total_price'));
-        });
-
-        $('#add_currency_code').on('change', function(){
-          computeTotalPrice(($('#add_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#add_currency_code option:selected').text().split(" - ")[0]),parseInt($('#add_unit_price').val()),parseInt($('#add_quantity').val()),$('#add_total_price'));
         });
 
         $('#add_item_code').on('blur', function(){
-          if($(this).val()){
-            $.get('../item_master/getItemDetails/'+$(this).val(), (response) => {
-              var data = response.data;
-              $('#add_max_stock').html('Maximum Stock: '+data.maximum_stock);
-            });
-          };
+          $.get('../item_master/getItemDetailsLoc/'+trim($(this).val())+'/'+trim($('#add_location_cat').val()), (response) => {
+            if(response.data != null){
+
+              if($(this).val() != null){
+                $.get('../item_master/getItemDetails/'+$(this).val(), (response) => {
+                  $('#add_max_stock').html('Maximum Stock: '+response.data.maximum_stock);       
+                });
+                $.get('receiving/'+$('#add_item_code').val()+'/'+$('#add_location_code').val()+'/getCurrentStock', (response) => {
+                  $('#add_current_stock').html('Current Stock: '+response.data.toFixed(5))
+                });
+                $('#add_quantity').prop('disabled', false);
+              };
+             
+            } else {
+              alert("Item does not exist on the scanned location! Please check and re-scan item.");
+              $(this).prop('disabled', true);
+              $(this).val("");
+            }
+          })
         });
 
         $('#btnAdd').on('click', function(){
@@ -908,134 +905,8 @@
           }
         });
 
-
-
-        $('#edit_site_code').on('change', function(){
-          issuanceCode($(this).val(), 'edit');
-          $('#site_code_edit').val($(this).val());
-        });
-        
-        $('#edit_purpose').on('change', function(){
-          if($(this).val()=='Project')
-          {
-            var x = document.getElementById('edit_project_details');
-              x.style.display = "block";
-          } else {
-            var x = document.getElementById('edit_project_details');
-              x.style.display = "none";
-              $('#edit_project_code option[value=""]').prop('selected', true);
-              $('#edit_project_code').formSelect();
-              $('#project_code_edit').val("");
-
-              $('#edit_assy_code option[value=""]').prop('selected', true);
-              $('#edit_assy_code').formSelect();
-              $('#assy_code_edit').val("");
-          }
-          $('#purpose_edit').val($(this).val());
-        });
-
-        $('#edit_project_code').on('change', function(){
-          $.get('../projects/view/'+$(this).val()+'/view_assy', (response) => {
-            var data = response.data;
-            var select = '<option value="" disabled selected>Choose your option</option>';
-            $.each(data, (index,row) => {
-                select += '<option value="'+row.assy_code+'">'+row.assy_desc+'</option>';
-            });
-            $('#edit_assy_code').html(select);
-            $('#edit_assy_code').formSelect();
-          });
-          $('#project_code_edit').val($(this).val());
-        });
-
-        $('#edit_assy_code').on('change', function(){
-          $('#assy_code_edit').val($(this).val());
-        });
-
-        $('#edit_unit_price').on('keyup', function(){
-          computeTotalPrice(($('#edit_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#edit_currency_code option:selected').text().split(" - ")[0]),parseInt($('#edit_unit_price').val()),parseInt($('#edit_quantity').val()),$('#edit_total_price'));
-        });
-
-        $('#edit_quantity').on('keyup', function(){
-          computeTotalPrice(($('#edit_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#edit_currency_code option:selected').text().split(" - ")[0]),parseInt($('#edit_unit_price').val()),parseInt($('#edit_quantity').val()),$('#edit_total_price'));
-        });
-
-        $('#edit_currency_code').on('change', function(){
-          computeTotalPrice(($('#edit_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#edit_currency_code option:selected').text().split(" - ")[0]),parseInt($('#edit_unit_price').val()),parseInt($('#edit_quantity').val()),$('#edit_total_price'));
-        });
-
-        $('#edit_btnAdd').on('click', function(){
-          if($('#edit_item_code').val() &&
-              $('#edit_quantity').val()  
-          ){
-            if($('#edit_quantity').val() % 1 != 0)
-            {
-              console.log('not allowed');
-              alert("Decimal point is not allowed! Please input whole number on quantity.");
-            } else {
-              $.get('../item_master/getItemDetails/'+$('#edit_item_code').val(), (response) => {
-                var item = response.data;
-                if(item!=null){
-                  $.get('receiving/'+$('#edit_item_code').val()+'/'+$('#edit_location_code').val()+'/getCurrentStock', (response) => {
-                    var current_stock = parseInt(response.data) + parseInt($('#edit_quantity').val());
-                    var maximum_stock = parseInt(item.maximum_stock);
-                    addItem('edit',item_qty, maximum_stock);
-                  });
-                } else {
-                  alert('Item code does not exist! Please the check item code before adding item details..');
-                }
-              });
-            }
-          }else{
-            alert("Please fill up product details!");
-          }
-        });
-
-        $('#item_location_code').on('change', function(){
-          $.get('../inventory/location/getlocation/'+$('#item_location_code').val(), (response) => {
-            var data = response.data;
-            // console.log(data);
-            if(data!=null)
-              { 
-                $.get('receiving/'+$('#item_item_code').val()+'/'+$(this).val()+'/getCurrentStock', (response) => {
-                  var current_stock = parseInt(response.data);
-                  var request_qty = parseInt($('#item_quantity').val());
-                  if(current_stock < request_qty)
-                  {
-                    alert("Current stock of the item: "+$('#item_item_code').val()+" is not sufficient for the request!");
-                    $(this).val("");
-                  } else {
-                    $('#btnCollect').prop('disabled', false);
-                  }
-                });
-              }else{
-                alert("Inventory location doesn't exist! Please re-scan inventory location.")
-                $('#btnCollect').prop('disabled', true);
-              };
-          }); 
-        });
-
-        $('#item_location_code').on('keyup', function(){
-          $.get('../inventory/location/getlocation/'+$('#item_location_code').val(), (response) => {
-            var data = response.data;
-            // console.log(data);
-            if(data!=null)
-              { 
-                $.get('receiving/'+$('#item_item_code').val()+'/'+$(this).val()+'/getCurrentStock', (response) => {
-                  var current_stock = parseInt(response.data);
-                  var request_qty = parseInt($('#item_quantity').val());
-                  if(current_stock < request_qty)
-                  {
-                    alert("Current stock of the item: "+$('#item_item_code').val()+" is not sufficient for the request!");
-                    $(this).val("");
-                  } else {
-                    $('#btnCollect').prop('disabled', false);
-                  }
-                });
-              }else{
-                alert("Inventory location doesn't exist! Please re-scan inventory location.")
-                $('#btnCollect').prop('disabled', true);
-              };
-          }); 
+        $('#btnAddSave').on('click', function(){
+          document.getElementById("addReturn").submit();
         });
 
     });
@@ -1051,20 +922,6 @@
         return str.replace(/^\s+|\s+$/gm,'');
     };
     
-    const computeTotalPrice = (symbol = '$', unit_price = 0, quantity = 0, input_total) => {
-      const total = unit_price * quantity;
-      input_total.val(symbol+" "+FormatNumber(total ? parseInt(total) : 0));
-    };
-
-    const calculateGrandTotal = (symbol, products, field_grand_total) => {
-        var grand_total = 0.0;
-        $.each(products,(index,row) => {
-            grand_total = parseInt(grand_total) + parseInt(row.total_price);
-        });
-
-        field_grand_total.val(symbol+" "+FormatNumber(grand_total));
-    };
-
     const setDetails = (loc) => {
       if(loc=="add"){
         if( trim($('#add_return_code').val()) &&
@@ -1118,16 +975,16 @@
       }
     };
 
-    const resetItemDetails = (loc) => {
-      if(loc=="add"){
-        $('#add_item_code').val("");
-        $('#add_quantity').val("");
-        $('#add_location_code').val("");
-      } else {
-        $('#edit_item_code').val("");
-        $('#edit_quantity').val("");
-        $('#edit_location_code').val("");
-      }
+    const resetItemDetails = () => {
+      $('#add_location_code').val("");
+      $('#add_location_code').prop("disabled", false);
+      $('#add_location_name').val("");
+ 
+      $('#add_item_code').val("");
+      $('#add_item_code').prop("disabled", true);
+      $('#add_quantity').val("");
+      $('#add_quantity').prop("disabled", true);
+
     };
 
     const issuanceCode = (site, loc) => {
@@ -1488,80 +1345,6 @@
           if(items.length > 0){
             $('#btnAddSave').prop('disabled', false);
           };
-        } else if(loc=='edit'){
-          var id = parseInt(index) + 1;
-          table.append('<tr>'+
-                      '<td class="left-align">'+id+'</td>'+
-                      '<td class="left-align">'+row.item_code+'</td>'+
-                      '<td class="left-align">'+row.item_desc+'</td>'+
-                      '<td class="left-align">'+row.quantity+'</td>'+
-                      '<td><button type="button" class="btn-small red waves-effect waves-light" disabled><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
-                      '<input type="hidden" name="e_itm_item_code[]" value="'+row.item_code+'"/>'+
-                      '<input type="hidden" name="e_itm_quantity[]" value="'+row.quantity+'"/>'+
-                      '<input type="hidden" name="e_itm_inventory_location[]" value="'+row.location_code+'"/>'+
-                      '<input type="hidden" name="e_itm_currency[]" value=" "/>'+
-                      '<input type="hidden" name="e_itm_currency_code[]" value=" "/>'+
-                      '<input type="hidden" name="e_itm_unit_price[]" value=" "/>'+
-                      '<input type="hidden" name="e_itm_total_price[]" value=" "/>'+
-                      '</tr>'
-                    );
-        } else if(loc=='issue'){
-          var id = parseInt(index) + 1;
-          if( row.status=="Issued"){
-            table.append('<tr>'+
-                                '<td class="left-align">'+id+'</td>'+
-                                '<td class="left-align">'+row.item_code+'</td>'+
-                                '<td class="left-align">'+row.item_desc+'</td>'+
-                                '<td class="left-align">'+row.quantity+'</td>'+
-                                '<td class="left-align"><span class="new badge black white-text" data-badge-caption="">'+row.status+'</span></td>'+ 
-                                '<td class="left-align"><p><label><input id="'+id+'" class="filled-in" checked="checked" type="checkbox" value="'+id+'" disabled/><span></span></label></p></td>'+
-                                '<input type="hidden" name="i_itm_item_code[]" value="'+row.item_code+'"/>'+
-                                '<input type="hidden" name="i_itm_quantity[]" value="'+row.quantity+'"/>'+
-                                '<input type="hidden" name="i_itm_inventory_location[]" value="'+row.inventory_location+'"/>'+
-                                '<input type="hidden" name="i_itm_currency[]" value=" "/>'+
-                                '<input type="hidden" name="i_itm_currency_code[]" value=" "/>'+
-                                '<input type="hidden" name="i_itm_unit_price[]" value=" "/>'+
-                                '<input type="hidden" name="i_itm_total_price[]" value=" "/>'+
-                                '</tr>'
-                              );
-              // $('#btnIssue').prop('disabled', false);
-          } else if (row.is_check==true) {
-            table.append('<tr>'+
-                                '<td class="left-align">'+id+'</td>'+
-                                '<td class="left-align">'+row.item_code+'</td>'+
-                                '<td class="left-align">'+row.item_desc+'</td>'+
-                                '<td class="left-align">'+row.quantity+'</td>'+
-                                '<td class="left-align"><span class="new badge blue white-text" data-badge-caption="">'+row.status+'</span></td>'+ 
-                                // '<td class="left-align"><p><label><input id="'+id+'" class="filled-in" checked="checked" type="checkbox" value="'+id+'" disabled/><span></span></label></p></td>'+
-                                '<td class="left-align"><p><label><input id="'+id+'" class="filled-in" checked="checked" type="checkbox" value="'+id+'"  onclick="issItems(\''+row.trans_code+'\',\''+row.item_code+'\','+id+')"/><span></span></label></p></td>'+
-                                '<input type="hidden" name="i_itm_item_code[]" value="'+row.item_code+'"/>'+
-                                '<input type="hidden" name="i_itm_quantity[]" value="'+row.quantity+'"/>'+
-                                '<input type="hidden" name="i_itm_inventory_location[]" value="'+row.inventory_location+'"/>'+
-                                '<input type="hidden" name="i_itm_currency[]" value=" "/>'+
-                                '<input type="hidden" name="i_itm_currency_code[]" value=" "/>'+
-                                '<input type="hidden" name="i_itm_unit_price[]" value=" "/>'+
-                                '<input type="hidden" name="i_itm_total_price[]" value=" "/>'+
-                                '</tr>'
-                              );
-              $('#btnIssue').prop('disabled', false);
-          } else {
-            table.append('<tr>'+
-                                '<td class="left-align">'+id+'</td>'+
-                                '<td class="left-align">'+row.item_code+'</td>'+
-                                '<td class="left-align">'+row.item_desc+'</td>'+
-                                '<td class="left-align">'+row.quantity+'</td>'+
-                                '<td class="left-align"><span class="new badge blue white-text" data-badge-caption="">'+row.status+'</span></td>'+ 
-                                '<td class="left-align"><p><label><input id="'+id+'" class="with-gap" type="checkbox" value="'+id+'" onclick="issItems(\''+row.trans_code+'\',\''+row.item_code+'\','+id+')"/><span></span></label></p></td>'+
-                                '<input type="hidden" name="i_itm_item_code[]" value="'+row.item_code+'"/>'+
-                                '<input type="hidden" name="i_itm_quantity[]" value="'+row.quantity+'"/>'+
-                                '<input type="hidden" name="i_itm_inventory_location[]" value="'+row.inventory_location+'"/>'+
-                                '<input type="hidden" name="i_itm_currency[]" value=" "/>'+
-                                '<input type="hidden" name="i_itm_currency_code[]" value=" "/>'+
-                                '<input type="hidden" name="i_itm_unit_price[]" value=" "/>'+
-                                '<input type="hidden" name="i_itm_total_price[]" value=" "/>'+
-                                '</tr>'
-                              );
-          }
         } else if (loc=='void'){
             var id = parseInt(index) + 1;
             table.append('<tr>'+
@@ -1606,7 +1389,7 @@
         add_items.splice(index,1);
         $('#removeItemModal').modal('close');
         renderItems(add_items,$('#items-dt tbody'),'add');
-        if(add_items.length  == 0 ){ $('#btnAddSave').prop('disabled', true); }
+        if(add_items.length == 0 ){ $('#btnAddSave').prop('disabled', true); }
     };
 
     const deleteItem = (index,loc) => {
@@ -1617,105 +1400,49 @@
     const addItem = (loc, current_stock = 0, maximum_stock = 0) => {
       var found = false;
       var cindex = 0;
-
-      $.get('list/'+$('#add_item_code').val()+'/'+$('#add_location_code').val()+'/item_details', (response) => {
-        var datax = response.data;
-        if(datax!=null)
-        {
-          if(loc=='add')
-          {
-            if($('#add_quantity').val() <= 0){
-              alert('Quantity must be greater than 0!');
-            }else{
-              $.each(add_items,(index,row) => {
-                if(row.item_code == $('#add_item_code').val() && row.location_code == $('#add_location_code').val()){
-                  cindex = index;
-                  found = true;
-                  return false;
-                }
-              });
-
-              if(found){
-                  var current_stocks = parseInt(current_stock) + parseInt(add_items[cindex].quantity);
-                  if(current_stocks > maximum_stock)
-                  {
-                    alert("You're above the maximum stock level of the item!");
-                  } else  if(current_stocks == maximum_stock) {
-                    alert("You reach the maximum stock level of the item!");
-                  } 
-                  add_items[cindex].quantity = parseInt(add_items[cindex].quantity) + parseInt($('#add_quantity').val());
-                  renderItems(add_items,$('#items-dt tbody'),'add');
-                  resetItemDetails("add");
-              }else{
-                  var current_stocks = parseInt(current_stock);
-                  if(current_stocks > maximum_stock)
-                  {
-                    alert("You're above the maximum stock level of the item!");
-                  } else  if(current_stocks == maximum_stock) {
-                    alert("You reach the maximum stock level of the item!");
-                  } 
-                  add_items.push({ "item_code": $('#add_item_code').val(),
-                                  "item_desc": $('#add_item_desc').val(),
-                                  "location_code": $('#add_location_code').val(),
-                                  "quantity": parseInt($('#add_quantity').val()),
-                                });
-                  renderItems(add_items,$('#items-dt tbody'),'add');
-                  resetItemDetails("add");
-              }
-              $('#add_max_stock').html('Maximum Stock: 0');
-            }
-          } else if(loc=='edit') {
-
-            if($('#edit_quantity').val() <= 0){
-              alert('Quantity must be greater than 0!');
-            }else{
-              $.each(edit_items,(index,row) => {
-                if(row.item_code == $('#edit_item_code').val() && row.location_code == $('#edit_location_code')){
-                  cindex = index;
-                  found = true;
-                  return false;
-                }
-              });
-
-              if(found){
-                  var current_stocks = parseInt(current_stock) + parseInt(edit_items[cindex].quantity);
-                  if(current_stocks > maximum_stock)
-                  {
-                    alert("You're above the maximum stock level of the item!");
-                  } else  if(current_stocks == maximum_stock) {
-                    alert("You reach the maximum stock level of the item!");
-                  } 
-                  edit_items[cindex].quantity = parseInt(edit_items[cindex].quantity) + parseInt($('#edit_quantity').val());
-                  $('#btnEditSave').prop('disabled', false);
-                  renderItems(edit_items,$('#edit-items-dt tbody'),'edit');
-                  resetItemDetails("edit");
- 
-              }else{
-                  var current_stocks = parseInt(current_stock);
-                  if(current_stocks > maximum_stock)
-                  {
-                    alert("You're above the maximum stock level of the item!");
-                  } else  if(current_stocks == maximum_stock) {
-                    alert("You reach the maximum stock level of the item!");
-                  } 
-                  edit_items.push({ "item_code": $('#edit_item_code').val(),
-                                    "item_desc": $('#edit_item_desc').val(),
-                                    "location_code": $('#edit_location_code').val(),
-                                    "quantity": parseInt($('#edit_quantity').val()),
-                                  });
-                  $('#btnEditSave').prop('disabled', false);
-                  renderItems(edit_items,$('#edit-items-dt tbody'),'edit');
-                  resetItemDetails("edit");
-              }
-            }
-
+   
+      if($('#add_quantity').val() <= 0){
+        alert('Quantity must be greater than 0!');
+      }else{
+        $.each(add_items,(index,row) => {
+          if(row.item_code == $('#add_item_code').val() && row.location_code == $('#add_location_code').val()){
+            cindex = index;
+            found = true;
+            return false;
           }
-        } else {
-          alert("Item is not belong on the scanned location! Please check item location!");
+        });
+
+        if(found){
+            var current_stocks = parseInt(current_stock) + parseInt(add_items[cindex].quantity);
+            if(current_stocks > maximum_stock)
+            {
+              alert("You're above the maximum stock level of the item!");
+            } else  if(current_stocks == maximum_stock) {
+              alert("You reach the maximum stock level of the item!");
+            } 
+            add_items[cindex].quantity = parseInt(add_items[cindex].quantity) + parseInt($('#add_quantity').val());
+            renderItems(add_items,$('#items-dt tbody'),'add');
+            resetItemDetails();
+        }else{
+            var current_stocks = parseInt(current_stock);
+            if(current_stocks > maximum_stock)
+            {
+              alert("You're above the maximum stock level of the item!");
+            } else  if(current_stocks == maximum_stock) {
+              alert("You reach the maximum stock level of the item!");
+            } 
+            add_items.push({ "item_code": $('#add_item_code').val(),
+                            "item_desc": $('#add_item_desc').val(),
+                            "location_code": $('#add_location_code').val(),
+                            "quantity": parseInt($('#add_quantity').val()),
+                          });
+            renderItems(add_items,$('#items-dt tbody'),'add');
+            resetItemDetails();
         }
-      });
-
-
+        $('#add_max_stock').html('Maximum Stock: 0');
+        $('#add_current_stock').html('Current Stock: 0');
+      }
+ 
     };
 
     const loadApprover = () => {
@@ -1768,54 +1495,61 @@
       }
     };
 
-    var request = $('#request-dt').DataTable({
-          "lengthChange": false,
-          "pageLength": 15,
-          "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
-          "pagingType": "full",
-          "ajax": "/api/reiss/inventory/return/all",
-          "columns": [
-              {  "data": "id" },
-              {  "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return row.sites.site_desc;
+  var request = $('#request-dt').DataTable({
+        "lengthChange": false,
+        "pageLength": 15,
+        "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+        "pagingType": "full",
+        "ajax": "/api/reiss/inventory/return/all",
+        "columns": [
+            {  "data": "id" },
+            {  "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.sites.site_desc;
+                }
+            },
+            {  "data": "id",
+                "render": function ( data, type, row, meta ) {
+                        
+                @if($permission[0]["view"]==true || $permission[0]["masterlist"]==true)
+                  return '<a href="#!" onclick="viewReturn('+data+')">'+row.return_code+'</a>';
+                @else
+                  return row.return_code;
+                @endif
+                }
+            },
+            {  "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.reason;
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  switch (row.status) {
+                    case "Returned":
+                      return  '<span class="new badge blue white-text" data-badge-caption="">Returned</span>';
+                      break;
+                    case "Voided":
+                      return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
+                      break;
                   }
-              },
-              {  "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return '<a href="#!" onclick="viewReturn('+data+')">'+row.return_code+'</a>';
-                  }
-              },
-              {  "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return row.reason;
-                  }
-              },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    switch (row.status) {
-                      case "Returned":
-                        return  '<span class="new badge blue white-text" data-badge-caption="">Returned</span>';
-                        break;
-                      case "Voided":
-                        return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
-                        break;
-                    }
-                  }
-              },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    if(row.status=='Returned'){
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  if(row.status=='Returned'){
+                    @if($permission[0]["void"]==true || $permission[0]["masterlist"]==true)
                       return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="voidItem('+data+')"><i class="material-icons">grid_off</i></a>';
-                    } else {
+                    @else
                       return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">grid_off</i></a>';
-                    }
+                    @endif
+                  } else {
+                    return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">grid_off</i></a>';
                   }
-              },   
-          ]
-    });
- 
-
+                }
+            },   
+        ]
+  });
   </script>
     <!-- End of SCRIPTS -->
 @endsection

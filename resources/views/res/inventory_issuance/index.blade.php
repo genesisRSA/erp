@@ -8,80 +8,85 @@
   </div>
   <div class="row main-content">
     <ul id="project_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
-      <li class="tab col s12 m4 l4"><a class="active" href="#Request">Request</a></li>
-      <li class="tab col s12 m4 l4"><a class="active" href="#Approval">Approval</a></li>
-      <li class="tab col s12 m4 l4"><a class="active" href="#Issuance">Issuance</a></li>
-    </ul>
-
-    <div id="Request" name="ongoing">
-        <div class="card" style="margin-top: 0px">
-          <div class="card-content">
-            <table class="responsive-table highlight" id="request-dt" style="width: 100%">
-              <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Issuance Code</th>
-                    <th>Purpose</th>
-                    <th>Project Code</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-              </thead>
-            </table>
-          </div>
-        </div>
-      
-      @if($permission[0]["add"]==true)
-        <a href="#!" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button" data-position="left" data-tooltip="Add Inventory Issuance" onclick="openModal();"><i class="material-icons">add</i></a>
+      @if($permission[0]["add"]==true || $permission[0]["masterlist"]==true)
+        <li class="tab col s12 m4 l4"><a class="active" href="#Request">Request</a></li>
       @endif
-    </div>
+      @if($permission[0]["approval"]==true || $permission[0]["masterlist"]==true)
+        <li class="tab col s12 m4 l4"><a class="active" href="#Approval">Approval</a></li>
+      @endif
+      @if($permission[0]["masterlist"]==true)
+        <li class="tab col s12 m4 l4"><a class="active" href="#Issuance">Issuance</a></li>
+      @endif
 
-    <div id="Issuance" name="Issuance">
-        <div class="card" style="margin-top: 0px">
-          <div class="card-content">
-            <table class="responsive-table highlight" id="issuance-dt" style="width: 100%">
-              <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Issuance Code</th>
-                    <th>Requestor</th>
-                    <th>Purpose</th>
-                    <th>Project Code</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-              </thead>
-            </table>
+    </ul>
+    @if($permission[0]["add"]==true || $permission[0]["masterlist"]==true)
+      <div id="Request" name="ongoing">
+          <div class="card" style="margin-top: 0px">
+            <div class="card-content">
+              <table class="responsive-table highlight" id="request-dt" style="width: 100%">
+                <thead>
+                  <tr>
+                      <th>ID</th>
+                      <th>Issuance Code</th>
+                      <th>Purpose</th>
+                      <th>Project Code</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
           </div>
-        </div>
-      
-      {{-- @if($permission[0]["add"]==true)
-        <a href="#!" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button" data-position="left" data-tooltip="Add Inventory Issuance" onclick="openModal();"><i class="material-icons">add</i></a>
-      @endif --}}
-    </div>
+        
+        @if($permission[0]["add"]==true || $permission[0]["masterlist"]==true)
+          <a href="#!" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button" data-position="left" data-tooltip="Add Inventory Issuance" onclick="openModal();"><i class="material-icons">add</i></a>
+        @endif
+      </div>
+    @endif
 
-    <div id="Approval" name="Approval">
-        <div class="card" style="margin-top: 0px">
-          <div class="card-content">
-            <table class="responsive-table highlight" id="approval-dt" style="width: 100%">
-              <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Issuance Code</th>
-                    <th>Requestor</th>
-                    <th>Purpose</th>
-                    <th>Project Code</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-              </thead>
-            </table>
+    @if($permission[0]["approval"]==true || $permission[0]["masterlist"]==true)
+      <div id="Approval" name="Approval">
+          <div class="card" style="margin-top: 0px">
+            <div class="card-content">
+              <table class="responsive-table highlight" id="approval-dt" style="width: 100%">
+                <thead>
+                  <tr>
+                      <th>ID</th>
+                      <th>Issuance Code</th>
+                      <th>Requestor</th>
+                      <th>Purpose</th>
+                      <th>Project Code</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
           </div>
-        </div>
-      
-     
-    </div>
+      </div>
+    @endif
 
+    @if($permission[0]["masterlist"]==true)
+      <div id="Issuance" name="Issuance">
+          <div class="card" style="margin-top: 0px">
+            <div class="card-content">
+              <table class="responsive-table highlight" id="issuance-dt" style="width: 100%">
+                <thead>
+                  <tr>
+                      <th>ID</th>
+                      <th>Issuance Code</th>
+                      <th>Requestor</th>
+                      <th>Purpose</th>
+                      <th>Project Code</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+          </div>
+      </div>
+    @endif
   </div>
  
   <!-- MODALS -->
@@ -1287,7 +1292,7 @@
                       $('#item_cs').val(current_stock);
                       
                       var request_qty = parseInt($('#item_quantity_rem').val()); // need to convert based on conversion id before checking if sufficient for the request.
-                      // $('#btnCollect').prop('disabled', false);
+                  
                       $('#btnItemReset').prop('disabled', false);
                       $(this).prop('readonly', true);
                       var x = document.getElementById('item_details');
@@ -2963,219 +2968,235 @@
       }
     };
 
-    var request = $('#request-dt').DataTable({
-          "lengthChange": false,
-          "pageLength": 15,
-          "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
-          "pagingType": "full",
-          "ajax": "/api/reiss/inventory/issuance/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
-          "columns": [
-              {  "data": "id" },
+  var request = $('#request-dt').DataTable({
+        "lengthChange": false,
+        "pageLength": 15,
+        "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+        "pagingType": "full",
+        "ajax": "/api/reiss/inventory/issuance/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
+        "columns": [
+            {  "data": "id" },
 
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return '<a href="#!" onclick="viewIssuance('+data+')">'+ row.issuance_code; +'</a>';
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  @if($permission[0]["view"]==true || $permission[0]["masterlist"]==true)
+                    return '<a href="#!" onclick="viewIssuance('+data+')">'+ row.issuance_code +'</a>';
+                  @else
+                    return row.issuance_code;
+                  @endif
+                }
+            },
+
+            {  "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.purpose;
+                }
+            },
+
+            { "data": "id",
+                "render": function (data, type, row, meta) {
+                  if(row.purpose=='Project')
+                  {
+                    return row.project_code;
+                  } else {
+                    return "";
                   }
-              },
-  
-              {  "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return row.purpose;
+                }
+            },
+
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  switch (row.status) {
+                    case "Pending":
+                      return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
+                      break;
+                    case "Approved":
+                      return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
+                      break;
+                    case "Rejected":
+                      return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
+                      break;
+                    case 'For Approval':
+                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Approval</span>';
+                      break;
+                    case 'For Review':
+                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
+                      break;
+                    case "Issued":
+                      return  '<span class="new badge purple white-text" data-badge-caption="">Issued</span>';
+                      break;
+                    case "Issued with Pending":
+                      return  '<span class="new badge grey darken-1 white-text" data-badge-caption="">Issued with Pending</span>';
+                      break;
+                    case "Returned":
+                      return  '<span class="new badge amber white-text" data-badge-caption="">Returned</span>';
+                      break;
+                    case "Voided":
+                      return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
+                      break;
                   }
-              },
+                }
+            },
 
-              { "data": "id",
-                  "render": function (data, type, row, meta) {
-                    if(row.purpose=='Project')
-                    {
-                      return row.project_code;
-                    } else {
-                      return "";
-                    }
-                  }
-              },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
 
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    switch (row.status) {
-                      case "Pending":
-                        return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
-                        break;
-                      case "Approved":
-                        return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
-                        break;
-                      case "Rejected":
-                        return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
-                        break;
-                      case 'For Approval':
-                        return  '<span class="new badge yellow black-text" data-badge-caption="">For Approval</span>';
-                        break;
-                      case 'For Review':
-                        return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
-                        break;
-                      case "Issued":
-                        return  '<span class="new badge purple white-text" data-badge-caption="">Issued</span>';
-                        break;
-                      case "Issued with Pending":
-                        return  '<span class="new badge grey darken-1 white-text" data-badge-caption="">Issued with Pending</span>';
-                        break;
-                      case "Returned":
-                        return  '<span class="new badge amber white-text" data-badge-caption="">Returned</span>';
-                        break;
-                      case "Voided":
-                        return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
-                        break;
-                    }
-                  }
-              },
-
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-
-                    if(row.status=="Pending")
-                    {
+                  if(row.status=="Pending")
+                  {
+                    @if($permission[0]["edit"]==true || $permission[0]["masterlist"]==true)
                       return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editIssuance('+data+')"><i class="material-icons">create</i></a>';
-                    } else {
+                    @else
                       return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a>';
-                    }
-            
+                    @endif
+                  } else {
+                    return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a>';
                   }
-              },   
-          ]
-    });
+          
+                }
+            },   
+        ]
+  });
 
-    var issuance = $('#issuance-dt').DataTable({
-          "lengthChange": false,
-          "pageLength": 15,
-          "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
-          "pagingType": "full",
-          "ajax": "/api/reiss/inventory/issuance/issuance",
-          "columns": [
-              {  "data": "id" },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
+  var approval = $('#approval-dt').DataTable({
+        "lengthChange": false,
+        "pageLength": 15,
+        "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+        "pagingType": "full",
+        "ajax": "/api/reiss/inventory/issuance/all_approval/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
+        "columns": [
+            {  "data": "id" },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return '<a href="#!" onclick="viewIssuance('+data+')">'+ row.issuance_code; +'</a>';
+                }
+            },
+            {  "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.employee_details.full_name;;
+                }
+            },
+            {  "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.purpose;
+                }
+            },
+            { "data": "id",
+                "render": function (data, type, row, meta) {
+                  if(row.purpose=='Project')
+                  {
+                    return row.project_code;
+                  } else {
+                    return "";
+                  }
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  switch (row.status) {
+                    case "Pending":
+                      return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
+                      break;
+                    case "Approved":
+                      return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
+                      break;
+                    case 'For Approval':
+                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Approval</span>';
+                      break;
+                    case 'For Review':
+                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
+                      break;
+                    case "Issued":
+                      return  '<span class="new badge purple white-text" data-badge-caption="">Issued</span>';
+                      break;
+                    case "Returned":
+                      return  '<span class="new badge amber white-text" data-badge-caption="">Returned</span>';
+                      break;
+                    case "Voided":
+                      return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
+                      break;
+                  }
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="appIssuance('+data+')"><i class="material-icons">rate_review</i></a>';
+                }
+            },   
+        ]
+  });
+
+  var issuance = $('#issuance-dt').DataTable({
+        "lengthChange": false,
+        "pageLength": 15,
+        "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+        "pagingType": "full",
+        "ajax": "/api/reiss/inventory/issuance/issuance",
+        "columns": [
+            {  "data": "id" },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  @if($permission[0]["view"]==true || $permission[0]["masterlist"]==true)
                     return '<a href="#!" onclick="viewIssuance('+data+')">'+ row.issuance_code; +'</a>';
+                  @else
+                    return  row.issuance_code; 
+                  @endif
+                }
+            },
+            {  "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.employee_details.full_name;;
+                }
+            },
+            {  "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.purpose;
+                }
+            },
+            { "data": "id",
+                "render": function (data, type, row, meta) {
+                  if(row.purpose=='Project')
+                  {
+                    return row.project_code;
+                  } else {
+                    return "";
                   }
-              },
-              {  "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return row.employee_details.full_name;;
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  switch (row.status) {
+                    case "Pending":
+                      return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
+                      break;
+                    case "Approved":
+                      return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
+                      break;
+                    case "Issued":
+                      return  '<span class="new badge purple white-text" data-badge-caption="">Issued</span>';
+                      break;
+                    case "Issued with Pending":
+                      return  '<span class="new badge grey darken-1 white-text" data-badge-caption="">Issued with Pending</span>';
+                      break;
+                    case "Returned":
+                      return  '<span class="new badge amber white-text" data-badge-caption="">Returned</span>';
+                      break;
+                    case "Voided":
+                      return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
+                      break;
                   }
-              },
-              {  "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return row.purpose;
-                  }
-              },
-              { "data": "id",
-                  "render": function (data, type, row, meta) {
-                    if(row.purpose=='Project')
-                    {
-                      return row.project_code;
-                    } else {
-                      return "";
-                    }
-                  }
-              },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    switch (row.status) {
-                      case "Pending":
-                        return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
-                        break;
-                      case "Approved":
-                        return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
-                        break;
-                      case "Issued":
-                        return  '<span class="new badge purple white-text" data-badge-caption="">Issued</span>';
-                        break;
-                      case "Issued with Pending":
-                        return  '<span class="new badge grey darken-1 white-text" data-badge-caption="">Issued with Pending</span>';
-                        break;
-                      case "Returned":
-                        return  '<span class="new badge amber white-text" data-badge-caption="">Returned</span>';
-                        break;
-                      case "Voided":
-                        return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
-                        break;
-                    }
-                  }
-              },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  @if($permission[0]["masterlist"]==true)
                     return  '<a href="#" class="btn-small teal darken-1 waves-effect waves-dark" onclick="issIssuance('+data+')"><i class="material-icons">shopping_cart</i></a>';
-                  }
-              },   
-          ]
-    });
-
-    var approval = $('#approval-dt').DataTable({
-          "lengthChange": false,
-          "pageLength": 15,
-          "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
-          "pagingType": "full",
-          "ajax": "/api/reiss/inventory/issuance/all_approval/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
-          "columns": [
-              {  "data": "id" },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return '<a href="#!" onclick="viewIssuance('+data+')">'+ row.issuance_code; +'</a>';
-                  }
-              },
-              {  "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return row.employee_details.full_name;;
-                  }
-              },
-              {  "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return row.purpose;
-                  }
-              },
-              { "data": "id",
-                  "render": function (data, type, row, meta) {
-                    if(row.purpose=='Project')
-                    {
-                      return row.project_code;
-                    } else {
-                      return "";
-                    }
-                  }
-              },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    switch (row.status) {
-                      case "Pending":
-                        return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
-                        break;
-                      case "Approved":
-                        return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
-                        break;
-                      case 'For Approval':
-                        return  '<span class="new badge yellow black-text" data-badge-caption="">For Approval</span>';
-                        break;
-                      case 'For Review':
-                        return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
-                        break;
-                      case "Issued":
-                        return  '<span class="new badge purple white-text" data-badge-caption="">Issued</span>';
-                        break;
-                      case "Returned":
-                        return  '<span class="new badge amber white-text" data-badge-caption="">Returned</span>';
-                        break;
-                      case "Voided":
-                        return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
-                        break;
-                    }
-                  }
-              },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="appIssuance('+data+')"><i class="material-icons">rate_review</i></a>';
-                  }
-              },   
-          ]
-    });
-  </script>
+                  @else
+                    return  '<a href="#" class="btn-small teal darken-1 waves-effect waves-dark" disabled><i class="material-icons">shopping_cart</i></a>';
+                  @endif
+                }
+            },   
+        ]
+  });
+</script>
     <!-- End of SCRIPTS -->
 @endsection

@@ -46,6 +46,9 @@
               <option value="Procedures">Procedures</option>
               <option value="Drawings">Drawings</option>
               <option value="Projects">Projects</option>
+              <option value="Issuance">Inventory Issuance</option>
+              <option value="RTV">Inventory RTV</option>
+              <option value="RTV Receiving">Inventory RTV - Receiving</option>
             </select>
             <label for="add_module">Module<sup class="red-text">*</sup></label>
           </div>
@@ -145,6 +148,9 @@
               <option value="Procedures">Procedures</option>
               <option value="Drawings">Drawings</option>
               <option value="Projects">Projects</option>
+              <option value="Issuance">Inventory Issuance</option>
+              <option value="RTV">Inventory RTV</option>
+              <option value="RTV Receiving">Inventory RTV - Receiving</option>
             </select>
             <label for="module">Module<sup class="red-text">*</sup></label>
           </div>

@@ -31,95 +31,107 @@
   </div>
   <div class="row main-content">
     <ul id="project_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
-      <li class="tab col s12 m4 l4"><a class="active" href="#Return">Return Item</a></li>
-      <li class="tab col s12 m4 l4"><a href="#Approval">Approval</a></li>
-      <li class="tab col s12 m4 l4"><a href="#Process">Process</a></li>
-      <li class="tab col s12 m4 l4"><a href="#Receiving">Receiving</a></li>
+      @if($permission[0]["add"]==true || $permission[0]["masterlist"]==true)
+        <li class="tab col s12 m4 l4"><a class="active" href="#Return">Return Item</a></li>
+      @endif
+      @if($permission[0]["approval"]==true || $permission[0]["masterlist"]==true)
+        <li class="tab col s12 m4 l4"><a href="#Approval">Approval</a></li>
+      @endif
+      @if($permission[0]["masterlist"]==true)
+        <li class="tab col s12 m4 l4"><a href="#Process">Process</a></li>
+      @endif
+      @if($receiving[0]["view"]==true || $receiving[0]["masterlist"]==true)
+        <li class="tab col s12 m4 l4"><a href="#Receiving">Receiving</a></li>
+      @endif
     </ul>
 
-    <div id="Return" name="Return">
-        <div class="card" style="margin-top: 0px">
-          <div class="card-content">
-            <table class="responsive-table highlight" id="return-dt" style="width: 100%">
-              <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Return Code</th>
- 
-                    <th>Reason</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-              </thead>
-            </table>
-          </div>
-        </div>
-      
-      @if($permission[0]["add"]==true)
-        <a href="#!" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button" data-position="left" data-tooltip="Add Return to Vendor" onclick="openModal();"><i class="material-icons">add</i></a>
-      @endif
-    </div>
-
-    <div id="Approval" name="Approval">
-        <div class="card" style="margin-top: 0px">
-          <div class="card-content">
-            <table class="responsive-table highlight" id="approval-dt" style="width: 100%">
-              <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Site</th>
-                    <th>Return Code</th>
-                    <th>Requestor</th>
-                    <th>Reason</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-              </thead>
-            </table>
-          </div>
-        </div>
-    </div>
-
-    <div id="Process" name="Process">
-      <div class="card" style="margin-top: 0px">
-        <div class="card-content">
-          <table class="responsive-table highlight" id="process-dt" style="width: 100%">
-            <thead>
-              <tr>
-                  <th>ID</th>
-                  <th>Site</th>
-                  <th>Return Code</th>
-                  <th>Requestor</th>
-                  <th>Reason</th>
-                  <th>Status</th>
-                  <th>Action</th>
-              </tr>
-            </thead>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div id="Receiving" name="Receiving">
-      <div class="card" style="margin-top: 0px">
-        <div class="card-content">
-          <table class="responsive-table highlight" id="receiving-dt" style="width: 100%">
-            <thead>
-              <tr>
-                  <th>ID</th>
-                  <th>Vendor</th>
-                  <th>Return Code</th>
-                  <th>Requestor</th>
-                  <th>Reason</th>
-                  <th>Status</th>
-                  <th>Action</th>
-              </tr>
-            </thead>
-          </table>
-        </div>
-      </div>
-    </div>
+      @if($permission[0]["add"]==true || $permission[0]["masterlist"]==true)
+        <div id="Return" name="Return">
+            <div class="card" style="margin-top: 0px">
+              <div class="card-content">
+                <table class="responsive-table highlight" id="return-dt" style="width: 100%">
+                  <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Return Code</th>
     
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+          
+          @if($permission[0]["add"]==true || $permission[0]["masterlist"]==true)
+            <a href="#!" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button" data-position="left" data-tooltip="Add Return to Vendor" onclick="openModal();"><i class="material-icons">add</i></a>
+          @endif
+        </div>
+      @endif
+      @if($permission[0]["approval"]==true || $permission[0]["masterlist"]==true)
+        <div id="Approval" name="Approval">
+            <div class="card" style="margin-top: 0px">
+              <div class="card-content">
+                <table class="responsive-table highlight" id="approval-dt" style="width: 100%">
+                  <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Site</th>
+                        <th>Return Code</th>
+                        <th>Requestor</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+        </div>
+      @endif
+      @if($permission[0]["masterlist"]==true)
+        <div id="Process" name="Process">
+          <div class="card" style="margin-top: 0px">
+            <div class="card-content">
+              <table class="responsive-table highlight" id="process-dt" style="width: 100%">
+                <thead>
+                  <tr>
+                      <th>ID</th>
+                      <th>Site</th>
+                      <th>Return Code</th>
+                      <th>Requestor</th>
+                      <th>Reason</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+          </div>
+        </div>
+      @endif
+      @if($receiving[0]["view"]==true || $receiving[0]["masterlist"]==true)
+        <div id="Receiving" name="Receiving">
+          <div class="card" style="margin-top: 0px">
+            <div class="card-content">
+              <table class="responsive-table highlight" id="receiving-dt" style="width: 100%">
+                <thead>
+                  <tr>
+                      <th>ID</th>
+                      <th>Vendor</th>
+                      <th>Return Code</th>
+                      <th>Requestor</th>
+                      <th>Reason</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+          </div>
+        </div>
+      @endif
   </div>
  
   <!-- MODALS -->
@@ -177,25 +189,32 @@
           </div>
             
           <div class="row" style="margin-bottom: 0px;">
-            <div class="input-field col s12 m6 l6">
-              <input type="hidden" id="add_item_desc" name="item_desc">
-              <input id="add_item_code" name="item_code" type="text" class="validate" autocomplete="" placeholder="" disabled>
-              <label for="item_code">Item Code<sup class="red-text">*</sup></label>
+            <div class="row" style="margin-bottom: 0px;">
+              <div class="col s12 m6 l6">
+                <label for="item_code">Item Code<sup class="red-text">*</sup></label>
+                <input id="add_item_code" name="item_code" type="text" class="validate" disabled>
+              </div>
+              <div class="col s12 m6 l6">
+                <label for="item_desc">Description<sup class="red-text"></sup></label>
+                <input id="add_item_desc" name="item_desc" type="text" class="validate" readonly>
+              </div>
             </div>
 
-            <div class="input-field col s12 m6 l6">
-              <input id="add_quantity" name="quantity" type="number" class="validate" placeholder="" disabled>
-              <label for="quantity">Quantity<sup class="red-text">*</sup></label>
+            <div class="row" style="margin-bottom: 0px;">
+              <div class="input-field col s12 m6 l6">
+                <label for="quantity">Quantity<sup class="red-text">*</sup></label>
+                <input id="add_quantity" name="quantity" type="number" class="validate" placeholder="" disabled>
+              </div>
             </div>
           </div>
 
-          <div class="row" style="margin-bottom: 10px;">
+          <div class="row" style="margin-bottom: 0px;">
             <div class="input-field col s12 m6 l6 left-align">
               <button type="button" class="blue waves-effect waves-light btn right-align" id="btnAdd" disabled><i class="material-icons left">add_circle</i>Add Item</button>
             </div>
           </div>
 
-          <div class="row">
+          <div class="row" style="margin-bottom: 0px;">
             <div class="col s12 m12 l12">
               <div class="card">
                 <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Item List</b></h6><hr style="margin: 0px">
@@ -303,15 +322,22 @@
             </div>
               
             <div class="row" style="margin-bottom: 0px;">
-              <div class="input-field col s12 m6 l6">
-                <input type="hidden" id="edit_item_desc" name="item_desc">
-                <input id="edit_item_code" name="item_code" type="text" class="validate" autocomplete="" placeholder="" disabled>
-                <label for="item_code">Item Code<sup class="red-text">*</sup></label>
+              <div class="row" style="margin-bottom: 0px;">
+                <div class="col s12 m6 l6">
+                  <label for="item_code">Item Code<sup class="red-text">*</sup></label>
+                  <input id="edit_item_code" name="item_code" type="text" class="validate" disabled>
+                </div>
+                <div class="col s12 m6 l6">
+                  <label for="item_desc">Description<sup class="red-text"></sup></label>
+                  <input id="edit_item_desc" name="item_desc" type="text" class="validate" readonly>
+                </div>
               </div>
   
-              <div class="input-field col s12 m6 l6">
-                <input id="edit_quantity" name="quantity" type="number" class="validate" placeholder="" disabled>
-                <label for="quantity">Quantity<sup class="red-text">*</sup></label>
+              <div class="row" style="margin-bottom: 0px;">
+                <div class="input-field col s12 m6 l6">
+                  <label for="quantity">Quantity<sup class="red-text">*</sup></label>
+                  <input id="edit_quantity" name="quantity" type="number" class="validate" placeholder="" disabled>
+                </div>
               </div>
             </div>
            
@@ -322,7 +348,7 @@
               </div>
             </div>
   
-            <div class="row">
+            <div class="row" style="margin-bottom: 0px;">
               <div class="col s12 m12 l12">
                 <div class="card">
                   <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Item List</b></h6><hr style="margin: 0px">
@@ -753,29 +779,35 @@
             <input id="item_location_code" name="item_location_code" type="text" class="validate" placeholder="Click here before scanning location..">
             <label for="item_location_code">Inventory Location<sup class="red-text">*</sup></label>
           </div>
+
+          <div class="input-field col s12 m6 l6">
+            <input id="item_location_name" name="item_location_name" type="text" placeholder="" readonly>
+            <label for="item_location_name">Location Name<sup class="red-text">*</sup></label>
+          </div>
         </div>
 
-        <div class="row" style="margin-bottom: 0px;">
-            <div class="input-field col s12 m6 l6">
-              <input id="item_item_code" name="item_code" type="text" class="validate" placeholder="" readonly>
-              <label class="active">Item Code</label>
-            </div>
-            <div class="input-field col s12 m6 l6">
-              <input id="item_item_desc" name="item_desc" type="text" class="validate" placeholder="" readonly>
-              <label class="active">Item Description</label>
-            </div>
-        </div>
+        <div id="item_details" style="display:none">
+          <div class="row" style="margin-bottom: 0px;">
+              <div class="input-field col s12 m6 l6">
+                <input id="item_item_code" name="item_code" type="text" placeholder="" readonly>
+                <label class="active">Item Code</label>
+              </div>
+              <div class="input-field col s12 m6 l6">
+                <input id="item_item_desc" name="item_desc" type="text" placeholder="" readonly>
+                <label class="active">Item Description</label>
+              </div>
+          </div>
 
-        <div class="row" style="margin-bottom: 0px;">
-            <div class="input-field col s12 m6 l6">
-              <input id="item_quantity" name="quantity" type="text" class="validate" placeholder="" readonly>
-              <label class="active">Quantity</label>
-            </div>
-
-            <div class="input-field col s12 m6 l6">
-              <input id="item_uom" name="uom" type="text" class="validate" placeholder="" readonly>
-              <label class="active">Unit of Measure</label>
-            </div>
+          <div class="row" style="margin-bottom: 0px;">
+              <div class="input-field col s12 m6 l6">
+                <input id="item_quantity" name="quantity" type="text" placeholder="" readonly>
+                <label class="active">Quantity</label>
+              </div>
+              <div class="input-field col s12 m6 l6">
+                <input id="item_uom" name="uom" type="text" placeholder="" readonly>
+                <label class="active">Unit of Measure</label>
+              </div>
+          </div>
         </div>
 
     </div>
@@ -787,7 +819,7 @@
   </div>
 
   <div id="receiveModal" class="modal">
- <form method="POST" action="{{route('rtv.rcv_item')}}">
+    <form method="POST" action="{{route('rtv.rcv_item')}}">
       @csrf
       <div class="modal-content" style="padding-bottom: 0px;">
         <h4>Receiving Item Details</h4><br>
@@ -816,7 +848,7 @@
                 <div class="card">
                   <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Item List</b></h6><hr style="margin: 0px">
                   <div class="card-content" style="padding: 10px; padding-top: 0px">
-                    <table class="highlight" id="rcv-items-dt">
+                    <table class="highlight responsive-table" id="rcv-items-dt">
                       <thead>
                         <tr>
                           <th>ID</th>
@@ -835,7 +867,7 @@
 
       
             <div id="signature-pad" class="e-signature-pad">
-              <label for="rcv_signature_pad" style="font-size: 18px">Signature:</label>
+              <label for="rcv_signature_pad" style="font-size: 15px">Signature:</label>
               <div class="e-signature-pad--body">
                   <canvas id="e-signature-pad" 
                           name="rcv_signature_pad" 
@@ -848,7 +880,7 @@
               <div class="signature-pad--footer txt-center">
                   <div class="signature-pad--actions txt-center">
                       <div class="col s12 m4 l4 left-align"> 
-                          <button type="button" class="blue waves-effect waves-light btn" data-action="clear"><i class="material-icons left">layers_clear</i>Clear</button>
+                          <button type="button" class="blue waves-effect waves-light btn" data-action="clear" style="margin-top: -27px;"><i class="material-icons left">layers_clear</i>Clear</button>
                       </div>
                       <br>
                     </div>
@@ -857,8 +889,10 @@
        
         </div>
       <div class="modal-footer" style="padding-right: 32px; padding-bottom: 4px; margin-bottom: 30px;">
-        <button type="button" class="green waves-effect waves-light btn" id="btnReceive" onclick="receive();" disabled><i class="material-icons left">check_circle</i>Receive</button>
-        <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Cancel</a>
+        <div class="col s12 m8 l8 right-align">
+          <button type="button" class="green waves-effect waves-light btn" id="btnReceive" onclick="receive();" disabled><i class="material-icons left">check_circle</i>Receive</button>
+          <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Cancel</a>
+        </div>
       </div>
     </form>
   </div>
@@ -898,7 +932,6 @@
     </div>
   </div> 
 
-
   <div id="removeItemModal" class="modal">
     <div class="modal-content">
       <h4  >Remove Item</h4>
@@ -936,10 +969,6 @@
 
     var wrapper = document.getElementById("signature-pad");
     var clearButton = wrapper.querySelector("[data-action=clear]");
-    var changeColorButton = wrapper.querySelector("[data-action=change-color]");
-    var savePNGButton = wrapper.querySelector("[data-action=save-png]");
-    var saveJPGButton = wrapper.querySelector("[data-action=save-jpg]");
-    var saveSVGButton = wrapper.querySelector("[data-action=save-svg]");
     var canvas = wrapper.querySelector("canvas");
     var signaturePad = new SignaturePad(canvas, {
         backgroundColor: 'rgb(255, 255, 255)'
@@ -988,19 +1017,19 @@
           // projectCode($(this).val(), 'add');
           $('#site_code').val($(this).val());
         });
+
+        $('#add_item_code').on('blur', function(){
+          $.get('../item_master/getItemDetails/'+trim($(this).val()), (response) => {
+            if(response.data != null){
+              console.log(response.data);
+              $('#add_item_desc').val(response.data.item_desc);
+            } else {
+              $('#add_item_code').val("");
+              alert("Item does not exist! Please check item code.")
+            }
+          });
+        });
         
-        $('#add_unit_price').on('keyup', function(){
-          computeTotalPrice(($('#add_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#add_currency_code option:selected').text().split(" - ")[0]),parseFloat($('#add_unit_price').val()),parseFloat($('#add_quantity').val()),$('#add_total_price'));
-        });
-
-        $('#add_quantity').on('keyup', function(){
-          computeTotalPrice(($('#add_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#add_currency_code option:selected').text().split(" - ")[0]),parseFloat($('#add_unit_price').val()),parseFloat($('#add_quantity').val()),$('#add_total_price'));
-        });
-
-        $('#add_currency_code').on('change', function(){
-          computeTotalPrice(($('#add_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#add_currency_code option:selected').text().split(" - ")[0]),parseFloat($('#add_unit_price').val()),parseFloat($('#add_quantity').val()),$('#add_total_price'));
-        });
-
         $('#btnAdd').on('click', function(){
           if($('#add_item_code').val() && $('#add_quantity').val())
           {
@@ -1028,22 +1057,21 @@
         });
 
 
-
         $('#edit_site_code').on('change', function(){
           issuanceCode($(this).val(), 'edit');
           $('#site_code_edit').val($(this).val());
         });
 
-        $('#edit_unit_price').on('keyup', function(){
-          computeTotalPrice(($('#edit_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#edit_currency_code option:selected').text().split(" - ")[0]),parseFloat($('#edit_unit_price').val()),parseFloat($('#edit_quantity').val()),$('#edit_total_price'));
-        });
-
-        $('#edit_quantity').on('keyup', function(){
-          computeTotalPrice(($('#edit_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#edit_currency_code option:selected').text().split(" - ")[0]),parseFloat($('#edit_unit_price').val()),parseFloat($('#edit_quantity').val()),$('#edit_total_price'));
-        });
-
-        $('#edit_currency_code').on('change', function(){
-          computeTotalPrice(($('#edit_currency_code option:selected').text().split(" - ")[0] == "Choose your option" ? "" : $('#edit_currency_code option:selected').text().split(" - ")[0]),parseFloat($('#edit_unit_price').val()),parseFloat($('#edit_quantity').val()),$('#edit_total_price'));
+        $('#edit_item_code').on('blur', function(){
+          $.get('../item_master/getItemDetails/'+trim($(this).val()), (response) => {
+            if(response.data != null){
+              console.log(response.data);
+              $('#edit_item_desc').val(response.data.item_desc);
+            } else {
+              $('#edit_item_code').val("");
+              alert("Item does not exist! Please check item code.")
+            }
+          });
         });
 
         $('#edit_btnAdd').on('click', function(){
@@ -1068,25 +1096,29 @@
           }
         });
 
+
         $('#item_location_code').on('keyup', function(e){
           if(e.which == 13){      
             $.get('../inventory/location/getlocation/'+$('#item_location_code').val(), (response) => {
               var data = response.data;
-              console.log(data);
               if(data!=null)
                 { 
+                  var x = document.getElementById("item_details");
+                      x.style.display = "block";
+                  $('#item_location_name').val(data.location_name);
                   $('#btnCollect').prop('disabled', false);
                 }else{
                   alert("Inventory location doesn't exist! Please re-scan inventory location.")
+                  var x = document.getElementById("");
+                      x.style.display = "none";
+                  $('#item_location_name').val("");
                   $('#btnCollect').prop('disabled', true);
                 };
             }); 
           }
         });
 
-
         $('#rtv_received_by').on('keyup', function(){
-          console.log($(this).val().length);
           if($(this).val().length > 0)
           {
             if(trim($(this).val())){
@@ -1227,9 +1259,11 @@
     const resetItemDetails = (loc) => {
       if(loc=="add"){
         $('#add_item_code').val("");
+        $('#add_item_desc').val("");
         $('#add_quantity').val("");
       } else {
         $('#edit_item_code').val("");
+        $('#edit_item_desc').val("");
         $('#edit_quantity').val("");
       }
     };
@@ -1466,6 +1500,7 @@
     const receiveRTV = (id) => {
       rcv_items = [];
       $('#receiveModal').modal('open');
+      window.onresize = resizeCanvas();
       $.get('rtv/'+id, (response) => {
         var data = response.data[0];
         $('#rtv_code').val(data.rtv_code);
@@ -1847,7 +1882,11 @@
             {  "data": "id" },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return '<a href="#!" onclick="viewRTV('+data+')">'+ row.rtv_code; +'</a>';
+                  @if($permission[0]["view"]==true || $permission[0]["masterlist"]==true)
+                    return '<a href="#!" onclick="viewRTV('+data+')">'+ row.rtv_code; +'</a>';
+                  @else
+                    return row.rtv_code;
+                  @endif
                 }
             },
 
@@ -1900,7 +1939,11 @@
 
                   if(row.status=="Pending")
                   {
-                    return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editRTV('+data+')"><i class="material-icons">create</i></a>';
+                    @if($permission[0]["edit"]==true || $permission[0]["masterlist"]==true)
+                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editRTV('+data+')"><i class="material-icons">create</i></a>';
+                    @else
+                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a>';
+                    @endif
                   } else {
                     return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a>';
                   }
