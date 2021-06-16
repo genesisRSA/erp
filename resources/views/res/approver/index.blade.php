@@ -47,6 +47,7 @@
               <option value="Drawings">Drawings</option>
               <option value="Issuance">Inventory Issuance</option>
               <option value="RTV">Inventory RTV</option>
+              <option value="RTV Receiving">Inventory RTV - Receiving</option>
             </select>
             <label for="app_module">Module<sup class="red-text">*</sup></label>
           </div>
@@ -145,6 +146,7 @@
               <option value="Drawings">Drawings</option>
               <option value="Issuance">Inventory Issuance</option>
               <option value="RTV">Inventory RTV</option>
+              <option value="RTV Receiving">Inventory RTV - Receiving</option>
             </select>
             <label for="edit_app_module">Module<sup class="red-text">*</sup></label>
           </div>
