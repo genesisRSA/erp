@@ -89,11 +89,11 @@
     </li>
     <li class="no-padding">
       <ul class="collapsible collapsible-accordion">
-        <li>
+        <li @if($page=='purchasing') class="active" @endif>
           <a class="collapsible-header waves-effect waves-light" style="padding-left:32px;"><i class="material-icons">shopping_cart</i>Purchasing</a>
           <div class="collapsible-body">
             <ul>
-              <li><a href="#!">Request for Quotation</a></li>
+              <li @if($subpage=='rfq') class="active" @endif><a href="{{ route('rfq.index') }}">Request for Quotation</a></li>
               <li><a href="#!">Purchase Request</a></li>
               <li><a href="#!">Purchase Order</a></li>
               <li><a href="#!">Purchase Order Amendment</a></li>

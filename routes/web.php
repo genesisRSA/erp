@@ -217,13 +217,14 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::post('/reiss/inventory/rtv/approve', 'InventoryRTVController@approve')->name('rtv.approve');
     Route::resource('/reiss/inventory/rtv','InventoryRTVController');
 
-    Route::get('/reiss/dashboard/{parent}', 'ReissDashboardController@index');
 
-
-
-
-
+    Route::get('/reiss/purchasing/list/{rfq_code}/items_user', 'RFQController@items_user')->name('rfq.items_user');
+    Route::resource('/reiss/purchasing/rfq','RFQController');
+    
+    
     // end -> jp task
+
+    Route::get('/reiss/dashboard/{parent}', 'ReissDashboardController@index');
     
     Route::resource('/reiss/order','SalesOrderController');
     Route::post('/reiss/order/delete', 'SalesOrderController@delete')->name('order.delete');

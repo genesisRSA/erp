@@ -48,6 +48,10 @@
               <option value="Issuance">Inventory Issuance</option>
               <option value="RTV">Inventory RTV</option>
               <option value="RTV Receiving">Inventory RTV - Receiving</option>
+              <option value="RFQ">Request for Quotation</option>
+              <option value="Purchase Request">Purchase Request</option>
+              <option value="Purchase Order">Purchase Order</option>
+              <option value="Purchase Order Amendment">Purchase Order Amendment</option>
             </select>
             <label for="app_module">Module<sup class="red-text">*</sup></label>
           </div>
@@ -147,6 +151,10 @@
               <option value="Issuance">Inventory Issuance</option>
               <option value="RTV">Inventory RTV</option>
               <option value="RTV Receiving">Inventory RTV - Receiving</option>
+              <option value="RFQ">Request for Quotation</option>
+              <option value="Purchase Request">Purchase Request</option>
+              <option value="Purchase Order">Purchase Order</option>
+              <option value="Purchase Order Amendment">Purchase Order Amendment</option>
             </select>
             <label for="edit_app_module">Module<sup class="red-text">*</sup></label>
           </div>

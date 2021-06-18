@@ -241,86 +241,91 @@
       $('#orientModal').modal('open');
     }
 
-      var procedures = $('#procedures-dt').DataTable({
-          "lengthChange": false,
-          "pageLength": 15,
-          "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
-          "pagingType": "full",
-          "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/procedures",
-          "columns": [
-              {  "data": "id" },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return '<a href="procedure/view/'+data+'/procedures">'+ row.document_no +'</a>';
-                  }
-              },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return row.document_title;
-                  }
-              },
-              {  "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return row.dpr_code;
-                  }
-              },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    return row.revision_no;
-                  }
-              },
-              {   "data": "status",
-                  "render": function ( data, type, row, meta ) {
-                    switch(data){
-                      case 'Approved':
-                        return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
-                      break;
-                      case 'Pending':
-                        return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
-                      break;
-                      case 'Received':
-                        return  '<span class="new badge deep-orange lighten-1 white-text" data-badge-caption="">Received</span>';
-                      break;
-                      case 'Created':
-                        return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
-                      break;
-                      case 'For Orientation':
-                        return  '<span class="new badge deep-purple darken-1 white-text" data-badge-caption="">For Orientation</span>';
-                      break;
-                      case 'Oriented':
-                        return  '<span class="new badge green darken-1 white-text" data-badge-caption="">Oriented</span>';
-                      break;
-                      case 'Obsolete':
-                        return  '<span class="new badge black white-text" data-badge-caption="">Obsolete</span>';
-                      break;
-                      case 'Rejected':
-                        return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
-                      break;
-                      case 'For Approval':
-                      return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
-                      break;
-                      case 'For Review':
-                        return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
-                      break;
-                    }
-                    
-                  }
-              },
-              {   "data": "id",
-                  "render": function ( data, type, row, meta ) {
-                    
-                    if(row.status=='Created' || row.status=='Received')
-                    {
-                      return  '<a href="procedure/revise/'+row.id+'" class="btn-small amber darken3 waves-effect waves-dark"><i class="material-icons">create</i></a>';
-                    } else {
-                      return  '<a href="#!" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a>';
-                    }
 
+    var procedures = $('#procedures-dt').DataTable({
+        "lengthChange": false,
+        "pageLength": 15,
+        "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+        "pagingType": "full",
+        "ajax": "/api/reiss/procedure/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}/procedures",
+        "columns": [
+            {  "data": "id" },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return '<a href="procedure/view/'+data+'/procedures">'+ row.document_no +'</a>';
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.document_title;
+                }
+            },
+            {  "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.dpr_code;
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.revision_no;
+                }
+            },
+            {   "data": "status",
+                "render": function ( data, type, row, meta ) {
+                  switch(data){
+                    case 'Approved':
+                      return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
+                    break;
+                    case 'Pending':
+                      return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
+                    break;
+                    case 'Received':
+                      return  '<span class="new badge deep-orange lighten-1 white-text" data-badge-caption="">Received</span>';
+                    break;
+                    case 'Created':
+                      return  '<span class="new badge green white-text" data-badge-caption="">Created</span>';
+                    break;
+                    case 'For Orientation':
+                      return  '<span class="new badge deep-purple darken-1 white-text" data-badge-caption="">For Orientation</span>';
+                    break;
+                    case 'Oriented':
+                      return  '<span class="new badge green darken-1 white-text" data-badge-caption="">Oriented</span>';
+                    break;
+                    case 'Obsolete':
+                      return  '<span class="new badge black white-text" data-badge-caption="">Obsolete</span>';
+                    break;
+                    case 'Rejected':
+                      return  '<span class="new badge red white-text" data-badge-caption="">Rejected</span>';
+                    break;
+                    case 'For Approval':
+                    return  '<span class="new badge yellow white-text" data-badge-caption="">For Approval</span>';
+                    break;
+                    case 'For Review':
+                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
+                    break;
                   }
-              }
                   
-          ]
-      });
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  
+                  if(row.status=='Created' || row.status=='Received')
+                  {
+                    @if($permission[0]["edit"]==true || $permission[0]["masterlist"]==true)
+                      return  '<a href="procedure/revise/'+row.id+'" class="btn-small amber darken3 waves-effect waves-dark"><i class="material-icons">create</i></a>';
+                    @else
+                      return  '<a href="#!" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a>';
+                    @endif
+                  } else {
+                    return  '<a href="#!" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a>';
+                  }
+
+                }
+            }
+                
+        ]
+    });
      
     @if($permission[0]["approval"]==true)
       var approvaldt = $('#approval-dt').DataTable({

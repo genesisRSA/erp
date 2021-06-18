@@ -63,6 +63,9 @@ Route::get('/reiss/inventory/rtv/all_process','InventoryRTVController@all_proces
 Route::get('/reiss/inventory/rtv/all_receiving','InventoryRTVController@all_receiving');
 Route::get('/reiss/inventory/rtv/all_approval/{id}','InventoryRTVController@all_approval');
 
+Route::get('/reiss/purchasing/rfq/all/{id}','RFQController@all');
+Route::get('/reiss/purchasing/rfq/all_approval/{id}','RFQController@all_approval');
+
 Route::get('/reiss/product_category/all', 'ProductCategoriesController@all');
 Route::get('/reiss/product/all', 'ProductsController@all');
 

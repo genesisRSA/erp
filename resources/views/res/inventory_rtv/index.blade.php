@@ -1465,13 +1465,18 @@
       $('#prepareModal').modal('open');
       $.get('rtv/'+trans_code+'/'+item_code+'/item_details', (response) => {
         var data = response.data;
-          $('#item_id').val(id);
-          $('#item_item_code').val(data.item_code);
-          $('#item_item_desc').val(data.item_details.item_desc);
-          $('#item_uom').val(data.item_details.uom_code);
-          $('#item_quantity').val(data.quantity);
-          $('#item_location_code').val("");
-          $('#btnCollect').prop('disabled', true);
+        var x = document.getElementById("item_details");
+            x.style.display = "none";
+
+        $('#item_id').val(id);
+        $('#item_item_code').val(data.item_code);
+        $('#item_item_desc').val(data.item_details.item_desc);
+        $('#item_uom').val(data.item_details.uom_code);
+        $('#item_quantity').val(data.quantity);
+        
+        $('#item_location_code').val("");
+        $('#item_location_name').val("");
+        $('#btnCollect').prop('disabled', true);
       });
     };
 

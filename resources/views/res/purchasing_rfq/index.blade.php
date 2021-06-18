@@ -3,7 +3,7 @@
 @section('content')
   <div class="row blue-text text-darken-4 white" style="border-bottom: 1px solid rgba(0,0,0,0.14);">
     <div class="col s12 m12">
-        <h4 class="title"><span class="grey-text darken-4">Parts Preparation<i class="material-icons">arrow_forward_ios</i></span>Inventory Issuance</h4>
+        <h4 class="title"><span class="grey-text darken-4">Purchasing<i class="material-icons">arrow_forward_ios</i></span>Request for Quotation</h4>
     </div>
   </div>
   <div class="row main-content">
@@ -15,9 +15,8 @@
         <li class="tab col s12 m4 l4"><a class="active" href="#Approval">Approval</a></li>
       @endif
       @if($permission[0]["masterlist"]==true)
-        <li class="tab col s12 m4 l4"><a class="active" href="#Issuance">Issuance</a></li>
+        <li class="tab col s12 m4 l4"><a class="active" href="#Process">Process</a></li>
       @endif
-
     </ul>
     @if($permission[0]["add"]==true || $permission[0]["masterlist"]==true)
       <div id="Request" name="ongoing">
@@ -27,7 +26,7 @@
                 <thead>
                   <tr>
                       <th>ID</th>
-                      <th>Issuance Code</th>
+                      <th>RFQ Code</th>
                       <th>Purpose</th>
                       <th>Project Code</th>
                       <th>Status</th>
@@ -39,7 +38,7 @@
           </div>
         
         @if($permission[0]["add"]==true || $permission[0]["masterlist"]==true)
-          <a href="#!" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button" data-position="left" data-tooltip="Add Inventory Issuance" onclick="openModal();"><i class="material-icons">add</i></a>
+          <a href="#!" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped" id="add-button" data-position="left" data-tooltip="Add Request for Quotation" onclick="openModal();"><i class="material-icons">add</i></a>
         @endif
       </div>
     @endif
@@ -52,7 +51,7 @@
                 <thead>
                   <tr>
                       <th>ID</th>
-                      <th>Issuance Code</th>
+                      <th>RFQ Code</th>
                       <th>Requestor</th>
                       <th>Purpose</th>
                       <th>Project Code</th>
@@ -67,14 +66,14 @@
     @endif
 
     @if($permission[0]["masterlist"]==true)
-      <div id="Issuance" name="Issuance">
+      <div id="RFQ" name="RFQ">
           <div class="card" style="margin-top: 0px">
             <div class="card-content">
               <table class="responsive-table highlight" id="issuance-dt" style="width: 100%">
                 <thead>
                   <tr>
                       <th>ID</th>
-                      <th>Issuance Code</th>
+                      <th>RFQ Code</th>
                       <th>Requestor</th>
                       <th>Purpose</th>
                       <th>Project Code</th>
@@ -92,24 +91,24 @@
   <!-- MODALS -->
 
   <div id="addModal" class="modal">
-    <form method="POST" action="{{route('issuance.store')}}">
+    <form method="POST" action="{{route('rfq.store')}}">
     @csrf
       <div class="modal-content" style="padding-bottom: 0px;">
-        <h4>Add Issuance Request</h4>
+        <h4>Add Request for Quotation</h4>
         <ul id="tabs-swipe-demo" class="tabs">
-          <li class="tab col s12 m4 l4"><a class="active" href="#issuance">Issuance Details</a></li>
+          <li class="tab col s12 m4 l4"><a class="active" href="#issuance">Request Details</a></li>
            <li class="tab col s12 m4 l4"><a href="#signatories">Signatories</a></li>
         </ul><br>
 
         <div id="issuance" name="issuance">
           <input type="hidden" name="site_code" id="add_site_code" value="{{$employee->site_code}}">
           <div class="row"  style="margin-bottom: 0px;">
-            <div class="input-field col s12 m6 l6">
-              <input id="add_issuance_code" name="issuance_code" type="text" class="validate" placeholder="" value="{{$employee->site_code}}-ISS{{date('Ymd')}}-00{{$count}}" required readonly>
-              <label for="issuance_code">Issuance Code<sup class="red-text"></sup></label>
+            <div class="input-field col s12 m4 l4">
+              <input id="add_rfq_code" name="rfq_code" type="text" class="validate" placeholder="" value="{{$employee->site_code}}-RFQ{{date('Ymd')}}-00{{$count}}" required readonly>
+              <label for="rfq_code">Request for Quotation Code<sup class="red-text"></sup></label>
             </div>
- 
-            <div class="input-field col s12 m6 l6">
+
+            <div class="input-field col s12 m4 l4">
               <input type="hidden" name="purpose" id="purpose">
               <select id="add_purpose" name="add_purpose" required>
                   <option value="" disabled selected>Choose your option</option>
@@ -118,24 +117,21 @@
               </select>
               <label for="add_purpose">Purpose<sup class="red-text">*</sup></label>
             </div>
+
+            <div class="input-field col s12 m4 l4" style="display: none; margin-bottom: 0px;" id="project_details">
+              <input type="hidden" name="project_code" id="project_code">
+              <select id="add_project_code" name="add_project_code">
+                  <option value="" disabled selected>Choose your option</option>
+              </select>
+              <label for="add_project_code">Project Name<sup class="red-text">*</sup></label>
+            </div>
           </div>
 
-          <div class="row" style="display: none; margin-bottom: 0px;" id="project_details">
-            <div class="input-field col s12 m6 l6">
-                <input type="hidden" name="project_code" id="project_code">
-                <select id="add_project_code" name="add_project_code">
-                    <option value="" disabled selected>Choose your option</option>
-                </select>
-                <label for="add_project_code">Project Name<sup class="red-text">*</sup></label>
-              </div>
-
-              <div class="input-field col s12 m6 l6">
-                <input type="hidden" name="assy_code" id="assy_code">
-                <select id="add_assy_code" name="add_assy_code">
-                  <option value="" disabled selected>Choose your option</option>
-                </select>
-                <label for="add_assy_code">Assembly Name<sup class="red-text">*</sup></label>
-              </div>
+          <div class="row" style="margin-bottom: 0px;">
+            <div class="input-field col s12 m12 l12">
+              <textarea class="materialize-textarea" id="add_remarks" name="remarks" cols="30" rows="10" placeholder="Please input RFQ remarks here.."></textarea>
+              <label for="remarks">Remarks<sup class="red-text">*</sup></label>
+            </div>
           </div>
 
           <div class="row col s12 m12 l12">
@@ -151,6 +147,20 @@
 
           <div class="col s12 m12 l12 row">
             <h6 style="padding: 10px;padding-top: 10px;margin-bottom: 0px;background-color:#0d47a1;border-right-width: 20px;margin-top: 0+;margin-top: 0px;margin-right: 10px;margin-left: 10px;" class="white-text"><b>Item Details</b></h6>
+          </div>
+
+          <div class="row" style="margin-bottom: 0px;">
+            <div class="input-field col s12 m6 l6">
+              <input id="add_delivery_date" name="delivery_date" type="text" class="datepicker" placeholder="" disabled>
+              <label for="delivery_date">Required Delivery Date<sup class="red-text">*</sup></label>
+            </div>
+
+            <div class="input-field col s12 m6 l6" style="display:none" id="assy_details">
+              <select id="add_assy_code" name="assy_code">
+                <option value="" disabled selected>Choose your option</option>
+              </select>
+              <label for="assy_code">Assembly<sup class="red-text">*</sup></label>
+            </div>
           </div>
             
           <div class="row" style="margin-bottom: 0px;">
@@ -190,16 +200,18 @@
               <div class="card">
                 <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Item List</b></h6><hr style="margin: 0px">
                 <div class="card-content" style="padding: 10px; padding-top: 0px">
-                  <table class="highlight" id="items-dt">
-                    <thead>
-                      <tr>
+                  <table class="highlight responsive-table" id="items-dt">
+                    <thead id="items-header">
+                      {{-- 
+                        <tr>
                           <th>ID</th>
                           <th>Item Code</th>
                           <th>Item Description</th>
                           <th>Quantity</th>
                           <th>Unit of Measure</th>
                           <th>Action</th>
-                      </tr>
+                        </tr> 
+                      --}}
                     </thead>
                     <tbody></tbody>
                   </table>
@@ -242,25 +254,27 @@
   </div>
 
   <div id="editModal" class="modal">
-    <form method="POST" action="{{route('issuance.patch')}}">
+    {{-- <form method="POST" action="{{route('issuance.patch')}}"> --}}
+    <form>
       @csrf
         <div class="modal-content" style="padding-bottom: 0px;">
-          <h4>Edit Issuance Request</h4> 
+          <h4>Edit Request for Quotation</h4> 
           <input type="hidden" id="edit_id" name="id">
           <ul id="tabs-swipe-demo" class="tabs edit">
-            <li class="tab col s12 m4 l4"><a class="active" href="#edit_issuance">Issuance Details</a></li>
+            <li class="tab col s12 m4 l4"><a class="active" href="#edit_rfq">Request Details</a></li>
              <li class="tab col s12 m4 l4"><a href="#edit_signatories">Signatories</a></li>
           </ul><br>
           
-          <div id="edit_issuance" name="edit_issuance">
-            <div class="row"  style="margin-bottom: 0px;">
-              <div class="input-field col s12 m6 l6">
-                <input id="edit_issuance_code" name="issuance_code" type="text" class="validate" placeholder="" value="{{$employee->site_code}}-ISS{{date('Ymd')}}-00{{$count}}" required readonly>
-                <label for="issuance_code">Issuance Code<sup class="red-text">*</sup></label>
+          <div id="edit_rfq" name="edit_rfq">
+            <input type="hidden" name="site_code" id="edit_site_code" value="{{$employee->site_code}}">
+            <div class="row" style="margin-bottom: 0px;">
+              <div class="input-field col s12 m4 l4">
+                <input id="edit_rfq_code" name="rfq_code" type="text" class="validate" placeholder="" required readonly>
+                <label for="rfq_code">Request for Quotation Code<sup class="red-text"></sup></label>
               </div>
-
-              <div class="input-field col s12 m6 l6">
-                <input type="hidden" name="purpose" id="purpose_edit">
+  
+              <div class="input-field col s12 m4 l4">
+                <input type="hidden" name="purpose" id="purpose">
                 <select id="edit_purpose" name="edit_purpose" required>
                     <option value="" disabled selected>Choose your option</option>
                     <option value="Office Use">Office Use</option>
@@ -268,24 +282,21 @@
                 </select>
                 <label for="edit_purpose">Purpose<sup class="red-text">*</sup></label>
               </div>
+  
+              <div class="input-field col s12 m4 l4" style="display: none; margin-bottom: 0px;" id="project_details">
+                <input type="hidden" name="project_code" id="project_code">
+                <select id="edit_project_code" name="edit_project_code">
+                    <option value="" disabled selected>Choose your option</option>
+                </select>
+                <label for="edit_project_code">Project Name<sup class="red-text">*</sup></label>
+              </div>
             </div>
   
-            <div class="row" style="display: none; margin-bottom: 0px;" id="edit_project_details">
-              <div class="input-field col s12 m6 l6">
-                  <input type="hidden" name="project_code" id="project_code_edit">
-                  <select id="edit_project_code" name="edit_project_code">
-                      <option value="" disabled selected>Choose your option</option>
-                  </select>
-                  <label for="edit_project_code">Project Name<sup class="red-text">*</sup></label>
-                </div>
-  
-                <div class="input-field col s12 m6 l6">
-                  <input type="hidden" name="assy_code" id="assy_code_edit">
-                  <select id="edit_assy_code" name="edit_assy_code">
-                    <option value="" disabled selected>Choose your option</option>
-                  </select>
-                  <label for="edit_assy_code">Assembly Name<sup class="red-text">*</sup></label>
-                </div>
+            <div class="row" style="margin-bottom: 0px;">
+              <div class="input-field col s12 m12 l12">
+                <textarea class="materialize-textarea" id="edit_remarks" name="remarks" cols="30" rows="10" placeholder="Please input RFQ remarks here.."></textarea>
+                <label for="remarks">Remarks<sup class="red-text">*</sup></label>
+              </div>
             </div>
   
             <div class="row col s12 m12 l12">
@@ -394,42 +405,40 @@
 
   <div id="viewModal" class="modal">
     <div class="modal-content" style="padding-bottom: 0px;">
-      <h4>Inventory Issuance Details</h4> 
+      <h4>Request for Quotation Details</h4> 
       <ul id="tabs-swipe-demo" class="tabs view">
-        <li class="tab col s12 m4 l4"><a class="active" href="#view_issuance">Issuance Details</a></li>
+        <li class="tab col s12 m4 l4"><a class="active" href="#view_rfq_details">Request Details</a></li>
         <li class="tab col s12 m4 l4"><a href="#view_signatories">Signatories</a></li>
       </ul><br>
 
-      <div id="view_issuance" name="view_issuance" style="margin-bottom: 0px">
+      <div id="view_rfq_details" name="view_rfq_details" style="margin-bottom: 0px">
         <div class="row" style="margin-bottom: 0px">
-            <div class="input-field col s12 m6 l6">
-              <input id="view_issuance_code" name="issuance_code" type="text" class="validate" placeholder="" readonly>
-              <label class="active">Issuance Code</label>
-            </div>
-        {{-- </div>
+          <div class="input-field col s12 m6 l6">
+            <input id="view_rfq_code" name="rfq_code" type="text" class="validate" placeholder="" readonly>
+            <label class="active">Request for Quotation Code</label>
+          </div>
 
-        <div class="row">
-            <div class="input-field col s12 m6 l6">
-              <input id="view_site_code" name="site_code" type="text" class="validate" placeholder="" readonly>
-              <label class="active">Site</label>
-            </div> --}}
-
-            <div class="input-field col s12 m6 l6">
-              <input id="view_purpose" name="purpose" type="text" class="validate" placeholder="" readonly>
-              <label class="active">Purpose</label>
-            </div>
+          <div class="input-field col s12 m6 l6">
+            <input id="view_date_requested" name="date_requested" type="text" class="validate" placeholder="" readonly>
+            <label class="active">Date Requested</label>
+          </div>
         </div>
 
-        <div class="row" style="display: none; margin-bottom: 0px" id="view_project_details">
-            <div class="input-field col s12 m6 l6">
-              <input id="view_project_code" name="project_code" type="text" class="validate" placeholder="" readonly>
-              <label class="active">Project</label>
-            </div>
+        <div class="row" style="margin-bottom: 0px">
+          <div class="input-field col s12 m6 l6">
+            <input id="view_purpose" name="purpose" type="text" class="validate" placeholder="" readonly>
+            <label class="active">Purpose</label>
+          </div>
 
-            <div class="input-field col s12 m6 l6">
-              <input id="view_assy_code" name="assy_code" type="text" class="validate" placeholder="" readonly>
-              <label class="active">Assembly</label>
-            </div>
+          <div class="input-field col s12 m6 l6">
+            <input id="view_remarks" name="remarks" type="text" class="validate" placeholder="" readonly>
+            <label class="active">Remarks</label>
+          </div>
+
+          <div class="input-field col s12 m6 l6" style="display: none;" id="view_project_details">
+            <input id="view_project_code" name="project_code" type="text" class="validate" placeholder="" readonly>
+            <label class="active">Project</label>
+          </div>
         </div>
 
         <div class="row" style="margin-bottom: 0px">
@@ -438,15 +447,7 @@
               <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Item List</b></h6><hr style="margin: 0px">
               <div class="card-content" style="padding: 10px; padding-top: 0px">
                 <table class="highlight" id="view-items-dt">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Item Code</th>
-                      <th>Item Description</th>
-                      <th>Quantity</th>
-                      <th>Unit of Measure</th>
-                      <th>Status</th>
-                    </tr>
+                  <thead id="view-items-header">
                   </thead>
                   <tbody></tbody>
                 </table>
@@ -455,29 +456,6 @@
           </div>
         </div>
 
-        <div class="row" style="margin-bottom: 0px">
-          <div class="col s12 m12 l12">
-            <div class="card">
-              <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Issued Item(s)</b></h6><hr style="margin: 0px">
-              <div class="card-content" style="padding: 10px; padding-top: 0px">
-                <table class="highlight responsive-table" id="issued-items-dt">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Item Code</th>
-                      <th>Description</th>
-                      <th>Unit of Measure</th>
-                      <th>Issuance Qty.</th>
-                      <th>Date Issued</th>
-           
-                    </tr>
-                  </thead>
-                  <tbody></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
       <div id="view_signatories" name="view_signatories">
@@ -535,43 +513,41 @@
     <form method="post" action="{{route('issuance.approve')}}">
     @csrf
     <div class="modal-content" style="padding-bottom: 0px;">
-      <h4>Inventory Issuance Details</h4> 
+      <h4>Request for Quotation Details</h4> 
       <input type="hidden" id="app_id" name="id">
       <ul id="tabs-swipe-demo" class="tabs app">
-        <li class="tab col s12 m4 l4"><a class="active" href="#app_issuance">Issuance Details</a></li>
+        <li class="tab col s12 m4 l4"><a class="active" href="#app_rfq">Request Details</a></li>
         <li class="tab col s12 m4 l4"><a href="#app_signatories">Signatories</a></li>
       </ul><br>
 
-      <div id="app_issuance" name="app_issuance">
-        <div class="row">
-            <div class="input-field col s12 m6 l6">
-              <input id="app_issuance_code" name="issuance_code" type="text" class="validate" placeholder="" readonly>
-              <label class="active">Issuance Code</label>
-            </div>
+      <div id="app_rfq" name="app_rfq">
+        <div class="row" style="margin-bottom: 0px">
+          <div class="input-field col s12 m6 l6">
+            <input id="view_rfq_code" name="rfq_code" type="text" class="validate" placeholder="" readonly>
+            <label class="active">Request for Quotation Code</label>
+          </div>
+
+          <div class="input-field col s12 m6 l6">
+            <input id="view_date_requested" name="date_requested" type="text" class="validate" placeholder="" readonly>
+            <label class="active">Date Requested</label>
+          </div>
         </div>
 
-        <div class="row">
-            <div class="input-field col s12 m6 l6">
-              <input id="app_site_code" name="site_code" type="text" class="validate" placeholder="" readonly>
-              <label class="active">Site</label>
-            </div>
+        <div class="row" style="margin-bottom: 0px">
+          <div class="input-field col s12 m6 l6">
+            <input id="view_purpose" name="purpose" type="text" class="validate" placeholder="" readonly>
+            <label class="active">Purpose</label>
+          </div>
 
-            <div class="input-field col s12 m6 l6">
-              <input id="app_purpose" name="purpose" type="text" class="validate" placeholder="" readonly>
-              <label class="active">Purpose</label>
-            </div>
-        </div>
+          <div class="input-field col s12 m6 l6">
+            <input id="view_remarks" name="remarks" type="text" class="validate" placeholder="" readonly>
+            <label class="active">Remarks</label>
+          </div>
 
-        <div class="row" style="display: none" id="app_project_details">
-            <div class="input-field col s12 m6 l6">
-              <input id="app_project_code" name="project_code" type="text" class="validate" placeholder="" readonly>
-              <label class="active">Project</label>
-            </div>
-
-            <div class="input-field col s12 m6 l6">
-              <input id="app_assy_code" name="assy_code" type="text" class="validate" placeholder="" readonly>
-              <label class="active">Assembly</label>
-            </div>
+          <div class="input-field col s12 m6 l6" style="display: none;" id="app_project_details">
+            <input id="view_project_code" name="project_code" type="text" class="validate" placeholder="" readonly>
+            <label class="active">Project</label>
+          </div>
         </div>
 
         <div class="row">
@@ -673,9 +649,9 @@
     <form method="POST" action="{{route('issuance.issue_item')}}">
       @csrf
       <div class="modal-content" style="padding-bottom: 0px;">
-        <h4  >Inventory Issuance</h4> 
+        <h4  >Inventory RFQ</h4> 
         <ul id="tabs-swipe-demo" class="tabs issue">
-          <li class="tab col s12 m4 l4"><a class="active" href="#issue_issuance">Issuance Details</a></li>
+          <li class="tab col s12 m4 l4"><a class="active" href="#issue_issuance">RFQ Details</a></li>
           <li class="tab col s12 m4 l4"><a href="#issue_signatories">Signatories</a></li>
         </ul><br>
 
@@ -683,8 +659,8 @@
           <div class="row" style="margin-bottom: 0px">
               <div class="input-field col s12 m6 l6">
                 <input type="hidden" name="issue_status" id="issue_status">
-                <input id="issue_issuance_code" name="issuance_code" type="text" placeholder="" readonly>
-                <label class="active">Issuance Code</label>
+                <input id="issue_rfq_code" name="rfq_code" type="text" placeholder="" readonly>
+                <label class="active">RFQ Code</label>
               </div>
               
               <div class="input-field col s12 m6 l6">
@@ -755,7 +731,7 @@
                         <th>Item Code</th>
                         <th>Description</th>
                         <th>Unit of Measure</th>
-                        <th>Issuance Qty.</th>
+                        <th>RFQ Qty.</th>
                         <th>Date Issued</th>
                         <th>Action</th>
                       </tr>
@@ -894,7 +870,7 @@
               <span id="item_iss_uom" class="badge blue lighten-1 white-text"></span>
               <input type="hidden" id="item_uom_code" name="item_uom_code">
               <input id="item_quantity_iss" name="quantity_iss" type="number" class="validate" placeholder="0">
-              <label class="active">Issuance Quantity <sup class="red-text">*</sup></label>
+              <label class="active">RFQ Quantity <sup class="red-text">*</sup></label>
             </div>
         </div>
 
@@ -948,11 +924,11 @@
 
   <div id="resetModal" class="modal bottom-sheet">
     <div class="modal-content">
-        <h4>Reset Issuance Request</h4><br><br>
+        <h4>Reset Request for Quotation</h4><br><br>
         <div class="row">
             <div class="col s12 m6">
                 <input type="hidden" name="reset_loc" id="reset_loc">
-                <p>Are you sure you want to reset <strong>Issuance Request Details</strong>?</p>
+                <p>Are you sure you want to reset <strong>Request for Quotation Details</strong>?</p>
             </div>
         </div>
     </div>
@@ -980,11 +956,11 @@
 
   <div id="resetIssModal" class="modal bottom-sheet">
     <div class="modal-content">
-        <h4>Reset Issuance Details</h4><br><br>
+        <h4>Reset RFQ Details</h4><br><br>
         <div class="row">
             <div class="col s12 m6">
                 <input type="hidden" name="reset_loc" id="reset_loc">
-                <p>Are you sure you want to reset <strong>Issuance Details</strong>?</p>
+                <p>Are you sure you want to reset <strong>RFQ Details</strong>?</p>
             </div>
         </div>
     </div>
@@ -1019,7 +995,7 @@
   <script type="text/javascript" src="{{ asset('datatables/datatables.js') }}"></script>
   <script type="text/javascript">
   
-    var issueCount = {{$count}};
+    var RFQCount = {{$count}};
     const str = new Date().toISOString().slice(0, 10);
     var newtoday = str.replace(/[^a-zA-Z0-9]/g,"");
 
@@ -1065,22 +1041,43 @@
           });
         });
 
-        $('#add_site_code').on('change', function(){
-          issuanceCode($(this).val(), 'add');
-          projectCode($(this).val(), 'add');
-          $('#site_code').val($(this).val());
-        });
-        
+ 
         $('#add_purpose').on('change', function(){
           if($(this).val()=='Project')
           {
             var x = document.getElementById('project_details');
-              x.style.display = "block";
-              issuanceCode('{{$employee->site_code}}', 'add');
-              projectCode('{{$employee->site_code}}', 'add');
+                x.style.display = "block";
+            var assy = document.getElementById('assy_details');
+                assy.style.display = "block";
+            $('#add_assy_code').prop('disabled', true);
+            $('#add_assy_code').formSelect();
+            $('#items-header').html("");
+            $('#items-header').append('<tr>'+
+                                        '<th>ID</th>'+
+                                        '<th>Assembly</th>'+
+                                        '<th>Item Code</th>'+
+                                        '<th>Item Description</th>'+
+                                        '<th>Quantity</th>'+
+                                        '<th>Unit of Measure</th>'+
+                                        '<th>Delivery Date</th>'+
+                                        '<th>Action</th>'+
+                                      '</tr>');
+            projectCode('{{$employee->site_code}}', 'add');
           } else {
             var x = document.getElementById('project_details');
-              x.style.display = "none";
+                x.style.display = "none";
+            var assy = document.getElementById('assy_details');
+                assy.style.display = "none";
+            $('#items-header').html("");
+            $('#items-header').append('<tr>'+
+                                        '<th>ID</th>'+
+                                        '<th>Item Code</th>'+
+                                        '<th>Item Description</th>'+
+                                        '<th>Quantity</th>'+
+                                        '<th>Unit of Measure</th>'+
+                                        '<th>Delivery Date</th>'+
+                                        '<th>Action</th>'+
+                                      '</tr>');
           }
           $('#purpose').val($(this).val());
         });
@@ -1140,45 +1137,41 @@
         });
         
         $('#btnAdd').on('click', function(){
-          if($('#add_item_code').val() && 
-            $('#add_quantity').val() &&
-            $('#add_uom_code').val())
-          {
-            if($('#add_quantity').val() % 1 != 0)
+          console.log($('#purpose').val());
+          if($('#purpose').val() == 'Project'){         
+            if(trim($('#add_delivery_date').val()) && 
+            $('#add_assy_code').val() != null && 
+            trim($('#add_item_code').val()) && 
+            trim($('#add_quantity').val()) &&
+            trim($('#add_uom_code').val()))
             {
-              alert("Decimal point is not allowed! Please input whole number on quantity.");
-            } else {
-              $.get('../item_master/getItemDetails/'+$('#add_item_code').val(), (response) => {
-                var item = response.data;
-                if(item!=null){
-                  var item_qty = parseInt($('#add_quantity').val());
-                  var safety_stock = parseInt(item.safety_stock);
-                  addItem('add',item_qty, safety_stock);
-                } else {
-                  alert('Item code does not exist! Please the check the item code before adding item..');
-                }
-              });
+              var item_qty = parseInt($('#add_quantity').val());
+              addItem('add',item_qty, $('#purpose').val());
+            }else{
+              alert("Please fill-up all item details!");
             }
-            
-          }else{
-            alert("Please fill-up all item details!");
+          } else {
+            if(trim($('#add_delivery_date').val()) && 
+            trim($('#add_item_code').val()) && 
+            trim($('#add_quantity').val()) &&
+            trim($('#add_uom_code').val()))
+            {
+              var item_qty = parseInt($('#add_quantity').val());
+              addItem('add',item_qty, $('#purpose').val());
+            }else{
+              alert("Please fill-up all item details!");
+            }            
           }
+
         });
 
 
-
-        $('#edit_site_code').on('change', function(){
-          issuanceCode($(this).val(), 'edit');
-          projectCode($(this).val(), 'edit');
-          $('#site_code_edit').val($(this).val());
-        });
-        
+ 
         $('#edit_purpose').on('change', function(){
           if($(this).val()=='Project')
           {
             var x = document.getElementById('edit_project_details');
               x.style.display = "block";
-              issuanceCode('{{$employee->site_code}}', 'edit');
               projectCode('{{$employee->site_code}}', 'edit');
           } else {
             var x = document.getElementById('edit_project_details');
@@ -1340,7 +1333,7 @@
                             $('#item_quantity_iss').val("");
                             $('#item_quantity_rem').val(0);
                             $('#item_qty_rem').val(0);
-                            alert('Issuance quantity exceed to requested quantity!');
+                            alert('RFQ quantity exceed to requested quantity!');
                           }
                         // });
 
@@ -1357,7 +1350,7 @@
                             $('#btnCollect').prop('disabled', true);
                             $('#item_quantity_iss').val("");
                             $('#item_quantity_rem').val(0);
-                            alert('Issuance quantity exceed to requested quantity!');
+                            alert('RFQ quantity exceed to requested quantity!');
                           }
                         // });
 
@@ -1367,7 +1360,7 @@
                   $('#btnCollect').prop('disabled', true);
                   $('#item_quantity_iss').val("");
                   $('#item_quantity_rem').val(parseInt($('#item_qty_rem').val()));
-                  alert('Issuance quantity must be greater than zero!');
+                  alert('RFQ quantity must be greater than zero!');
                 }  
               }
             } else {
@@ -1423,63 +1416,59 @@
 
     const setDetails = (loc) => {
       if(loc=="add"){
-        if($('#add_issuance_code').val() &&
-          $('#add_purpose').val())
+        if(trim($('#add_rfq_code').val()) &&
+        trim($('#add_purpose').val()) &&
+        trim($('#add_purpose').val()))
         {
           if($('#add_purpose').val()=='Project')
           {
-            if( $('#add_project_code').val() &&  
-                $('#add_assy_code').val())
+            if($('#add_project_code').val())
             {
               $('#btnAdd').prop('disabled', false);
+              $('#add_delivery_date').prop('disabled', false);
               $('#add_item_code').prop('disabled', false);
               $('#add_quantity').prop('disabled', false);
-              $('#add_uom_type').prop('disabled', false);
-              $('#add_uom_type').formSelect();
               $('#add_uom_code').prop('disabled', false);
               $('#add_uom_code').formSelect();
+              $('#add_assy_code').prop('disabled', false);
+              $('#add_assy_code').formSelect();
 
               $('#add_purpose').prop('disabled', true);
               $('#add_purpose').formSelect();
               $('#add_project_code').prop('disabled', true);
               $('#add_project_code').formSelect();
-              $('#add_assy_code').prop('disabled', true);
-              $('#add_assy_code').formSelect();
-
+              $('#add_remarks').prop('readonly', true);
+        
               var set = document.getElementById('add_set');
                   set.style.display = "none";
               var reset = document.getElementById('add_reset');
                   reset.style.display = "block";
             } else {
-              alert('Please fill up all issuance details before setting-up items!');
+              alert('Please fill up all request details before setting-up items!');
             }
           } else {
             $('#btnAdd').prop('disabled', false);
+            $('#add_delivery_date').prop('disabled', false);
             $('#add_item_code').prop('disabled', false);
             $('#add_quantity').prop('disabled', false);
-            $('#add_uom_type').prop('disabled', false);
-            $('#add_uom_type').formSelect();
             $('#add_uom_code').prop('disabled', false);
             $('#add_uom_code').formSelect();
 
             $('#add_purpose').prop('disabled', true);
             $('#add_purpose').formSelect();
-            $('#add_project_code').prop('disabled', true);
-            $('#add_project_code').formSelect();
-            $('#add_assy_code').prop('disabled', true);
-            $('#add_assy_code').formSelect();
-
+            $('#add_remarks').prop('readonly', true);
+             
             var set = document.getElementById('add_set');
                 set.style.display = "none";
             var reset = document.getElementById('add_reset');
                 reset.style.display = "block";
           }
         } else {
-          alert('Please fill up all issuance details before setting-up items!');
+          alert('Please fill up all request details before setting-up items!');
         }
       } else {
         
-        if($('#edit_issuance_code').val() &&
+        if($('#edit_rfq_code').val() &&
             $('#edit_purpose').val()) 
         {
           if($('#edit_purpose').val()=='Project')
@@ -1548,19 +1537,16 @@
           $('#add_item_desc').val("");
           $('#add_quantity').prop('disabled', true);
           $('#add_quantity').val("");
-          $('#add_uom_type').prop('disabled', true);
-          $('#add_uom_type').formSelect();
           $('#add_uom_code').prop('disabled', true);
           $('#add_uom_code').formSelect();
+          $('#add_assy_code').prop('disabled', true);
+          $('#add_assy_code').formSelect();
 
           $('#add_purpose').prop('disabled', false);
           $('#add_purpose').formSelect();
-          $('#add_site_code').prop('disabled', false);
-          $('#add_site_code').formSelect();
           $('#add_project_code').prop('disabled', false);
           $('#add_project_code').formSelect();
-          $('#add_assy_code').prop('disabled', false);
-          $('#add_assy_code').formSelect();
+ 
 
           var set = document.getElementById('add_set');
               set.style.display = "block";
@@ -1579,15 +1565,14 @@
           $('#add_uom_type').formSelect();
           $('#add_uom_code').prop('disabled', true);
           $('#add_uom_code').formSelect();
+          $('#add_assy_code').prop('disabled', false);
+          $('#add_assy_code').formSelect();
 
           $('#add_purpose').prop('disabled', false);
           $('#add_purpose').formSelect();
-          $('#add_site_code').prop('disabled', false);
-          $('#add_site_code').formSelect();
           $('#add_project_code').prop('disabled', false);
           $('#add_project_code').formSelect();
-          $('#add_assy_code').prop('disabled', false);
-          $('#add_assy_code').formSelect();
+
 
           var set = document.getElementById('add_set');
               set.style.display = "block";
@@ -1650,7 +1635,7 @@
               reset.style.display = "none";
           var x = document.getElementById('edit_project_details');
               x.style.display = "none";
-          $('#btnEditSave').prop('disabled', true);
+          $('#btnEditSave').prop('disabled', false);
           $('#resetModal').modal('close');
         }
       }
@@ -1658,19 +1643,25 @@
 
     const resetItemDetails = (loc) => {
       if(loc=="add"){
+        $('#add_delivery_date').val("");
+
+        if($('#purpose').val() == "Project"){
+          $('#add_assy_code').val(""); 
+          $('#add_assy_code').formSelect();
+        } 
+      
         $('#add_item_code').val("");
         $('#add_item_desc').val("");
         $('#add_quantity').val("");
-        $('#add_uom_type').val("");
-        $('#add_uom_type').formSelect();
+
         $('#add_uom_code').val("");
         $('#add_uom_code').formSelect();
+
       } else {
         $('#edit_item_code').val("");
         $('#edit_item_desc').val("");
         $('#edit_quantity').val("");
-        $('#edit_uom_type').val("");
-        $('#edit_uom_type').formSelect();
+ 
         $('#edit_uom_code').val("");
         $('#edit_uom_code').formSelect();
       }
@@ -1727,16 +1718,16 @@
 
     const resetIss = () => {
       status = $('#issue_status').val();
-      issuance_code = $('#issue_issuance_code').val();
+      rfq_code = $('#issue_rfq_code').val();
       iss_items = [];
       iss_list = []
       all_iss_items = [];
-      $.get('list/'+trim($('#issue_issuance_code').val())+'/items', (response) => {
+      $.get('list/'+trim($('#issue_rfq_code').val())+'/items', (response) => {
           var datax = response.data;
           console.log(datax);
           $.each(datax, (index, row) => {
             if (row.status == 'Pending') {
-              iss_items.push({"trans_code": trim($('#issue_issuance_code').val()),
+              iss_items.push({"trans_code": trim($('#issue_rfq_code').val()),
                           "item_code": row.item_code,
                           "item_desc": row.item_details.item_desc,
                           "uom_code": row.uom_code,
@@ -1752,7 +1743,7 @@
                           "inventory_location": row.inventory_location_code,
                           });
             } else if(row.status == 'Issued') {
-              iss_items.push({"trans_code": trim($('#issue_issuance_code').val()),
+              iss_items.push({"trans_code": trim($('#issue_rfq_code').val()),
                           "item_code": row.item_code,
                           "item_desc": row.item_details.item_desc,
                           "uom_code": row.uom_code,
@@ -1765,7 +1756,7 @@
                           "inventory_location": row.inventory_location_code,
                           });
             } else if(row.status == 'Issued with Pending') {
-              iss_list.push({"trans_code": trim($('#issue_issuance_code').val()),
+              iss_list.push({"trans_code": trim($('#issue_rfq_code').val()),
                           "item_code": row.item_code,
                           "item_desc": row.item_details.item_desc,
                           "req_qty": row.quantity,
@@ -1785,7 +1776,7 @@
             renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
             renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
           } else {
-            $.get('list/'+issuance_code+'/items_issued', (response) => {
+            $.get('list/'+rfq_code+'/items_issued', (response) => {
               var datax = response.data;
               $.each(datax, (index, row) => {
                 all_iss_items.push({"item_code": row.item_code,
@@ -1851,11 +1842,11 @@
 
     const issuanceCode = (site, loc) => {
         if(loc=='add'){
-          $('#add_issuance_code').val( site + '-ISS' + newtoday + '-00' + issueCount );
+          $('#add_rfq_code').val( site + '-RFQ' + newtoday + '-00' + RFQCount );
         } else {
-          var str = $('#edit_issuance_code').val();
+          var str = $('#edit_rfq_code').val();
           var count = str.substr(-3, 3);
-          $('#edit_issuance_code').val( site + '-ISS' + newtoday + '-' + count);
+          $('#edit_rfq_code').val( site + '-RFQ' + newtoday + '-' + count);
         }
     };
 
@@ -1906,7 +1897,7 @@
           project.style.display = "none";
 
       add_items = [];
-      renderItems(add_items,$('#items-dt tbody'),'add');
+      renderItems(add_items,$('#items-dt tbody'),'add','');
       $('#btnAddSave').prop('disabled', true);
       $('#addModal').modal('open');
       loadApprover();
@@ -1924,16 +1915,16 @@
       $('#resetModal').modal('open');
     };
 
-    const editIssuance = (id) => {
+    const editRFQ = (id) => {
       edit_items = [];
       $('#editModal').modal('open');
-      $('.tabs.edit').tabs('select','edit_issuance');
-      $.get('issuance/'+id, (response) => {
+      $('.tabs.edit').tabs('select','edit_rfq');
+      $.get('rfq/'+id, (response) => {
         var data = response.data[0];
         var matrix = JSON.parse(data.matrix);
         if(matrix != null) renderSignatoriesTable(matrix,$('#edit-matrix-dt tbody'));
         $('#edit_id').val(id);
-        $('#edit_issuance_code').val(data.issuance_code);
+        $('#edit_rfq_code').val(data.rfq_code);
  
         $('#edit_purpose option[value="'+data.purpose+'"]').prop('selected', true);
         $('#edit_purpose').prop('disabled', false);
@@ -2004,7 +1995,7 @@
               x.style.display = "none";
         }
 
-        $.get('list/'+data.issuance_code+'/items', (response) => {
+        $.get('list/'+data.rfq_code+'/items', (response) => {
           var data = response.data;
           $.each(data, (index, row) => {
             edit_items.push({"item_code": row.item_code,
@@ -2019,97 +2010,90 @@
       });
     };
 
-    const viewIssuance = (id) => {
+    const viewRFQ = (id) => {
       view_items = [];
       iss_list = [];
       $('#viewModal').modal('open');
-      $('.tabs.view').tabs('select','view_issuance');
-      $.get('issuance/'+id, (response) => {
+      $('.tabs.view').tabs('select','view_rfq_details');
+      $.get('rfq/'+id, (response) => {
         var data = response.data[0];
         var matrix = JSON.parse(data.matrix);
         var matrix_h = JSON.parse(data.matrix_h);
         if(matrix != null) renderSignatoriesTable(matrix,$('#view-matrix-dt tbody'));
         if(matrix_h != null) renderSignatoriesTable(matrix_h,$('#view-matrix-dt-h tbody'),true);
 
-        $('#view_issuance_code').val(data.issuance_code);
+        $('#view_rfq_code').val(data.rfq_code);
+        $('#view_date_requested').val(data.date_requested);
         $('#view_purpose').val(data.purpose);
+        $('#view_remarks').val(data.remarks);
 
         if(data.purpose=='Project')
         {
           $('#view_project_code').val(data.projects.project_name);
-          $('#view_assy_code').val(data.assy.assy_desc);
           var x = document.getElementById('view_project_details');
               x.style.display = "block";
+
+          $('#view-items-header').html("");
+          $('#view-items-header').append('<tr>'+
+                                        '<th>ID</th>'+
+                                        '<th>Assembly</th>'+
+                                        '<th>Item Code</th>'+
+                                        '<th>Item Description</th>'+
+                                        '<th>Quantity</th>'+
+                                        '<th>Unit of Measure</th>'+
+                                        '<th>Delivery Date</th>'+
+                                        '</tr>');
+
+          $.get('list/'+data.rfq_code+'/items_user', (response) => {
+            var datax = response.data;
+              $.each(datax, (index, row) => {
+                view_items.push({"assy_code": row.assy_code,
+                                "item_code": row.item_code,
+                                "item_desc": row.item_details.item_desc,
+                                "uom_code": row.uoms.uom_code,
+                                "uom_name": row.uoms.uom_name,
+                                "quantity": row.required_qty,
+                                "delivery_date": row.required_delivery_date,
+                                });
+            });
+            renderItems(view_items,$('#view-items-dt tbody'),'view',data.purpose);
+          });
         } else {
           var x = document.getElementById('view_project_details');
               x.style.display = "none";
-        }
-
-        $.get('list/'+data.issuance_code+'/items', (response) => {
-          var datax = response.data;
-          if(data.status=='Issued'){
-            $.each(datax, (index, row) => {
-              if(row.status=='Issued'){
+          
+          $('#view-items-header').html("");
+          $('#view-items-header').append('<tr>'+
+                                        '<th>ID</th>'+
+                                        '<th>Item Code</th>'+
+                                        '<th>Item Description</th>'+
+                                        '<th>Quantity</th>'+
+                                        '<th>Unit of Measure</th>'+
+                                        '<th>Delivery Date</th>'+
+                                        '</tr>');
+          
+          $.get('list/'+data.rfq_code+'/items_user', (response) => {
+            var datax = response.data;
+              $.each(datax, (index, row) => {
                 view_items.push({"item_code": row.item_code,
-                              "item_desc": row.item_details.item_desc,
-                              "uom_code": row.uom_code,
-                              "quantity": row.quantity,
-                              "status": row.status,
-                              });
-              } else if (row.status == 'Issued with Pending'){
-                  iss_list.push({"trans_code": data.issuance_code,
-                              "item_code": row.item_code,
-                              "item_desc": row.item_details.item_desc,
-                              "req_qty": row.quantity,
-                              "uom_code": row.uom_code,
-                              "rem_qty": 0, 
-                              "iss_qty": row.quantity,
-                              "tbi_qty": 0,
-                              "status": row.status,
-                              "iss_date": row.trans_date,
-                              "is_check": false,
-                              "inventory_location": row.inventory_location_code,
-                              });
-              }
+                                "item_desc": row.item_details.item_desc,
+                                "uom_code": row.uoms.uom_code,
+                                "uom_name": row.uoms.uom_name,
+                                "quantity": row.required_qty,
+                                "delivery_date": row.required_delivery_date,
+                                });
             });
-          } else {
-            $.each(datax, (index, row) => {
-              view_items.push({"item_code": row.item_code,
-                              "item_desc": row.item_details.item_desc,
-                              "uom_code": row.uom_code,
-                              "quantity": row.quantity,
-                              "status": row.status,
-                              });
-              if (row.status == 'Issued with Pending'){
-                iss_list.push({"trans_code": data.issuance_code,
-                              "item_code": row.item_code,
-                              "item_desc": row.item_details.item_desc,
-                              "req_qty": row.quantity,
-                              "uom_code": row.uom_code,
-                              "rem_qty": 0, 
-                              "iss_qty": row.quantity,
-                              "tbi_qty": 0,
-                              "status": row.status,
-                              "iss_date": row.trans_date,
-                              "is_check": false,
-                              "inventory_location": row.inventory_location_code,
-                              });
-              }
-            });
-          }
-    
-          renderItems(view_items,$('#view-items-dt tbody'),'view');
-          renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
-
-        });
+            renderItems(view_items,$('#view-items-dt tbody'),'view',data.purpose);
+          });
+        }
 
       });
     };
 
-    const appIssuance = (id) => {
+    const appRFQ = (id) => {
       app_items = [];
       $('#appModal').modal('open');
-      $('.tabs.app').tabs('select','app_issuance');
+      $('.tabs.app').tabs('select','app_rfq');
       $.get('issuance/'+id, (response) => {
         var data = response.data[0];
         var matrix = JSON.parse(data.matrix);
@@ -2118,7 +2102,7 @@
         if(matrix_h != null) renderSignatoriesTable(matrix_h,$('#app-matrix-dt-h tbody'),true);
 
         $('#app_id').val(id);
-        $('#app_issuance_code').val(data.issuance_code);
+        $('#app_rfq_code').val(data.rfq_code);
         $('#app_site_code').val(data.sites.site_desc);
         $('#app_purpose').val(data.purpose);
 
@@ -2133,7 +2117,7 @@
               x.style.display = "none";
         }
 
-        $.get('list/'+data.issuance_code+'/items', (response) => {
+        $.get('list/'+data.rfq_code+'/items', (response) => {
           var data = response.data;
           $.each(data, (index, row) => {
             app_items.push({"item_code": row.item_code,
@@ -2150,7 +2134,7 @@
       });
     };
 
-    const issIssuance = (id) => {
+    const issRFQ = (id) => {
       iss_items = [];
       iss_list = [];
       all_iss_items = [];
@@ -2166,7 +2150,7 @@
 
         $('#btnIssue').prop('disabled', true);
         $('#btnIssReset').prop('disabled', true);
-        $('#issue_issuance_code').val(data.issuance_code);
+        $('#issue_rfq_code').val(data.rfq_code);
         $('#issue_requestor').val(data.employee_details.full_name);
         $('#issue_site_code').val(data.sites.site_desc);
         $('#issue_purpose').val(data.purpose);
@@ -2183,12 +2167,12 @@
               x.style.display = "none";
         }
 
-        $.get('list/'+data.issuance_code+'/items', (response) => {
+        $.get('list/'+data.rfq_code+'/items', (response) => {
           var datax = response.data;
     
           $.each(datax, (index, row) => {
             if(row.status == 'Pending'){
-              iss_items.push({"trans_code": data.issuance_code,
+              iss_items.push({"trans_code": data.rfq_code,
                           "item_code": row.item_code,
                           "item_desc": row.item_details.item_desc,
                           "uom_code": row.uom_code,
@@ -2205,7 +2189,7 @@
                           "iss_index": 0,
                           });
             } else if(row.status == 'Issued'){
-              iss_items.push({"trans_code": data.issuance_code,
+              iss_items.push({"trans_code": data.rfq_code,
                           "item_code": row.item_code,
                           "item_desc": row.item_details.item_desc,
                           "uom_code": row.uom_code,
@@ -2219,7 +2203,7 @@
                           "iss_index": 0,
                           });
             } else if(row.status == 'Issued with Pending'){
-              iss_list.push({"trans_code": data.issuance_code,
+              iss_list.push({"trans_code": data.rfq_code,
                           "item_code": row.item_code,
                           "item_desc": row.item_details.item_desc,
                           "req_qty": row.quantity,
@@ -2240,7 +2224,7 @@
             renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
             renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
           } else {
-            $.get('list/'+data.issuance_code+'/items_issued', (response) => {
+            $.get('list/'+data.rfq_code+'/items_issued', (response) => {
               var datax = response.data;
               $.each(datax, (index, row) => {
                 all_iss_items.push({"item_code": row.item_code,
@@ -2464,7 +2448,7 @@
             $('#item_quantity_iss').val("");
             $('#item_quantity_rem').val(0);
             $('#item_qty_rem').val(0);
-            alert('Issuance quantity exceed to requested quantity!');
+            alert('RFQ quantity exceed to requested quantity!');
           }
         } else {
           alert('Please fill-up all details to collect!')
@@ -2541,7 +2525,7 @@
             $('#btnCollect').prop('disabled', true);
             $('#item_quantity_iss').val("");
             $('#item_quantity_rem').val(0);
-            alert('Issuance quantity exceed to requested quantity!');
+            alert('RFQ quantity exceed to requested quantity!');
           }
         } else {
           alert('Please fill-up all details to collect!')
@@ -2549,33 +2533,100 @@
       }
     };
 
-    const renderItems = (items, table, loc) => {
+    const loadApprover = () => {
+      $.get('../approver/{{Auth::user()->emp_no}}/RFQ/my_matrix', (response) => {
+        var data = response.data;
+        var tabledata = '';
+        if(data){
+          var matrix = data.matrix;
+          $.each(JSON.parse(matrix),(index, row) => {
+              tabledata +=  '<tr>'+
+                              '<td>'+row.sequence+'</td>'+
+                              '<td>'+row.approver_emp_no+'</td>'+
+                              '<td>'+row.approver_name+'</td>'+
+                              '<input type="hidden" name="app_seq[]" value="'+row.sequence+'"/>'+
+                              '<input type="hidden" name="app_id[]" value="'+row.approver_emp_no+'"/>'+
+                              '<input type="hidden" name="app_fname[]" value="'+row.approver_name+'"/>'+
+                              '<input type="hidden" name="app_nstatus[]" value="'+row.next_status+'"/>'+
+                              '<input type="hidden" name="app_gate[]" value="'+row.is_gate+'"/>'+
+                            '</tr>'
+          });
+          $('#matrix-dt tbody').html(tabledata);
+        } else {
+          
+        }
+      });
+    };
+
+    const renderSignatoriesTable = (matrix,table,is_history = false) => {
+      table.html("");
+      if(!is_history){
+        $.each(matrix, (index,row) => {
+          table.append('<tr>'+
+                        '<td>'+row.sequence+'</td>'+
+                        '<td>'+row.approver_emp_no+'</td>'+
+                        '<td>'+row.approver_name+'</td>'+
+                      '</tr>'
+                      );
+        });
+      }else{
+        $.each(matrix, (index,row) => {
+          table.append('<tr>'+
+                        '<td>'+row.sequence+'</td>'+
+                        '<td>'+row.approver_name+'</td>'+
+                        '<td>'+row.status+'</td>'+
+                        '<td>'+row.remarks+'</td>'+
+                        '<td>'+row.action_date+'</td>'+
+                      '</tr>'
+                      );
+        });
+      }
+    };
+
+    const renderItems = (items, table, loc, purpose) => {
       table.html("");
       $.each(items, (index, row) => {
+        var id = parseInt(index) + 1;
         if(loc=='add'){
-          var id = parseInt(index) + 1;
-          table.append('<tr>'+
+
+          if(purpose=='Project'){
+            table.append('<tr>'+
+                      '<td class="left-align">'+id+'</td>'+
+                      '<td class="left-align">'+row.assy_code+'</td>'+
+                      '<td class="left-align">'+row.item_code+'</td>'+
+                      '<td class="left-align">'+row.item_desc+'</td>'+
+                      '<td class="left-align">'+row.quantity+'</td>'+
+                      '<td class="left-align">'+row.uom_code+'</td>'+
+                      '<td class="left-align">'+row.delivery_date+'</td>'+
+                      '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="deleteItem(\''+index+'\',\'add\')"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                      '<input type="hidden" name="itm_delivery_date[]" value="'+row.delivery_date+'"/>'+
+                      '<input type="hidden" name="itm_assy_code[]" value="'+row.assy_code+'"/>'+
+                      '<input type="hidden" name="itm_item_code[]" value="'+row.item_code+'"/>'+
+                      '<input type="hidden" name="itm_quantity[]" value="'+row.quantity+'"/>'+
+                      '<input type="hidden" name="itm_uom_code[]" value="'+row.uom_code+'"/>'+
+                      '</tr>'
+                    );
+          } else {
+            table.append('<tr>'+
                       '<td class="left-align">'+id+'</td>'+
                       '<td class="left-align">'+row.item_code+'</td>'+
                       '<td class="left-align">'+row.item_desc+'</td>'+
                       '<td class="left-align">'+row.quantity+'</td>'+
                       '<td class="left-align">'+row.uom_code+'</td>'+
+                      '<td class="left-align">'+row.delivery_date+'</td>'+
                       '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="deleteItem(\''+index+'\',\'add\')"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                      '<input type="hidden" name="itm_delivery_date[]" value="'+row.delivery_date+'"/>'+
                       '<input type="hidden" name="itm_item_code[]" value="'+row.item_code+'"/>'+
                       '<input type="hidden" name="itm_quantity[]" value="'+row.quantity+'"/>'+
                       '<input type="hidden" name="itm_uom_code[]" value="'+row.uom_code+'"/>'+
-                      '<input type="hidden" name="itm_inventory_location[]" value=" "/>'+
-                      '<input type="hidden" name="itm_currency[]" value=" "/>'+
-                      '<input type="hidden" name="itm_currency_code[]" value=" "/>'+
-                      '<input type="hidden" name="itm_unit_price[]" value=" "/>'+
-                      '<input type="hidden" name="itm_total_price[]" value=" "/>'+
                       '</tr>'
                     );
+          }
           if(items.length > 0){
             $('#btnAddSave').prop('disabled', false);
           };
+
         } else if (loc=='edit') {
-          var id = parseInt(index) + 1;
           table.append('<tr>'+
                       '<td class="left-align">'+id+'</td>'+
                       '<td class="left-align">'+row.item_code+'</td>'+
@@ -2593,161 +2644,29 @@
                       '<input type="hidden" name="e_itm_total_price[]" value=" "/>'+
                       '</tr>'
                     );
-        } else if (loc=='issue') {
-        
-          var id = parseInt(index) + 1;
-          if( row.status=="Issued"){
-            table.append('<tr class="disabled">'+
-                                '<td class="left-align">'+id+'</td>'+
-                                '<td class="left-align">'+row.item_code+'</td>'+
-                                '<td class="left-align">'+row.item_desc+'</td>'+
-                                '<td class="left-align">'+row.uom_code+'</td>'+
-                                '<td class="left-align">'+row.req_qty+'</td>'+
-                                '<td class="left-align">0</td>'+
-                                '<td class="left-align"><span class="new badge black white-text" data-badge-caption="">'+row.status+'</span></td>'+ 
-                                '<td class="left-align"><p><label><input id="'+id+'" class="filled-in" checked="checked" type="checkbox" value="'+id+'" disabled/><span style="margin-top: 10px;"></span></label></p></td>'+
-                                '<input type="hidden" name="i_itm_item_code[]" value="'+row.item_code+'"/>'+
-                                '<input type="hidden" name="i_itm_quantity[]" value="'+row.req_qty+'"/>'+
-                                '<input type="hidden" name="i_itm_quantity_rem[]" value="'+row.rem_qty+'"/>'+
-                                '<input type="hidden" name="i_itm_quantity_iss[]" value="'+row.iss_qty+'"/>'+
-                                '<input type="hidden" name="i_itm_quantity_tbi[]" value="'+row.tbi_qty+'"/>'+
-                                '<input type="hidden" name="i_itm_conv_id[]" value="'+row.conv_id+'"/>'+
-                                '<input type="hidden" name="i_itm_iss_uom[]" value="'+row.iss_uom+'"/>'+
-                                '<input type="hidden" name="i_itm_inventory_location[]" value="'+trim(row.inventory_location)+'"/>'+
-                                '<input type="hidden" name="i_itm_currency[]" value=" "/>'+
-                                '<input type="hidden" name="i_itm_currency_code[]" value=" "/>'+
-                                '<input type="hidden" name="i_itm_unit_price[]" value=" "/>'+
-                                '<input type="hidden" name="i_itm_total_price[]" value=" "/>'+
-                                '</tr>'
-                              );
-          } else if (row.is_check==true) {
-            table.append('<tr>'+
-                                '<td class="left-align">'+id+'</td>'+
-                                '<td class="left-align">'+row.item_code+'</td>'+
-                                '<td class="left-align">'+row.item_desc+'</td>'+
-                                '<td class="left-align">'+row.uom_code+'</td>'+
-                                '<td class="left-align">'+row.req_qty+'</td>'+
-                                '<td class="left-align">'+row.rem_qty+'</td>'+
-                                '<td class="left-align"><span class="new badge blue white-text" data-badge-caption="">'+row.status+'</span></td>'+ 
-                                '<td class="left-align"><p><label><input id="'+id+'" class="filled-in" checked="checked" type="checkbox" value="'+id+'" disabled/><span style="margin-top: 10px;"></span></label></p></td>'+
-                                '<input type="hidden" name="i_itm_item_code[]" value="'+row.item_code+'"/>'+
-                                '<input type="hidden" name="i_itm_quantity[]" value="'+row.req_qty+'"/>'+
-                                '<input type="hidden" name="i_itm_quantity_rem[]" value="'+row.rem_qty+'"/>'+
-                                '<input type="hidden" name="i_itm_quantity_iss[]" value="'+row.iss_qty+'"/>'+
-                                '<input type="hidden" name="i_itm_quantity_tbi[]" value="'+row.tbi_qty+'"/>'+
-                                '<input type="hidden" name="i_itm_conv_id[]" value="'+row.conv_id+'"/>'+
-                                '<input type="hidden" name="i_itm_iss_uom[]" value="'+row.iss_uom+'"/>'+
-                                '<input type="hidden" name="i_itm_inventory_location[]" value="'+trim(row.inventory_location)+'"/>'+
-                                '<input type="hidden" name="i_itm_currency[]" value=" "/>'+
-                                '<input type="hidden" name="i_itm_currency_code[]" value=" "/>'+
-                                '<input type="hidden" name="i_itm_unit_price[]" value=" "/>'+
-                                '<input type="hidden" name="i_itm_total_price[]" value=" "/>'+
-                                '</tr>'
-                              );
-              $('#btnIssue').prop('disabled', false);
-              $('#btnIssReset').prop('disabled', false);
-          } else {
-            table.append('<tr>'+
-                                '<td class="left-align">'+id+'</td>'+
-                                '<td class="left-align">'+row.item_code+'</td>'+
-                                '<td class="left-align">'+row.item_desc+'</td>'+
-                                '<td class="left-align">'+row.uom_code+'</td>'+
-                                '<td class="left-align">'+row.req_qty+'</td>'+
-                                '<td class="left-align">'+row.rem_qty+'</td>'+
-                                '<td class="left-align"><span class="new badge blue white-text" data-badge-caption="">'+row.status+'</span></td>'+ 
-                                '<td class="left-align"><p><label><input id="'+id+'" class="with-gap" type="checkbox" value="'+id+'" onclick="issItems(\''+row.trans_code+'\',\''+row.item_code+'\',\''+row.rem_qty+'\','+id+')"/><span style="margin-top: 10px;"></span></label></p></td>'+
-                                '<input type="hidden" name="i_itm_item_code[]" value="'+row.item_code+'"/>'+
-                                '<input type="hidden" name="i_itm_quantity[]" value="'+row.req_qty+'"/>'+
-                                '<input type="hidden" name="i_itm_quantity_rem[]" value="'+row.rem_qty+'"/>'+
-                                '<input type="hidden" name="i_itm_quantity_iss[]" value="'+row.iss_qty+'"/>'+
-                                '<input type="hidden" name="i_itm_quantity_tbi[]" value="'+row.tbi_qty+'"/>'+
-                                '<input type="hidden" name="i_itm_conv_id[]" value="'+row.conv_id+'"/>'+
-                                '<input type="hidden" name="i_itm_iss_uom[]" value="'+row.iss_uom+'"/>'+
-                                '<input type="hidden" name="i_itm_inventory_location[]" value="'+trim(row.inventory_location)+'"/>'+
-                                '<input type="hidden" name="i_itm_currency[]" value=" "/>'+
-                                '<input type="hidden" name="i_itm_currency_code[]" value=" "/>'+
-                                '<input type="hidden" name="i_itm_unit_price[]" value=" "/>'+
-                                '<input type="hidden" name="i_itm_total_price[]" value=" "/>'+
-                                '</tr>'
-                              );
-          }
-
-        } else if (loc=='issued_items') {
-          var id = parseInt(index) + 1;
-          if(row.status=='Pending'){
-            table.append('<tr>'+
-                        '<td class="left-align">'+id+'</td>'+
-                        '<td class="left-align">'+row.item_code+'</td>'+
-                        '<td class="left-align">'+row.item_desc+'</td>'+
-                        '<td class="left-align">'+row.uom_code+'</td>'+
-                        '<td class="left-align">'+row.iss_qty+'</td>'+
-                        '<td class="left-align">'+row.iss_date+'</td>'+
-                        '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="deleteItem(\''+index+'\',\'issuance\',\''+row.iss_index+'\')"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
-                        // '<td><button type="button" class="btn-small red waves-effect waves-light" disabled><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
-                        '<input type="hidden" name="itm_item_code[]" value="'+row.item_code+'"/>'+
-                        '<input type="hidden" name="itm_quantity[]" value="'+row.iss_qty+'"/>'+
-                        '<input type="hidden" name="itm_uom_code[]" value="'+row.uom_code+'"/>'+
-                        '<input type="hidden" name="itm_inventory_location[]" value="'+row.inventory_location+'"/>'+
-                        '<input type="hidden" name="itm_currency[]" value=" "/>'+
-                        '<input type="hidden" name="itm_currency_code[]" value=" "/>'+
-                        '<input type="hidden" name="itm_unit_price[]" value=" "/>'+
-                        '<input type="hidden" name="itm_total_price[]" value=" "/>'+
-                        '</tr>'
-                      );
-          } else {
-            table.append('<tr>'+
-                        '<td class="left-align">'+id+'</td>'+
-                        '<td class="left-align">'+row.item_code+'</td>'+
-                        '<td class="left-align">'+row.item_desc+'</td>'+
-                        '<td class="left-align">'+row.uom_code+'</td>'+
-                        '<td class="left-align">'+row.iss_qty+'</td>'+
-                        '<td class="left-align">'+row.iss_date+'</td>'+
-                        '<td><button type="button" class="btn-small red waves-effect waves-light" disabled><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
-                        '<input type="hidden" name="itm_item_code[]" value="'+row.item_code+'"/>'+
-                        '<input type="hidden" name="itm_quantity[]" value="'+row.iss_qty+'"/>'+
-                        '<input type="hidden" name="itm_uom_code[]" value="'+row.uom_code+'"/>'+
-                        '<input type="hidden" name="itm_inventory_location[]" value="'+row.inventory_location+'"/>'+
-                        '<input type="hidden" name="itm_currency[]" value=" "/>'+
-                        '<input type="hidden" name="itm_currency_code[]" value=" "/>'+
-                        '<input type="hidden" name="itm_unit_price[]" value=" "/>'+
-                        '<input type="hidden" name="itm_total_price[]" value=" "/>'+
-                        '</tr>'
-                      );
-          }
+ 
         } else {
-          var id = parseInt(index) + 1;
-          if(row.status=='Issued'){
+          if(purpose=='Project'){
             table.append('<tr>'+
-                      '<td class="left-align">'+id+'</td>'+
-                      '<td class="left-align">'+row.item_code+'</td>'+
-                      '<td class="left-align">'+row.item_desc+'</td>'+
-                      '<td class="left-align">'+row.quantity+'</td>'+
-                      '<td class="left-align">'+row.uom_code+'</td>'+
-                      '<td class="left-align"><span class="new badge black white-text" data-badge-caption="">'+row.status+'</span></td>'+ 
-                      '</tr>'
-                    );
-          } else if(row.status=='Rejected'){
-            table.append('<tr>'+
-                      '<td class="left-align">'+id+'</td>'+
-                      '<td class="left-align">'+row.item_code+'</td>'+
-                      '<td class="left-align">'+row.item_desc+'</td>'+
-                      '<td class="left-align">'+row.quantity+'</td>'+
-                      '<td class="left-align">'+row.uom_code+'</td>'+
-                      '<td class="left-align"><span class="new badge red white-text" data-badge-caption="">'+row.status+'</span></td>'+ 
-                      '</tr>'
-                    );
-          } else if(row.status=='Issued with Pending'){
-   
+                    '<td class="left-align">'+id+'</td>'+
+                    '<td class="left-align">'+row.assy_code+'</td>'+
+                    '<td class="left-align">'+row.item_code+'</td>'+
+                    '<td class="left-align">'+row.item_desc+'</td>'+
+                    '<td class="left-align">'+row.quantity+'</td>'+
+                    '<td class="left-align">'+row.uom_code+' - '+row.uom_name+'</td>'+
+                    '<td class="left-align">'+row.delivery_date+'</td>'+
+                    '</tr>'
+                  );
           } else {
             table.append('<tr>'+
-                      '<td class="left-align">'+id+'</td>'+
-                      '<td class="left-align">'+row.item_code+'</td>'+
-                      '<td class="left-align">'+row.item_desc+'</td>'+
-                      '<td class="left-align">'+row.quantity+'</td>'+
-                      '<td class="left-align">'+row.uom_code+'</td>'+
-                      '<td class="left-align"><span class="new badge blue white-text" data-badge-caption="">'+row.status+'</span></td>'+ 
-                      '</tr>'
-                    );
+                    '<td class="left-align">'+id+'</td>'+
+                    '<td class="left-align">'+row.item_code+'</td>'+
+                    '<td class="left-align">'+row.item_desc+'</td>'+
+                    '<td class="left-align">'+row.quantity+'</td>'+
+                    '<td class="left-align">'+row.uom_code+' - '+row.uom_name+'</td>'+
+                    '<td class="left-align">'+row.delivery_date+'</td>'+
+                    '</tr>'
+                  );
           }
         }
       });
@@ -2819,54 +2738,67 @@
       $('#removeItemModal').modal('open');
     };
 
-    const addItem = (loc, item_qty = 0, safety_stock = 0) => {
+    const addItem = (loc, item_qty = 0, purpose) => {
       var found = false;
       var cindex = 0;
       if(loc=='add')
       {
-        if(parseInt($('#add_unit_price').val()) <= 0){
-        alert('Unit Price must be greater than 0!');
-        }else if($('#add_quantity').val() <= 0){
+        if($('#add_quantity').val() <= 0){
           alert('Quantity must be greater than 0!');
         }else{
-          $.each(add_items,(index,row) => {
-            if(row.item_code == $('#add_item_code').val()){
-              cindex = index;
-              found = true;
-              return false;
-            }
-          });
-
-          if(found){
+          if(purpose == 'Project'){
+            $.each(add_items,(index,row) => {
+              if(row.item_code == $('#add_item_code').val() && row.assy_code == $('#add_assy_code').val()){
+                cindex = index;
+                found = true;
+                return false;
+              }
+            });
+            if(found){
               var itm_qtys = parseInt(item_qty) + parseInt(add_items[cindex].quantity);
               add_items[cindex].quantity = parseInt(add_items[cindex].quantity) + parseInt($('#add_quantity').val());
               add_items[cindex].uom_code = $('#add_uom_code').val();
 
-              renderItems(add_items,$('#items-dt tbody'),'add');
+              renderItems(add_items,$('#items-dt tbody'),'add',purpose);
               resetItemDetails("add");
-          }else{
-              var itm_qtys = parseInt(item_qty);
-            if(safety_stock <= itm_qtys)
-            {
-              add_items.push({ "item_code": $('#add_item_code').val(),
+            }else{
+              add_items.push({"delivery_date": $('#add_delivery_date').val(),
+                              "assy_code": $('#add_assy_code').val(),
+                              "item_code": $('#add_item_code').val(),
                               "item_desc": $('#add_item_desc').val(),
                               "uom_code": $('#add_uom_code').val(),
                               "quantity": parseInt($('#add_quantity').val()),
                             });
-              renderItems(add_items,$('#items-dt tbody'),'add');
+              renderItems(add_items,$('#items-dt tbody'),'add',purpose);
               resetItemDetails("add");
-            } else {
-              add_items.push({ "item_code": $('#add_item_code').val(),
+            }
+          } else {
+            $.each(add_items,(index,row) => {
+              if(row.item_code == $('#add_item_code').val()){
+                cindex = index;
+                found = true;
+                return false;
+              }
+            });
+            if(found){
+              var itm_qtys = parseInt(item_qty) + parseInt(add_items[cindex].quantity);
+              add_items[cindex].quantity = parseInt(add_items[cindex].quantity) + parseInt($('#add_quantity').val());
+              add_items[cindex].uom_code = $('#add_uom_code').val();
+
+              renderItems(add_items,$('#items-dt tbody'),'add',purpose);
+              resetItemDetails("add");
+            }else{
+              add_items.push({"delivery_date": $('#add_delivery_date').val(),
+                              "item_code": $('#add_item_code').val(),
                               "item_desc": $('#add_item_desc').val(),
                               "uom_code": $('#add_uom_code').val(),
                               "quantity": parseInt($('#add_quantity').val()),
-                              });
-              renderItems(add_items,$('#items-dt tbody'),'add');
+                            });
+              renderItems(add_items,$('#items-dt tbody'),'add',purpose);
               resetItemDetails("add");
             }
           }
         }
-        
       } else if(loc=='edit') {
         if($('#edit_unit_price').val() <= 0){
           alert('Unit Price must be greater than 0!');
@@ -2918,71 +2850,23 @@
       }
     };
 
-    const loadApprover = () => {
-      $.get('../approver/{{Auth::user()->emp_no}}/Issuance/my_matrix', (response) => {
-        var data = response.data;
-        var tabledata = '';
-        if(data){
-          var matrix = data.matrix;
-          $.each(JSON.parse(matrix),(index, row) => {
-              tabledata +=  '<tr>'+
-                              '<td>'+row.sequence+'</td>'+
-                              '<td>'+row.approver_emp_no+'</td>'+
-                              '<td>'+row.approver_name+'</td>'+
-                              '<input type="hidden" name="app_seq[]" value="'+row.sequence+'"/>'+
-                              '<input type="hidden" name="app_id[]" value="'+row.approver_emp_no+'"/>'+
-                              '<input type="hidden" name="app_fname[]" value="'+row.approver_name+'"/>'+
-                              '<input type="hidden" name="app_nstatus[]" value="'+row.next_status+'"/>'+
-                              '<input type="hidden" name="app_gate[]" value="'+row.is_gate+'"/>'+
-                            '</tr>'
-          });
-          $('#matrix-dt tbody').html(tabledata);
-        } else {
-          
-        }
-      });
-    };
-
-    const renderSignatoriesTable = (matrix,table,is_history = false) => {
-      table.html("");
-      if(!is_history){
-        $.each(matrix, (index,row) => {
-          table.append('<tr>'+
-                        '<td>'+row.sequence+'</td>'+
-                        '<td>'+row.approver_emp_no+'</td>'+
-                        '<td>'+row.approver_name+'</td>'+
-                      '</tr>'
-                      );
-        });
-      }else{
-        $.each(matrix, (index,row) => {
-          table.append('<tr>'+
-                        '<td>'+row.sequence+'</td>'+
-                        '<td>'+row.approver_name+'</td>'+
-                        '<td>'+row.status+'</td>'+
-                        '<td>'+row.remarks+'</td>'+
-                        '<td>'+row.action_date+'</td>'+
-                      '</tr>'
-                      );
-        });
-      }
-    };
+  
 
   var request = $('#request-dt').DataTable({
         "lengthChange": false,
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/reiss/inventory/issuance/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
+        "ajax": "/api/reiss/purchasing/rfq/all/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
         "columns": [
             {  "data": "id" },
 
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
                   @if($permission[0]["view"]==true || $permission[0]["masterlist"]==true)
-                    return '<a href="#!" onclick="viewIssuance('+data+')">'+ row.issuance_code +'</a>';
+                    return '<a href="#!" onclick="viewRFQ('+data+')">'+ row.rfq_code +'</a>';
                   @else
-                    return row.issuance_code;
+                    return row.rfq_code;
                   @endif
                 }
             },
@@ -3044,7 +2928,7 @@
                   if(row.status=="Pending")
                   {
                     @if($permission[0]["edit"]==true || $permission[0]["masterlist"]==true)
-                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editIssuance('+data+')"><i class="material-icons">create</i></a>';
+                      return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" onclick="editRFQ('+data+')"><i class="material-icons">create</i></a>';
                     @else
                       return  '<a href="#" class="btn-small amber darken3 waves-effect waves-dark" disabled><i class="material-icons">create</i></a>';
                     @endif
@@ -3062,12 +2946,12 @@
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/reiss/inventory/issuance/all_approval/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
+        "ajax": "/api/reiss/purchasing/rfq/all_approval/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
         "columns": [
             {  "data": "id" },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return '<a href="#!" onclick="viewIssuance('+data+')">'+ row.issuance_code; +'</a>';
+                  return '<a href="#!" onclick="viewRFQ('+data+')">'+ row.rfq_code; +'</a>';
                 }
             },
             {  "data": "id",
@@ -3119,7 +3003,7 @@
             },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="appIssuance('+data+')"><i class="material-icons">rate_review</i></a>';
+                  return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="appRFQ('+data+')"><i class="material-icons">rate_review</i></a>';
                 }
             },   
         ]
@@ -3136,9 +3020,9 @@
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
                   @if($permission[0]["view"]==true || $permission[0]["masterlist"]==true)
-                    return '<a href="#!" onclick="viewIssuance('+data+')">'+ row.issuance_code; +'</a>';
+                    return '<a href="#!" onclick="viewRFQ('+data+')">'+ row.rfq_code; +'</a>';
                   @else
-                    return  row.issuance_code; 
+                    return  row.rfq_code; 
                   @endif
                 }
             },
@@ -3189,7 +3073,7 @@
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
                   @if($permission[0]["masterlist"]==true)
-                    return  '<a href="#" class="btn-small teal darken-1 waves-effect waves-dark" onclick="issIssuance('+data+')"><i class="material-icons">shopping_cart</i></a>';
+                    return  '<a href="#" class="btn-small teal darken-1 waves-effect waves-dark" onclick="issRFQ('+data+')"><i class="material-icons">shopping_cart</i></a>';
                   @else
                     return  '<a href="#" class="btn-small teal darken-1 waves-effect waves-dark" disabled><i class="material-icons">shopping_cart</i></a>';
                   @endif
@@ -3197,6 +3081,8 @@
             },   
         ]
   });
+
+  
 </script>
     <!-- End of SCRIPTS -->
 @endsection
