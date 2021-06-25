@@ -89,6 +89,7 @@ class ItemMasterController extends Controller
             $itemaster->oem_partno =        $request->input('item_oem','');
             $itemaster->uom_code =          $request->input('item_uom','');
             $itemaster->safety_stock =      $request->input('item_safety','');
+            $itemaster->warning_level =     $request->input('item_warning','');
             $itemaster->maximum_stock =     $request->input('item_max','');
             $itemaster->length =            $request->input('item_length','');
             $itemaster->width =             $request->input('item_width','');
@@ -192,6 +193,7 @@ class ItemMasterController extends Controller
             $itemmas->oem_partno =        $request->input('item_oem','');
             $itemmas->uom_code =          $request->input('item_uom','');
             $itemmas->safety_stock =      $request->input('item_safety','');
+            $itemmas->warning_level =     $request->input('item_warning','');
             $itemmas->maximum_stock =     $request->input('item_max','');
             $itemmas->length =            $request->input('item_length','');
             $itemmas->width =             $request->input('item_width','');

@@ -67,59 +67,56 @@
             <label for="add_requestor">Requestor<sup class="red-text">*</sup></label>
           </div>
 
-          <div class="input-field col s12 m4 l4">
+          <div class="input-field col s12 m3 l3">
             <label>
               <input type="checkbox" class="filled-in" name="add" id="add_ad"/>
               <span>Add</span>
             </label>
           </div>
           
-          <div class="input-field col s12 m4 l4">
+          <div class="input-field col s12 m3 l3">
             <label>
               <input type="checkbox" class="filled-in" name="edit" id="add_ed"/>
               <span>Edit</span>
             </label>
           </div>
           
-          <div class="input-field col s12 m4 l4">
+          <div class="input-field col s12 m3 l3">
             <label>
               <input type="checkbox" class="filled-in" name="view" id="add_vw"/>
               <span>View</span>
             </label>
           </div>
           
-          <div class="input-field col s12 m4 l4">
+          <div class="input-field col s12 m3 l3">
             <label>
               <input type="checkbox" class="filled-in" name="delete" id="add_dl"/>
               <span>Delete</span>
             </label>
           </div>
           
-          <div class="input-field col s12 m4 l4">
+          <div class="input-field col s12 m3 l3">
             <label>
               <input type="checkbox" class="filled-in" name="void" id="add_vd"/>
               <span>Void</span>
             </label>
           </div>
           
-          <div class="input-field col s12 m4">
+          <div class="input-field col s12 m3 l3">
             <label>
               <input type="checkbox" class="filled-in" name="app" id="add_ap"/>
               <span>Approval</span>
             </label>
           </div>
           
-        {{-- </div>
-
-        <div class="row"> --}}
-          <div class="col s12 m4 l4"></div>
-          <div class="input-field col s12 m4 l4">
+          <div class="input-field col s12 m3 l3">
             <label>
               <input type="checkbox" class="filled-in" name="mas" id="add_mas"/>
               <span>Master List</span>
             </label>
           </div>
-          <div class="input-field col s12 m4 l4">
+
+          <div class="input-field col s12 m3 l3">
             <label>
               <input type="checkbox" class="filled-in" name="all" id="add_all"/>
               <span>All</span>
@@ -173,56 +170,56 @@
             <label for="requestor">Requestor<sup class="red-text">*</sup></label>
           </div>
 
-          <div class="input-field col s12 m4 l4">
+          <div class="input-field col s12 m3 l3">
             <label>
               <input type="checkbox" class="filled-in" name="add" id="edit_ad"/>
               <span>Add</span>
             </label>
           </div>
           
-          <div class="input-field col s12 m4 l4">
+          <div class="input-field col s12 m3 l3">
             <label>
               <input type="checkbox" class="filled-in" name="edit" id="edit_ed"/>
               <span>Edit</span>
             </label>
           </div>
           
-          <div class="input-field col s12 m4 l4">
+          <div class="input-field col s12 m3 l3">
             <label>
               <input type="checkbox" class="filled-in" name="view" id="edit_vw"/>
               <span>View</span>
             </label>
           </div>
           
-          <div class="input-field col s12 m4 l4">
+          <div class="input-field col s12 m3 l3">
             <label>
               <input type="checkbox" class="filled-in" name="delete" id="edit_dl"/>
               <span>Delete</span>
             </label>
           </div>
           
-          <div class="input-field col s12 m4 l4">
+          <div class="input-field col s12 m3 l3">
             <label>
               <input type="checkbox" class="filled-in" name="void" id="edit_vd"/>
               <span>Void</span>
             </label>
           </div>
           
-          <div class="input-field col s12 m4">
+          <div class="input-field col s12 m3 l3">
             <label>
               <input type="checkbox" class="filled-in" name="app" id="edit_ap"/>
               <span>Approval</span>
             </label>
           </div>
-          
-          <div class="col s12 m4 l4"></div>
-          <div class="input-field col s12 m4 l4">
+
+          <div class="input-field col s12 m3 l3">
             <label>
               <input type="checkbox" class="filled-in" name="mas" id="edit_mas"/>
               <span>Master List</span>
             </label>
           </div>
-          <div class="input-field col s12 m4 l4">
+
+          <div class="input-field col s12 m3 l3">
             <label>
               <input type="checkbox" class="filled-in" name="all" id="edit_all"/>
               <span>All</span>

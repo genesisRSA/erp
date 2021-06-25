@@ -31,7 +31,6 @@
 
   <div id="addModal" class="modal">
     <form method="POST" action="{{route('approver.store')}}">
-    {{-- <form> --}}
     @csrf
       <div class="modal-content">
         <h4>Add Approver Matrix Details</h4><br><br>
@@ -271,17 +270,74 @@
         addRow('#btnAdd');
       });
 
+      $('#app_module').on('change', function(){
+        if($(this).val()=='RFQ' && $('#app_req').val()){
+          $('#app_approver option[value="'+$('#app_req').val()+'"]').prop('selected', true);
+          $('#app_approver').formSelect();
+
+          $('#app_nstatus option[value="For Review"]').prop('selected', true);
+          $('#app_nstatus').formSelect();
+
+          deleteAllRow('#btnDel');
+          addRow('#btnAdd');
+        }
+      });
+
+      $('#app_req').on('change', function(){
+        if($('#app_module').val()=='RFQ'){
+          $('#app_approver option[value="'+$(this).val()+'"]').prop('selected', true);
+          $('#app_approver').formSelect();
+
+          $('#app_nstatus option[value="For Review"]').prop('selected', true);
+          $('#app_nstatus').formSelect();
+
+          deleteAllRow('#btnDel');
+          addRow('#btnAdd');
+        }
+      });
+
       $('#btnDel').on('click', function(){
         deleteAllRow('#btnDel');
       });
+
+
+
 
       $('#btnAddEdit').on('click', function(){
         addRow('#btnAddEdit');
       });
 
+      $('#edit_app_module').on('change', function(){
+        if($(this).val()=='RFQ' && $('#edit_app_req').val()){
+          $('#edit_app_approver option[value="'+$('#edit_app_req').val()+'"]').prop('selected', true);
+          $('#edit_app_approver').formSelect();
+
+          $('#edit_app_nstatus option[value="For Review"]').prop('selected', true);
+          $('#edit_app_nstatus').formSelect();
+
+          deleteAllRow('#btnDelEdit');
+          addRow('#btnAddEdit');
+        }
+      });
+
+      $('#edit_app_req').on('change', function(){
+        if($('#edit_app_module').val()=='RFQ'){
+          $('#edit_app_approver option[value="'+$(this).val()+'"]').prop('selected', true);
+          $('#edit_app_approver').formSelect();
+
+          $('#edit_app_nstatus option[value="For Review"]').prop('selected', true);
+          $('#edit_app_nstatus').formSelect();
+
+          deleteAllRow('#btnDelEdit');
+          addRow('#btnAddEdit');
+        }
+      });
+
       $('#btnDelEdit').on('click', function(){
         deleteAllRow('#btnDelEdit');
       });
+
+      
     });
 
 

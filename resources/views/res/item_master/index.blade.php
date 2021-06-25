@@ -98,13 +98,17 @@
         </div>
 
         <div class="row">
-          <div class="input-field col s12 m6">
+          <div class="input-field col s12 m4">
             <input placeholder="" name="item_safety" type="number" class="number validate" required>
-            <label for="item_safety">Safety Stock<sup class="red-text">*</sup></label>
+            <label for="item_safety">Safety Stock <sup class="red-text">*</sup></label>
           </div>
-          <div class="input-field col s12 m6">
+          <div class="input-field col s12 m4">
+            <input placeholder="" name="item_warning" type="number" class="number validate" required>
+            <label for="item_warning">Warning Level<sup class="red-text">*</sup></label>
+          </div>
+          <div class="input-field col s12 m4">
             <input placeholder="" name="item_max" type="number" class="number validate" required>
-            <label for="item_max">Maximum Stock<sup class="red-text">*</sup></label>
+            <label for="item_max">Maximum Stock <sup class="red-text">*</sup></label>
           </div>
         </div>
 
@@ -236,12 +240,17 @@
         </div>
         
         <div class="row">
-          <div class="input-field col s12 m6">
+          <div class="input-field col s12 m4">
             <input placeholder="" id="edit_item_safety" name="item_safety" type="number" class="number validate" required>
             <label for="item_safety">Safety Stock<sup class="red-text">*</sup></label>
           </div>
 
-          <div class="input-field col s12 m6">
+          <div class="input-field col s12 m4">
+            <input placeholder="" id="edit_item_warning" name="item_warning" type="number" class="number validate" required>
+            <label for="item_warning">Warning Level<sup class="red-text">*</sup></label>
+          </div>
+
+          <div class="input-field col s12 m4">
             <input placeholder="" id="edit_item_max" name="item_max" type="number" class="number validate" required>
             <label for="item_max">Maximum Stock<sup class="red-text">*</sup></label>
           </div>
@@ -490,6 +499,7 @@
             $('#edit_item_uom').formSelect();
  
             $('#edit_item_safety').val(data.safety_stock);
+            $('#edit_item_warning').val(data.warning_level);
             $('#edit_item_max').val(data.maximum_stock);
 
             if((data.length=='')){

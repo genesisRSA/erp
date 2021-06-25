@@ -15,4 +15,9 @@ class RFQUser extends Model
     {
         return $this->hasOne('App\ItemMaster', 'item_code', 'item_code');
     }
+
+    public function rfq_status()
+    {
+        return $this->hasOne('App\RFQPurchasing', 'rfq_code', 'rfq_code');
+    }
 }

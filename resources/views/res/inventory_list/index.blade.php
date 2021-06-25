@@ -242,24 +242,42 @@
 
             {  "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  if(row.quantity >= row.item_details.safety_stock){
-                    return '<p class="green-text">'+row.quantity.toFixed(5)+'</p>';
-                  } else if(row.quantity <= row.item_details.safety_stock){
-                    return '<p class="orange-text">'+row.quantity.toFixed(5)+'</p>';
-                  } else if(row.quantity < row.item_details.warning_level) {
+                  // if(parseFloat(row.quantity) >= parseFloat(row.item_details.safety_stock)){
+                  //   return '<p class="green-text">'+row.quantity.toFixed(5)+'</p>';
+                  // } else if(parseFloat(row.quantity) <= parseFloat(row.item_details.warning_level)){
+                  //   return '<p class="orange-text">'+row.quantity.toFixed(5)+'</p>';
+                  // } 
+                  // else if(row.quantity < row.item_details.safety_stock) {
+                  //   return '<p class="red-text">'+row.quantity.toFixed(5)+'</p>';
+                  // } 
+
+                  if(parseFloat(row.quantity) <= parseFloat(row.item_details.safety_stock)){
                     return '<p class="red-text">'+row.quantity.toFixed(5)+'</p>';
-                  } 
+                  } else if (parseFloat(row.quantity) <= parseFloat(row.item_details.warning_level)){
+                    return '<p class="orange-text">'+row.quantity.toFixed(5)+'</p>';
+                  } else if (parseFloat(row.quantity) >= parseFloat(row.item_details.warning_level)){
+                    return '<p class="green-text">'+row.quantity.toFixed(5)+'</p>';
+                  }
                 }
             },
             {  "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  if(row.quantity >= row.item_details.safety_stock){
-                    return '<i class="material-icons green-text">arrow_drop_up</i>';
-                  } else if(row.quantity <= row.item_details.safety_stock){
-                    return '<i class="material-icons orange-text">import_export</i>';
-                  } else if(row.quantity < row.item_details.warning_level) {
+                  // if(parseFloat(row.quantity) >= parseFloat(row.item_details.safety_stock)){
+                  //   return '<i class="material-icons green-text">arrow_drop_up</i>';
+                  // } else if(parseFloat(row.quantity) < parseFloat(row.item_details.warning_level)){
+                  //   return '<i class="material-icons orange-text">import_export</i>';
+                  // }
+                  // } else if(row.quantity < row.item_details.safety_stock ) {
+                  //   return '<i class="material-icons red-text">arrow_drop_down</i>';
+                  // } 
+                  if(parseFloat(row.quantity) <= parseFloat(row.item_details.safety_stock)){
                     return '<i class="material-icons red-text">arrow_drop_down</i>';
-                  } 
+                  } else if (parseFloat(row.quantity) <= parseFloat(row.item_details.warning_level)){
+                    return '<i class="material-icons orange-text">import_export</i>';
+                  } else if (parseFloat(row.quantity) >= parseFloat(row.item_details.warning_level)){
+                    return '<i class="material-icons green-text">arrow_drop_up</i>';
+                  }
+
                 }
             },
         ]

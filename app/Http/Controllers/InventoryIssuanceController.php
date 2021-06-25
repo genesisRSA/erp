@@ -267,15 +267,15 @@ class InventoryIssuanceController extends Controller
                     $app_issuance->last_approved_by = Auth::user()->emp_no;
                 }else{
                     $app_issuance->matrix = json_encode($matrix);
-                    $status = $matrix ? $current_approver->next_status : "Approved";
+                    $statux = $matrix ? $current_approver->next_status : "Approved";
                     
                     array_push($matrix_h,["sequence" => $app_issuance->current_sequence,
                                           "approver_emp_no" => Auth::user()->emp_no,
                                           "approver_name" => Auth::user()->employee->full_name,
-                                          "status" => $status,
+                                          "status" => $statux,
                                           "remarks" => $remarks,
                                           "action_date" => date('Y-m-d H:i:s')]);
-                    $app_issuance->status = $status;
+                    $app_issuance->status = $statux;
     
                     if(count($matrix) > 0){
                         $app_issuance->current_approver = $matrix[0]->approver_emp_no;

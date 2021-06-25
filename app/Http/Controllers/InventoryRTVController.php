@@ -538,15 +538,15 @@ class InventoryRTVController extends Controller
                     $invlog->save();
                 }else{
                     $app_rtv->matrix = json_encode($matrix);
-                    $status = $matrix ? $current_approver->next_status : "Approved";
+                    $statux = $matrix ? $current_approver->next_status : "Approved";
                     
                     array_push($matrix_h,["sequence" => $app_rtv->current_sequence,
                                           "approver_emp_no" => Auth::user()->emp_no,
                                           "approver_name" => Auth::user()->employee->full_name,
-                                          "status" => $status,
+                                          "status" => $statux,
                                           "remarks" => $remarks,
                                           "action_date" => date('Y-m-d H:i:s')]);
-                    $app_rtv->status = $status;
+                    $app_rtv->status = $statux;
     
                     if(count($matrix) > 0){
                         $app_rtv->current_approver = $matrix[0]->approver_emp_no;
@@ -556,11 +556,6 @@ class InventoryRTVController extends Controller
                         $app_rtv->current_sequence = "";
                         $app_rtv->status = "Approved";
                         $app_rtv->last_approved_by = Auth::user()->emp_no;
-
-                        // return $app_rtv->rtv_code;
-                        // $invlog = InventoryLog::where('trans_code',$app_rtv->rtv_code)->get();
-                        // $invlog->status = "Approved";
-                        // $invlog->save();
                     }
                 }
     
@@ -577,12 +572,6 @@ class InventoryRTVController extends Controller
                 $app_rtv->current_sequence = "";
                 $app_rtv->status = "Rejected";
                 $app_rtv->last_approved_by = Auth::user()->emp_no;
-
-            
-
-                // $invlog = InventoryLog::where('trans_code',$app_rtv->rtv_code)->get();
-                // $invlog->status = "Rejected";
-                // $invlog->save();
             }
     
             $app_rtv->matrix_h = json_encode($matrix_h);

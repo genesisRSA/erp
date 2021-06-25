@@ -30,4 +30,6 @@ class RFQHeader extends Model
     {
         return $this->hasOne('App\ItemMaster', 'item_code', 'item_code');
     }
+
+
 }

@@ -670,7 +670,7 @@
   </div>
 
   <div id="issueModal" class="modal">
-    <form method="POST" action="{{route('issuance.issue_item')}}">
+    <form id="issue_form" method="POST" action="{{route('issuance.issue_item')}}">
       @csrf
       <div class="modal-content" style="padding-bottom: 0px;">
         <h4  >Inventory Issuance</h4> 
@@ -820,7 +820,7 @@
             <button type="button" class="orange waves-effect waves-light btn right-align" id="btnIssReset" onclick="resetISSDetails();" disabled><i class="material-icons left">loop</i>Reset Details</button>
           </div>
           <div class="row col s12 m8 l8 right-align">
-            <button class="green waves-effect waves-light btn" id="btnIssue" disabled><i class="material-icons left">check_circle</i>Issue</button>
+            <button type="button" class="green waves-effect waves-light btn" id="btnIssue" onclick="IssueItem();" disabled><i class="material-icons left">check_circle</i>Issue</button>
             <a href="#!" class="modal-close red waves-effect waves-dark btn" onclick="cancelIss();"><i class="material-icons left">cancel</i>Cancel</a>
           </div>
         </div>
@@ -872,17 +872,6 @@
         </div>
 
         <div id="item_qty" class="row" style="margin-bottom: 0px; display:none">
-          {{-- <div class="input-field col s12 m4 l4">
-            <input id="item_uom_type" name="uom_type" type="text" placeholder="" readonly>
-            <label class="uom_type">Unit Type</label>
-            </div>   
-            <div class="input-field col s12 m4 l4">
-            <select id="item_unit_convert" name="unit_convert">
-              <option value="" selected disabled>Choose your option</option>
-            </select>
-            <label for="unit_convert">Unit Conversion<sup class="red-text">*</sup></label>
-          </div> --}}
-
             <div class="input-field col s12 m4 l4">
               <input type="hidden" name="item_qty" id="item_item_qty">
               <span id="item_rqst_uom" class="badge green lighten-3 black-text"></span>
@@ -899,16 +888,12 @@
         </div>
 
         <div id="item_pend" class="row" style="margin-bottom: 0px; display:none">
-    
-
             <div class="input-field col s12 m4 l4">
               <input type="hidden" name="item_qty_rem" id="item_qty_rem">
               <span id="item_qty_uom" class="badge amber lighten-3 black-text"></span>
               <input id="item_quantity_rem" name="quantity_rem" type="number" placeholder="" value="0" readonly>
               <label class="active">Pending Quantity</label>
             </div>
-
-
         </div>
  
     </div>
@@ -2683,7 +2668,6 @@
                         '<td class="left-align">'+row.iss_qty+'</td>'+
                         '<td class="left-align">'+row.iss_date+'</td>'+
                         '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="deleteItem(\''+index+'\',\'issuance\',\''+row.iss_index+'\')"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
-                        // '<td><button type="button" class="btn-small red waves-effect waves-light" disabled><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
                         '<input type="hidden" name="itm_item_code[]" value="'+row.item_code+'"/>'+
                         '<input type="hidden" name="itm_quantity[]" value="'+row.iss_qty+'"/>'+
                         '<input type="hidden" name="itm_uom_code[]" value="'+row.uom_code+'"/>'+
@@ -2796,7 +2780,7 @@
               });
 
             }
-           
+
             if(iss_list.length > 0){
               $('#btnIssReset').prop('disabled', false);
               $('#btnIssue').prop('disabled', false);
@@ -2916,6 +2900,11 @@
 
         }
       }
+    };
+
+    const IssueItem = () => {
+      document.getElementById("issue_form").submit();
+      $('#btnIssue').prop('disabled', true);
     };
 
     const loadApprover = () => {

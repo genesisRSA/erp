@@ -15,7 +15,10 @@
         <li class="tab col s12 m4 l4"><a class="active" href="#Approval">Approval</a></li>
       @endif
       @if($permission[0]["masterlist"]==true)
-        <li class="tab col s12 m4 l4"><a class="active" href="#Process">Process</a></li>
+        <li class="tab col s12 m4 l4"><a class="active" href="#ForRFQ">For Quotation</a></li>
+      @endif
+      @if($permission[0]["add"]==true || $permission[0]["masterlist"]==true)
+        <li class="tab col s12 m4 l4"><a class="active" href="#ForReview">For Review</a></li>
       @endif
     </ul>
     @if($permission[0]["add"]==true || $permission[0]["masterlist"]==true)
@@ -45,48 +48,70 @@
 
     @if($permission[0]["approval"]==true || $permission[0]["masterlist"]==true)
       <div id="Approval" name="Approval">
-          <div class="card" style="margin-top: 0px">
-            <div class="card-content">
-              <table class="responsive-table highlight" id="approval-dt" style="width: 100%">
-                <thead>
-                  <tr>
-                      <th>ID</th>
-                      <th>RFQ Code</th>
-                      <th>Requestor</th>
-                      <th>Purpose</th>
-                      <th>Project Code</th>
-                      <th>Status</th>
-                      <th>Action</th>
-                  </tr>
-                </thead>
-              </table>
-            </div>
+        <div class="card" style="margin-top: 0px">
+          <div class="card-content">
+            <table class="responsive-table highlight" id="approval-dt" style="width: 100%">
+              <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>RFQ Code</th>
+                    <th>Requestor</th>
+                    <th>Purpose</th>
+                    <th>Project Code</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+              </thead>
+            </table>
           </div>
+        </div>
       </div>
     @endif
 
     @if($permission[0]["masterlist"]==true)
-      <div id="RFQ" name="RFQ">
-          <div class="card" style="margin-top: 0px">
-            <div class="card-content">
-              <table class="responsive-table highlight" id="issuance-dt" style="width: 100%">
-                <thead>
-                  <tr>
-                      <th>ID</th>
-                      <th>RFQ Code</th>
-                      <th>Requestor</th>
-                      <th>Purpose</th>
-                      <th>Project Code</th>
-                      <th>Status</th>
-                      <th>Action</th>
-                  </tr>
-                </thead>
-              </table>
-            </div>
+      <div id="ForRFQ" name="ForRFQ">
+        <div class="card" style="margin-top: 0px">
+          <div class="card-content">
+            <table class="responsive-table highlight" id="for-rfq-dt" style="width: 100%">
+              <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>RFQ Code</th>
+                    <th>Requestor</th>
+                    <th>Purpose</th>
+                    <th>Project Code</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+              </thead>
+            </table>
           </div>
+        </div>
+      </div>
+    @endif
+  
+    @if($permission[0]["add"]==true || $permission[0]["masterlist"]==true)
+      <div id="ForReview" name="ForReview">
+        <div class="card" style="margin-top: 0px">
+          <div class="card-content">
+            <table class="responsive-table highlight" id="for-rev-dt" style="width: 100%">
+              <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>RFQ Code</th>
+                    <th>Purpose</th>
+                    <th>Project Code</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
       </div>
     @endif
   </div>
+  
  
   <!-- MODALS -->
 
@@ -201,18 +226,7 @@
                 <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Item List</b></h6><hr style="margin: 0px">
                 <div class="card-content" style="padding: 10px; padding-top: 0px">
                   <table class="highlight responsive-table" id="items-dt">
-                    <thead id="items-header">
-                      {{-- 
-                        <tr>
-                          <th>ID</th>
-                          <th>Item Code</th>
-                          <th>Item Description</th>
-                          <th>Quantity</th>
-                          <th>Unit of Measure</th>
-                          <th>Action</th>
-                        </tr> 
-                      --}}
-                    </thead>
+                    <thead id="items-header"></thead>
                     <tbody></tbody>
                   </table>
                 </div>
@@ -254,8 +268,7 @@
   </div>
 
   <div id="editModal" class="modal">
-    {{-- <form method="POST" action="{{route('issuance.patch')}}"> --}}
-    <form>
+    <form method="POST" action="{{route('rfq.patch')}}">
       @csrf
         <div class="modal-content" style="padding-bottom: 0px;">
           <h4>Edit Request for Quotation</h4> 
@@ -274,7 +287,7 @@
               </div>
   
               <div class="input-field col s12 m4 l4">
-                <input type="hidden" name="purpose" id="purpose">
+                <input type="hidden" name="purpose" id="purpose_edit">
                 <select id="edit_purpose" name="edit_purpose" required>
                     <option value="" disabled selected>Choose your option</option>
                     <option value="Office Use">Office Use</option>
@@ -283,8 +296,8 @@
                 <label for="edit_purpose">Purpose<sup class="red-text">*</sup></label>
               </div>
   
-              <div class="input-field col s12 m4 l4" style="display: none; margin-bottom: 0px;" id="project_details">
-                <input type="hidden" name="project_code" id="project_code">
+              <div class="input-field col s12 m4 l4" style="display: none; margin-bottom: 0px;" id="edit_project_details">
+                <input type="hidden" name="project_code" id="project_code_edit">
                 <select id="edit_project_code" name="edit_project_code">
                     <option value="" disabled selected>Choose your option</option>
                 </select>
@@ -312,6 +325,21 @@
   
             <div class="col s12 m12 l12 row">
               <h6 style="padding: 10px;padding-top: 10px;margin-bottom: 0px;background-color:#0d47a1;border-right-width: 20px;margin-top: 0+;margin-top: 0px;margin-right: 10px;margin-left: 10px;" class="white-text"><b>Item Details</b></h6>
+            </div>
+
+            <div class="row" style="margin-bottom: 0px;">
+              <div class="input-field col s12 m6 l6">
+                <input id="edit_delivery_date" name="delivery_date" type="text" class="datepicker" placeholder="" disabled>
+                <label for="delivery_date">Required Delivery Date<sup class="red-text">*</sup></label>
+              </div>
+  
+              <div class="input-field col s12 m6 l6" style="display:none" id="edit_assy_details">
+                <input type="hidden" name="assy_code" id="assy_code_edit">
+                <select id="edit_assy_code" name="assy_code">
+                  <option value="" disabled selected>Choose your option</option>
+                </select>
+                <label for="assy_code">Assembly<sup class="red-text">*</sup></label>
+              </div>
             </div>
               
             <div class="row" style="margin-bottom: 0px;">
@@ -352,16 +380,7 @@
                   <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Item List</b></h6><hr style="margin: 0px">
                   <div class="card-content" style="padding: 10px; padding-top: 0px">
                     <table class="highlight" id="edit-items-dt">
-                      <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Item Code</th>
-                            <th>Item Description</th>
-                            <th>Quantity</th>
-                            <th>Unit of Measure</th>
-                            <th>Action</th>
-                        </tr>
-                      </thead>
+                      <thead id="edit-items-header"></thead>
                       <tbody></tbody>
                     </table>
                   </div>
@@ -399,7 +418,6 @@
           <button class="green waves-effect waves-light btn" id="btnEditSave" disabled><i class="material-icons left">check_circle</i>Save</button>
           <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Cancel</a>
         </div>
-
     </form>
   </div>
 
@@ -456,6 +474,20 @@
           </div>
         </div>
 
+        <div class="row" style="margin-bottom: 0px; display: none;" id="view_quote_list">
+          <div class="col s12 m12 l12">
+            <div class="card">
+              <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Quotation List</b></h6><hr style="margin: 0px">
+              <div class="card-content" style="padding: 10px; padding-top: 0px">
+                <table class="highlight" id="view-quote-dt">
+                  <thead id="view-quote-header">
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div id="view_signatories" name="view_signatories">
@@ -510,7 +542,7 @@
   </div>
 
   <div id="appModal" class="modal">
-    <form method="post" action="{{route('issuance.approve')}}">
+    <form method="post" action="{{route('rfq.approve')}}">
     @csrf
     <div class="modal-content" style="padding-bottom: 0px;">
       <h4>Request for Quotation Details</h4> 
@@ -523,48 +555,63 @@
       <div id="app_rfq" name="app_rfq">
         <div class="row" style="margin-bottom: 0px">
           <div class="input-field col s12 m6 l6">
-            <input id="view_rfq_code" name="rfq_code" type="text" class="validate" placeholder="" readonly>
+            <input id="app_rfq_code" name="rfq_code" type="text" class="validate" placeholder="" readonly>
             <label class="active">Request for Quotation Code</label>
           </div>
 
           <div class="input-field col s12 m6 l6">
-            <input id="view_date_requested" name="date_requested" type="text" class="validate" placeholder="" readonly>
+            <input id="app_date_requested" name="date_requested" type="text" class="validate" placeholder="" readonly>
             <label class="active">Date Requested</label>
           </div>
         </div>
 
         <div class="row" style="margin-bottom: 0px">
           <div class="input-field col s12 m6 l6">
-            <input id="view_purpose" name="purpose" type="text" class="validate" placeholder="" readonly>
+            <input id="app_purpose" name="purpose" type="text" class="validate" placeholder="" readonly>
             <label class="active">Purpose</label>
           </div>
 
           <div class="input-field col s12 m6 l6">
-            <input id="view_remarks" name="remarks" type="text" class="validate" placeholder="" readonly>
+            <input id="app_remarks" name="remarks" type="text" class="validate" placeholder="" readonly>
             <label class="active">Remarks</label>
           </div>
 
           <div class="input-field col s12 m6 l6" style="display: none;" id="app_project_details">
-            <input id="view_project_code" name="project_code" type="text" class="validate" placeholder="" readonly>
+            <input id="app_project_code" name="project_code" type="text" class="validate" placeholder="" readonly>
             <label class="active">Project</label>
           </div>
         </div>
 
-        <div class="row">
+        <div class="row" style="margin-bottom: 0px">
           <div class="col s12 m12 l12">
             <div class="card">
               <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Item List</b></h6><hr style="margin: 0px">
               <div class="card-content" style="padding: 10px; padding-top: 0px">
                 <table class="highlight" id="app-items-dt">
+                  <thead id="app-items-header"></thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="margin-bottom: 0px">
+          <div class="col s12 m12 l12">
+            <div class="card">
+              <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Quotation List</b></h6><hr style="margin: 0px">
+              <div class="card-content" style="padding: 10px; padding-top: 0px">
+                <table class="highlight" id="app-quote-items-dt">
                   <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Item Code</th>
-                      <th>Item Description</th>
-                      <th>Quantity</th>
-                      <th>Unit of Measure</th>
-                      <th>Status</th>
-                    </tr>
+                    <th>ID</th>
+                    <th>Vendor</th>
+                    <th>Item Code</th>
+                    <th>SPQ</th>
+                    <th>MOQ</th>
+                    <th>Lead Time</th>
+                    <th>Currency</th>
+                    <th>Unit Price</th>
+                    <th>Total Price</th>
                   </thead>
                   <tbody></tbody>
                 </table>
@@ -635,7 +682,7 @@
 
           <button id="btnApp" name="btnSubmit" value="Approved" class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Approve</button>
           
-          <button id="btnRej" name="btnSubmit" value="Rejected" class="red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>Reject&nbsp;&nbsp;&nbsp;</button>
+          <button id="btnRej" name="btnSubmit" value="Rejected" class="red waves-effect waves-dark btn" style="padding-right: 19px"><i class="material-icons left">cancel</i>Reject&nbsp;&nbsp;&nbsp;</button>
 
           <a href="#!" class="modal-close orange waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Cancel&nbsp;&nbsp;</a>
         </div>
@@ -645,259 +692,263 @@
     </form>
   </div>
 
-  <div id="issueModal" class="modal">
-    <form method="POST" action="{{route('issuance.issue_item')}}">
-      @csrf
-      <div class="modal-content" style="padding-bottom: 0px;">
-        <h4  >Inventory RFQ</h4> 
-        <ul id="tabs-swipe-demo" class="tabs issue">
-          <li class="tab col s12 m4 l4"><a class="active" href="#issue_issuance">RFQ Details</a></li>
-          <li class="tab col s12 m4 l4"><a href="#issue_signatories">Signatories</a></li>
-        </ul><br>
-
-        <div id="issue_issuance" name="issue_issuance">
-          <div class="row" style="margin-bottom: 0px">
-              <div class="input-field col s12 m6 l6">
-                <input type="hidden" name="issue_status" id="issue_status">
-                <input id="issue_rfq_code" name="rfq_code" type="text" placeholder="" readonly>
-                <label class="active">RFQ Code</label>
-              </div>
-              
-              <div class="input-field col s12 m6 l6">
-                <input id="issue_requestor" name="requestor" type="text" placeholder="" readonly>
-                <label class="requestor">Requestor</label>
-              </div>
-          </div>
-
-          <div class="row" style="margin-bottom: 0px">
-              <div class="input-field col s12 m6 l6">
-                <input id="issue_site_code" name="site_code" type="text" placeholder="" readonly>
-                <label class="active">Site</label>
-              </div>
-
-              <div class="input-field col s12 m6 l6">
-                <input id="issue_purpose" name="purpose" type="text" placeholder="" readonly>
-                <label class="active">Purpose</label>
-              </div>
-          </div>
-
-          <div class="row" style="display: none; margin-bottom: 0px;" id="issue_project_details">
-              <div class="input-field col s12 m6 l6">
-                <input id="issue_project_code" name="project_code" type="text" placeholder="" readonly>
-                <label class="active">Project</label>
-              </div>
-
-              <div class="input-field col s12 m6 l6">
-                <input id="issue_assy_code" name="assy_code" type="text" placeholder="" readonly>
-                <label class="active">Assembly</label>
-              </div>
-          </div>
-
-          <div class="row" style="margin-bottom: 0px">
-            <div class="col s12 m12 l12">
-              <div class="card">
-                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Item List</b></h6><hr style="margin: 0px">
-                <div class="card-content" style="padding: 10px; padding-top: 0px">
-                  <table class="highlight responsive-table" id="issue-items-dt">
-                    <thead>
-                      <tr>
-                        <th>ID</th>
-                        <th>Item Code</th>
-                        <th>Description</th>
-                        <th>Unit of Measure</th>
-                        <th>Requested Qty.</th>
-                        <th>Pending Qty.</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody></tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-          <div class="row" style="margin-bottom: 0px">
-            <div class="col s12 m12 l12">
-              <div class="card">
-                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Issued Item(s)</b></h6><hr style="margin: 0px">
-                <div class="card-content" style="padding: 10px; padding-top: 0px">
-                  <table class="highlight responsive-table" id="issued-items-dt">
-                    <thead>
-                      <tr>
-                        <th>ID</th>
-                        <th>Item Code</th>
-                        <th>Description</th>
-                        <th>Unit of Measure</th>
-                        <th>RFQ Qty.</th>
-                        <th>Date Issued</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody></tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div id="issue_signatories" name="issue_signatories">
-          <div class="row" style="margin-bottom: 0px">
-            <div class="col s12 m12 l12">
-              <div class="card">
-                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Current Signatories</b></h6><hr style="margin: 0px">
-                <div class="card-content" style="padding: 10px; padding-top: 0px">
-                  <table class="highlight" id="issue-matrix-dt">
-                    <thead>
-                      <tr>
-                        <th>Sequence</th> 
-                        <th>Approver ID</th> 
-                        <th>Approver Name</th> 
-                      </tr>
-                    </thead>
-                    <tbody></tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row" style="margin-bottom: 0px">
-            <div class="col s12 m12 l12">
-              <div class="card">
-                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Approval History</b></h6><hr style="margin: 0px">
-                <div class="card-content" style="padding: 10px; padding-top: 0px">
-                  <table class="highlight" id="issue-matrix-dt-h">
-                    <thead>
-                      <tr>
-                        <th>Sequence</th> 
-                        <th>Approver Name</th> 
-                        <th>Status</th> 
-                        <th>Remarks</th> 
-                        <th>Action Date</th> 
-                      </tr>
-                    </thead>
-                    <tbody></tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-        </div>
-      </div>
-
-      <div class="modal-footer" style="padding-right: 32px; padding-bottom: 4px; margin-bottom: 30px;">
-        <div class="row col s12 m12 l12">
-          <div class="row col s12 m4 l4 left-align" style="margin-left: 20px;">
-            <button type="button" class="orange waves-effect waves-light btn right-align" id="btnIssReset" onclick="resetISSDetails();" disabled><i class="material-icons left">loop</i>Reset Details</button>
-          </div>
-          <div class="row col s12 m8 l8 right-align">
-            <button class="green waves-effect waves-light btn" id="btnIssue" disabled><i class="material-icons left">check_circle</i>Issue</button>
-            <a href="#!" class="modal-close red waves-effect waves-dark btn" onclick="cancelIss();"><i class="material-icons left">cancel</i>Cancel</a>
-          </div>
-        </div>
-      </div>
-    </form>
-  </div>
-
-  <div id="issDetModal" class="modal">
+  <div id="forQModal" class="modal">
+    <form id="quote_form" method="post" action="{{route('rfq.store_quote')}}">
+    @csrf
     <div class="modal-content" style="padding-bottom: 0px;">
-      <h4 >Item Details To Collect</h4><br>
-        <input type="hidden" name="id" id="item_id">
-        <input type="hidden" name="id" id="item_trans_code">
+      <h4>Request for Quotation Details</h4> 
+      <ul id="tabs-swipe-demo" class="tabs view">
+        <li class="tab col s12 m4 l4"><a class="active" href="#fq_rfq_details">Request Details</a></li>
+        <li class="tab col s12 m4 l4"><a href="#fq_signatories">Signatories</a></li>
+      </ul><br>
 
-        <div class="row" style="margin-bottom: 0px;">
-          <div class="input-field col s12 m4 l4">
-            <input type="hidden" name="item_status" id="item_status">
-            <input type="hidden" name="location_code" id="location_code">
-            <input id="item_location_code" name="item_location_code" type="text"   placeholder="Click here before scanning location..">
-            <label for="item_location_code">Inventory Location <sup class="red-text">*</sup></label>
+      <div id="fq_rfq_details" name="fq_rfq_details" style="margin-bottom: 0px">
+        <div class="row" style="margin-bottom: 0px">
+          <div class="input-field col s12 m6 l6">
+            <input id="fq_rfq_code" name="rfq_code" type="text" class="validate" placeholder="" readonly>
+            <label class="active">Request for Quotation Code</label>
           </div>
 
-          <div class="input-field col s12 m4 l4">
-            <input id="item_location_name" name="item_location_name" type="text"  placeholder="" readonly>
-            <label for="item_location_name">Location Name<sup class="red-text"></sup></label>
+          <div class="input-field col s12 m6 l6">
+            <input id="fq_date_requested" name="date_requested" type="text" class="validate" placeholder="" readonly>
+            <label class="active">Date Requested</label>
           </div>
         </div>
 
-        <div id="item_details" class="row" style="margin-bottom: 0px; display:none">
-            <div class="input-field col s12 m4 l4">
-              <input id="item_item_code" name="item_code" type="text" placeholder="" readonly>
-              <input type="hidden" id="item_cs" name="item_cs">
-              <span id="item_current_stock" name="item_current_stock" class="badge" style="font-size: 12px">Current Stock: 0</span>
-              <label class="active">Item Code</label>
-            </div>
-            <div class="input-field col s12 m4 l4">
-              <input id="item_item_desc" name="item_desc" type="text" placeholder="" readonly>
-              <label class="active">Item Description</label>
-            </div> 
-            <div class="input-field col s12 m4 l4">
-              <input type="hidden" id="item_from_value" name="from_value">
-              <input type="hidden" id="item_to_value" name="to_value">
-              <input type="hidden" id="item_conv_id" name="conv_id">
- 
-              <select id="item_uom" name="item_uom">
-                <option value="" disabled selected>Choose your option</option>
-              </select>
-              <label for="item_uom">Unit of Measure <sup class="red-text">*</sup></label>
-            </div>  
-        </div>
+        <div class="row" style="margin-bottom: 0px">
+          <div class="input-field col s12 m6 l6">
+            <input id="fq_purpose" name="purpose" type="text" class="validate" placeholder="" readonly>
+            <label class="active">Purpose</label>
+          </div>
 
-        <div id="item_qty" class="row" style="margin-bottom: 0px; display:none">
-          {{-- <div class="input-field col s12 m4 l4">
-            <input id="item_uom_type" name="uom_type" type="text" placeholder="" readonly>
-            <label class="uom_type">Unit Type</label>
-            </div>   
-            <div class="input-field col s12 m4 l4">
-            <select id="item_unit_convert" name="unit_convert">
-              <option value="" selected disabled>Choose your option</option>
-            </select>
-            <label for="unit_convert">Unit Conversion<sup class="red-text">*</sup></label>
-          </div> --}}
+          <div class="input-field col s12 m6 l6" style="display: none;" id="fq_project_details">
+            <input id="fq_project_code" name="project_code" type="text" class="validate" placeholder="" readonly>
+            <label class="active">Project</label>
+          </div>
 
-            <div class="input-field col s12 m4 l4">
-              <input type="hidden" name="item_qty" id="item_item_qty">
-              <span id="item_rqst_uom" class="badge green lighten-3 black-text"></span>
-              <input id="item_quantity" name="quantity" type="number" placeholder="" readonly>
-              <label class="active">Requested Quantity</label>
-            </div>   
-
-            <div class="input-field col s12 m4 l4">
-              <span id="item_iss_uom" class="badge blue lighten-1 white-text"></span>
-              <input type="hidden" id="item_uom_code" name="item_uom_code">
-              <input id="item_quantity_iss" name="quantity_iss" type="number" class="validate" placeholder="0">
-              <label class="active">RFQ Quantity <sup class="red-text">*</sup></label>
-            </div>
-        </div>
-
-        <div id="item_pend" class="row" style="margin-bottom: 0px; display:none">
-    
-
-            <div class="input-field col s12 m4 l4">
-              <input type="hidden" name="item_qty_rem" id="item_qty_rem">
-              <span id="item_qty_uom" class="badge amber lighten-3 black-text"></span>
-              <input id="item_quantity_rem" name="quantity_rem" type="number" placeholder="" value="0" readonly>
-              <label class="active">Pending Quantity</label>
-            </div>
-
+          <div class="input-field col s12 m6 l6">
+            <input id="fq_remarks" name="remarks" type="text" class="validate" placeholder="" readonly>
+            <label class="active">Remarks</label>
+          </div>
 
         </div>
- 
+
+        <div class="row" style="margin-bottom: 0px">
+          <div class="col s12 m12 l12">
+            <div class="card">
+              <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Item List</b></h6><hr style="margin: 0px">
+              <div class="card-content" style="padding: 10px; padding-top: 0px">
+                <table class="highlight responsive-table" id="fq-items-dt">
+                  <thead id="fq-items-header">
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="margin-bottom: 0px">
+          <div class="col s12 m12 l12">
+            <div class="card">
+              <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Quotation List</b></h6><hr style="margin: 0px">
+              <div class="card-content" style="padding: 10px; padding-top: 0px">
+                <table class="highlight responsive-table" id="q-details-dt">
+                  <thead id="q-header">
+                    <tr>
+                      <th>ID</th>
+                      <th>Vendor</th>
+                      <th>Item Code</th>
+                      <th>SPQ</th>
+                      <th>MOQ</th>
+                      <th>Lead Time</th>
+                      <th>Currency</th>
+                      <th>Unit Price</th>
+                      <th>Total Price</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {{-- <div class="row col s12 m12 l12">
+          <div class="col s12 m8 l8"></div>
+          <div class="col s12 m4 l4 right-align">
+            <input placeholder="0" id="fq_grand_total" name="grand_total" type="text" style="text-align: right; left: 75%; font-size: 25px" class="number" required readonly>
+            <label for="grand_total" style="left: 75%; font-size:20px;"><b>Grand Total Price</b><sup class="red-text"></sup></label>
+          </div>
+        </div> --}}
+      </div>
+
+      <div id="fq_signatories" name="fq_signatories">
+        <div class="row">
+          <div class="col s12 m12 l12">
+            <div class="card">
+              <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Current Signatories</b></h6><hr style="margin: 0px">
+              <div class="card-content" style="padding: 10px; padding-top: 0px">
+                <table class="highlight" id="fq-matrix-dt">
+                  <thead>
+                    <tr>
+                      <th>Sequence</th> 
+                      <th>Approver ID</th> 
+                      <th>Approver Name</th> 
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col s12 m12 l12">
+            <div class="card">
+              <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Approval History</b></h6><hr style="margin: 0px">
+              <div class="card-content" style="padding: 10px; padding-top: 0px">
+                <table class="highlight" id="fq-matrix-dt-h">
+                  <thead>
+                    <tr>
+                      <th>Sequence</th> 
+                      <th>Approver Name</th> 
+                      <th>Status</th> 
+                      <th>Remarks</th> 
+                      <th>Action Date</th> 
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
     </div>
 
     <div class="modal-footer" style="padding-right: 32px; padding-bottom: 4px; margin-bottom: 30px;">
       <div class="row col s12 m12 l12">
         <div class="row col s12 m4 l4 left-align" style="margin-left: 20px;">
-          <button type="button" class="orange waves-effect waves-light btn right-align" id="btnItemReset" onclick="resetColDetails();" disabled><i class="material-icons left">loop</i>Reset Details</button>
+          <button type="button" class="orange waves-effect waves-light btn right-align" id="btnResetQ" onclick="resetQDetails();" disabled><i class="material-icons left">loop</i>Reset Details</button>
+        </div>
+        <div class="row col s12 m8 l8 right-align">
+          <button class="green waves-effect waves-light btn" id="btnSaveQ" onclick="saveQuote();" disabled><i class="material-icons left">check_circle</i>Save</button>
+          <a href="#!" class="modal-close red waves-effect waves-dark btn" onclick="cancelQuote();"><i class="material-icons left">cancel</i>Cancel</a>
+        </div>
+      </div>
+    </div>
+    </form>
+  </div>
+
+  <div id="QdetModal" class="modal">
+    <div class="modal-content" style="padding-bottom: 0px;">
+      <h4 style="margin-bottom: 0px">Quotation Details</h4><br>
+        <input type="hidden" name="id" id="item_id">
+        <input type="hidden" name="status" id="item_status">
+
+        <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 1em; margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Item Details</b></h6>
+
+        <div class="row" style="margin-bottom: 0px;">
+          <div class="input-field col s12 m4 l4">
+            <input id="item_rfq_code" name="item_rfq_code" type="text" placeholder="" readonly>
+            <label for="item_rfq_code">Request for Quotation Code<sup class="red-text"></sup></label>
+          </div>
+
+          <div class="input-field col s12 m4 l4">
+            <input id="item_req_del" name="item_req_del" type="text"  placeholder="" readonly>
+            <label for="item_req_del">Required Delivery Date<sup class="red-text"></sup></label>
+          </div>
+
+          <div class="input-field col s12 m4 l4" id="item_assy" style="display: none">
+            <input id="item_assy_code" name="item_assy_code" type="text"  placeholder="" readonly>
+            <label for="item_assy_code">Assembly Code<sup class="red-text"></sup></label>
+          </div>
+        </div>
+
+        <div class="row" style="margin-bottom: 10px;">
+          <input type="hidden" name="uom_code" id="item_uom_code">
+          <input type="hidden" name="req_qty" id="item_req_qty">
+
+          <div class="input-field col s12 m4 l4">
+            <input id="item_item_code" name="item_item_code" type="text"  placeholder="" readonly>
+            <label for="item_item_code">Item Code<sup class="red-text"></sup></label>
+          </div>
+
+          <div class="input-field col s12 m8 l8">
+            <input id="item_item_desc" name="item_desc" type="text" placeholder="" readonly>
+            <label for="item_desc" class="active">Item Description</label>
+          </div> 
+        </div>
+
+        <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 1em; background-color:#0d47a1" class="white-text"><b>Quotation from Vendor</b></h6>
+
+        <div class="row" style="margin-bottom: 0px;">
+          <div class="input-field col s12 m4 l4">
+            <select id="item_vendor" name="item_vendor" required>
+              <option value="" disabled selected>Choose your option</option>
+              @foreach ($vendor as $vens)
+                <option value="{{$vens->ven_code}}">{{$vens->ven_name}}</option>
+              @endforeach
+            </select>
+            <label for="item_vendor">Vendor <sup class="red-text">*</sup></label>
+          </div>  
+              
+          <div class="input-field col s12 m4 l4">
+            <input id="item_ven_delivery" name="item_ven_delivery" type="text" class="validate datepicker" placeholder="YYYY/MM/DD" required>
+            <label for="item_ven_delivery">Delivery Date <sup class="red-text">*</sup></label>
+            <input type="hidden" name="lead_time" id="item_lead_days">
+            <span id="item_lead_time" class="badge lighten-3 black-text" style="font-size: 12px">Lead Time: 0 day(s)</span>
+          </div>
+
+          <div class="input-field col s12 m4 l4">
+            <select id="item_currency_code" name="item_currency_code" required>
+              <option value="" disabled selected>Choose your option</option>
+              @foreach ($currency as $currency)
+                <option value="{{$currency->currency_code}}">{{$currency->symbol}} - {{$currency->currency_name}}</option>
+              @endforeach
+            </select>
+            <label for="item_currency_code">Currency <sup class="red-text">*</sup></label>
+          </div>  
+        </div>
+ 
+        <div class="row" style="margin-bottom: 0px;">
+          <div class="input-field col s12 m4 l4">
+            <input id="item_spq" name="item_spq" type="number" placeholder="0" required>
+            <label for="item_spq">Standard Packaging Qty. <sup class="red-text">*</sup></label>
+          </div>   
+
+          <div class="input-field col s12 m4 l4">
+            <input id="item_moq" name="item_moq" type="number" placeholder="0" required>
+            <label for="item_moq">Minimum Order Qty. <sup class="red-text">*</sup></label>
+          </div>
+  
+          <div class="input-field col s12 m4 l4">
+            <input id="item_unit_price" name="item_unit_price" type="number" placeholder="0" required>
+            <label for="item_unit_price">Unit Price <sup class="red-text">*</sup></label>
+          </div>
+        </div>
+
+        <div class="row" style="margin-bottom: 0px;">
+          <div class="input-field col s12 m4 l4">
+            <input id="item_total_price" name="item_total_price" type="text" value="0" readonly>
+            <label for="item_total_price">Total Price</label>
+          </div>
+        </div>
+    </div>
+
+    <div class="modal-footer" style="padding-right: 32px; padding-bottom: 4px; margin-bottom: 30px;">
+      <div class="row col s12 m12 l12">
+        <div class="row col s12 m4 l4 left-align" style="margin-left: 20px;">
+          <button type="button" class="orange waves-effect waves-light btn right-align" id="btnQReset" onclick="resetColDetails();" disabled><i class="material-icons left">loop</i>Reset</button>
         </div>
  
         <div class="row col s12 m8 l8 right-align">
-          <button class="green waves-effect waves-light btn" id="btnCollect" onclick="collectItem();" disabled><i class="material-icons left">add_shopping_cart</i>Collect</button>
-          <button class="red waves-effect waves-light btn" id="btnColCan" onclick="issItemsCan();"><i class="material-icons left">cancel</i>Cancel</button>
+          <button class="green waves-effect waves-light btn" id="btnQSave" onclick="quoteSave();" disabled><i class="material-icons left">assignment_turned_in</i>Save</button>
+          <button class="modal-close red waves-effect waves-light btn" id="btnQCan" onclick="quoteCan();"><i class="material-icons left">cancel</i>Cancel</button>
         </div>
       </div>
     </div>
@@ -940,11 +991,11 @@
 
   <div id="resetColModal" class="modal bottom-sheet">
     <div class="modal-content">
-        <h4>Reset Item Details</h4><br><br>
+        <h4>Reset Quotation Details</h4><br><br>
         <div class="row">
             <div class="col s12 m6">
                 <input type="hidden" name="reset_loc" id="reset_loc">
-                <p>Are you sure you want to reset <strong>Item Details to Collect</strong>?</p>
+                <p>Are you sure you want to reset <strong>Quotation Details</strong>?</p>
             </div>
         </div>
     </div>
@@ -954,18 +1005,18 @@
     </div>
   </div> 
 
-  <div id="resetIssModal" class="modal bottom-sheet">
+  <div id="resetQModal" class="modal bottom-sheet">
     <div class="modal-content">
-        <h4>Reset RFQ Details</h4><br><br>
+        <h4>Reset Quotation Details</h4><br><br>
         <div class="row">
             <div class="col s12 m6">
                 <input type="hidden" name="reset_loc" id="reset_loc">
-                <p>Are you sure you want to reset <strong>RFQ Details</strong>?</p>
+                <p>Are you sure you want to reset <strong>Quotation(s) Details</strong>?</p>
             </div>
         </div>
     </div>
     <div class="modal-footer">
-        <button class="green waves-effect waves-light btn" id="btnReset" onclick="resetIss();" ><i class="material-icons left">check_circle</i>Yes</button>
+        <button class="green waves-effect waves-light btn" id="btnReset" onclick="resetQuoteDetails();" ><i class="material-icons left">check_circle</i>Yes</button>
         <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>No</a>
     </div>
   </div> 
@@ -996,19 +1047,23 @@
   <script type="text/javascript">
   
     var RFQCount = {{$count}};
-    const str = new Date().toISOString().slice(0, 10);
-    var newtoday = str.replace(/[^a-zA-Z0-9]/g,"");
+    const todayx = new Date().toISOString().slice(0, 10);
+    var newtoday = todayx.replace(/[^a-zA-Z0-9]/g,"");
 
     var convert_values = 0;
     
     var add_items = [];
     var edit_items = [];
-    var view_items = [];
-    var app_items = [];
-    var iss_items = [];
-    var all_iss_items = [];
-    var iss_list = [];
     
+    var view_items = [];
+    var view_qt = [];
+
+    var app_items = [];
+    var rev_items = [];
+    var rev_quote = [];
+
+    var fq_items = [];
+    var qt_items = [];
 
     $(document).ready(function () {
       
@@ -1095,6 +1150,13 @@
           $('#project_code').val($(this).val());
         });
         
+        $('#add_delivery_date').on('change', function(){
+          if($(this).val() < todayx){ 
+            $(this).val("")
+            alert("You cannot set delivery date of the item less than today's date!");
+          }
+        });
+
         $('#add_assy_code').on('change', function(){
           $('#assy_code').val($(this).val());
         });
@@ -1137,7 +1199,10 @@
         });
         
         $('#btnAdd').on('click', function(){
-          console.log($('#purpose').val());
+          console.log(todayx);
+          console.log(newtoday);
+          console.log(trim($('#add_delivery_date').val()) > todayx);
+
           if($('#purpose').val() == 'Project'){         
             if(trim($('#add_delivery_date').val()) && 
             $('#add_assy_code').val() != null && 
@@ -1200,6 +1265,13 @@
           $('#project_code_edit').val($(this).val());
         });
 
+        $('#edit_delivery_date').on('change', function(){
+          if($(this).val() < todayx){ 
+            $(this).val("")
+            alert("You cannot set delivery date of the item less than today's date!");
+          }
+        });
+
         $('#edit_assy_code').on('change', function(){
           $('#assy_code_edit').val($(this).val());
         });
@@ -1243,148 +1315,101 @@
         });
 
         $('#edit_btnAdd').on('click', function(){
-          if($('#edit_item_code').val() &&
-            $('#edit_quantity').val() &&
-            $('#edit_uom_code').val())
-          {
-            $.get('../item_master/getItemDetails/'+$('#edit_item_code').val(), (response) => {
-              var item = response.data;
-              if(item!=null){
-                $.get('receiving/'+item.item_code+'/'+$('#edit_inventory_location').val()+'/getCurrentStock', (response) => {
-                  var item_qty = parseInt($('#edit_quantity').val());
-                  var safety_stock = parseInt(item.safety_stock);
-                  addItem('edit',item_qty, safety_stock);
-                });
-              } else {
-                alert('Item code does not exist! Please the check item code before adding item details..');
-              }
-            });
-          }else{
-            alert("Please fill-up all item details!");
-          }
-        });
-
-
-
-        $('#item_location_code').on('keyup', function(e){
-          if(e.which == 13){       
-            $.get('../inventory/location/getlocation/'+trim($('#item_location_code').val()), (response) => {
-              var data = response.data;
-           
-              $.get('../item_master/getItemDetailsLoc/'+trim($('#item_item_code').val())+'/'+trim(data.required_item_category), (response) => {
-                var datax = response.data;
-              
-                if(datax){
-                  $('#item_location_name').val(data.location_name);
-                  if(data!=null)
-                  { 
-                    $.get('receiving/'+trim($('#item_item_code').val())+'/'+trim($(this).val())+'/getCurrentStock', (response) => {
-                      var current_stock = parseInt(response.data);
-                      var uom = datax.uom_code;
-                      $('#item_current_stock').html("Current Stock: "+current_stock+uom.toLowerCase());
-                      $('#item_cs').val(current_stock);
-                      
-                      var request_qty = parseInt($('#item_quantity_rem').val()); // need to convert based on conversion id before checking if sufficient for the request.
-                  
-                      $('#btnItemReset').prop('disabled', false);
-                      $(this).prop('readonly', true);
-                      var x = document.getElementById('item_details');
-                          x.style.display = "block";
-                      var y = document.getElementById('item_qty');
-                          y.style.display = "block";
-                      var z = document.getElementById('item_pend');
-                          z.style.display = "block";
-  
-                    });
-                  }else{
-                    alert("Inventory location doesn't exist! Please re-scan inventory location.")
-                    $('#btnCollect').prop('disabled', true);
-                  };
-                } else {
-                  alert("Item does not exist on the scanned location! Please check and re-scan item.")
-                  $(this).val("");
-                }
-
-              });
-            }); 
-          }
-        });
-        
-        $('#item_quantity_iss').on('keyup', function(e){
-          // if(e.which == 13){       
-            if(trim($(this).val()) != null){
-              if(parseFloat($(this).val()) >= 0){
-                if($('#item_status').val() == 'Pending'){
-
-                        // $.get('../uom_conversion/rev_convert/'+$('#item_iss_uom').html()+'/'+$('#item_rqst_uom').html(), (response) => {
-
-                        //   console.log($('#item_iss_uom').html());
-                        //   console.log($('#item_rqst_uom').html());
-                        //   console.log(response.data);
-
-                          // var convert_val = response.data.uom_to_value;
-                          var convert_val = parseFloat(convert_values) * parseFloat($(this).val());
-                          var check_qty = parseFloat($('#item_quantity').val()) - parseFloat(convert_val);
-                          if( check_qty >= 0){
-                            $('#item_quantity_rem').val(parseFloat($('#item_quantity').val()) - parseFloat(convert_val));
-                            $('#btnCollect').prop('disabled', false);
-                          } else {
-                            $('#btnCollect').prop('disabled', true);
-                            $('#item_quantity_iss').val("");
-                            $('#item_quantity_rem').val(0);
-                            $('#item_qty_rem').val(0);
-                            alert('RFQ quantity exceed to requested quantity!');
-                          }
-                        // });
-
-                } else {
-
-                        // $.get('../uom_conversion/rev_convert/'+$('#item_iss_uom').html()+'/'+$('#item_rqst_uom').html(), (response) => {
-                        //   var convert_val = response.data.uom_to_value;
-                          var convert_val = parseFloat(convert_values) * parseFloat($(this).val());
-                          var check_qty = parseFloat($('#item_qty_rem').val()) - parseFloat(convert_val);
-                          if( check_qty >= 0){
-                            $('#item_quantity_rem').val(parseFloat($('#item_qty_rem').val()) - parseFloat(convert_val));
-                            $('#btnCollect').prop('disabled', false);
-                          } else {
-                            $('#btnCollect').prop('disabled', true);
-                            $('#item_quantity_iss').val("");
-                            $('#item_quantity_rem').val(0);
-                            alert('RFQ quantity exceed to requested quantity!');
-                          }
-                        // });
-
-                }
-              } else {
-                if($(this).val()){
-                  $('#btnCollect').prop('disabled', true);
-                  $('#item_quantity_iss').val("");
-                  $('#item_quantity_rem').val(parseInt($('#item_qty_rem').val()));
-                  alert('RFQ quantity must be greater than zero!');
-                }  
-              }
-            } else {
-              $('#btnCollect').prop('disabled', true);
-              $('#item_quantity_rem').val(0);
-              $('#item_qty_rem').val(0);
+          
+          if($('#purpose_edit').val() == 'Project'){         
+            if(trim($('#edit_delivery_date').val()) && 
+            $('#edit_assy_code').val() != null && 
+            trim($('#edit_item_code').val()) && 
+            trim($('#edit_quantity').val()) &&
+            trim($('#edit_uom_code').val()))
+            {
+              var item_qty = parseInt($('#edit_quantity').val());
+              addItem('edit',item_qty, $('#purpose_edit').val());
+              $('#btnEditSave').prop('disabled', false);
+            }else{
+              alert("Please fill-up all item details!");
             }
-          // }
+          } else {
+            if(trim($('#edit_delivery_date').val()) && 
+            trim($('#edit_item_code').val()) && 
+            trim($('#edit_quantity').val()) &&
+            trim($('#edit_uom_code').val()))
+            {
+              var item_qty = parseInt($('#edit_quantity').val());
+              addItem('edit',item_qty, $('#purpose_edit').val());
+              $('#btnEditSave').prop('disabled', false);
+            }else{
+              alert("Please fill-up all item details!");
+            }            
+          }
+        
         });
- 
-        $('#item_uom').on('change', function(){
-          $.get('../uom_conversion/conv_values/'+$(this).val(), (response) => {
-            $('#item_from_value').val(response.data.uom_from_value);  
-            $('#item_to_value').val(response.data.uom_to_value);
 
-            $('#item_iss_uom').html(response.data.uom_to.toLowerCase());
-            $('#item_uom_code').val(response.data.uom_to.toLowerCase());
-            $('#item_conv_id').val($(this).val());
-            
-            $('#item_quantity_iss').val("");
-            $.get('../uom_conversion/rev_convert/'+$('#item_iss_uom').html()+'/'+$('#item_rqst_uom').html(), (response) => {
-              convert_values = response.data.uom_to_value;
-            });
-          });
+
+
+        $('#item_ven_delivery').on('change', function(){
+          if($(this).val() >= $('#item_req_del').val()){
+            if($(this).val() > todayx){
+            var diff,
+                aDay = 86400000,
+                start_date = todayx,
+                end_date = $(this).val();
+                diff = Math.floor( (Date.parse(end_date.replace(/-/g, '\/')) - Date.parse(start_date.replace(/-/g, '\/'))) / aDay);
+  
+              $('#item_lead_time').html("Lead Time: " + diff + " day(s)");
+              $('#item_lead_days').val(diff);
+
+            } else {
+              alert("You cannot set delivery date of the item less than today's date!");
+              $(this).val("");
+            }
+          } else {
+            alert("You cannot set delivery date of the item less than required delivery date!");
+              $(this).val("");
+          }
+
+        });
+
+        $('#item_currency_code').on('change', function(){
+          if($(this).val() != null){
+            computeTotalPrice($('#item_currency_code option:selected').text().split(" - ")[0], parseFloat($('#item_spq').val()), parseFloat($('#item_moq').val()), parseFloat($('#item_unit_price').val()), $('#item_total_price'));
+          }
+        });
+
+        $('#item_spq').on('keyup', function(){
+          if(trim($(this).val()) != ""){
+            if(parseFloat($(this).val()) >= 0){
+              computeTotalPrice($('#item_currency_code option:selected').text().split(" - ")[0], parseFloat($('#item_spq').val()), parseFloat($('#item_moq').val()), parseFloat($('#item_unit_price').val()), $('#item_total_price'));
+              checkQuoteDetails();
+            } else {
+              alert('Standard packaging quantity must be greater than zero!');
+              $(this).val("");
+            }
+          }
+        });
+
+        $('#item_moq').on('keyup', function(){
+          if(trim($(this).val()) != ""){
+            if(parseFloat($(this).val()) >= 0){
+              computeTotalPrice($('#item_currency_code option:selected').text().split(" - ")[0], parseFloat($('#item_spq').val()), parseFloat($('#item_moq').val()), parseFloat($('#item_unit_price').val()), $('#item_total_price'));
+              checkQuoteDetails();
+            } else {
+              alert('Minimum order quantity must be greater than zero!');
+              $(this).val("");
+            }
+          }
+        });
+
+        $('#item_unit_price').on('keyup', function(){
+          if(trim($(this).val()) != ""){
+            if(parseFloat($(this).val()) >= 0){
+              computeTotalPrice($('#item_currency_code option:selected').text().split(" - ")[0], parseFloat($('#item_spq').val()), parseFloat($('#item_moq').val()), parseFloat($('#item_unit_price').val()), $('#item_total_price'));
+              checkQuoteDetails();
+            } else {
+              alert('Unit price must be greater than zero!');
+              $(this).val("");
+            }
+          }
         });
 
     });
@@ -1400,18 +1425,30 @@
         return str.replace(/^\s+|\s+$/gm,'');
     };
     
-    const computeTotalPrice = (symbol = '$', unit_price = 0, quantity = 0, input_total) => {
-      const total = unit_price * quantity;
+    const computeTotalPrice = (symbol = '$', spq = 0, moq = 0, unit_price = 0, input_total) => {
+      const total = spq * moq * unit_price;
       input_total.val(symbol+" "+FormatNumber(total ? parseInt(total) : 0));
     };
 
-    const calculateGrandTotal = (symbol, products, field_grand_total) => {
+    const computeGrandTotal = (symbol, products, field_grand_total) => {
         var grand_total = 0.0;
         $.each(products,(index,row) => {
-            grand_total = parseInt(grand_total) + parseInt(row.total_price);
+            grand_total = parseInt(grand_total) + ( parseInt(row.spq) * parseInt(row.moq) * parseInt(row.unit_price) );
         });
-
         field_grand_total.val(symbol+" "+FormatNumber(grand_total));
+    };
+
+    const checkQuoteDetails = () => {
+      if(($('#item_vendor').val() != "" || $('#item_vendor').val() != null) && 
+        ($('#item_currency_code').val() != "" || $('#item_currency_code').val() != null) &&
+        trim($('#item_ven_delivery').val()) &&
+        trim($('#item_spq').val()) &&
+        trim($('#item_moq').val()) &&
+        trim($('#item_unit_price').val()))
+        {
+          $('#btnQReset').prop('disabled', false);
+          $('#btnQSave').prop('disabled', false);
+        }
     };
 
     const setDetails = (loc) => {
@@ -1467,64 +1504,98 @@
           alert('Please fill up all request details before setting-up items!');
         }
       } else {
-        
-        if($('#edit_rfq_code').val() &&
-            $('#edit_purpose').val()) 
+        if(trim($('#edit_rfq_code').val()) &&
+        trim($('#edit_purpose').val()) &&
+        trim($('#edit_purpose').val()))
         {
           if($('#edit_purpose').val()=='Project')
           {
-            if( $('#edit_project_code').val() &&  
-                $('#edit_assy_code').val())
+            if($('#edit_project_code').val())
             {
               $('#edit_btnAdd').prop('disabled', false);
+              $('#edit_delivery_date').prop('disabled', false);
               $('#edit_item_code').prop('disabled', false);
               $('#edit_quantity').prop('disabled', false);
-              $('#edit_uom_type').prop('disabled', false);
-              $('#edit_uom_type').formSelect();
               $('#edit_uom_code').prop('disabled', false);
               $('#edit_uom_code').formSelect();
 
+              $.get('../projects/view/'+$('#edit_project_code').val()+'/view_assy', (response) => {
+                var data = response.data;
+                var select = '<option value="" disabled selected>Choose your option</option>';
+                $.each(data, (index,row) => {
+                    select += '<option value="'+row.assy_code+'">'+row.assy_desc+'</option>';
+                });
+                $('#edit_assy_code').html(select);
+                $('#edit_assy_code').formSelect();
+                $('#edit_assy_code').prop('disabled', false);
+                $('#edit_assy_code').formSelect();
+              });
+
               $('#edit_purpose').prop('disabled', true);
               $('#edit_purpose').formSelect();
-              
               $('#edit_project_code').prop('disabled', true);
               $('#edit_project_code').formSelect();
-              $('#edit_assy_code').prop('disabled', true);
-              $('#edit_assy_code').formSelect();
-
+              $('#edit_remarks').prop('readonly', true);
+        
               var set = document.getElementById('edit_set');
                   set.style.display = "none";
               var reset = document.getElementById('edit_reset');
                   reset.style.display = "block";
             } else {
-              alert('Please fill up all issuance details before setting-up items!');
+              alert('Please fill up all request details before setting-up items!');
             }
           } else {
-            $('#edit_btnAdd').prop('disabled', false);
-            $('#edit_item_code').prop('disabled', false);
-            $('#edit_quantity').prop('disabled', false);
-            $('#edit_uom_type').prop('disabled', false);
-            $('#edit_uom_type').formSelect();
-            $('#edit_uom_code').prop('disabled', false);
-            $('#edit_uom_code').formSelect();
+              $('#edit_btnAdd').prop('disabled', false);
+              $('#edit_delivery_date').prop('disabled', false);
+              $('#edit_item_code').prop('disabled', false);
+              $('#edit_quantity').prop('disabled', false);
+              $('#edit_uom_code').prop('disabled', false);
+              $('#edit_uom_code').formSelect();
 
-            $('#edit_purpose').prop('disabled', true);
-            $('#edit_purpose').formSelect();
-            $('#edit_project_code').prop('disabled', true);
-            $('#edit_project_code').formSelect();
-            $('#edit_assy_code').prop('disabled', true);
-            $('#edit_assy_code').formSelect();
-
-            var set = document.getElementById('edit_set');
-                set.style.display = "none";
-            var reset = document.getElementById('edit_reset');
-                reset.style.display = "block";
+              $('#edit_purpose').prop('disabled', true);
+              $('#edit_purpose').formSelect();
+              $('#edit_remarks').prop('readonly', true);
+              
+              var set = document.getElementById('edit_set');
+                  set.style.display = "none";
+              var reset = document.getElementById('edit_reset');
+                  reset.style.display = "block";
           }
         } else {
-          alert('Please fill up all issuance details before setting-up items!');
+          alert('Please fill up all request details before setting-up items!');
         }
       }
     };
+
+    const resetQDetails = () => {
+     $('#resetQModal').modal('open');
+    }
+
+    const resetQuoteDetails = () => {
+      $('#btnResetQ').prop('disabled', true);
+      $('#btnSaveQ').prop('disabled', true);
+
+      $.get('list/'+$('#fq_rfq_code').val()+'/items_user', (response) => {
+      var datax = response.data;
+        $.each(datax, (index, row) => {
+          fq_items.push({"assy_code": row.assy_code,
+                          "item_code": row.item_code,
+                          "item_desc": row.item_details.item_desc,
+                          "uom_code": row.uoms.uom_code,
+                          "uom_name": row.uoms.uom_name,
+                          "quantity": row.required_qty,
+                          "delivery_date": row.required_delivery_date,
+                          "status": row.rfq_status ? row.rfq_status.status : 0,
+                          "q_count": 0,
+                          });
+        });
+      });
+      renderItems(fq_items,$('#fq-items-dt tbody'),'forQ',$('#fq_purpose').val());
+      
+      qt_items = [];
+      renderItems(qt_items, $('#q-details-dt tbody'),'quote',$('#fq_purpose').val());
+      $('#resetQModal').modal('close');
+    }
 
     const resetDetails = () => {
       var loc = $('#reset_loc').val();
@@ -1658,6 +1729,13 @@
         $('#add_uom_code').formSelect();
 
       } else {
+        $('#edit_delivery_date').val("");
+
+        if($('#purpose_edit').val() == "Project"){
+          $('#edit_assy_code').val(""); 
+          $('#edit_assy_code').formSelect();
+        } 
+
         $('#edit_item_code').val("");
         $('#edit_item_desc').val("");
         $('#edit_quantity').val("");
@@ -1668,48 +1746,22 @@
     };
 
     const resetCollection = () => {
-      var trans_code = $('#item_trans_code').val();
-      var item_code = $('#item_item_code').val();
-      var item_rem = $('#item_qty_rem').val();
-      var id = $('#item_id').val();
-      $.get('issuance/'+trans_code+'/'+item_code+'/item_details', (response) => {
-        var data = response.data;
-          item_rem > 0 ? $('#item_status').val('Issued with Pending') : $('#item_status').val('Pending');
-          $('#item_id').val(id);
-          $('#item_trans_code').val(trans_code);
-          $('#item_item_code').val(data.item_code);
-          $('#item_item_desc').val(data.item_details.item_desc);
-          $('#item_uom_type').val(data.uom_type);
-          $('#item_uom').val(data.uom_code);
-          $('#item_quantity').val(data.quantity);
-          $('#item_location_code').prop('readonly', false);
-          $('#item_location_code').val("");
-          $('#item_location_name').val("");
+      $('#item_vendor').val("");
+      $('#item_vendor').formSelect();
+      $('#item_currency_code').val("");
+      $('#item_currency_code').formSelect();
+      
+      $('#item_ven_delivery').val("");
+      $('#item_lead_time').html("Lead Time: 0 day(s)");
 
-          $('#item_qty_rem').val(item_rem);
-          $('#item_quantity_rem').val(item_rem);
-          $('#item_quantity_iss').val("");
+      $('#item_spq').val("");
+      $('#item_moq').val("");
+      $('#item_unit_price').val("");
+      $('#item_total_price').val(0);
 
-          $.get('../uom_conversion/conversions/'+data.uom_type, (response) => {
-            var data = response.data;
-            var select = '<option value="" disabled selected>Choose your option</option>';
-            $.each(data, (index,row) => {
-                select += '<option value="'+row.id+'">'+row.uom_cnv_name+'</option>';
-            });
-            $('#item_unit_convert').html(select);
-            $('#item_unit_convert').formSelect();
-          });
-
-          var x = document.getElementById('item_details');
-              x.style.display = "none";
-          var y = document.getElementById('item_qty');
-              y.style.display = "none";
-          var z = document.getElementById('item_pend');
-              z.style.display = "none";
-          $('#btnCollect').prop('disabled', true);
-          $('#btnItemReset').prop('disabled', true);
-          $('#resetColModal').modal('close');
-      });
+      $('#btnQReset').prop('disabled', true);
+      $('#btnQSave').prop('disabled', true);
+      $('#resetColModal').modal('close');
     };
 
     const resetColDetails = () => {
@@ -1831,7 +1883,7 @@
           };
  
           $('#btnIssue').prop('disabled', true);
-          $('#btnIssReset').prop('disabled', true);
+          $('#btnResetQ').prop('disabled', true);
           $('#resetIssModal').modal('close');
         });
     };
@@ -1870,9 +1922,13 @@
     
     const openModal = () => {
       $('#btnAdd').prop('disabled', true);
+
+      $('#add_remarks').val("");
       $('#add_purpose option[value=""]').prop('selected', true);
       $('#add_purpose').formSelect(); 
 
+      $('#add_delivery_date').prop('disabled', true);
+      $('#add_delivery_date').val("");
       $('#add_item_code').prop('disabled', true);
       $('#add_item_code').val("");
       $('#add_quantity').prop('disabled', true);
@@ -1925,6 +1981,7 @@
         if(matrix != null) renderSignatoriesTable(matrix,$('#edit-matrix-dt tbody'));
         $('#edit_id').val(id);
         $('#edit_rfq_code').val(data.rfq_code);
+        $('#edit_remarks').val(data.remarks);
  
         $('#edit_purpose option[value="'+data.purpose+'"]').prop('selected', true);
         $('#edit_purpose').prop('disabled', false);
@@ -1939,21 +1996,19 @@
         $('#edit_quantity').prop('disabled', true);
         $('#edit_quantity').val("");
 
-        $('#edit_uom_type').prop('disabled', true);
-        $('#edit_uom_type').formSelect();
-
         $('#edit_uom_code').prop('disabled', true);
         $('#edit_uom_code').formSelect();
 
         $('#btnEditSave').prop('disabled', true);
         $('#edit_btnAdd').prop('disabled', true);
-
         
         var x = document.getElementById('edit_set');
               x.style.display = "block";
 
         var y = document.getElementById('edit_reset');
               y.style.display = "none";
+
+              
         
         $('#purpose_edit').val(data.purpose);
         $('#site_code_edit').val(data.site_code);
@@ -1973,46 +2028,85 @@
             $('#edit_project_code').formSelect();
           });
 
-          $.get('../projects/view/'+data.project_code+'/view_assy', (response) => {
-            var datax = response.data;
-            var select = '<option value="" disabled selected>Choose your option</option>';
-            $.each(datax, (index,row) => {
-                select += '<option value="'+row.assy_code+'">'+row.assy_desc+'</option>';
-            });
-            $('#edit_assy_code').html(select);
-            $('#edit_assy_code').formSelect();
-            $('#edit_assy_code option[value="'+data.assy_code+'"]').prop('selected', true);
-            $('#edit_assy_code').prop('disabled', false);
-            $('#edit_assy_code').formSelect();
-          });
+            $('#project_code_edit').val(data.project_code);
+       
+            var x = document.getElementById('edit_project_details');
+                x.style.display = "block";
 
-          $('#project_code_edit').val(data.project_code);
-          $('#assy_code_edit').val(data.assy_code);
-          var x = document.getElementById('edit_project_details');
-              x.style.display = "block";
+            var assy = document.getElementById('edit_assy_details');
+                assy.style.display = "block";
+            $('#edit_assy_code').prop('disabled', true);
+            $('#edit_assy_code').formSelect();
+
+            $('#edit-items-header').html("");
+            $('#edit-items-header').append('<tr>'+
+                                        '<th>ID</th>'+
+                                        '<th>Assembly</th>'+
+                                        '<th>Item Code</th>'+
+                                        '<th>Item Description</th>'+
+                                        '<th>Quantity</th>'+
+                                        '<th>Unit of Measure</th>'+
+                                        '<th>Delivery Date</th>'+
+                                        '<th>Action</th>'+
+                                      '</tr>');
+
+            $.get('list/'+data.rfq_code+'/items_user', (response) => {
+              var datax = response.data;
+              $.each(datax, (index, row) => {
+                edit_items.push({"assy_code": row.assy_code,
+                                "item_code": row.item_code,
+                                "item_desc": row.item_details.item_desc,
+                                "uom_code": row.uom_code,
+                                "quantity": row.required_qty,
+                                "delivery_date": row.required_delivery_date,
+                                });
+              });
+              renderItems(edit_items,$('#edit-items-dt tbody'),'edit',data.purpose);
+            });
+
+            
+
         } else {
-          var x = document.getElementById('edit_project_details');
-              x.style.display = "none";
+            var x = document.getElementById('edit_project_details');
+                x.style.display = "none";
+
+            var assy = document.getElementById('edit_assy_details');
+                assy.style.display = "none";
+            $('#edit_assy_code').prop('disabled', true);
+            $('#edit_assy_code').formSelect();
+
+            $('#edit-items-header').html("");
+            $('#edit-items-header').append('<tr>'+
+                                        '<th>ID</th>'+
+                                        '<th>Item Code</th>'+
+                                        '<th>Item Description</th>'+
+                                        '<th>Quantity</th>'+
+                                        '<th>Unit of Measure</th>'+
+                                        '<th>Delivery Date</th>'+
+                                        '<th>Action</th>'+
+                                      '</tr>');
+
+            $.get('list/'+data.rfq_code+'/items_user', (response) => {
+              var datax = response.data;
+              $.each(datax, (index, row) => {
+                edit_items.push({"item_code": row.item_code,
+                                "item_desc": row.item_details.item_desc,
+                                "uom_code": row.uom_code,
+                                "quantity": row.required_qty,
+                                "delivery_date": row.required_delivery_date,
+                                });
+              });
+              renderItems(edit_items,$('#edit-items-dt tbody'),'edit',data.purpose);
+            });
         }
 
-        $.get('list/'+data.rfq_code+'/items', (response) => {
-          var data = response.data;
-          $.each(data, (index, row) => {
-            edit_items.push({"item_code": row.item_code,
-                            "item_desc": row.item_details.item_desc,
-                            "uom_code": row.uom_code,
-                            "quantity": row.quantity,
-                            });
-          });
-          renderItems(edit_items,$('#edit-items-dt tbody'),'edit');
-        });
 
       });
     };
 
     const viewRFQ = (id) => {
       view_items = [];
-      iss_list = [];
+      view_qt = [];
       $('#viewModal').modal('open');
       $('.tabs.view').tabs('select','view_rfq_details');
       $.get('rfq/'+id, (response) => {
@@ -2087,6 +2181,47 @@
           });
         }
 
+        if(data.status!='Pending'){
+          var quote_list = document.getElementById('view_quote_list');
+              quote_list.style.display = "block";
+
+          $('#view-quote-header').html("");
+          $('#view-quote-header').append('<tr>'+
+                                        '<th>ID</th>'+
+                                        '<th>Vendor</th>'+
+                                        '<th>Item Code</th>'+
+                                        '<th>SPQ</th>'+
+                                        '<th>MOQ</th>'+
+                                        '<th>Lead Time</th>'+
+                                        '<th>Currency</th>'+
+                                        '<th>Unit Price</th>'+
+                                        '<th>Total Price</th>'+
+                                        '</tr>');
+          
+
+          $.get('list/'+data.rfq_code+'/items_purch', (response) => {
+            var datax = response.data;
+              $.each(datax, (index, row) => {
+                view_qt.push({"ven_name": row.ven_details.ven_name,
+                              "item_code": row.item_code,
+                              "spq": row.spq,
+                              "moq": row.moq,
+                              "leadtime": row.leadtime,
+                              "currency_name": row.currency.currency_name,
+                              "symbol": row.currency.symbol,
+                              "unit_price": row.unit_price,
+                              "total_price": row.total_price,
+                                });
+            });
+            renderItems(view_qt,$('#view-quote-dt tbody'),'quote_view',data.purpose);
+          });
+          
+        } else {
+          var quote_list = document.getElementById('view_quote_list');
+              quote_list.style.display = "none";
+        }
+
+
       });
     };
 
@@ -2094,443 +2229,326 @@
       app_items = [];
       $('#appModal').modal('open');
       $('.tabs.app').tabs('select','app_rfq');
-      $.get('issuance/'+id, (response) => {
+      $.get('rfq/'+id, (response) => {
         var data = response.data[0];
         var matrix = JSON.parse(data.matrix);
         var matrix_h = JSON.parse(data.matrix_h);
         if(matrix != null) renderSignatoriesTable(matrix,$('#app-matrix-dt tbody'));
         if(matrix_h != null) renderSignatoriesTable(matrix_h,$('#app-matrix-dt-h tbody'),true);
-
-        $('#app_id').val(id);
+ 
+        $('#app_id').val(data.id);
         $('#app_rfq_code').val(data.rfq_code);
-        $('#app_site_code').val(data.sites.site_desc);
+        $('#app_date_requested').val(data.date_requested);
         $('#app_purpose').val(data.purpose);
+        $('#app_remarks').val(data.remarks);
 
         if(data.purpose=='Project')
         {
           $('#app_project_code').val(data.projects.project_name);
-          $('#app_assy_code').val(data.assy.assy_desc);
           var x = document.getElementById('app_project_details');
               x.style.display = "block";
+
+          $('#app-items-header').html("");
+          $('#app-items-header').append('<tr>'+
+                                        '<th>ID</th>'+
+                                        '<th>Assembly</th>'+
+                                        '<th>Item Code</th>'+
+                                        '<th>Item Description</th>'+
+                                        '<th>Quantity</th>'+
+                                        '<th>Unit of Measure</th>'+
+                                        '<th>Delivery Date</th>'+
+                                        '</tr>');
+
+          $.get('list/'+data.rfq_code+'/items_user', (response) => {
+            var datax = response.data;
+              $.each(datax, (index, row) => {
+                app_items.push({"assy_code": row.assy_code,
+                                "item_code": row.item_code,
+                                "item_desc": row.item_details.item_desc,
+                                "uom_code": row.uoms.uom_code,
+                                "uom_name": row.uoms.uom_name,
+                                "quantity": row.required_qty,
+                                "delivery_date": row.required_delivery_date,
+                                });
+            });
+            renderItems(app_items,$('#app-items-dt tbody'),'view',data.purpose);
+          });
         } else {
           var x = document.getElementById('app_project_details');
               x.style.display = "none";
+          
+          $('#app-items-header').html("");
+          $('#app-items-header').append('<tr>'+
+                                        '<th>ID</th>'+
+                                        '<th>Item Code</th>'+
+                                        '<th>Item Description</th>'+
+                                        '<th>Quantity</th>'+
+                                        '<th>Unit of Measure</th>'+
+                                        '<th>Delivery Date</th>'+
+                                        '</tr>');
+          
+          $.get('list/'+data.rfq_code+'/items_user', (response) => {
+            var datax = response.data;
+              $.each(datax, (index, row) => {
+                app_items.push({"item_code": row.item_code,
+                                "item_desc": row.item_details.item_desc,
+                                "uom_code": row.uoms.uom_code,
+                                "uom_name": row.uoms.uom_name,
+                                "quantity": row.required_qty,
+                                "delivery_date": row.required_delivery_date,
+                                });
+            });
+            renderItems(app_items,$('#app-items-dt tbody'),'view',data.purpose);
+          });
         }
 
-        $.get('list/'+data.rfq_code+'/items', (response) => {
-          var data = response.data;
-          $.each(data, (index, row) => {
-            app_items.push({"item_code": row.item_code,
-                            "item_desc": row.item_details.item_desc,
-                            "uom_code": row.uom_code,
-                            "quantity": row.quantity,
-                            "status": row.status,
-                            });
-            
-          });
-          renderItems(app_items,$('#app-items-dt tbody'),'app');
+        $.get('list/'+data.rfq_code+'/items_purch', (response) => {
+            var datax = response.data;
+              $.each(datax, (index, row) => {
+                rev_quote.push({"ven_name": row.ven_details.ven_name,
+                              "item_code": row.item_code,
+                              "spq": row.spq,
+                              "moq": row.moq,
+                              "leadtime": row.leadtime,
+                              "currency_name": row.currency.currency_name,
+                              "symbol": row.currency.symbol,
+                              "unit_price": row.unit_price,
+                              "total_price": row.total_price,
+                                });
+            });
+            renderItems(rev_quote,$('#app-quote-items-dt tbody'),'quote_view',data.purpose);
         });
+
 
       });
     };
 
-    const issRFQ = (id) => {
-      iss_items = [];
-      iss_list = [];
-      all_iss_items = [];
-      $('#issueModal').modal('open');
-      $('.tabs.issue').tabs('select','issue_issuance');
-
-      $.get('issuance/'+id, (response) => {
+    const forQuotation = (id) => {
+      fq_items = [];
+      qt_items = [];
+      $('#forQModal').modal('open');
+      $('.tabs.view').tabs('select','fq_rfq_details');
+      $.get('rfq/'+id, (response) => {
         var data = response.data[0];
         var matrix = JSON.parse(data.matrix);
         var matrix_h = JSON.parse(data.matrix_h);
-        if(matrix != null) renderSignatoriesTable(matrix,$('#issue-matrix-dt tbody'));
-        if(matrix_h != null) renderSignatoriesTable(matrix_h,$('#issue-matrix-dt-h tbody'),true);
+        if(matrix != null) renderSignatoriesTable(matrix,$('#fq-matrix-dt tbody'));
+        if(matrix_h != null) renderSignatoriesTable(matrix_h,$('#fq-matrix-dt-h tbody'),true);
 
-        $('#btnIssue').prop('disabled', true);
-        $('#btnIssReset').prop('disabled', true);
-        $('#issue_rfq_code').val(data.rfq_code);
-        $('#issue_requestor').val(data.employee_details.full_name);
-        $('#issue_site_code').val(data.sites.site_desc);
-        $('#issue_purpose').val(data.purpose);
-        $('#issue_status').val(data.status);
+        $('#fq_rfq_code').val(data.rfq_code);
+        $('#fq_date_requested').val(data.date_requested);
+        $('#fq_purpose').val(data.purpose);
+        $('#fq_remarks').val(data.remarks);
+        $('#btnQReset').prop('disabled', true);
+        $('#btnQSave').prop('disabled', true);
 
         if(data.purpose=='Project')
         {
-          $('#issue_project_code').val(data.projects.project_name);
-          $('#issue_assy_code').val(data.assy.assy_desc);
-          var x = document.getElementById('issue_project_details');
+          $('#fq_project_code').val(data.projects.project_name);
+          var x = document.getElementById('fq_project_details');
               x.style.display = "block";
+
+          $('#fq-items-header').html("");
+          $('#fq-items-header').append('<tr>'+
+                                        '<th>ID</th>'+
+                                        '<th>Assembly</th>'+
+                                        '<th>Item Code</th>'+
+                                        '<th>Item Description</th>'+
+                                        '<th>Quantity</th>'+
+                                        '<th>Unit of Measure</th>'+
+                                        '<th>Required Delivery Date</th>'+
+                                        '<th>Quote Count</th>'+
+                                        '<th>Action</th>'+
+                                        '</tr>');
+
+          $.get('list/'+data.rfq_code+'/items_user', (response) => {
+            var datax = response.data;
+              $.each(datax, (index, row) => {
+                fq_items.push({"assy_code": row.assy_code,
+                                "item_code": row.item_code,
+                                "item_desc": row.item_details.item_desc,
+                                "uom_code": row.uoms.uom_code,
+                                "uom_name": row.uoms.uom_name,
+                                "quantity": row.required_qty,
+                                "delivery_date": row.required_delivery_date,
+                                "status": row.rfq_status ? row.rfq_status.status : 0,
+                                "q_count": 0,
+                                });
+            });
+            renderItems(fq_items,$('#fq-items-dt tbody'),'forQ',data.purpose);
+          });
         } else {
-          var x = document.getElementById('issue_project_details');
+          var x = document.getElementById('fq_project_details');
               x.style.display = "none";
+          
+          $('#fq-items-header').html("");
+          $('#fq-items-header').append('<tr>'+
+                                        '<th>ID</th>'+
+                                        '<th>Item Code</th>'+
+                                        '<th>Item Description</th>'+
+                                        '<th>Quantity</th>'+
+                                        '<th>Unit of Measure</th>'+
+                                        '<th>Required Delivery Date</th>'+
+                                        '<th>Quote Count</th>'+
+                                        '<th>Action</th>'+
+                                        '</tr>');
+          
+          $.get('list/'+data.rfq_code+'/items_user', (response) => {
+            var datax = response.data;
+              $.each(datax, (index, row) => {
+                fq_items.push({"item_code": row.item_code,
+                                "item_desc": row.item_details.item_desc,
+                                "uom_code": row.uoms.uom_code,
+                                "uom_name": row.uoms.uom_name,
+                                "quantity": row.required_qty,
+                                "delivery_date": row.required_delivery_date,
+                                "status": row.rfq_status ? row.rfq_status.status : 0,
+                                "q_count": 0,
+                                });
+            });
+            renderItems(fq_items,$('#fq-items-dt tbody'),'forQ',data.purpose);
+          });
         }
 
-        $.get('list/'+data.rfq_code+'/items', (response) => {
-          var datax = response.data;
-    
-          $.each(datax, (index, row) => {
-            if(row.status == 'Pending'){
-              iss_items.push({"trans_code": data.rfq_code,
-                          "item_code": row.item_code,
-                          "item_desc": row.item_details.item_desc,
-                          "uom_code": row.uom_code,
-                          "iss_uom": "",
-                          "req_qty": row.quantity,
-                          "rem_qty": 0, // must be requested quantity - issued quantity
-                          "iss_qty": 0, // summary of issued quantity Status: Issued with Pending
-                          "tbi_qty": 0,
-                          "conv_id": 0,
-                          "status": row.status,
-                          "iss_date": row.trans_date,
-                          "is_check": false,
-                          "inventory_location": row.inventory_location_code,
-                          "iss_index": 0,
-                          });
-            } else if(row.status == 'Issued'){
-              iss_items.push({"trans_code": data.rfq_code,
-                          "item_code": row.item_code,
-                          "item_desc": row.item_details.item_desc,
-                          "uom_code": row.uom_code,
-                          "req_qty": row.quantity,
-                          "rem_qty": 0, 
-                          "iss_qty": row.quantity,
-                          "tbi_qty": 0,
-                          "status": row.status,
-                          "is_check": false,
-                          "inventory_location": row.inventory_location_code,
-                          "iss_index": 0,
-                          });
-            } else if(row.status == 'Issued with Pending'){
-              iss_list.push({"trans_code": data.rfq_code,
-                          "item_code": row.item_code,
-                          "item_desc": row.item_details.item_desc,
-                          "req_qty": row.quantity,
-                          "uom_code": row.uom_code,
-                          "rem_qty": 0, 
-                          "iss_qty": row.quantity,
-                          "tbi_qty": 0,
-                          "conv_id": row.uom_conv_id,
-                          "status": row.status,
-                          "iss_date": row.trans_date,
-                          "is_check": false,
-                          "inventory_location": row.inventory_location_code,
-                          });
-            }
-          });
+        renderItems(qt_items, $('#q-details-dt tbody'),'quote',$('#fq_purpose').val());
+        // $('#fq_grand_total').val("");
 
-          if(data.status=="Approved"){
-            renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
-            renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
-          } else {
-            $.get('list/'+data.rfq_code+'/items_issued', (response) => {
-              var datax = response.data;
-              $.each(datax, (index, row) => {
-                all_iss_items.push({"item_code": row.item_code,
-                                  "iss_qty": row.issued_qty, 
-                                  "iss_uom": row.uom_code,
-                                  "conv_id": row.uom_conv_id,
-                });
-              });
- 
-              iss_items.forEach(item => {
-                var issued = all_iss_items.filter(item2 => item2.item_code == item.item_code);
-                var issue_qty = 0;
-                for (let index = 0; index < issued.length; index++) {
-
-                  if(issued.length > 0)
-                  {
-                    if(issued[index].conv_id != null){
-                      if(issued[index].iss_uom == item.uom_code){
-
-                        $.get('../uom_conversion/conv_values/'+issued[index].conv_id, (response) => { 
-                          var value_to = response.data.uom_to_value;
-                          var converted_value = parseFloat(issued[index].iss_qty) / parseFloat(value_to);
-                          
-                          issue_qty = issue_qty + (value_to * converted_value);
-                          item.conv_id = issued[0].conv_id;
-                          item.rem_qty = parseFloat(item.req_qty) - parseFloat(issue_qty);
-                          renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
-                        });
-
-                      } else {
-
-                        $.get('../uom_conversion/rev_convert/'+issued[index].iss_uom+'/'+item.uom_code, (response) => { 
-                          var value_to = response.data.uom_to_value;
-                          var converted_value = parseFloat(issued[index].iss_qty) * parseFloat(value_to);
-
-                          issue_qty = issue_qty + converted_value;
-                          item.conv_id = issued[0].conv_id;
-                          item.rem_qty = parseFloat(item.req_qty) - parseFloat(issue_qty);
-                          renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
-                        });
-
-                      }
-
-                    } else {
-                      renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
-                    }
-                  }
-                }
-              });
-              renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
-            });
-          };
-
-        });
       });
     };
 
-    const issItems = (trans_code, item_code, item_rem = 0, id) => {
-      $.get('issuance/'+trans_code+'/'+item_code+'/item_details', (response) => {
-        var data = response.data;
-          item_rem > 0 ? $('#item_status').val('Issued with Pending') : $('#item_status').val('Pending');
-          $('#item_id').val(id);
-          $('#item_trans_code').val(trans_code);
-          $('#item_item_code').val(data.item_code);
-          $('#item_item_desc').val(data.item_details.item_desc);
-          
-          $('#item_location_code').prop('readonly', false);
-          $('#item_location_code').val("");
-          $('#item_location_name').val("");
-          
-          $('#item_item_qty').val(data.quantity);
-          $('#item_quantity').val(data.quantity);
-          $('#item_qty_rem').val(item_rem);
-          $('#item_quantity_rem').val(item_rem);
-          $('#item_quantity_iss').val("");
-          
-          $('#item_rqst_uom').html(data.uom_code.toLowerCase());
-          $('#item_rqst_uom').val(data.uom_code.toLowerCase());
-          $('#item_qty_uom').html(data.uom_code.toLowerCase());
-          
-          $.get('../item_master/getItemDetails/'+data.item_code, (response) => {
-            var item = response.data;
-            
-            $.get('../uom_conversion/conversions/'+item.uom_code, (response) => {
-              var datax = response.data;
-              var select = '<option value="" disabled>Choose your option</option>';
-              $.each(datax, (index,row) => {
-                if(row.uom_details.uom_code == data.uom_code){
-                  select += '<option value="'+row.id+'" selected>'+row.uom_details.uom_name+'</option>';
-                  
-                  $.get('../uom_conversion/conv_values/'+row.id, (response) => {
-                        $('#item_from_value').val(response.data.uom_from_value);  
-                        $('#item_to_value').val(response.data.uom_to_value);
-                        
-                        $('#item_iss_uom').html(response.data.uom_to.toLowerCase());
-                        $('#item_uom_code').val(response.data.uom_to.toLowerCase());
-                        $('#item_conv_id').val(row.id);
-                                   
-                        $.get('../uom_conversion/rev_convert/'+$('#item_iss_uom').html()+'/'+$('#item_rqst_uom').html(), (response) => {
-                          convert_values = response.data.uom_to_value;
-                        }); 
-                      });
-                      
-                    } else {
-                      select += '<option value="'+row.id+'">'+row.uom_details.uom_name+'</option>';
-                    }
-                  });
-                  $('#item_uom').html(select);
-                  $('#item_uom').formSelect();
+    const quoteDet = (rfq_code, item_code, item_desc, assy_code, uom_code, required_qty, req_del_date, id, status) => {
 
-       
-                });
+      $('#item_id').val(id);
+      $('#item_rfq_code').val(rfq_code);
 
-              });
+      if(assy_code != ""){
+        var assy = document.getElementById('item_assy');
+            assy.style.display = "block";
+        $('#item_assy_code').val(assy_code);
+      } else {
+        var assy = document.getElementById('item_assy');
+            assy.style.display = "none";
+        $('#item_assy_code').val("");
+      }
 
-              
-              var x = document.getElementById('item_details');
-              x.style.display = "none";
-              var y = document.getElementById('item_qty');
-              y.style.display = "none";
-              var z = document.getElementById('item_pend');
-              z.style.display = "none";
-              $('#btnCollect').prop('disabled', true);
-              $('#btnItemReset').prop('disabled', true);
-              $('#issDetModal').modal('open');
-            });
-    };
+      $('#item_item_code').val(item_code);
+      $('#item_item_desc').val(item_desc);
+
+      $('#item_uom_code').val(uom_code);
+      $('#item_req_qty').val(required_qty);
+      $('#item_req_del').val(req_del_date);
+
+      $('#item_vendor').val("");
+      $('#item_vendor').formSelect();
+      $('#item_currency_code').val("");
+      $('#item_currency_code').formSelect();
       
-    const issItemsCan = () => {
-      var id = $('#item_id').val();
-      var status = $('#item_status').val();
-      $('#'+id).prop('checked', false);
-      id = id - 1;
+      $('#item_ven_delivery').val("");
+      $('#item_lead_time').html("Lead Time: 0 day(s)");
 
-      iss_items[id].inventory_location = "";
-      if(status=='Pending'){
-        iss_items[id].rem_qty = 0;
-        iss_items[id].iss_qty = 0;
-      } else {
+      $('#item_spq').val("");
+      $('#item_moq').val("");
+      $('#item_unit_price').val("");
+      $('#item_total_price').val(0);
 
-      }
-
-      iss_items[id].is_check = false;
-      renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
-
-      $('#issDetModal').modal('close');
+      $('#btnQReset').prop('disabled', true);
+      $('#btnQSave').prop('disabled', true);
+      $('#QdetModal').modal('open');
+    
     };
 
-    const collectItem = () => {
-      if($('#item_status').val() == 'Pending'){
-        if(trim($('#item_location_code').val()) && trim($('#item_quantity_iss').val()) && trim($('#item_quantity_iss').val()) > 0)
+    const quoteCan = () => {
+      var id = parseInt($('#item_id').val()) - 1;
+      var status = $('#item_status').val();
+
+      fq_items[id].status = 0;
+      renderItems(fq_items,$('#fq-items-dt tbody'),'forQ',$('#fq_purpose').val());
+      $('#QdetModal').modal('close');
+    };
+
+    const quoteSave = () => {
+
+      if($('#item_vendor').val() && 
+         $('#item_currency_code').val() &&
+        trim($('#item_ven_delivery').val()) &&
+        trim($('#item_spq').val()) &&
+        trim($('#item_moq').val()) &&
+        trim($('#item_unit_price').val()))
         {
-          var convert_val = parseFloat(convert_values) * parseFloat($('#item_quantity_iss').val());
-          var check_qty = parseFloat($('#item_quantity').val()) - parseFloat(convert_val);
-          if( check_qty >= 0)
-          {
+          var id = parseInt($('#item_id').val()) - 1;
+          var status = $('#item_status').val();
+          var found = false;
+          var cindex = 0;
+          
+          var foundx = false;
+          var xindex = 0;
 
-            var index = $('#item_id').val();
-                index = index - 1;
-  
-            if($('#item_from_value').val() == $('#item_to_value').val()){
-              iss_items[index].iss_index = index;
-              iss_items[index].inventory_location = $('#item_location_code').val();
-              iss_items[index].rem_qty = $('#item_quantity_rem').val();
-              iss_items[index].iss_qty = parseFloat($('#item_quantity_iss').val());
-              iss_items[index].tbi_qty = $('#item_quantity_iss').val();
-              iss_items[index].conv_id = $('#item_conv_id').val();
-              iss_items[index].iss_uom = $('#item_iss_uom').html().toUpperCase();
-              iss_items[index].is_check = true;
-              renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
+          fq_items[id].status = 1;
+          renderItems(fq_items,$('#fq-items-dt tbody'),'forQ',$('#fq_purpose').val());
 
-              iss_list.push({"trans_code": $('#item_trans_code').val(),
-                              "item_code": $('#item_item_code').val(),
-                              "item_desc": $('#item_item_desc').val(),
-                              "req_qty": $('#item_quantity').val(),
-                              "uom_code": $('#item_iss_uom').html().toUpperCase(),
-                              "rem_qty": $('#item_quantity_rem').val(), 
-                              "iss_qty": parseFloat($('#item_quantity_iss').val()),
-                              "tbi_qty": parseFloat($('#item_quantity_iss').val()),
-                              "conv_id": $('#item_conv_id').val(),
-                              "status": 'Pending',
-                              "iss_date": "{{date('Y-m-d H:i:s')}}",
-                              "is_check": false,
-                              "inventory_location": $('#item_location_code').val(),
-                              "iss_index": index,
-                            });
-              renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
-            } else {
-              iss_items[index].iss_index = index;
-              iss_items[index].inventory_location = $('#item_location_code').val();
-              iss_items[index].rem_qty = $('#item_quantity_rem').val();
-              iss_items[index].iss_qty = parseFloat($('#item_quantity_iss').val());
-              iss_items[index].tbi_qty = $('#item_quantity_iss').val();
-              iss_items[index].conv_id = $('#item_conv_id').val();
-              iss_items[index].iss_uom = $('#item_iss_uom').html().toUpperCase();
-              iss_items[index].is_check = true;
-              renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
-              
-              iss_list.push({"trans_code": $('#item_trans_code').val(),
-                              "item_code": $('#item_item_code').val(),
-                              "item_desc": $('#item_item_desc').val(),
-                              "req_qty": $('#item_quantity').val(),
-                              "uom_code": $('#item_iss_uom').html().toUpperCase(),
-                              "rem_qty": $('#item_quantity_rem').val(), 
-                              "iss_qty": parseFloat($('#item_quantity_iss').val()),
-                              "tbi_qty": parseFloat($('#item_quantity_iss').val()),
-                              "conv_id": $('#item_conv_id').val(),
-                              "status": 'Pending',
-                              "iss_date": "{{date('Y-m-d H:i:s')}}",
-                              "is_check": false,
-                              "inventory_location": $('#item_location_code').val(),
-                              "iss_index": index,
-                            });
-              renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
+          $.each(qt_items,(index,row) => {
+            if(row.item_code == $('#item_item_code').val() && row.ven_code == $('#item_vendor').val()){
+              cindex = index;
+              found = true;
+              return false;
             }
-            
-            $('#issDetModal').modal('close');
+          });
 
+          if(found){
+            alert("You're not allowed to add multiple quotation on same item and vendor!");
           } else {
-            $('#btnCollect').prop('disabled', true);
-            $('#item_quantity_iss').val("");
-            $('#item_quantity_rem').val(0);
-            $('#item_qty_rem').val(0);
-            alert('RFQ quantity exceed to requested quantity!');
+            qt_items.push({"index_id": $('#item_id').val(),
+                        "rfq_code" : $('#item_rfq_code').val(),
+                        "assy_code" : $('#item_assy_code').val() ? $('#item_assy_code').val() : "",
+                        "item_code" : $('#item_item_code').val(),
+                        "uom_code" : $('#item_uom_code').val(),
+                        "required_qty" : $('#item_req_qty').val(),
+                        "required_delivery_date" : $('#item_req_del').val(),
+                        "status" : 1,
+                        "ven_code" : $('#item_vendor').val(),
+                        "ven_name" : $('#item_vendor option:selected').text(),
+                        "spq" : $('#item_spq').val(),
+                        "moq" : $('#item_moq').val(),
+                        "ven_delivery" : $('#item_ven_delivery').val(),
+                        "leadtime" : $('#item_lead_days').val(),
+                        "currency_code" : $('#item_currency_code').val(),
+                        "currency_name" : $('#item_currency_code option:selected').text(),
+                        "symbol" : $('#item_currency_code option:selected').text().split(" - ")[0],
+                        "unit_price" : $('#item_unit_price').val(),
+                        "total_price" : $('#item_total_price').val(),
+                        });
           }
-        } else {
-          alert('Please fill-up all details to collect!')
-        }
-      } else {
-        if(trim($('#item_location_code').val()) && trim($('#item_quantity_iss').val()) && trim($('#item_quantity_iss').val()) > 0)
-        {
-          var convert_val = parseFloat(convert_values) * parseFloat($('#item_quantity_iss').val());
-          console.log(convert_val);
-          var check_qty = parseFloat($('#item_qty_rem').val()) - parseFloat(convert_val);
-          if( check_qty >= 0)
-          {
-            var index = $('#item_id').val();
-                index = index - 1;
 
-            if($('#item_from_value').val() == $('#item_to_value').val()){
-              iss_items[index].iss_index = index;
-              iss_items[index].inventory_location = $('#item_location_code').val();
-              iss_items[index].rem_qty = $('#item_quantity_rem').val();
-              iss_items[index].iss_qty = parseFloat(iss_items[index].iss_qty) + parseFloat($('#item_quantity_iss').val());
-              iss_items[index].tbi_qty = $('#item_quantity_iss').val();
-              iss_items[index].conv_id = $('#item_conv_id').val();
-              iss_items[index].iss_uom = $('#item_iss_uom').html().toUpperCase();
-              iss_items[index].is_check = true;
-              renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
+          renderItems(qt_items, $('#q-details-dt tbody'),'quote',$('#fq_purpose').val());
 
-              iss_list.push({"trans_code": $('#item_trans_code').val(),
-                              "item_code": $('#item_item_code').val(),
-                              "item_desc": $('#item_item_desc').val(),
-                              "req_qty": $('#item_quantity').val(),
-                              "uom_code": $('#item_iss_uom').html().toUpperCase(),
-                              "rem_qty": $('#item_quantity_rem').val(), 
-                              "iss_qty": parseFloat($('#item_quantity_iss').val()),
-                              "tbi_qty": parseFloat($('#item_quantity_iss').val()),
-                              "conv_id": $('#item_conv_id').val(),
-                              "status": 'Pending',
-                              "iss_date": "{{date('Y-m-d H:i:s')}}",
-                              "is_check": false,
-                              "inventory_location": $('#item_location_code').val(),
-                              "iss_index": index,
-                            });
-              renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
-            } else {
-              iss_items[index].iss_index = index;
-              iss_items[index].inventory_location = $('#item_location_code').val();
-              iss_items[index].rem_qty = $('#item_quantity_rem').val();
-              iss_items[index].iss_qty = parseFloat(iss_items[index].iss_qty) + parseFloat($('#item_quantity_iss').val());
-              iss_items[index].tbi_qty = $('#item_quantity_iss').val();
-              iss_items[index].conv_id = $('#item_conv_id').val();
-              iss_items[index].iss_uom = $('#item_iss_uom').html().toUpperCase();
-              iss_items[index].is_check = true;
-              renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
-
-              iss_list.push({"trans_code": $('#item_trans_code').val(),
-                              "item_code": $('#item_item_code').val(),
-                              "item_desc": $('#item_item_desc').val(),
-                              "req_qty": $('#item_quantity').val(),
-                              "uom_code": $('#item_iss_uom').html().toUpperCase(),
-                              "rem_qty": $('#item_quantity_rem').val(), 
-                              "iss_qty": parseFloat($('#item_quantity_iss').val()),
-                              "tbi_qty": parseFloat($('#item_quantity_iss').val()),
-                              "conv_id": $('#item_conv_id').val(),
-                              "status": 'Pending',
-                              "iss_date": "{{date('Y-m-d H:i:s')}}",
-                              "is_check": false,
-                              "inventory_location": $('#item_location_code').val(),
-                              "iss_index": index,
-                            });
-              renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
+          $.each(fq_items,(index,row) => {
+            if(row.item_code == $('#item_item_code').val()){
+              xindex = index;
+              foundx = true;
+              return false;
             }
+          });
 
-            $('#issDetModal').modal('close');
-          } else {
-            $('#btnCollect').prop('disabled', true);
-            $('#item_quantity_iss').val("");
-            $('#item_quantity_rem').val(0);
-            alert('RFQ quantity exceed to requested quantity!');
+          if(foundx){
+            fq_items[xindex].q_count =  fq_items[xindex].q_count + 1;
           }
+
+          renderItems(fq_items,$('#fq-items-dt tbody'),'forQ',$('#fq_purpose').val());
+          
+          // computeGrandTotal($('#item_currency_code option:selected').text().split(" - ")[0],qt_items,$('#fq_grand_total'));
+          $('#QdetModal').modal('close');
         } else {
-          alert('Please fill-up all details to collect!')
+          alert("Please fill-up all details before saving!")
         }
-      }
+    };
+
+    const saveQuote = () => {
+      document.getElementById("quote_form").submit();
+      $('#btnSaveQ').prop('disabled', true);
+    };
+    
+    const cancelQuote = () => {
+      //
     };
 
     const loadApprover = () => {
@@ -2626,25 +2644,117 @@
             $('#btnAddSave').prop('disabled', false);
           };
 
-        } else if (loc=='edit') {
-          table.append('<tr>'+
+        } else if (loc=='edit'){
+          
+          if(purpose=='Project'){
+            table.append('<tr>'+
+                      '<td class="left-align">'+id+'</td>'+
+                      '<td class="left-align">'+row.assy_code+'</td>'+
+                      '<td class="left-align">'+row.item_code+'</td>'+
+                      '<td class="left-align">'+row.item_desc+'</td>'+
+                      '<td class="left-align">'+row.quantity+'</td>'+
+                      '<td class="left-align">'+row.uom_code+'</td>'+
+                      '<td class="left-align">'+row.delivery_date+'</td>'+
+                      '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="deleteItem(\''+index+'\',\'edit\')"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                      '<input type="hidden" name="e_itm_delivery_date[]" value="'+row.delivery_date+'"/>'+
+                      '<input type="hidden" name="e_itm_assy_code[]" value="'+row.assy_code+'"/>'+
+                      '<input type="hidden" name="e_itm_item_code[]" value="'+row.item_code+'"/>'+
+                      '<input type="hidden" name="e_itm_quantity[]" value="'+row.quantity+'"/>'+
+                      '<input type="hidden" name="e_itm_uom_code[]" value="'+row.uom_code+'"/>'+
+                      '</tr>'
+                    );
+          } else {
+            table.append('<tr>'+
                       '<td class="left-align">'+id+'</td>'+
                       '<td class="left-align">'+row.item_code+'</td>'+
                       '<td class="left-align">'+row.item_desc+'</td>'+
                       '<td class="left-align">'+row.quantity+'</td>'+
                       '<td class="left-align">'+row.uom_code+'</td>'+
-                      '<td><button type="button" class="btn-small red waves-effect waves-light" disabled><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                      '<td class="left-align">'+row.delivery_date+'</td>'+
+                      '<td><button type="button" class="btn-small red waves-effect waves-light" onclick="deleteItem(\''+index+'\',\'edit\')"><i class="material-icons small icon-demo">delete_sweep</i></button></td>'+
+                      '<input type="hidden" name="e_itm_delivery_date[]" value="'+row.delivery_date+'"/>'+
                       '<input type="hidden" name="e_itm_item_code[]" value="'+row.item_code+'"/>'+
                       '<input type="hidden" name="e_itm_quantity[]" value="'+row.quantity+'"/>'+
                       '<input type="hidden" name="e_itm_uom_code[]" value="'+row.uom_code+'"/>'+
-                      '<input type="hidden" name="e_itm_inventory_location[]" value=" "/>'+
-                      '<input type="hidden" name="e_itm_currency[]" value=" "/>'+
-                      '<input type="hidden" name="e_itm_currency_code[]" value=" "/>'+
-                      '<input type="hidden" name="e_itm_unit_price[]" value=" "/>'+
-                      '<input type="hidden" name="e_itm_total_price[]" value=" "/>'+
                       '</tr>'
                     );
+          }
+
+        } else if (loc=='forQ'){
+          if(purpose=='Project'){
+              table.append('<tr>'+
+                    '<td class="left-align">'+id+'</td>'+
+                    '<td class="left-align">'+row.assy_code+'</td>'+
+                    '<td class="left-align">'+row.item_code+'</td>'+
+                    '<td class="left-align">'+row.item_desc+'</td>'+
+                    '<td class="left-align">'+row.quantity+'</td>'+
+                    '<td class="left-align">'+row.uom_code+' - '+row.uom_name+'</td>'+
+                    '<td class="left-align">'+row.delivery_date+'</td>'+
+                    '<td class="left-align">'+row.q_count+'</td>'+
+                    '<td class="left-align"><p><label><i id="'+id+'" class="green-text material-icons" onclick="quoteDet(\''+$('#fq_rfq_code').val()+'\',\''+row.item_code+'\',\''+row.item_desc+'\',\''+row.assy_code+'\',\''+row.uom_code+'\',\''+row.quantity+'\',\''+row.delivery_date+'\',\''+id+'\',\''+row.status+'\')">note_add</i></label></p></td>'+
+                    '</tr>'
+                  );
+          } else {
+            table.append('<tr>'+
+                    '<td class="left-align">'+id+'</td>'+
+                    '<td class="left-align">'+row.item_code+'</td>'+
+                    '<td class="left-align">'+row.item_desc+'</td>'+
+                    '<td class="left-align">'+row.quantity+'</td>'+
+                    '<td class="left-align">'+row.uom_code+' - '+row.uom_name+'</td>'+
+                    '<td class="left-align">'+row.delivery_date+'</td>'+
+                    '<td class="left-align">'+row.q_count+'</td>'+
+                    '<td class="left-align"><p><label><i id="'+id+'" class="green-text material-icons" onclick="quoteDet(\''+$('#fq_rfq_code').val()+'\',\''+row.item_code+'\',\''+row.item_desc+'\',\''+""+'\',\''+row.uom_code+'\',\''+row.quantity+'\',\''+row.delivery_date+'\',\''+id+'\',\''+row.status+'\')">note_add</i></label></p></td>'+
+                    '</tr>'
+                  );
+          }
+        } else if (loc=='quote'){
+          table.append('<tr>'+
+                      '<td class="left-align">'+id+'</td>'+
+                      '<td class="left-align">'+row.ven_name+'</td>'+
+                      '<td class="left-align">'+row.item_code+'</td>'+
+                      '<td class="left-align">'+row.spq+'</td>'+
+                      '<td class="left-align">'+row.moq+'</td>'+
+                      '<td class="left-align">'+row.leadtime+" days(s)"+'</td>'+
+                      '<td class="left-align">'+row.currency_name+'</td>'+
+                      '<td class="left-align">'+row.symbol+" "+row.unit_price+'</td>'+
+                      '<td class="left-align">'+row.total_price+'</td>'+
  
+                      '<input type="hidden" name="qt_rfq_code[]" value="'+row.rfq_code+'"/>'+
+                      '<input type="hidden" name="qt_assy_code[]" value="'+row.assy_code+'"/>'+
+                      '<input type="hidden" name="qt_item_code[]" value="'+row.item_code+'"/>'+
+                      '<input type="hidden" name="qt_uom_code[]" value="'+row.uom_code+'"/>'+
+                      '<input type="hidden" name="qt_required_qty[]" value="'+row.required_qty+'"/>'+
+                      '<input type="hidden" name="qt_required_delivery_date[]" value="'+row.required_delivery_date+'"/>'+
+                      '<input type="hidden" name="qt_status[]" value="'+row.status+'"/>'+
+                      '<input type="hidden" name="qt_ven_code[]" value="'+row.ven_code+'"/>'+
+                      '<input type="hidden" name="qt_spq[]" value="'+row.spq+'"/>'+
+                      '<input type="hidden" name="qt_moq[]" value="'+row.moq+'"/>'+
+                      '<input type="hidden" name="qt_ven_delivery[]" value="'+row.ven_delivery+'"/>'+
+                      '<input type="hidden" name="qt_leadtime[]" value="'+row.leadtime+'"/>'+
+                      '<input type="hidden" name="qt_currency_code[]" value="'+row.currency_code+'"/>'+
+                      '<input type="hidden" name="qt_unit_price[]" value="'+row.unit_price+'"/>'+
+                      '<input type="hidden" name="qt_total_price[]" value="'+row.total_price+'"/>'+
+                      '</tr>'
+                    );
+          
+          if(items.length > 0){ 
+            $('#btnResetQ').prop('disabled', false); $('#btnSaveQ').prop('disabled', false); 
+          } else {
+            $('#btnResetQ').prop('disabled', true); $('#btnSaveQ').prop('disabled', true); 
+          }
+
+        } else if (loc=='quote_view'){
+          table.append('<tr>'+
+                      '<td class="left-align">'+id+'</td>'+
+                      '<td class="left-align">'+row.ven_name+'</td>'+
+                      '<td class="left-align">'+row.item_code+'</td>'+
+                      '<td class="left-align">'+row.spq+'</td>'+
+                      '<td class="left-align">'+row.moq+'</td>'+
+                      '<td class="left-align">'+row.leadtime+" days(s)"+'</td>'+
+                      '<td class="left-align">'+row.currency_name+'</td>'+
+                      '<td class="left-align">'+row.symbol+" "+row.unit_price+'</td>'+
+                      '<td class="left-align">'+row.symbol+" "+row.total_price+'</td>'+
+                      '</tr>');
         } else {
           if(purpose=='Project'){
             table.append('<tr>'+
@@ -2677,56 +2787,19 @@
         var item_index = $('#del_item_index').val();
         var loc = $('#del_loc').val();
         if(loc == 'add'){
+
           add_items.splice(index,1);
-          renderItems(add_items,$('#items-dt tbody'),'add');
+          renderItems(add_items,$('#items-dt tbody'),'add',$('#purpose').val());
           $('#removeItemModal').modal('close');
-          if(add_items.length  == 0 ){ $('#btnAddSave').prop('disabled', true); }
+          if(add_items.length  == 0 ){ $('#btnAddSave').prop('disabled', true); } else { $('#btnAddSave').prop('disabled', false); }
+
         } else {
 
-          $.get('../item_master/getItemDetails/'+trim(iss_list[index].item_code), (response) => { 
-            if(iss_items[item_index].uom_code == iss_list[index].uom_code){
-              iss_items[item_index].rem_qty = parseFloat(iss_items[item_index].rem_qty) + parseFloat(iss_list[index].tbi_qty);
-              iss_items[item_index].inventory_location = "";
-              iss_items[item_index].iss_qty = 0;
-              iss_items[item_index].tbi_qty = 0;
-              iss_items[item_index].conv_id = "";
-              iss_items[item_index].iss_uom = "";
-              iss_items[item_index].is_check = false;
-              renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
-
-              iss_list.splice(index,1);
-              renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
-
-            } else {
-
-              $.get('../uom_conversion/rev_convert/'+iss_list[index].uom_code+'/'+iss_items[item_index].uom_code, (response) => { 
-                var index2 = $('#del_index').val();
-                iss_items[item_index].rem_qty = parseFloat(iss_items[item_index].rem_qty) + (parseFloat(iss_list[index2].tbi_qty) * parseFloat(response.data.uom_to_value));
-                iss_items[item_index].inventory_location = "";
-                iss_items[item_index].iss_qty = 0;
-                iss_items[item_index].tbi_qty = 0;
-                iss_items[item_index].conv_id = "";
-                iss_items[item_index].iss_uom = "";
-                iss_items[item_index].is_check = false;
-                renderItems(iss_items,$('#issue-items-dt tbody'),'issue');
-
-                iss_list.splice(index,1);
-                renderItems(iss_list,$('#issued-items-dt tbody'),'issued_items');
-              });
-
-            }
-           
-            if(iss_list.length > 0){
-              $('#btnIssReset').prop('disabled', false);
-              $('#btnIssue').prop('disabled', false);
-            } else {
-              $('#btnIssReset').prop('disabled', true);
-              $('#btnIssue').prop('disabled', true);
-            }
-
-            $('#removeItemModal').modal('close');
-
-          });
+          edit_items.splice(index,1);
+          renderItems(edit_items,$('#edit-items-dt tbody'),'edit',$('#edit_purpose').val());
+          $('#removeItemModal').modal('close');
+          console.log(edit_items.length);
+          if(edit_items.length  == 0 ){ $('#btnEditSave').prop('disabled', true); } else { $('#btnEditSave').prop('disabled', false); }
 
         }
     };
@@ -2800,59 +2873,71 @@
           }
         }
       } else if(loc=='edit') {
-        if($('#edit_unit_price').val() <= 0){
-          alert('Unit Price must be greater than 0!');
-        }else if($('#edit_quantity').val() <= 0){
+        if($('#edit_quantity').val() <= 0){
           alert('Quantity must be greater than 0!');
-        }else{
-          $.each(edit_items,(index,row) => {
-            if(row.item_code == $('#edit_item_code').val()){
-              cindex = index;
-              found = true;
-              return false;
-            }
-          });
-
-          if(found){
+        }else {
+          if(purpose == 'Project'){
+            $.each(edit_items,(index,row) => {
+              if(row.item_code == $('#edit_item_code').val() && row.assy_code == $('#edit_assy_code').val()){
+                cindex = index;
+                found = true;
+                return false;
+              }
+            });
+            if(found){
               var itm_qtys = parseInt(item_qty) + parseInt(edit_items[cindex].quantity);
               edit_items[cindex].quantity = parseInt(edit_items[cindex].quantity) + parseInt($('#edit_quantity').val());
               edit_items[cindex].uom_code = $('#edit_uom_code').val();
 
-              $('#btnEditSave').prop('disabled', false);
-              renderItems(edit_items,$('#edit-items-dt tbody'),'edit');
+              renderItems(edit_items,$('#edit-items-dt tbody'),'edit',purpose);
               resetItemDetails("edit");
-            
-          }else{
-              var itm_qtys = parseInt(item_qty) + parseInt(edit_items[cindex].quantity);
-              if(safety_stock <= itm_qtys)
-            {
-              edit_items.push({ "item_code": $('#edit_item_code').val(),
-                                "item_desc": $('#edit_item_desc').val(),
-                                "uom_code": $('#edit_uom_code').val(),
-                                "quantity": parseInt($('#edit_quantity').val()),
-                              });
-              $('#btnEditSave').prop('disabled', false);
-              renderItems(edit_items,$('#edit-items-dt tbody'),'edit');
-              resetItemDetails("edit");
-            } else {
-              edit_items.push({ "item_code": $('#edit_item_code').val(),
-                                "item_desc": $('#edit_item_desc').val(),
-                                "uom_code": $('#edit_uom_code').val(),
-                                "quantity": parseInt($('#edit_quantity').val()),
-                              });
-              $('#btnEditSave').prop('disabled', false);
-              renderItems(edit_items,$('#edit-items-dt tbody'),'edit');
+            }else{
+              edit_items.push({"delivery_date": $('#edit_delivery_date').val(),
+                              "assy_code": $('#edit_assy_code').val(),
+                              "item_code": $('#edit_item_code').val(),
+                              "item_desc": $('#edit_item_desc').val(),
+                              "uom_code": $('#edit_uom_code').val(),
+                              "quantity": parseInt($('#edit_quantity').val()),
+                            });
+              renderItems(edit_items,$('#edit-items-dt tbody'),'edit',purpose);
               resetItemDetails("edit");
             }
-          }
+          } else {
+            $.each(edit_items,(index,row) => {
+              if(row.item_code == $('#edit_item_code').val()){
+                cindex = index;
+                found = true;
+                return false;
+              }
+            });
+            if(found){
+              var itm_qtys = parseInt(item_qty) + parseInt(edit_items[cindex].quantity);
+              edit_items[cindex].quantity = parseInt(edit_items[cindex].quantity) + parseInt($('#edit_quantity').val());
+              edit_items[cindex].uom_code = $('#edit_uom_code').val();
 
+              renderItems(edit_items,$('#edit-items-dt tbody'),'edit',purpose);
+              resetItemDetails("edit");
+            }else{
+              edit_items.push({"delivery_date": $('#edit_delivery_date').val(),
+                              "item_code": $('#edit_item_code').val(),
+                              "item_desc": $('#edit_item_desc').val(),
+                              "uom_code": $('#edit_uom_code').val(),
+                              "quantity": parseInt($('#edit_quantity').val()),
+                            });
+              renderItems(edit_items,$('#edit-items-dt tbody'),'edit',purpose);
+              resetItemDetails("edit");
+            }
+
+            console.log(edit_items);
+          }
         }
       }
     };
 
-  
 
   var request = $('#request-dt').DataTable({
+        "processing": true,
+ 
         "lengthChange": false,
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
@@ -2906,6 +2991,9 @@
                     case 'For Review':
                       return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
                       break;
+                    case 'For User Review':
+                      return  '<span class="new badge blue white-text" data-badge-caption="">For User Review</span>';
+                      break;
                     case "Issued":
                       return  '<span class="new badge purple white-text" data-badge-caption="">Issued</span>';
                       break;
@@ -2951,7 +3039,11 @@
             {  "data": "id" },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return '<a href="#!" onclick="viewRFQ('+data+')">'+ row.rfq_code; +'</a>';
+                  @if($permission[0]["view"]==true || $permission[0]["masterlist"]==true)
+                    return '<a href="#!" onclick="viewRFQ('+data+')">'+ row.rfq_code; +'</a>';
+                  @else
+                    return row.rfq_code;
+                  @endif
                 }
             },
             {  "data": "id",
@@ -2989,6 +3081,9 @@
                     case 'For Review':
                       return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
                       break;
+                    case 'For User Review':
+                      return  '<span class="new badge blue white-text" data-badge-caption="">For User Review</span>';
+                      break;
                     case "Issued":
                       return  '<span class="new badge purple white-text" data-badge-caption="">Issued</span>';
                       break;
@@ -3009,12 +3104,12 @@
         ]
   });
 
-  var issuance = $('#issuance-dt').DataTable({
+  var forRFQ = $('#for-rfq-dt').DataTable({
         "lengthChange": false,
         "pageLength": 15,
         "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
         "pagingType": "full",
-        "ajax": "/api/reiss/inventory/issuance/issuance",
+        "ajax": "/api/reiss/purchasing/rfq/all_for_rfq",
         "columns": [
             {  "data": "id" },
             {   "data": "id",
@@ -3073,10 +3168,80 @@
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
                   @if($permission[0]["masterlist"]==true)
-                    return  '<a href="#" class="btn-small teal darken-1 waves-effect waves-dark" onclick="issRFQ('+data+')"><i class="material-icons">shopping_cart</i></a>';
+                    return  '<a href="#" class="btn-small teal darken-1 waves-effect waves-dark" onclick="forQuotation('+data+')"><i class="material-icons">assignment</i></a>';
                   @else
-                    return  '<a href="#" class="btn-small teal darken-1 waves-effect waves-dark" disabled><i class="material-icons">shopping_cart</i></a>';
+                    return  '<a href="#" class="btn-small teal darken-1 waves-effect waves-dark" disabled><i class="material-icons">assignment</i></a>';
                   @endif
+                }
+            },   
+        ]
+  });
+  
+  var forRev = $('#for-rev-dt').DataTable({
+    "lengthChange": false,
+        "pageLength": 15,
+        "aaSorting": [[ 0, "asc"],[ 2, "desc"]],
+        "pagingType": "full",
+        "ajax": "/api/reiss/purchasing/rfq/all_for_rev/{{Illuminate\Support\Facades\Crypt::encrypt(Auth::user()->emp_no)}}",
+        "columns": [
+            {  "data": "id" },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  @if($permission[0]["view"]==true || $permission[0]["masterlist"]==true)
+                    return '<a href="#!" onclick="viewRFQ('+data+')">'+ row.rfq_code; +'</a>';
+                  @else
+                    return row.rfq_code;
+                  @endif
+                }
+            },
+            {  "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return row.purpose;
+                }
+            },
+            { "data": "id",
+                "render": function (data, type, row, meta) {
+                  if(row.purpose=='Project')
+                  {
+                    return row.project_code;
+                  } else {
+                    return "";
+                  }
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  switch (row.status) {
+                    case "Pending":
+                      return  '<span class="new badge blue white-text" data-badge-caption="">Pending</span>';
+                      break;
+                    case "Approved":
+                      return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
+                      break;
+                    case 'For Approval':
+                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Approval</span>';
+                      break;
+                    case 'For Review':
+                      return  '<span class="new badge yellow black-text" data-badge-caption="">For Review</span>';
+                      break;
+                    case 'For User Review':
+                      return  '<span class="new badge blue white-text" data-badge-caption="">For User Review</span>';
+                      break;
+                    case "Issued":
+                      return  '<span class="new badge purple white-text" data-badge-caption="">Issued</span>';
+                      break;
+                    case "Returned":
+                      return  '<span class="new badge amber white-text" data-badge-caption="">Returned</span>';
+                      break;
+                    case "Voided":
+                      return  '<span class="new badge black white-text" data-badge-caption="">Voided</span>';
+                      break;
+                  }
+                }
+            },
+            {   "data": "id",
+                "render": function ( data, type, row, meta ) {
+                  return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="appRFQ('+data+')"><i class="material-icons">find_in_page</i></a>';
                 }
             },   
         ]

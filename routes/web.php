@@ -218,7 +218,12 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::resource('/reiss/inventory/rtv','InventoryRTVController');
 
 
-    Route::get('/reiss/purchasing/list/{rfq_code}/items_user', 'RFQController@items_user')->name('rfq.items_user');
+    Route::get('/reiss/purchasing/list/{rfq_code}/items_user','RFQController@items_user')->name('rfq.items_user');
+    Route::get('/reiss/purchasing/list/{rfq_code}/items_purch','RFQController@items_purch')->name('rfq.items_purch');
+    Route::post('/reiss/purchasing/rfq/store_quote','RFQController@store_quote')->name('rfq.store_quote');
+    Route::post('/reiss/purchasing/rfq/patch','RFQController@patch')->name('rfq.patch');
+    Route::post('/reiss/purchasing/rfq/approve', 'RFQController@approve')->name('rfq.approve');
+    Route::post('/reiss/purchasing/rfq/approve_rev', 'RFQController@approve_rev')->name('rfq.approve_rev');
     Route::resource('/reiss/purchasing/rfq','RFQController');
     
     
