@@ -1574,9 +1574,12 @@
     const resetQuoteDetails = () => {
       $('#btnResetQ').prop('disabled', true);
       $('#btnSaveQ').prop('disabled', true);
+      qt_items = [];
+      fq_items = [];
 
       $.get('list/'+$('#fq_rfq_code').val()+'/items_user', (response) => {
       var datax = response.data;
+        
         $.each(datax, (index, row) => {
           fq_items.push({"assy_code": row.assy_code,
                           "item_code": row.item_code,
@@ -1589,10 +1592,9 @@
                           "q_count": 0,
                           });
         });
+        renderItems(fq_items,$('#fq-items-dt tbody'),'forQ',$('#fq_purpose').val());
       });
-      renderItems(fq_items,$('#fq-items-dt tbody'),'forQ',$('#fq_purpose').val());
       
-      qt_items = [];
       renderItems(qt_items, $('#q-details-dt tbody'),'quote',$('#fq_purpose').val());
       $('#resetQModal').modal('close');
     }
@@ -2227,6 +2229,7 @@
 
     const appRFQ = (id) => {
       app_items = [];
+      rev_quote = [];
       $('#appModal').modal('open');
       $('.tabs.app').tabs('select','app_rfq');
       $.get('rfq/'+id, (response) => {
@@ -2303,6 +2306,7 @@
         }
 
         $.get('list/'+data.rfq_code+'/items_purch', (response) => {
+
             var datax = response.data;
               $.each(datax, (index, row) => {
                 rev_quote.push({"ven_name": row.ven_details.ven_name,
@@ -2467,7 +2471,15 @@
     };
 
     const quoteSave = () => {
-
+      
+      Array.prototype.sum = function (prop) {
+          var total = 0
+          for ( var i = 0, _len = this.length; i < _len; i++ ) {
+              total += this[i][prop]
+          }
+          return total
+      }
+      
       if($('#item_vendor').val() && 
          $('#item_currency_code').val() &&
         trim($('#item_ven_delivery').val()) &&
@@ -2483,8 +2495,11 @@
           var foundx = false;
           var xindex = 0;
 
+          var req_quote = fq_items.length * 3;
+          var curr_quote = 0;
+
           fq_items[id].status = 1;
-          renderItems(fq_items,$('#fq-items-dt tbody'),'forQ',$('#fq_purpose').val());
+          // renderItems(fq_items,$('#fq-items-dt tbody'),'forQ',$('#fq_purpose').val());
 
           $.each(qt_items,(index,row) => {
             if(row.item_code == $('#item_item_code').val() && row.ven_code == $('#item_vendor').val()){
@@ -2517,24 +2532,34 @@
                         "unit_price" : $('#item_unit_price').val(),
                         "total_price" : $('#item_total_price').val(),
                         });
+
+                        $.each(fq_items,(index,row) => {
+                          if(row.item_code == $('#item_item_code').val()){
+                              xindex = index;
+                              foundx = true;
+                              return false;
+                          }
+                        });
+                        
+                        if(foundx){
+                          fq_items[xindex].q_count =  fq_items[xindex].q_count + 1;
+                        }
+                        
+                        // curr_quote = curr_quote + row.q_count;
+                        console.log(fq_items.sum("q_count"));
+                        console.log(req_quote);
+
+                        if(parseInt(fq_items.sum("q_count")) >= parseInt(req_quote))
+                        {
+                          $('#btnResetQ').prop('disabled', false); $('#btnSaveQ').prop('disabled', false); 
+                        } else {
+                          $('#btnResetQ').prop('disabled', true); $('#btnSaveQ').prop('disabled', true); 
+                        }
+            
+                        renderItems(fq_items,$('#fq-items-dt tbody'),'forQ',$('#fq_purpose').val());
           }
 
           renderItems(qt_items, $('#q-details-dt tbody'),'quote',$('#fq_purpose').val());
-
-          $.each(fq_items,(index,row) => {
-            if(row.item_code == $('#item_item_code').val()){
-              xindex = index;
-              foundx = true;
-              return false;
-            }
-          });
-
-          if(foundx){
-            fq_items[xindex].q_count =  fq_items[xindex].q_count + 1;
-          }
-
-          renderItems(fq_items,$('#fq-items-dt tbody'),'forQ',$('#fq_purpose').val());
-          
           // computeGrandTotal($('#item_currency_code option:selected').text().split(" - ")[0],qt_items,$('#fq_grand_total'));
           $('#QdetModal').modal('close');
         } else {
@@ -2602,6 +2627,7 @@
     };
 
     const renderItems = (items, table, loc, purpose) => {
+
       table.html("");
       $.each(items, (index, row) => {
         var id = parseInt(index) + 1;
@@ -2681,32 +2707,34 @@
           }
 
         } else if (loc=='forQ'){
+
           if(purpose=='Project'){
-              table.append('<tr>'+
-                    '<td class="left-align">'+id+'</td>'+
-                    '<td class="left-align">'+row.assy_code+'</td>'+
-                    '<td class="left-align">'+row.item_code+'</td>'+
-                    '<td class="left-align">'+row.item_desc+'</td>'+
-                    '<td class="left-align">'+row.quantity+'</td>'+
-                    '<td class="left-align">'+row.uom_code+' - '+row.uom_name+'</td>'+
-                    '<td class="left-align">'+row.delivery_date+'</td>'+
-                    '<td class="left-align">'+row.q_count+'</td>'+
-                    '<td class="left-align"><p><label><i id="'+id+'" class="green-text material-icons" onclick="quoteDet(\''+$('#fq_rfq_code').val()+'\',\''+row.item_code+'\',\''+row.item_desc+'\',\''+row.assy_code+'\',\''+row.uom_code+'\',\''+row.quantity+'\',\''+row.delivery_date+'\',\''+id+'\',\''+row.status+'\')">note_add</i></label></p></td>'+
-                    '</tr>'
-                  );
+            table.append('<tr>'+
+              '<td class="left-align">'+id+'</td>'+
+              '<td class="left-align">'+row.assy_code+'</td>'+
+              '<td class="left-align">'+row.item_code+'</td>'+
+              '<td class="left-align">'+row.item_desc+'</td>'+
+              '<td class="left-align">'+row.quantity+'</td>'+
+              '<td class="left-align">'+row.uom_code+' - '+row.uom_name+'</td>'+
+              '<td class="left-align">'+row.delivery_date+'</td>'+
+              '<td class="left-align">'+row.q_count+'</td>'+
+              '<td class="left-align"><p><label><i id="'+id+'" class="green-text material-icons" onclick="quoteDet(\''+$('#fq_rfq_code').val()+'\',\''+row.item_code+'\',\''+row.item_desc+'\',\''+row.assy_code+'\',\''+row.uom_code+'\',\''+row.quantity+'\',\''+row.delivery_date+'\',\''+id+'\',\''+row.status+'\')">note_add</i></label></p></td>'+
+              '</tr>'
+            );
           } else {
             table.append('<tr>'+
-                    '<td class="left-align">'+id+'</td>'+
-                    '<td class="left-align">'+row.item_code+'</td>'+
-                    '<td class="left-align">'+row.item_desc+'</td>'+
-                    '<td class="left-align">'+row.quantity+'</td>'+
-                    '<td class="left-align">'+row.uom_code+' - '+row.uom_name+'</td>'+
-                    '<td class="left-align">'+row.delivery_date+'</td>'+
-                    '<td class="left-align">'+row.q_count+'</td>'+
-                    '<td class="left-align"><p><label><i id="'+id+'" class="green-text material-icons" onclick="quoteDet(\''+$('#fq_rfq_code').val()+'\',\''+row.item_code+'\',\''+row.item_desc+'\',\''+""+'\',\''+row.uom_code+'\',\''+row.quantity+'\',\''+row.delivery_date+'\',\''+id+'\',\''+row.status+'\')">note_add</i></label></p></td>'+
-                    '</tr>'
-                  );
+              '<td class="left-align">'+id+'</td>'+
+              '<td class="left-align">'+row.item_code+'</td>'+
+              '<td class="left-align">'+row.item_desc+'</td>'+
+              '<td class="left-align">'+row.quantity+'</td>'+
+              '<td class="left-align">'+row.uom_code+' - '+row.uom_name+'</td>'+
+              '<td class="left-align">'+row.delivery_date+'</td>'+
+              '<td class="left-align">'+row.q_count+'</td>'+
+              '<td class="left-align"><p><label><i id="'+id+'" class="green-text material-icons" onclick="quoteDet(\''+$('#fq_rfq_code').val()+'\',\''+row.item_code+'\',\''+row.item_desc+'\',\''+""+'\',\''+row.uom_code+'\',\''+row.quantity+'\',\''+row.delivery_date+'\',\''+id+'\',\''+row.status+'\')">note_add</i></label></p></td>'+
+              '</tr>'
+            );
           }
+
         } else if (loc=='quote'){
           table.append('<tr>'+
                       '<td class="left-align">'+id+'</td>'+
@@ -2737,11 +2765,11 @@
                       '</tr>'
                     );
           
-          if(items.length > 0){ 
-            $('#btnResetQ').prop('disabled', false); $('#btnSaveQ').prop('disabled', false); 
-          } else {
-            $('#btnResetQ').prop('disabled', true); $('#btnSaveQ').prop('disabled', true); 
-          }
+          // if(items.length > 0){ 
+          //   $('#btnResetQ').prop('disabled', false); $('#btnSaveQ').prop('disabled', false); 
+          // } else {
+          //   $('#btnResetQ').prop('disabled', true); $('#btnSaveQ').prop('disabled', true); 
+          // }
 
         } else if (loc=='quote_view'){
           table.append('<tr>'+
