@@ -547,6 +547,7 @@
     <div class="modal-content" style="padding-bottom: 0px;">
       <h4>Request for Quotation Details</h4> 
       <input type="hidden" id="app_id" name="id">
+      <input type="hidden" id="app_type" name="types">
       <ul id="tabs-swipe-demo" class="tabs app">
         <li class="tab col s12 m4 l4"><a class="active" href="#app_rfq">Request Details</a></li>
         <li class="tab col s12 m4 l4"><a href="#app_signatories">Signatories</a></li>
@@ -954,23 +955,173 @@
     </div>
   </div>
   
-  <div id="deleteModal" class="modal bottom-sheet">
-    <form method="POST" action="{{route('location.delete')}}">
-        @csrf
-        <div class="modal-content">
-            <h4>Delete Inventory Location</h4><br><br>
-            <div class="row">
-                <div class="col s12 m6">
-                    <input type="hidden" name="id" id="del_id">
-                    <p>Are you sure you want to delete this <strong>Inventory Location</strong>?</p>
-                </div>
+  <div id="revModal" class="modal">
+    <form method="post" action="{{route('rfq.approve')}}">
+      @csrf
+      <div class="modal-content" style="padding-bottom: 0px;">
+        <h4>Request for Quotation Details</h4> 
+        <input type="hidden" id="rev_id" name="id">
+        <input type="hidden" id="rev_type" name="types">
+        <ul id="tabs-swipe-demo" class="tabs rev">
+          <li class="tab col s12 m4 l4"><a class="active" href="#rev_rfq">Request Details</a></li>
+          <li class="tab col s12 m4 l4"><a href="#rev_signatories">Signatories</a></li>
+        </ul><br>
+  
+        <div id="rev_rfq" name="rev_rfq">
+          <div class="row" style="margin-bottom: 0px">
+            <div class="input-field col s12 m6 l6">
+              <input id="rev_rfq_code" name="rfq_code" type="text" class="validate" placeholder="" readonly>
+              <label class="active">Request for Quotation Code</label>
             </div>
+  
+            <div class="input-field col s12 m6 l6">
+              <input id="rev_date_requested" name="date_requested" type="text" class="validate" placeholder="" readonly>
+              <label class="active">Date Requested</label>
+            </div>
+          </div>
+  
+          <div class="row" style="margin-bottom: 0px">
+            <div class="input-field col s12 m6 l6">
+              <input id="rev_purpose" name="purpose" type="text" class="validate" placeholder="" readonly>
+              <label class="active">Purpose</label>
+            </div>
+  
+            <div class="input-field col s12 m6 l6">
+              <input id="rev_remarks" name="remarks" type="text" class="validate" placeholder="" readonly>
+              <label class="active">Remarks</label>
+            </div>
+  
+            <div class="input-field col s12 m6 l6" style="display: none;" id="rev_project_details">
+              <input id="rev_project_code" name="project_code" type="text" class="validate" placeholder="" readonly>
+              <label class="active">Project</label>
+            </div>
+          </div>
+  
+          <div class="row" style="margin-bottom: 0px">
+            <div class="col s12 m12 l12">
+              <div class="card">
+                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Item List</b></h6><hr style="margin: 0px">
+                <div class="card-content" style="padding: 10px; padding-top: 0px">
+                  <table class="highlight" id="rev-items-dt">
+                    <thead id="rev-items-header"></thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" style="margin-bottom: 0px">
+            <div class="col s12 m12 l12">
+              <div class="card">
+                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; margin-top: 0px; background-color:#0d47a1" class="white-text"><b>Quotation List</b></h6><hr style="margin: 0px">
+                <div class="card-content" style="padding: 10px; padding-top: 0px">
+                  <table class="highlight" id="rev-quote-items-dt">
+                    <thead>
+                      <th>ID</th>
+                      <th>Vendor</th>
+                      <th>Item Code</th>
+                      <th>SPQ</th>
+                      <th>MOQ</th>
+                      <th>Lead Time</th>
+                      <th>Currency</th>
+                      <th>Unit Price</th>
+                      <th>Total Price</th>
+                      <th>Choose Quote</th>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="modal-footer">
-            <button class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Yes</button>
-            <a href="#!" class="modal-close red waves-effect waves-dark btn"><i class="material-icons left">cancel</i>No</a>
+  
+        <div id="rev_signatories" name="rev_signatories">
+          <div class="row">
+            <div class="col s12 m12 l12">
+              <div class="card">
+                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Current Signatories</b></h6><hr style="margin: 0px">
+                <div class="card-content" style="padding: 10px; padding-top: 0px">
+                  <table class="highlight" id="rev-matrix-dt">
+                    <thead>
+                      <tr>
+                        <th>Sequence</th> 
+                        <th>Approver ID</th> 
+                        <th>Approver Name</th> 
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <div class="row">
+            <div class="col s12 m12 l12">
+              <div class="card">
+                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Approval History</b></h6><hr style="margin: 0px">
+                <div class="card-content" style="padding: 10px; padding-top: 0px">
+                  <table class="highlight" id="rev-matrix-dt-h">
+                    <thead>
+                      <tr>
+                        <th>Sequence</th> 
+                        <th>Approver Name</th> 
+                        <th>Status</th> 
+                        <th>Remarks</th> 
+                        <th>Action Date</th> 
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
+  
+        <hr style="padding:1px;color:blue;background-color:blue">
+      </div>
+  
+      <div class="modal-footer" style="padding-right: 32px; padding-bottom: 4px; margin-bottom: 30px;">
+        <div class="row" style="padding-left: 20px">
+  
+          <div class="input-field col s12 m9 l9">
+            <textarea class="materialize-textarea" type="text" id="rev_remarks" name="remarks" placeholder="Please input remarks here.." style="height: 150px; border-left: 10px; border-color: black; padding-left:20px;" required></textarea>
+            <label for="icon_prefix2">Remarks</label>
+          </div>
+          
+          <div class="input-field col s12 m3 l3">
+            <input type="hidden" id="status" name="status">
+  
+            <button id="btnApp" name="btnSubmit" value="Approved" class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Approve</button>
+            
+            <button id="btnRej" name="btnSubmit" value="Rejected" class="red waves-effect waves-dark btn" style="padding-right: 20px"><i class="material-icons left">cancel</i>Reject&nbsp;&nbsp;&nbsp;</button>
+  
+            <a href="#!" class="modal-close orange waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Cancel&nbsp;&nbsp;</a>
+          </div>
+          
+        </div>
+      </div>
     </form>
+  </div>
+ 
+  <div id="appRevModal" class="modal bottom-sheet">
+      <div class="modal-content">
+          <h4>Select Quotation</h4><br><br>
+          <div class="row">
+              <div class="col s12 m6">
+                  <input type="hidden" name="id" id="app_rev_id">
+                  <p>Are you sure you want to mark this as <strong>Selected / Approve Quotation</strong>?</p>
+              </div>
+          </div>
+      </div>
+      <div class="modal-footer">
+          <button class="green waves-effect waves-light btn" onclick="updateQuote();"><i class="material-icons left">check_circle</i>Yes</button>
+          <a href="#!" class="modal-close red waves-effect waves-dark btn" onclick="updtCanQuote();"><i class="material-icons left">cancel</i>No</a>
+      </div>
   </div> 
 
   <div id="resetModal" class="modal bottom-sheet">
@@ -2199,24 +2350,67 @@
                                         '<th>Unit Price</th>'+
                                         '<th>Total Price</th>'+
                                         '</tr>');
-          
 
-          $.get('list/'+data.rfq_code+'/items_purch', (response) => {
-            var datax = response.data;
-              $.each(datax, (index, row) => {
-                view_qt.push({"ven_name": row.ven_details.ven_name,
-                              "item_code": row.item_code,
-                              "spq": row.spq,
-                              "moq": row.moq,
-                              "leadtime": row.leadtime,
-                              "currency_name": row.currency.currency_name,
-                              "symbol": row.currency.symbol,
-                              "unit_price": row.unit_price,
-                              "total_price": row.total_price,
-                                });
+          if(data.status=='For User Review'){
+
+            $.get('list/'+data.rfq_code+'/items_purch', (response) => {
+              var datax = response.data;
+                $.each(datax, (index, row) => {
+                  view_qt.push({"ven_name": row.ven_details.ven_name,
+                                "item_code": row.item_code,
+                                "spq": row.spq,
+                                "moq": row.moq,
+                                "leadtime": row.leadtime,
+                                "currency_name": row.currency.currency_name,
+                                "symbol": row.currency.symbol,
+                                "unit_price": row.unit_price,
+                                "total_price": row.total_price,
+                                  });
+              });
+              renderItems(view_qt,$('#view-quote-dt tbody'),'quote_view',data.purpose);
             });
-            renderItems(view_qt,$('#view-quote-dt tbody'),'quote_view',data.purpose);
-          });
+
+          } else if(data.status=='Rejected'){
+
+            $.get('list/'+data.rfq_code+'/items_purch', (response) => {
+              var datax = response.data;
+                $.each(datax, (index, row) => {
+                  view_qt.push({"ven_name": row.ven_details.ven_name,
+                                "item_code": row.item_code,
+                                "spq": row.spq,
+                                "moq": row.moq,
+                                "leadtime": row.leadtime,
+                                "currency_name": row.currency.currency_name,
+                                "symbol": row.currency.symbol,
+                                "unit_price": row.unit_price,
+                                "total_price": row.total_price,
+                                  });
+              });
+              renderItems(view_qt,$('#view-quote-dt tbody'),'quote_view',data.purpose);
+            });
+
+          } else {
+
+            $.get('list/'+data.rfq_code+'/items_purch', (response) => {
+              var datax = response.data;
+                $.each(datax, (index, row) => {
+                  if(row.status==1){
+                    view_qt.push({"ven_name": row.ven_details.ven_name,
+                                "item_code": row.item_code,
+                                "spq": row.spq,
+                                "moq": row.moq,
+                                "leadtime": row.leadtime,
+                                "currency_name": row.currency.currency_name,
+                                "symbol": row.currency.symbol,
+                                "unit_price": row.unit_price,
+                                "total_price": row.total_price,
+                                  });
+                  }
+              });
+              renderItems(view_qt,$('#view-quote-dt tbody'),'quote_view',data.purpose);
+            });
+
+          }
           
         } else {
           var quote_list = document.getElementById('view_quote_list');
@@ -2226,6 +2420,138 @@
 
       });
     };
+
+    const revQuotation = (id) => {
+      rev_items = [];
+      rev_quote = [];
+      $('#revModal').modal('open');
+
+      $('.tabs.rev').tabs('select','rev_rfq');
+      $.get('rfq/'+id, (response) => {
+        var data = response.data[0];
+        var matrix = JSON.parse(data.matrix);
+        var matrix_h = JSON.parse(data.matrix_h);
+        if(matrix != null) renderSignatoriesTable(matrix,$('#rev-matrix-dt tbody'));
+        if(matrix_h != null) renderSignatoriesTable(matrix_h,$('#rev-matrix-dt-h tbody'),true);
+        
+        $('#rev_type').val('review');
+        $('#rev_id').val(data.id);
+        $('#rev_rfq_code').val(data.rfq_code);
+        $('#rev_date_requested').val(data.date_requested);
+        $('#rev_purpose').val(data.purpose);
+        $('#rev_remarks').val(data.remarks);
+
+        if(data.purpose=='Project')
+        {
+          $('#rev_project_code').val(data.projects.project_name);
+          var x = document.getElementById('rev_project_details');
+              x.style.display = "block";
+
+          $('#rev-items-header').html("");
+          $('#rev-items-header').append('<tr>'+
+                                        '<th>ID</th>'+
+                                        '<th>Assembly</th>'+
+                                        '<th>Item Code</th>'+
+                                        '<th>Item Description</th>'+
+                                        '<th>Quantity</th>'+
+                                        '<th>Unit of Measure</th>'+
+                                        '<th>Delivery Date</th>'+
+                                        '</tr>');
+
+          $.get('list/'+data.rfq_code+'/items_user', (response) => {
+            var datax = response.data;
+              $.each(datax, (index, row) => {
+                rev_items.push({"assy_code": row.assy_code,
+                                "item_code": row.item_code,
+                                "item_desc": row.item_details.item_desc,
+                                "uom_code": row.uoms.uom_code,
+                                "uom_name": row.uoms.uom_name,
+                                "quantity": row.required_qty,
+                                "delivery_date": row.required_delivery_date,
+                                });
+            });
+            renderItems(rev_items,$('#rev-items-dt tbody'),'view',data.purpose);
+          });
+
+
+        } else {
+          var x = document.getElementById('rev_project_details');
+              x.style.display = "none";
+          
+          $('#rev-items-header').html("");
+          $('#rev-items-header').append('<tr>'+
+                                        '<th>ID</th>'+
+                                        '<th>Item Code</th>'+
+                                        '<th>Item Description</th>'+
+                                        '<th>Quantity</th>'+
+                                        '<th>Unit of Measure</th>'+
+                                        '<th>Delivery Date</th>'+
+                                        '</tr>');
+          
+          $.get('list/'+data.rfq_code+'/items_user', (response) => {
+            var datax = response.data;
+              $.each(datax, (index, row) => {
+                rev_items.push({"item_code": row.item_code,
+                                "item_desc": row.item_details.item_desc,
+                                "uom_code": row.uoms.uom_code,
+                                "uom_name": row.uoms.uom_name,
+                                "quantity": row.required_qty,
+                                "delivery_date": row.required_delivery_date,
+                                });
+            });
+            renderItems(rev_items,$('#rev-items-dt tbody'),'view',data.purpose);
+          });
+        }
+
+        $.get('list/'+data.rfq_code+'/items_purch', (response) => {
+            var datax = response.data;
+              $.each(datax, (index, row) => {
+                rev_quote.push({
+                              "ven_code": row.ven_code,
+                              "ven_name": row.ven_details.ven_name,
+                              "item_code": row.item_code,
+                              "spq": row.spq,
+                              "moq": row.moq,
+                              "leadtime": row.leadtime,
+                              "currency_name": row.currency.currency_name,
+                              "symbol": row.currency.symbol,
+                              "unit_price": row.unit_price,
+                              "total_price": row.total_price,
+                              "status": row.status,
+                                });
+            });
+            renderItems(rev_quote,$('#rev-quote-items-dt tbody'),'quote_rev',data.purpose);
+        });
+
+      });
+    };
+
+    const approveQuote = (id, stat) => {
+      if(stat==0){
+        $('#app_rev_id').val(id);
+        $('#appRevModal').modal('open');
+      } else {
+        var idx = id - 1;
+        rev_quote[idx].status = 0;
+        renderItems(rev_quote,$('#rev-quote-items-dt tbody'),'quote_rev',$('#rev_purpose').val());
+      }
+    };
+
+    const updateQuote = () => {
+      var rev_id = $('#app_rev_id').val();
+      rev_id = rev_id - 1;
+      rev_quote[rev_id].status = 1;
+      renderItems(rev_quote,$('#rev-quote-items-dt tbody'),'quote_rev',$('#rev_purpose').val());
+      $('#appRevModal').modal('close');
+    };
+
+    const updtCanQuote = () => {
+      var rev_id = $('#app_rev_id').val();
+      rev_id = rev_id - 1;
+      rev_quote[rev_id].status = 0;
+      renderItems(rev_quote,$('#rev-quote-items-dt tbody'),'quote_rev',$('#rev_purpose').val());
+      $('#appRevModal').modal('close');
+    }
 
     const appRFQ = (id) => {
       app_items = [];
@@ -2239,6 +2565,7 @@
         if(matrix != null) renderSignatoriesTable(matrix,$('#app-matrix-dt tbody'));
         if(matrix_h != null) renderSignatoriesTable(matrix_h,$('#app-matrix-dt-h tbody'),true);
  
+        $('#app_type').val('approval');
         $('#app_id').val(data.id);
         $('#app_rfq_code').val(data.rfq_code);
         $('#app_date_requested').val(data.date_requested);
@@ -2309,6 +2636,7 @@
 
             var datax = response.data;
               $.each(datax, (index, row) => {
+                if(row.status==1){
                 rev_quote.push({"ven_name": row.ven_details.ven_name,
                               "item_code": row.item_code,
                               "spq": row.spq,
@@ -2319,6 +2647,7 @@
                               "unit_price": row.unit_price,
                               "total_price": row.total_price,
                                 });
+                }
             });
             renderItems(rev_quote,$('#app-quote-items-dt tbody'),'quote_view',data.purpose);
         });
@@ -2764,13 +3093,7 @@
                       '<input type="hidden" name="qt_total_price[]" value="'+row.total_price+'"/>'+
                       '</tr>'
                     );
-          
-          // if(items.length > 0){ 
-          //   $('#btnResetQ').prop('disabled', false); $('#btnSaveQ').prop('disabled', false); 
-          // } else {
-          //   $('#btnResetQ').prop('disabled', true); $('#btnSaveQ').prop('disabled', true); 
-          // }
-
+      
         } else if (loc=='quote_view'){
           table.append('<tr>'+
                       '<td class="left-align">'+id+'</td>'+
@@ -2783,6 +3106,41 @@
                       '<td class="left-align">'+row.symbol+" "+row.unit_price+'</td>'+
                       '<td class="left-align">'+row.symbol+" "+row.total_price+'</td>'+
                       '</tr>');
+        } else if (loc=='quote_rev'){
+          if(row.status==1){
+            table.append('<tr>'+
+                      '<td class="left-align">'+id+'</td>'+
+                      '<td class="left-align">'+row.ven_name+'</td>'+
+                      '<td class="left-align">'+row.item_code+'</td>'+
+                      '<td class="left-align">'+row.spq+'</td>'+
+                      '<td class="left-align">'+row.moq+'</td>'+
+                      '<td class="left-align">'+row.leadtime+" days(s)"+'</td>'+
+                      '<td class="left-align">'+row.currency_name+'</td>'+
+                      '<td class="left-align">'+row.symbol+" "+row.unit_price+'</td>'+
+                      '<td class="left-align">'+row.symbol+" "+row.total_price+'</td>'+
+                      '<td class="left-align"><p><label><input id="'+id+'" class="with-gap" type="checkbox" value="'+id+'" onclick="approveQuote(\''+id+'\',\''+row.status+'\')" checked/><span style="margin-top: 10px;"></span></label></p></td>'+
+                      '<input type="hidden" name="rev_ven_code[]" value="'+row.ven_code+'"/>'+
+                      '<input type="hidden" name="rev_item_code[]" value="'+row.item_code+'"/>'+
+                      '<input type="hidden" name="rev_status[]" value="'+row.status+'"/>'+
+                      '</tr>');
+          } else {
+            table.append('<tr>'+
+                      '<td class="left-align">'+id+'</td>'+
+                      '<td class="left-align">'+row.ven_name+'</td>'+
+                      '<td class="left-align">'+row.item_code+'</td>'+
+                      '<td class="left-align">'+row.spq+'</td>'+
+                      '<td class="left-align">'+row.moq+'</td>'+
+                      '<td class="left-align">'+row.leadtime+" days(s)"+'</td>'+
+                      '<td class="left-align">'+row.currency_name+'</td>'+
+                      '<td class="left-align">'+row.symbol+" "+row.unit_price+'</td>'+
+                      '<td class="left-align">'+row.symbol+" "+row.total_price+'</td>'+
+                      '<td class="left-align"><p><label><input id="'+id+'" class="with-gap" type="checkbox" value="'+id+'" onclick="approveQuote(\''+id+'\',\''+row.status+'\')"/><span style="margin-top: 10px;"></span></label></p></td>'+
+                      '<input type="hidden" name="rev_ven_code[]" value="'+row.ven_code+'"/>'+
+                      '<input type="hidden" name="rev_item_code[]" value="'+row.item_code+'"/>'+
+                      '<input type="hidden" name="rev_status[]" value="'+row.status+'"/>'+
+                      '</tr>');
+          }
+ 
         } else {
           if(purpose=='Project'){
             table.append('<tr>'+
@@ -3269,7 +3627,7 @@
             },
             {   "data": "id",
                 "render": function ( data, type, row, meta ) {
-                  return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="appRFQ('+data+')"><i class="material-icons">find_in_page</i></a>';
+                  return  '<a href="#" class="btn-small blue darken3 waves-effect waves-dark" onclick="revQuotation('+data+')"><i class="material-icons">find_in_page</i></a>';
                 }
             },   
         ]

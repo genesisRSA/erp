@@ -248,7 +248,7 @@ class RFQController extends Controller
                     $rfqPurch->uom_code =                $request->input('qt_uom_code.'.$i);
                     $rfqPurch->required_qty =            $request->input('qt_required_qty.'.$i);
                     $rfqPurch->required_delivery_date =  $request->input('qt_required_delivery_date.'.$i);
-                    $rfqPurch->status =                  $request->input('qt_status.'.$i);
+                    $rfqPurch->status =                  0;
                     $rfqPurch->ven_code =                $request->input('qt_ven_code.'.$i);
                     $rfqPurch->spq =                     $request->input('qt_spq.'.$i);
                     $rfqPurch->moq =                     $request->input('qt_moq.'.$i);
@@ -307,13 +307,17 @@ class RFQController extends Controller
         }else{
 
             $apprfq = RFQHeader::find($request->input('id'));
+
+            // return $request->input('id');
+
             $current_approver = json_decode($apprfq->matrix)[0];
             $matrix = json_decode($apprfq->matrix);
             array_splice($matrix,0,1);
             $matrix_h = json_decode($apprfq->matrix_h) ? json_decode($apprfq->matrix_h) : array();
             $status = $request->input('btnSubmit');
             $remarks = $request->input('remarks');
-            // return $status;
+            $type = $request->input('types');
+    
             if($status == "Approved"){
             
                 if($current_approver->is_gate == "true"){
@@ -367,8 +371,23 @@ class RFQController extends Controller
 
             }
     
+            if($type=='review'){
+                if($request->input('rev_ven_code')){
+                    for($i = 0; $i < count($request->input('rev_ven_code')); $i++)
+                    {
+                        $rfqPurch = RFQPurchasing::where('rfq_code',$apprfq->rfq_code)
+                                                ->where('ven_code',$request->input('rev_ven_code.'.$i))
+                                                ->where('item_code',$request->input('rev_item_code.'.$i))
+                                                ->first();
+                        $rfqPurch->status = $request->input('rev_status.'.$i);
+                        $rfqPurch->save();
+                    }
+                }
+            }
+
             $apprfq->matrix_h = json_encode($matrix_h);
             $apprfq->save();
+
             // return $status;
             if($status == "Approved"){
                 return redirect()->route('rfq.index')->withSuccess('Request for Quotation Successfully Approved');
