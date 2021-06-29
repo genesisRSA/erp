@@ -1096,11 +1096,11 @@
           <div class="input-field col s12 m3 l3">
             <input type="hidden" id="status" name="status">
   
-            <button id="btnApp" name="btnSubmit" value="Approved" class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Approve</button>
+            <button id="btnAppRev" name="btnSubmit" value="Approved" class="green waves-effect waves-light btn"><i class="material-icons left">check_circle</i>Approve</button>
             
-            <button id="btnRej" name="btnSubmit" value="Rejected" class="red waves-effect waves-dark btn" style="padding-right: 20px"><i class="material-icons left">cancel</i>Reject&nbsp;&nbsp;&nbsp;</button>
+            <button id="btnRejRev" name="btnSubmit" value="Rejected" class="red waves-effect waves-dark btn" style="padding-right: 20px"><i class="material-icons left">cancel</i>Reject&nbsp;&nbsp;&nbsp;</button>
   
-            <a href="#!" class="modal-close orange waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Cancel&nbsp;&nbsp;</a>
+            <a href="#!" id="btnCanRev" class="modal-close orange waves-effect waves-dark btn"><i class="material-icons left">keyboard_return</i>Cancel&nbsp;&nbsp;</a>
           </div>
           
         </div>
@@ -2441,6 +2441,9 @@
         $('#rev_purpose').val(data.purpose);
         $('#rev_remarks').val(data.remarks);
 
+
+
+
         if(data.purpose=='Project')
         {
           $('#rev_project_code').val(data.projects.project_name);
@@ -2504,8 +2507,10 @@
         }
 
         $.get('list/'+data.rfq_code+'/items_purch', (response) => {
+            var check_select = 0;
             var datax = response.data;
               $.each(datax, (index, row) => {
+
                 rev_quote.push({
                               "ven_code": row.ven_code,
                               "ven_name": row.ven_details.ven_name,
@@ -2519,10 +2524,23 @@
                               "total_price": row.total_price,
                               "status": row.status,
                                 });
+
+              if(row.status == 1){
+                check_select = check_select + parseInt(row.status);
+              }
+
+              if(check_select > 0){
+                $('#btnAppRev').prop('disabled', false);
+                $('#btnRejRev').prop('disabled', false);
+              } else {
+                $('#btnAppRev').prop('disabled', true);
+                $('#btnRejRev').prop('disabled', true);
+              }
+
             });
             renderItems(rev_quote,$('#rev-quote-items-dt tbody'),'quote_rev',data.purpose);
         });
-
+ 
       });
     };
 
@@ -2956,7 +2974,7 @@
     };
 
     const renderItems = (items, table, loc, purpose) => {
-
+      var check_select = 0;
       table.html("");
       $.each(items, (index, row) => {
         var id = parseInt(index) + 1;
@@ -3107,6 +3125,19 @@
                       '<td class="left-align">'+row.symbol+" "+row.total_price+'</td>'+
                       '</tr>');
         } else if (loc=='quote_rev'){
+          
+          if(row.status == 1){
+            check_select = check_select + parseInt(row.status);
+          }
+
+          if(check_select > 0){
+            $('#btnAppRev').prop('disabled', false);
+            $('#btnRejRev').prop('disabled', false);
+          } else {
+            $('#btnAppRev').prop('disabled', true);
+            $('#btnRejRev').prop('disabled', true);
+          }
+
           if(row.status==1){
             table.append('<tr>'+
                       '<td class="left-align">'+id+'</td>'+
