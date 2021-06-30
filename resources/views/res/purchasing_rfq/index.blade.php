@@ -613,6 +613,7 @@
                     <th>Currency</th>
                     <th>Unit Price</th>
                     <th>Total Price</th>
+                    <th>Status</th>
                   </thead>
                   <tbody></tbody>
                 </table>
@@ -1027,7 +1028,7 @@
                       <th>Currency</th>
                       <th>Unit Price</th>
                       <th>Total Price</th>
-                      <th>Choose Quote</th>
+                      <th class="center-align">Choose Quote</th>
                     </thead>
                     <tbody></tbody>
                   </table>
@@ -1499,7 +1500,6 @@
 
 
         $('#item_ven_delivery').on('change', function(){
-          if($(this).val() >= $('#item_req_del').val()){
             if($(this).val() > todayx){
             var diff,
                 aDay = 86400000,
@@ -1514,11 +1514,6 @@
               alert("You cannot set delivery date of the item less than today's date!");
               $(this).val("");
             }
-          } else {
-            alert("You cannot set delivery date of the item less than required delivery date!");
-              $(this).val("");
-          }
-
         });
 
         $('#item_currency_code').on('change', function(){
@@ -1563,6 +1558,12 @@
           }
         });
 
+
+        
+
+        // $('input.check').on('change', function() {
+        //     $('input.check').not(this).prop('checked', false);  
+        // });
     });
     
     const FormatNumber = (number) => {
@@ -2349,6 +2350,7 @@
                                         '<th>Currency</th>'+
                                         '<th>Unit Price</th>'+
                                         '<th>Total Price</th>'+
+                                        '<th>Status</th>'+
                                         '</tr>');
 
           if(data.status=='For User Review'){
@@ -2394,7 +2396,7 @@
             $.get('list/'+data.rfq_code+'/items_purch', (response) => {
               var datax = response.data;
                 $.each(datax, (index, row) => {
-                  if(row.status==1){
+                  // if(row.status==1){
                     view_qt.push({"ven_name": row.ven_details.ven_name,
                                 "item_code": row.item_code,
                                 "spq": row.spq,
@@ -2404,8 +2406,9 @@
                                 "symbol": row.currency.symbol,
                                 "unit_price": row.unit_price,
                                 "total_price": row.total_price,
+                                "status": row.status,
                                   });
-                  }
+                  // }
               });
               renderItems(view_qt,$('#view-quote-dt tbody'),'quote_view',data.purpose);
             });
@@ -2508,6 +2511,7 @@
 
         $.get('list/'+data.rfq_code+'/items_purch', (response) => {
             var check_select = 0;
+            var check_qty = 0;
             var datax = response.data;
               $.each(datax, (index, row) => {
 
@@ -2524,12 +2528,16 @@
                               "total_price": row.total_price,
                               "status": row.status,
                                 });
+                
+                check_qty = rev_quote.length / 3;
 
               if(row.status == 1){
                 check_select = check_select + parseInt(row.status);
               }
 
-              if(check_select > 0){
+
+
+              if(check_select >= check_qty){
                 $('#btnAppRev').prop('disabled', false);
                 $('#btnRejRev').prop('disabled', false);
               } else {
@@ -2555,12 +2563,28 @@
       }
     };
 
-    const updateQuote = () => {
-      var rev_id = $('#app_rev_id').val();
-      rev_id = rev_id - 1;
-      rev_quote[rev_id].status = 1;
-      renderItems(rev_quote,$('#rev-quote-items-dt tbody'),'quote_rev',$('#rev_purpose').val());
-      $('#appRevModal').modal('close');
+    const updateQuote = (id, status, item_code) => {
+      if(status==0){
+        var result = rev_quote.filter(quote => quote.item_code == item_code);
+        for (let index = 0; index < result.length; index++) {
+          result[index].status = 0;
+        }
+        console.log(result);
+
+        var rev_id = id - 1;
+        rev_quote[rev_id].status = 1;
+        renderItems(rev_quote,$('#rev-quote-items-dt tbody'),'quote_rev',$('#rev_purpose').val());
+      } else {
+        var result = rev_quote.filter(quote => quote.item_code == item_code);
+        for (let index = 0; index < result.length; index++) {
+          result[index].status = 0;
+        }
+        console.log(result);
+
+        var rev_id = id - 1;
+        rev_quote[rev_id].status = 0;
+        renderItems(rev_quote,$('#rev-quote-items-dt tbody'),'quote_rev',$('#rev_purpose').val());
+      }
     };
 
     const updtCanQuote = () => {
@@ -2654,7 +2678,6 @@
 
             var datax = response.data;
               $.each(datax, (index, row) => {
-                if(row.status==1){
                 rev_quote.push({"ven_name": row.ven_details.ven_name,
                               "item_code": row.item_code,
                               "spq": row.spq,
@@ -2664,8 +2687,8 @@
                               "symbol": row.currency.symbol,
                               "unit_price": row.unit_price,
                               "total_price": row.total_price,
+                              "status": row.status,
                                 });
-                }
             });
             renderItems(rev_quote,$('#app-quote-items-dt tbody'),'quote_view',data.purpose);
         });
@@ -2975,6 +2998,7 @@
 
     const renderItems = (items, table, loc, purpose) => {
       var check_select = 0;
+      var check_qty = items.length / 3;
       table.html("");
       $.each(items, (index, row) => {
         var id = parseInt(index) + 1;
@@ -3113,7 +3137,8 @@
                     );
       
         } else if (loc=='quote_view'){
-          table.append('<tr>'+
+          if(row.status==1){
+            table.append('<tr>'+
                       '<td class="left-align">'+id+'</td>'+
                       '<td class="left-align">'+row.ven_name+'</td>'+
                       '<td class="left-align">'+row.item_code+'</td>'+
@@ -3123,14 +3148,30 @@
                       '<td class="left-align">'+row.currency_name+'</td>'+
                       '<td class="left-align">'+row.symbol+" "+FormatNumber(row.unit_price)+'</td>'+
                       '<td class="left-align">'+row.symbol+" "+FormatNumber(row.total_price)+'</td>'+
+                      '<td class="left-align"><p><label><i class="green-text material-icons">check</i></label></p></td>'+
                       '</tr>');
+          } else {
+            table.append('<tr>'+
+                      '<td class="left-align">'+id+'</td>'+
+                      '<td class="left-align">'+row.ven_name+'</td>'+
+                      '<td class="left-align">'+row.item_code+'</td>'+
+                      '<td class="left-align">'+row.spq+'</td>'+
+                      '<td class="left-align">'+row.moq+'</td>'+
+                      '<td class="left-align">'+row.leadtime+" days(s)"+'</td>'+
+                      '<td class="left-align">'+row.currency_name+'</td>'+
+                      '<td class="left-align">'+row.symbol+" "+FormatNumber(row.unit_price)+'</td>'+
+                      '<td class="left-align">'+row.symbol+" "+FormatNumber(row.total_price)+'</td>'+
+                      '<td class="left-align"><p><label><i class="red-text material-icons">clear</i></label></p></td>'+
+                      '</tr>');
+          }
+
         } else if (loc=='quote_rev'){
           
           if(row.status == 1){
             check_select = check_select + parseInt(row.status);
           }
 
-          if(check_select > 0){
+          if(check_select >= check_qty){
             $('#btnAppRev').prop('disabled', false);
             $('#btnRejRev').prop('disabled', false);
           } else {
@@ -3149,7 +3190,7 @@
                       '<td class="left-align">'+row.currency_name+'</td>'+
                       '<td class="left-align">'+row.symbol+" "+FormatNumber(row.unit_price)+'</td>'+
                       '<td class="left-align">'+row.symbol+" "+FormatNumber(row.total_price)+'</td>'+
-                      '<td class="left-align"><p><label><input id="'+id+'" class="with-gap" type="checkbox" value="'+id+'" onclick="approveQuote(\''+id+'\',\''+row.status+'\')" checked/><span style="margin-top: 10px;"></span></label></p></td>'+
+                      '<td class="center-align"><p><label><input id="'+id+'" name="'+row.item_code+'" class="with-gap" type="radio" value="'+id+'" onclick="updateQuote(\''+id+'\',\''+row.status+'\',\''+row.item_code+'\')" checked/><span style="margin-top: 10px;"></span></label></p></td>'+
                       '<input type="hidden" name="rev_ven_code[]" value="'+row.ven_code+'"/>'+
                       '<input type="hidden" name="rev_item_code[]" value="'+row.item_code+'"/>'+
                       '<input type="hidden" name="rev_status[]" value="'+row.status+'"/>'+
@@ -3165,7 +3206,7 @@
                       '<td class="left-align">'+row.currency_name+'</td>'+
                       '<td class="left-align">'+row.symbol+" "+FormatNumber(row.unit_price)+'</td>'+
                       '<td class="left-align">'+row.symbol+" "+FormatNumber(row.total_price)+'</td>'+
-                      '<td class="left-align"><p><label><input id="'+id+'" class="with-gap" type="checkbox" value="'+id+'" onclick="approveQuote(\''+id+'\',\''+row.status+'\')"/><span style="margin-top: 10px;"></span></label></p></td>'+
+                      '<td class="center-align"><p><label><input id="'+id+'" name="'+row.item_code+'" class="with-gap" type="radio" value="'+id+'" onclick="updateQuote(\''+id+'\',\''+row.status+'\',\''+row.item_code+'\')"/><span style="margin-top: 10px;"></span></label></p></td>'+
                       '<input type="hidden" name="rev_ven_code[]" value="'+row.ven_code+'"/>'+
                       '<input type="hidden" name="rev_item_code[]" value="'+row.item_code+'"/>'+
                       '<input type="hidden" name="rev_status[]" value="'+row.status+'"/>'+
