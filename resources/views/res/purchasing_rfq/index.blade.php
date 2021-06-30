@@ -3091,8 +3091,8 @@
                       '<td class="left-align">'+row.moq+'</td>'+
                       '<td class="left-align">'+row.leadtime+" days(s)"+'</td>'+
                       '<td class="left-align">'+row.currency_name+'</td>'+
-                      '<td class="left-align">'+row.symbol+" "+row.unit_price+'</td>'+
-                      '<td class="left-align">'+row.total_price+'</td>'+
+                      '<td class="left-align">'+row.symbol+" "+FormatNumber(row.unit_price)+'</td>'+
+                      '<td class="left-align">'+row.symbol+" "+FormatNumber(row.total_price)+'</td>'+
  
                       '<input type="hidden" name="qt_rfq_code[]" value="'+row.rfq_code+'"/>'+
                       '<input type="hidden" name="qt_assy_code[]" value="'+row.assy_code+'"/>'+
@@ -3121,8 +3121,8 @@
                       '<td class="left-align">'+row.moq+'</td>'+
                       '<td class="left-align">'+row.leadtime+" days(s)"+'</td>'+
                       '<td class="left-align">'+row.currency_name+'</td>'+
-                      '<td class="left-align">'+row.symbol+" "+row.unit_price+'</td>'+
-                      '<td class="left-align">'+row.symbol+" "+row.total_price+'</td>'+
+                      '<td class="left-align">'+row.symbol+" "+FormatNumber(row.unit_price)+'</td>'+
+                      '<td class="left-align">'+row.symbol+" "+FormatNumber(row.total_price)+'</td>'+
                       '</tr>');
         } else if (loc=='quote_rev'){
           
@@ -3147,8 +3147,8 @@
                       '<td class="left-align">'+row.moq+'</td>'+
                       '<td class="left-align">'+row.leadtime+" days(s)"+'</td>'+
                       '<td class="left-align">'+row.currency_name+'</td>'+
-                      '<td class="left-align">'+row.symbol+" "+row.unit_price+'</td>'+
-                      '<td class="left-align">'+row.symbol+" "+row.total_price+'</td>'+
+                      '<td class="left-align">'+row.symbol+" "+FormatNumber(row.unit_price)+'</td>'+
+                      '<td class="left-align">'+row.symbol+" "+FormatNumber(row.total_price)+'</td>'+
                       '<td class="left-align"><p><label><input id="'+id+'" class="with-gap" type="checkbox" value="'+id+'" onclick="approveQuote(\''+id+'\',\''+row.status+'\')" checked/><span style="margin-top: 10px;"></span></label></p></td>'+
                       '<input type="hidden" name="rev_ven_code[]" value="'+row.ven_code+'"/>'+
                       '<input type="hidden" name="rev_item_code[]" value="'+row.item_code+'"/>'+
@@ -3163,8 +3163,8 @@
                       '<td class="left-align">'+row.moq+'</td>'+
                       '<td class="left-align">'+row.leadtime+" days(s)"+'</td>'+
                       '<td class="left-align">'+row.currency_name+'</td>'+
-                      '<td class="left-align">'+row.symbol+" "+row.unit_price+'</td>'+
-                      '<td class="left-align">'+row.symbol+" "+row.total_price+'</td>'+
+                      '<td class="left-align">'+row.symbol+" "+FormatNumber(row.unit_price)+'</td>'+
+                      '<td class="left-align">'+row.symbol+" "+FormatNumber(row.total_price)+'</td>'+
                       '<td class="left-align"><p><label><input id="'+id+'" class="with-gap" type="checkbox" value="'+id+'" onclick="approveQuote(\''+id+'\',\''+row.status+'\')"/><span style="margin-top: 10px;"></span></label></p></td>'+
                       '<input type="hidden" name="rev_ven_code[]" value="'+row.ven_code+'"/>'+
                       '<input type="hidden" name="rev_item_code[]" value="'+row.item_code+'"/>'+
