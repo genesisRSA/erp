@@ -14,7 +14,7 @@
       @if($permission[0]["approval"]==true || $permission[0]["masterlist"]==true)
         <li class="tab col s12 m4 l4"><a class="active" href="#Approval">Approval</a></li>
       @endif
-      @if($permission[0]["masterlist"]==true)
+      @if($permission[0]["void"]==true)
         <li class="tab col s12 m4 l4"><a class="active" href="#ForRFQ">For Quotation</a></li>
       @endif
       @if($permission[0]["add"]==true || $permission[0]["masterlist"]==true)
@@ -68,7 +68,7 @@
       </div>
     @endif
 
-    @if($permission[0]["masterlist"]==true)
+    @if($permission[0]["void"]==true)
       <div id="ForRFQ" name="ForRFQ">
         <div class="card" style="margin-top: 0px">
           <div class="card-content">
@@ -1607,7 +1607,7 @@
       if(loc=="add"){
         if(trim($('#add_rfq_code').val()) &&
         trim($('#add_purpose').val()) &&
-        trim($('#add_purpose').val()))
+        trim($('#add_remarks').val()))
         {
           if($('#add_purpose').val()=='Project')
           {
@@ -1658,7 +1658,7 @@
       } else {
         if(trim($('#edit_rfq_code').val()) &&
         trim($('#edit_purpose').val()) &&
-        trim($('#edit_purpose').val()))
+        trim($('#add_remarks').val()))
         {
           if($('#edit_purpose').val()=='Project')
           {
@@ -2076,7 +2076,8 @@
     
     const openModal = () => {
       $('#btnAdd').prop('disabled', true);
-
+ 
+      $('#add_remarks').prop('readonly', false);
       $('#add_remarks').val("");
       $('#add_purpose option[value=""]').prop('selected', true);
       $('#add_purpose').formSelect(); 
@@ -2105,7 +2106,9 @@
           reset.style.display = "none";
       var project = document.getElementById('project_details');
           project.style.display = "none";
-
+      var assy = document.getElementById('assy_details');
+          assy.style.display = "none";
+          
       add_items = [];
       renderItems(add_items,$('#items-dt tbody'),'add','');
       $('#btnAddSave').prop('disabled', true);

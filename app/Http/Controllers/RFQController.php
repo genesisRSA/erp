@@ -123,6 +123,26 @@ class RFQController extends Controller
         ]);
     }
 
+    public function approve_items($item_code, $id)
+    {
+        $idx = Crypt::decrypt($id);
+        return response()->json([
+            "data" => DB::table('r_f_q_headers')
+                        ->join('r_f_q_purchasings', 'r_f_q_purchasings.rfq_code', '=', 'r_f_q_headers.rfq_code')
+                        ->join('currencies', 'currencies.currency_code', '=', 'r_f_q_purchasings.currency_code')
+                        ->join('item_masters', 'item_masters.item_code', '=', 'r_f_q_purchasings.item_code')
+                        ->join('unit_of_measures', 'unit_of_measures.uom_code', '=', 'r_f_q_purchasings.uom_code')
+                        ->select('r_f_q_purchasings.id', 'r_f_q_headers.rfq_code', 'currencies.currency_code', 
+                                    'currencies.symbol', 'r_f_q_headers.requestor', 'r_f_q_purchasings.uom_code', 
+                                    'unit_of_measures.uom_name', 'r_f_q_purchasings.item_code', 'item_masters.item_desc', 
+                                    'r_f_q_purchasings.spq', 'r_f_q_purchasings.moq', 'r_f_q_purchasings.unit_price')
+                        ->where('r_f_q_purchasings.status','=','1')
+                        ->where('r_f_q_purchasings.item_code','=',$item_code)
+                        ->where('r_f_q_headers.requestor','=',$idx)
+                        ->get()
+        ]);
+    }
+
     public function create()
     {
         //
@@ -281,16 +301,6 @@ class RFQController extends Controller
                                         // ->with('employee_details:emp_no,emp_fname,emp_lname')
                                         ->get()
         ]);
-    }
-
-    public function edit($id)
-    {
-        //
-    }
-
-    public function update(Request $request, $id)
-    {
-        //
     }
 
     public function approve(Request $request)

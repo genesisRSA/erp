@@ -227,6 +227,11 @@ Route::group(['middleware' => ['auth.dcs']], function() {
     Route::resource('/reiss/purchasing/rfq','RFQController');
     
     
+    Route::get('/reiss/purchasing/pr/{pr_code}/all_items','PRController@all_items')->name('rfq.all_items');
+    Route::post('/reiss/purchasing/pr/approve','PRController@approve')->name('pr.approve');
+    Route::post('/reiss/purchasing/pr/patch','PRController@patch')->name('pr.patch');
+    Route::resource('/reiss/purchasing/pr','PRController');
+
     // end -> jp task
 
     Route::get('/reiss/dashboard/{parent}', 'ReissDashboardController@index');

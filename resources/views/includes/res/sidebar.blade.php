@@ -94,7 +94,7 @@
           <div class="collapsible-body">
             <ul>
               <li @if($subpage=='rfq') class="active" @endif><a href="{{ route('rfq.index') }}">Request for Quotation</a></li>
-              <li><a href="#!">Purchase Request</a></li>
+              <li @if($subpage=='pr') class="active" @endif><a href="{{ route('pr.index') }}">Purchase Request</a></li>
               <li><a href="#!">Purchase Order</a></li>
               <li><a href="#!">Purchase Order Amendment</a></li>
             </ul>
