@@ -12,6 +12,7 @@ class SalesOrder extends Model
     {
         return $this->hasOne('App\Currency', 'currency_code', 'currency_code');
     }
+    
     public function products()
     {
         return $this->hasOne('App\Product', 'prod_code', 'prod_code');

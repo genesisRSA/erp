@@ -122,10 +122,10 @@ class InventoryIssuanceController extends Controller
     public function store(Request $request)
     {
         $field = [
-            // 'item_cat_code' => 'required',
-            // 'item_subcat_code' => 'required',
-            // 'item_code' => 'required|unique:item_masters',
-            // 'oem_partno' => 'unique:item_masters',
+            'item_cat_code' => 'required',
+            'item_subcat_code' => 'required',
+            'item_code' => 'required|unique:item_masters',
+            'oem_partno' => 'unique:item_masters',
         ];
 
         $validator = Validator::make($request->all(), $field);
@@ -198,7 +198,7 @@ class InventoryIssuanceController extends Controller
                 if($inviss->save()){
                     return redirect()->route('issuance.index')->withSuccess('Issuance Request Successfully Added');
                 }
-
+                
             } else {
                 return redirect()->route('issuance.index')->withErrors('Please fill up all the Issuance Request Details!');
             }            

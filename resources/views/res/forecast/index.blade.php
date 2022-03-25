@@ -11,9 +11,9 @@
     {{-- <ul id="tabs-swipe-demo" class="tabs"> --}}
     <ul id="forecast_tab" class="tabs tabs-fixed-width tab-demo z-depth-1">
       <li class="tab col s12 m4 l4"><a class="active" href="#ongoing">Sales Forecasts</a></li>
-      @if($permission[0]["approval"]==true || $permission[0]["masterlist"]==true)
+      {{-- @if($permission[0]["approval"]==true || $permission[0]["masterlist"]==true)
       <li class="tab col s12 m4 l4"><a href="#approval">For Approval</a></li>
-      @endif
+      @endif --}}
     </ul>
 
     <div id="ongoing" name="ongoing">
@@ -36,31 +36,32 @@
       </div>
       
     @if($permission[0]["add"]==true || $permission[0]["masterlist"]==true)
-      <a href="#addModal" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped modal-trigger" id="add-button"  onclick="getApprover('{{Auth::user()->emp_no}}','add','Sales Forecast');" data-position="left" data-tooltip="Add Sales Forecast"><i class="material-icons">add</i></a>
+      <a href="#addModal" class="btn-floating btn-large waves-effect waves-light green add-button tooltipped modal-trigger" id="add-button"  data-position="left" data-tooltip="Add Sales Forecast"><i class="material-icons">add</i></a>
+      {{-- onclick="getApprover('{{Auth::user()->emp_no}}','add','Sales Forecast');"  --}}
     @endif
     </div>
 
-    @if($permission[0]["approval"]==true || $permission[0]["masterlist"]==true)
-    <div id="approval" name="approval">
-        <div class="card" style="margin-top: 0px">
-          <div class="card-content">
-            <table class="responsive-table highlight" id="approval-dt" style="width: 100%">
-              <thead>
-                <tr>
-                    <th>ID</th> 
-                    <th>Site Code</th>
-                    <th>Product Code</th>
-                    <th>Forecast Code</th>
-                    <th>Filed By</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-              </thead>
-            </table>
+    {{-- @if($permission[0]["approval"]==true || $permission[0]["masterlist"]==true)
+      <div id="approval" name="approval">
+          <div class="card" style="margin-top: 0px">
+            <div class="card-content">
+              <table class="responsive-table highlight" id="approval-dt" style="width: 100%">
+                <thead>
+                  <tr>
+                      <th>ID</th> 
+                      <th>Site Code</th>
+                      <th>Product Code</th>
+                      <th>Forecast Code</th>
+                      <th>Filed By</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
           </div>
-        </div>
-    </div>
-    @endif  
+      </div>
+    @endif   --}}
 
   </div>
 
@@ -75,7 +76,7 @@
 
         <ul id="tabs-swipe-demo" class="tabs">
           <li class="tab col s12 m4 l4"><a class="active" href="#forecast">Forecast Details</a></li>
-           <li class="tab col s12 m4 l4"><a href="#signatories">Signatories</a></li>
+           {{-- <li class="tab col s12 m4 l4"><a href="#signatories">Signatories</a></li> --}}
         </ul><br>
 
         <div id="forecast" name="forecast">
@@ -187,20 +188,23 @@
 
         </div>
 
-        <div id="signatories" name="signatories">
+        <div id="products" name="products">
 
           {{-- current signatories --}}
           <div class="row">
             <div class="col s12 m12 l12">
               <div class="card">
-                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Current Signatories</b></h6><hr style="margin: 0px">
+                <h6 style="padding: 10px; padding-top: 10px; margin-bottom: 0em; background-color:#0d47a1" class="white-text"><b>Product Details</b></h6><hr style="margin: 0px">
                 <div class="card-content" style="padding: 10px; padding-top: 0px">
                   <table class="highlight" id="matrix-dt">
                     <thead>
                       <tr>
-                          <th>Sequence</th> 
-                          <th>Approver ID</th> 
-                          <th>Approver Name</th> 
+                          <th>ID</th> 
+                          <th>Product Code</th> 
+                          <th>Product Name</th> 
+                          <th>Quantity</th>
+                          <th>Unit Price</th>
+                          <th>Action</th>
                       </tr>
                     </thead>
                     <tbody></tbody>

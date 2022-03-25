@@ -47,7 +47,7 @@
           <a class="collapsible-header waves-effect waves-light" style="padding-left:32px;"><i class="material-icons">request_page</i>Sales</a>
           <div class="collapsible-body">
             <ul>
-              <li @if($subpage=='salesdashboard') class="active" @endif><a href="/reiss/dashboard/sales">Sales Dashboard</a></li>
+              {{-- <li @if($subpage=='salesdashboard') class="active" @endif><a href="/reiss/dashboard/sales">Sales Dashboard</a></li> --}}
               <li @if($subpage=='visit') class="active" @endif><a href="{{ route('visit.index') }}">Sales Visit</a></li>
               <li @if($subpage=='forecast') class="active" @endif><a href="{{ route('forecast.index') }}">Sales Forecast</a></li>
               <li @if($subpage=='quotation') class="active" @endif><a href="{{ route('quotation.index') }}">Sales Quotation</a></li>
@@ -57,7 +57,7 @@
         </li>
       </ul>
     </li>
-    <li class="no-padding">
+  <li class="no-padding">
       <ul class="collapsible collapsible-accordion">
         <li @if($page=='projects') class="active" @endif>
           <a class="collapsible-header waves-effect waves-light" style="padding-left:32px;"><i class="material-icons">build_circle</i>Projects</a>
@@ -86,7 +86,7 @@
           </div>
         </li>
       </ul>
-    </li>
+    </li> 
     <li class="no-padding">
       <ul class="collapsible collapsible-accordion">
         <li @if($page=='purchasing') class="active" @endif>

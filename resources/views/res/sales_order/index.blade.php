@@ -1372,6 +1372,9 @@
                 "data": "status",
                 "render": function ( data, type, row, meta ) {
                   switch(data){
+                    case 'ongoing':
+                      return  '<span class="new badge purple white-text" data-badge-caption="">ongoing</span>';
+                    break;
                     case 'Approved':
                       return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
                     break;
@@ -1450,6 +1453,9 @@
                 "data": "status",
                 "render": function ( data, type, row, meta ) {
                   switch(data){
+                    case 'ongoing':
+                      return  '<span class="new badge purple white-text" data-badge-caption="">ongoing</span>';
+                    break;
                     case 'Approved':
                       return  '<span class="new badge green white-text" data-badge-caption="">Approved</span>';
                     break;
